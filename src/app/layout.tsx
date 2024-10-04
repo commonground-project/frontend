@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { MantineProvider } from "@mantine/core";
 import localFont from "next/font/local";
+import "@mantine/core/styles.css";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -28,7 +30,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <MantineProvider
+          defaultColorScheme="dark"
+          theme={{
+            fontFamily: "var(--font-geist-sans)", // Use Geist Sans as the default font
+            fontFamilyMonospace: "var(--font-geist-mono)", // Use Geist Mono for monospace text
+            headings: { fontFamily: "var(--font-geist-sans)" }, // Use Geist Sans for headings
+          }}
+        >
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );
