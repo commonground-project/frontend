@@ -17,7 +17,7 @@
                 "exec",
                 "prettier",
                 "--ignore-unknown",
-                "--write",
+                "--check",
                 "${staged}"
             ],
             "pathMode": "absolute"
