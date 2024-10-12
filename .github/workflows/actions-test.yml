@@ -12,17 +12,13 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
-
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: "lts/*"
-
             - name: Install pnpm and install dependencies
               run: npm install -g pnpm && pnpm install
-
             - name: Run Prettier check
               run: pnpm exec prettier --ignore-unknown --check .
-
             - name: Run ESLint
               run: pnpm run lint
