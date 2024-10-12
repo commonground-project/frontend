@@ -1,3 +1,12 @@
+# Ignore everything
+*
+
+# But not the src directory
+!/src
+
+# Ignore node_modules even if they're in src
+/src/node_modules
+
 # Ignore artifacts:
-build
-coverage
+/src/build
+/src/coverage
