@@ -2,13 +2,19 @@
     "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
     "tasks": [
         {
-            "name": "welcome-message-example",
-            "command": "bash",
-            "args": ["-c", "echo Husky.Net is awesome!"],
-            "windows": {
-                "command": "cmd",
-                "args": ["/c", "echo Husky.Net is awesome!"]
-            }
+            "name": "build",
+            "command": "pnpm",
+            "args": ["run", "build"]
+        },
+        {
+            "name": "lint",
+            "command": "pnpm",
+            "args": ["run", "lint"]
+        },
+        {
+            "name": "test",
+            "command": "pnpm",
+            "args": ["run", "test"]
         },
         {
             "name": "format-code",
@@ -17,8 +23,8 @@
                 "exec",
                 "prettier",
                 "--ignore-unknown",
-                "--check",
-                "${staged}"
+                "--write",
+                "./src/**/*.{ts,tsx,js,jsx,json,css}"
             ],
             "pathMode": "absolute"
         }
