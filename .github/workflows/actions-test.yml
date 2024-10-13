@@ -18,7 +18,7 @@ jobs:
                   node-version: "lts/*"
             - name: Install pnpm and install dependencies
               run: npm install -g pnpm && pnpm install
-            - name: Run Prettier write
-              run: pnpm exec prettier --ignore-unknown --write "src/**/*.{js,jsx,ts,tsx,css,md,json}"
+            - name: Run Prettier check
+              run: pnpm exec prettier --ignore-unknown --check .
             - name: Run ESLint
               run: pnpm run lint
