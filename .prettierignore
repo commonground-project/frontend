@@ -1,7 +1,7 @@
 # Ignore everything
 *
 
-# Except these directories
+# # Except these directories
 !/src
-!/playwright-report
+!/src/**/*
 !/tests
