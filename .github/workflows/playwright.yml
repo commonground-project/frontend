@@ -17,19 +17,22 @@ jobs:
       run: npm install -g pnpm && pnpm install
     - name: Get installed Playwright version
       id: playwright-version
-      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./pnpm-lock.yaml').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./pnpm-lock.yaml').devDependencies['@playwright/test'].version)")" >> $GITHUB_ENV
     - name: Cache Playwright browsers
       id: playwright-cache
       uses: actions/cache@v4
       with:
-        path: ~/.cache/ms-playwright
+        path: | 
+          ~/.cache/ms-playwright
         key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
         restore-keys: |
           ${{ runner.os }}-playwright-
     - name: Install Playwright browsers
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: pnpm exec playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
     - run: pnpm exec playwright install-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+
     - name: Run Playwright tests
       run: pnpm exec playwright test
     - uses: actions/upload-artifact@v4
