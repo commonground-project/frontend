@@ -28,13 +28,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-playwright-
     - name: Install Playwright browsers
-      run: pnpm exec playwright install --with-deps chromium
+      run: pnpm exec playwright install chromium --with-deps
       if: steps.playwright-cache.outputs.cache-hit != 'true'
     - run: pnpm exec playwright install-deps chromium
       if: steps.playwright-cache.outputs.cache-hit != 'true'
 
     - name: Run Playwright tests
-      run: pnpm exec playwright test
+      run: pnpm exec playwright test --project=chromium
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
