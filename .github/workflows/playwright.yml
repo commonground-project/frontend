@@ -32,7 +32,7 @@ jobs:
       if: steps.playwright-cache.outputs.cache-hit != 'true'
     - name: Install Playwright Browsers - Cached
       run: pnpm exec playwright install-deps
-      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
 
     - name: Run Playwright tests
       run: pnpm exec playwright test 
