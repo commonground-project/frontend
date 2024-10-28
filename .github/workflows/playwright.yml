@@ -27,7 +27,7 @@ jobs:
         path: | 
           ~/.cache/ms-playwright
         key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-    - name: Install Playwright browsers
+    - name: Install Playwright browsers - Not Cached
       run: pnpm exec playwright install --with-deps
       if: steps.playwright-cache.outputs.cache-hit != 'true'
     - name: Install Playwright Browsers - Cached
