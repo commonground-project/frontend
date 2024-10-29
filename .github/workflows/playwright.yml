@@ -14,7 +14,7 @@ jobs:
     - name: Get installed Playwright version
       id: playwright-version
       run: |
-        PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2)
+        PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)
         echo "Playwright version: $PLAYWRIGHT_VERSION"
         echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
         echo "::set-output name=PLAYWRIGHT_VERSION::$PLAYWRIGHT_VERSION"
