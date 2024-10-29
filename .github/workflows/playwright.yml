@@ -10,14 +10,13 @@ jobs:
     outputs:
       playwright_version: ${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
     steps:
-    - uses: actions/checkout@v4
-    - name: Get installed Playwright version
-      id: playwright-version
-      run: |
-        PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)
-        echo "Playwright version: $PLAYWRIGHT_VERSION"
-        echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-        echo "::set-output name=PLAYWRIGHT_VERSION::$PLAYWRIGHT_VERSION"
+      - uses: actions/checkout@v4
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: |
+          PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)
+          echo "Playwright version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
   test:
     needs: setup
     timeout-minutes: 60
@@ -26,17 +25,17 @@ jobs:
       image: mcr.microsoft.com/playwright:v${{ needs.setup.outputs.playwright_version }}-jammy
       options: --user 1001
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm install -g pnpm
-    - name: Run Playwright tests
-      run: pnpm exec playwright test 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm install -g pnpm && pnpm install
+      - name: Run Playwright tests
+        run: pnpm exec playwright test 
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
