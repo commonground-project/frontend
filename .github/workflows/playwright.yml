@@ -7,18 +7,21 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      playwright_version: ${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
     steps:
       - uses: actions/checkout@v4
       - name: Get installed Playwright version
         id: playwright-version
         run: |
-          echo "PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)" >> $GITHUB_ENV
-    container:
-      image: mcr.microsoft.com/playwright:v${{ env.PLAYWRIGHT_VERSION }}-jammy
-      options: --user 1001
+          echo "PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)" >> $GITHUB_OUTPUT
   test:
+    needs: setup
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.setup.outputs.playwright_version }}-jammy
+      options: --user 1001
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
