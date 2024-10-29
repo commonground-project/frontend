@@ -14,7 +14,8 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: |
-          PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs) >> $GITHUB_OUTPUT
+          PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
   test:
     needs: setup
     timeout-minutes: 60
