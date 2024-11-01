@@ -29,6 +29,11 @@ jobs:
         key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
     - name: Install Playwright browsers
       run: pnpm exec playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+    - name: Install Playwright Browsers - Cached
+      run: pnpm exec playwright install-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+
     - name: Run Playwright tests
       run: pnpm exec playwright test 
     - uses: actions/upload-artifact@v4
