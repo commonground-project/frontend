@@ -15,24 +15,8 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm install -g pnpm && pnpm install
-    - name: Get installed Playwright version
-      id: playwright-version
-      run: |
-        echo "PLAYWRIGHT_VERSION=$(grep -A 2 "'@playwright/test':" pnpm-lock.yaml | grep 'version:' | cut -d: -f2 | xargs)" >> $GITHUB_ENV
-    - name: Cache Playwright browsers
-      id: playwright-cache
-      uses: actions/cache@v4
-      with:
-        path: | 
-          ~/.cache/ms-playwright
-        key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
     - name: Install Playwright browsers
       run: pnpm exec playwright install --with-deps
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
-    - name: Install Playwright Browsers - Cached
-      run: pnpm exec playwright install-deps
-      if: steps.playwright-cache.outputs.cache-hit == 'true'
-
     - name: Run Playwright tests
       run: pnpm exec playwright test 
     - uses: actions/upload-artifact@v4
