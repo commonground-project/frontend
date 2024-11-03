@@ -1,12 +1,8 @@
 # Ignore everything
 *
 
-# But not the src directory
+# # Except these directories
 !/src
-
-# Ignore node_modules even if they're in src
-/src/node_modules
-
-# Ignore artifacts:
-/src/build
-/src/coverage
+!/src/**/*
+!/tests
+!/tests/**/*
