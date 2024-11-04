@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { MantineProvider } from "@mantine/core";
 import localFont from "next/font/local";
+import Header from "../components/Header";
 import "@mantine/core/styles.css";
 import "./globals.css";
 
@@ -30,8 +31,9 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
+                <Header />
                 <MantineProvider
-                    defaultColorScheme="dark"
+                    defaultColorScheme="light"
                     theme={{
                         fontFamily: "var(--font-geist-sans)", // Use Geist Sans as the default font
                         fontFamilyMonospace: "var(--font-geist-mono)", // Use Geist Mono for monospace text
