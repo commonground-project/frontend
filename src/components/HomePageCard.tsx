@@ -12,7 +12,7 @@ export default function HomePageCard({ issues }: HomePageCardProps) {
                     </h1>
                     <p className="text-base font-normal">{issue.description}</p>
                     {index !== issues.length - 1 && (
-                        <hr className="my-4 border-gray-500" />
+                        <hr className="my-4 border-neutral-500" />
                     )}
                 </div>
             ))}
