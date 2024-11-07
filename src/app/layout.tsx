@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MantineProvider } from "@mantine/core";
 import localFont from "next/font/local";
-import Header from "../components/Header";
+import Header from "../components/AppShell/Header";
 import "@mantine/core/styles.css";
 import "./globals.css";
 

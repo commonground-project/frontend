@@ -3,6 +3,7 @@
 
 # But not the src directory
 !/src
+!/src/**/*
 
 # Ignore node_modules even if they're in src
 /src/node_modules
