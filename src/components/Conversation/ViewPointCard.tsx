@@ -3,18 +3,19 @@ import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
+    RectangleStackIcon,
 } from "@heroicons/react/24/solid";
 import FactCard from "./FactCard";
 
-type ViewPointBlockProps = {
+type ViewPointCardProps = {
     viewpoint: ViewPoint;
 };
 
-export default function ViewPointBlock({ viewpoint }: ViewPointBlockProps) {
+export default function ViewPointCard({ viewpoint }: ViewPointCardProps) {
     return (
-        <div>
+        <div className="flex">
             {/* content */}
-            <div className="relative float-left h-52 w-9/12">
+            <div className="float-left w-9/12">
                 <img
                     className="inline-block h-4 w-4 rounded-full"
                     src={viewpoint.user.profile}
@@ -32,8 +33,7 @@ export default function ViewPointBlock({ viewpoint }: ViewPointBlockProps) {
                 <p className="text-base font-normal text-black">
                     {viewpoint.content}
                 </p>
-                {/* thumbsup */}
-                <div className="absolute bottom-0 flex">
+                <div className="flex">
                     {/* thumbsup */}
                     <button>
                         <HandThumbUpIcon className="size-6 fill-none stroke-neutral-600 stroke-[1.5] hover:stroke-green-400" />
@@ -58,19 +58,23 @@ export default function ViewPointBlock({ viewpoint }: ViewPointBlockProps) {
                 </div>
             </div>
             {/* fact */}
-            <h1 className="float-right my-2 w-3/12 text-xs font-normal text-black">
-                引注事實
-            </h1>
-            <div className="relative float-right h-52 w-3/12 overflow-auto px-1">
-                {/* <div className="absolute top-0 mb-2 h-4 font-normal text-black"></div> */}
-                {viewpoint.facts.map((fact, index) => (
-                    <div key={fact.id}>
-                        <FactCard fact={fact} factindex={index} />
-                        {index !== viewpoint.facts.length - 1 && (
-                            <hr className="my-1 border-neutral-400" />
-                        )}
+            <div className="float-right w-3/12">
+                <h1 className="my-2 text-xs font-normal text-black">
+                    引注事實
+                </h1>
+                <div className="flex-1 overflow-y-auto px-1">
+                    <div className="max-h-0">
+                        {/* <div className="absolute top-0 mb-2 h-4 font-normal text-black"></div> */}
+                        {viewpoint.facts.map((fact, index) => (
+                            <div key={fact.id}>
+                                <FactCard fact={fact} factindex={index} />
+                                {index !== viewpoint.facts.length - 1 && (
+                                    <hr className="my-1 border-neutral-400" />
+                                )}
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
         </div>
     );

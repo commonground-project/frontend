@@ -1,4 +1,5 @@
 import { Issue } from "@/types/conversations.types";
+import { RectangleStackIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 type IssueCardProps = {
@@ -16,6 +17,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
                     className="text-lg font-semibold transition-colors duration-300 hover:text-green-400"
                 >
                     查看所有事實
+                    <RectangleStackIcon className="ml-1 inline-block h-4 w-4" />
                 </Link>
             </div>
         </div>
