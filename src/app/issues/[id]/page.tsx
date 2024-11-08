@@ -1,5 +1,5 @@
 import IssueCard from "@/components/Conversation/IssueCard";
-import ViewPointBlock from "@/components/Conversation/ViewPointBlock";
+import ViewPointBlock from "@/components/Conversation/ViewPointCard";
 import { mockIssue, mockViewPoint } from "@/mock/conversationMock";
 
 type IssueViewProps = {
