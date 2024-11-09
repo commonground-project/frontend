@@ -1,3 +1,4 @@
+import AddViewPointCard from "@/components/Conversation/AddViewPointCard";
 import IssueCard from "@/components/Conversation/IssueCard";
 import ViewPointCard from "@/components/Conversation/ViewPointCard";
 import { mockIssue, mockViewPoint } from "@/mock/conversationMock";
@@ -15,7 +16,7 @@ export default function IssueView({ params }: IssueViewProps) {
     const viewpoints = [mockViewPoint, mockViewPoint, mockViewPoint];
     return (
         <div className="flex min-h-screen flex-col bg-neutral-200">
-            <main className="flex flex-grow flex-col items-center p-8">
+            <main className="flex flex-grow flex-col items-center p-8 pb-10">
                 {/* issue */}
                 <IssueCard issue={mockIssue} />
                 {/* view */}
@@ -33,6 +34,8 @@ export default function IssueView({ params }: IssueViewProps) {
                     </div>
                 </div>
             </main>
+            {/* textbar */}
+            <AddViewPointCard />
         </div>
     );
 }
