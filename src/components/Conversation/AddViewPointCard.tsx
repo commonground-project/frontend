@@ -10,7 +10,7 @@ export default function AddViewPointCard() {
                     placeholder="想講點什麼嗎?"
                 />
                 <button className="absolute left-4 z-20">
-                    <PlusIcon className="inline size-6 fill-none stroke-neutral-600 stroke-[1.5] duration-300 hover:stroke-green-300" />
+                    <PlusIcon className="inline size-6 fill-none stroke-neutral-500 stroke-[1.5] duration-300 hover:stroke-green-300" />
                 </button>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { Fact, Issue, ViewPoint } from "@/types/conversations.types";
+import { mock } from "node:test";
 
 export const mockIssue: Issue = {
     id: 1,
@@ -26,7 +27,7 @@ export const mockFact: Fact = {
     ],
 };
 
-export const mockViewPoint: ViewPoint = {
+export const mockViewPoint1: ViewPoint = {
     id: 1,
     title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
     user: {
@@ -41,3 +42,40 @@ export const mockViewPoint: ViewPoint = {
     up: 4,
     thumbsdown: 2,
 };
+
+export const mockViewPoint2: ViewPoint = {
+    id: 2,
+    title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
+    user: {
+        username: "Sarah Fields",
+        profile: "/favicon.ico",
+    },
+    created: new Date(),
+    content:
+        "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.",
+    facts: [mockFact, mockFact, mockFact, mockFact],
+    thumbsup: 23,
+    up: 4,
+    thumbsdown: 2,
+};
+export const mockViewPoint3: ViewPoint = {
+    id: 3,
+    title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
+    user: {
+        username: "Sarah Fields",
+        profile: "/favicon.ico",
+    },
+    created: new Date(),
+    content:
+        "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.",
+    facts: [mockFact, mockFact, mockFact, mockFact],
+    thumbsup: 23,
+    up: 4,
+    thumbsdown: 2,
+};
+
+export const mockViewPointList: ViewPoint[] = [
+    mockViewPoint1,
+    mockViewPoint2,
+    mockViewPoint3,
+];

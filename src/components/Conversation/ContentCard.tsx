@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { ViewPoint } from "@/types/conversations.types";
 import {
     HandThumbUpIcon,
@@ -8,6 +10,61 @@ type ContentCardProps = {
     viewpoint: ViewPoint;
 };
 export default function ContentCard({ viewpoint }: ContentCardProps) {
+    const [thumbsup, setThumbsup] = useState(false);
+    const [thumbsdown, setThumbsdown] = useState(false);
+    const [arrowup, setArrowup] = useState(false);
+    const [thumbsupNum, setThumbsupNum] = useState(viewpoint.thumbsup);
+    const [thumbsdownNum, setThumbsdownNum] = useState(viewpoint.thumbsdown);
+    const [arrowupNum, setArrowupNum] = useState(viewpoint.up);
+
+    function HandleThumbsup() {
+        if (thumbsdown === true) {
+            setThumbsdown(false);
+            setThumbsup(true);
+            setThumbsupNum(thumbsupNum + 1);
+            setThumbsdownNum(thumbsdownNum - 1);
+            return;
+        } else if (thumbsup === true) {
+            setThumbsup(false);
+            setThumbsupNum(thumbsupNum - 1);
+            return;
+        } else if (thumbsup === false) {
+            setThumbsup(true);
+            setThumbsupNum(thumbsupNum + 1);
+            return;
+        }
+    }
+    function HandleThumbsdown() {
+        if (thumbsup === true) {
+            setThumbsup(false);
+            setThumbsdown(true);
+            setThumbsdownNum(thumbsdownNum + 1);
+            setThumbsupNum(thumbsupNum - 1);
+            return;
+        } else if (thumbsdown === true) {
+            setThumbsdown(false);
+            setThumbsdownNum(thumbsdownNum - 1);
+            return;
+        } else if (thumbsdown === false) {
+            setThumbsdown(true);
+            setThumbsdownNum(thumbsdownNum + 1);
+            return;
+        }
+    }
+    function HandleArrowup() {
+        if (arrowup === true) {
+            setArrowup(false);
+            setArrowupNum(arrowupNum - 1);
+            return;
+        } else {
+            setArrowup(true);
+            setArrowupNum(arrowupNum + 1);
+            return;
+        }
+    }
+
+    console.log(thumbsup);
+
     return (
         <>
             <img
@@ -29,26 +86,26 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
             </p>
             <div className="flex">
                 {/* thumbsup */}
-                <button>
-                    <HandThumbUpIcon className="size-6 fill-none stroke-neutral-600 stroke-[1.5] hover:stroke-green-400" />
+                <button onClick={() => HandleThumbsup()}>
+                    <HandThumbUpIcon
+                        className={`size-6 fill-none ${thumbsup ? "stroke-green-400" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-green-400`}
+                    />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.thumbsup}
-                </h1>
+                <h1 className="w-11 px-1 text-neutral-600">{thumbsupNum}</h1>
                 {/* arrowup */}
-                <button>
-                    <ArrowUpCircleIcon className="size-6 fill-none stroke-neutral-600 stroke-[1.5] hover:stroke-green-400" />
+                <button onClick={() => HandleArrowup()}>
+                    <ArrowUpCircleIcon
+                        className={`size-6 fill-none ${arrowup ? "stroke-green-400" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-green-400`}
+                    />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.thumbsdown}
-                </h1>
+                <h1 className="w-11 px-1 text-neutral-600">{arrowupNum}</h1>
                 {/* thumbsdown */}
-                <button>
-                    <HandThumbDownIcon className="size-6 fill-none stroke-neutral-600 stroke-[1.5] hover:stroke-green-400" />
+                <button onClick={() => HandleThumbsdown()}>
+                    <HandThumbDownIcon
+                        className={`size-6 fill-none ${thumbsdown ? "stroke-green-400" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-green-400`}
+                    />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.thumbsdown}
-                </h1>
+                <h1 className="w-11 px-1 text-neutral-600">{thumbsdownNum}</h1>
             </div>
         </>
     );
