@@ -3,7 +3,6 @@ import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
-    RectangleStackIcon,
 } from "@heroicons/react/24/solid";
 import FactCard from "./FactCard";
 
@@ -58,7 +57,7 @@ export default function ViewPointCard({ viewpoint }: ViewPointCardProps) {
                 </div>
             </div>
             {/* fact */}
-            <div className="float-right w-3/12">
+            <div className="float-right flex w-3/12 flex-col">
                 <h1 className="my-2 text-xs font-normal text-black">
                     引注事實
                 </h1>
