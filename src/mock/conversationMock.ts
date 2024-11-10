@@ -7,6 +7,11 @@ export const mockIssue: Issue = {
     summary:
         "San Francisco, CA — In a significant leap forward for electric vehicle (EV) technology, researchers at GreenTech Innovations announced today the development of a new battery that could revolutionize the industry. The new design promises to double the range of EVs while reducing charging time to under 15 minutes.The breakthrough was made possible by a novel combination of advanced materials that increase energy density while ensuring battery stability. GreenTech CEO, Michael Foster, stated, “We believe this advancement will accelerate the mass adoption of electric vehicles and contribute significantly to reducing carbon emissions globally.”Experts have pointed out that while the technology shows promise, it will take time to scale up production and integrate it into the existing infrastructure. Additionally, questions remain about the long-term environmental impact of mining the rare materials used in the batteries.",
 };
+export const mockEmptyIssue: Issue = {
+    id: 2,
+    title: "CommonGround, A New Social Media Platform Game Changer!",
+    summary: "",
+};
 
 export const mockFact: Fact = {
     id: 1,

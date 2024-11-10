@@ -1,7 +1,15 @@
-import AddViewPointCard from "@/components/Conversation/AddViewPointCard";
+import AddViewPointCard from "@/components/Conversation/AddViewPointBar";
 import IssueCard from "@/components/Conversation/IssueCard";
 import ViewPointCard from "@/components/Conversation/ViewPointCard";
-import { mockIssue, mockViewPointList } from "@/mock/conversationMock";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import {
+    mockIssue,
+    mockViewPointList,
+    mockEmptyIssue,
+} from "@/mock/conversationMock";
+import EmptyViewPointCard from "@/components/Conversation/EmptyViewPointCard";
+import ViewPointList from "@/components/Conversation/ViewPointList";
 
 type IssueViewProps = {
     params: {
@@ -12,30 +20,18 @@ type IssueViewProps = {
 export default function IssueView({ params }: IssueViewProps) {
     const { id } = params;
     console.log(id);
-    const issue = mockIssue;
-    const viewpoints = mockViewPointList;
+    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+    const viewpoints = id == "1" ? mockViewPointList : [];
     return (
         <div className="flex min-h-screen flex-col bg-neutral-200">
             <main className="flex flex-grow flex-col items-center p-8 pb-12">
                 {/* issue */}
-                <IssueCard issue={mockIssue} />
+                <IssueCard issue={issue} />
                 {/* view */}
-                <div className="w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
-                    <h1 className="text-xl font-semibold">查看所有觀點</h1>
-                    <div className="flex-col">
-                        {viewpoints.map((viewpoint, index) => (
-                            <div key={viewpoint.id}>
-                                <ViewPointCard viewpoint={viewpoint} />
-                                {index !== viewpoints.length - 1 && (
-                                    <hr className="my-4 w-full border-neutral-500" />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ViewPointList viewpoints={viewpoints} issueid={id} />
             </main>
             {/* textbar */}
-            <AddViewPointCard />
+            <AddViewPointCard id={id} />
         </div>
     );
 }

@@ -1,7 +1,7 @@
-import { mockIssue } from "@/mock/conversationMock";
+import { mockEmptyIssue, mockIssue } from "@/mock/conversationMock";
 import HomePageCard from "../components/HomePageCard";
 
-const issues = [mockIssue, mockIssue, mockIssue];
+const issues = [mockIssue, mockEmptyIssue];
 const UserName = "Ben";
 export default function Page() {
     return (

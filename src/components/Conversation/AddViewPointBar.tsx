@@ -1,6 +1,11 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
-export default function AddViewPointCard() {
+type AddViewPointCardProps = {
+    id: string;
+};
+
+export default function AddViewPointCard({ id }: AddViewPointCardProps) {
     return (
         <div className="fixed bottom-0 flex h-10 w-full flex-grow justify-center px-8 pb-3">
             <div className="relative flex w-full max-w-3xl">
@@ -9,9 +14,12 @@ export default function AddViewPointCard() {
                     type="text"
                     placeholder="想講點什麼嗎?"
                 />
-                <button className="absolute left-4 z-20">
+                <Link
+                    href=""
+                    className="absolute left-4 z-20 flex justify-center"
+                >
                     <PlusIcon className="inline size-6 fill-none stroke-neutral-500 stroke-[1.5] duration-300 hover:stroke-green-300" />
-                </button>
+                </Link>
             </div>
         </div>
     );
