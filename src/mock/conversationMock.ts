@@ -1,5 +1,4 @@
 import { Fact, Issue, ViewPoint } from "@/types/conversations.types";
-import { mock } from "node:test";
 
 export const mockIssue: Issue = {
     id: 1,

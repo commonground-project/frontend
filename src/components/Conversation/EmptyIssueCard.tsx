@@ -4,6 +4,7 @@ type EmptyIssueCardProps = {
     id: number;
 };
 export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
+    console.log(`EmtpyIssueCard id: ${id}`);
     return (
         <>
             <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />

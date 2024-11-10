@@ -1,9 +1,5 @@
 import { Issue } from "@/types/conversations.types";
-import {
-    RectangleStackIcon,
-    NewspaperIcon,
-    PlusIcon,
-} from "@heroicons/react/24/outline";
+import { RectangleStackIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/EmptyIssueCard";
 

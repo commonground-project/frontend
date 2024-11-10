@@ -1,14 +1,10 @@
-import AddViewPointCard from "@/components/Conversation/AddViewPointBar";
+import AddViewPointBar from "@/components/Conversation/AddViewPointBar";
 import IssueCard from "@/components/Conversation/IssueCard";
-import ViewPointCard from "@/components/Conversation/ViewPointCard";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import {
     mockIssue,
     mockViewPointList,
     mockEmptyIssue,
 } from "@/mock/conversationMock";
-import EmptyViewPointCard from "@/components/Conversation/EmptyViewPointCard";
 import ViewPointList from "@/components/Conversation/ViewPointList";
 
 type IssueViewProps = {
@@ -31,7 +27,7 @@ export default function IssueView({ params }: IssueViewProps) {
                 <ViewPointList viewpoints={viewpoints} issueid={id} />
             </main>
             {/* textbar */}
-            <AddViewPointCard id={id} />
+            <AddViewPointBar id={id} />
         </div>
     );
 }
