@@ -8,7 +8,7 @@ type EmptyViewPointCardProps = {
 export default function EmptyViewPointCard({ id }: EmptyViewPointCardProps) {
     console.log(`EmptyViewPointCard id: ${id}`);
     return (
-        <>
+        <div>
             <h1 className="text-center text-lg font-semibold text-neutral-500">
                 目前還沒有人發表觀點
             </h1>
@@ -16,11 +16,11 @@ export default function EmptyViewPointCard({ id }: EmptyViewPointCardProps) {
                 想為這個議題補充點什麼嗎?
             </h1>
             <Link href="" className="item-center flex justify-center pt-2">
-                <PlusIcon className="inline h-6 w-6 stroke-emerald-600 stroke-1" />
-                <h1 className="inline text-lg font-semibold text-emerald-600">
+                <PlusIcon className="inline h-6 w-6 stroke-emerald-500 stroke-1" />
+                <h1 className="inline text-lg font-semibold text-emerald-500">
                     新增事實
                 </h1>
             </Link>
-        </>
+        </div>
     );
 }

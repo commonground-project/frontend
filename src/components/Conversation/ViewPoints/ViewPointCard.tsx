@@ -14,7 +14,7 @@ export default function ViewPointCard({ viewpoint }: ViewPointCardProps) {
                 <ContentCard viewpoint={viewpoint} />
             </div>
             {/* fact */}
-            <div className="float-right flex w-3/12 flex-col">
+            <div className="float-right flex w-3/12 pl-3">
                 <FactListCard facts={viewpoint.facts} />
             </div>
         </div>

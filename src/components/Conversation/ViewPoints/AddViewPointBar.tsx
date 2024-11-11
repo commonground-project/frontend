@@ -19,7 +19,7 @@ export default function AddViewPointBar({ id }: AddViewPointBarProps) {
                     href=""
                     className="absolute left-4 z-20 flex justify-center"
                 >
-                    <PlusIcon className="inline size-6 fill-none stroke-neutral-500 stroke-[1.5] duration-300 hover:stroke-green-300" />
+                    <PlusIcon className="inline size-6 fill-none stroke-neutral-500 stroke-[1.5] duration-300 hover:stroke-emerald-500" />
                 </Link>
             </div>
         </div>

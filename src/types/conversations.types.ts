@@ -6,17 +6,17 @@ export interface Issue {
     summary: string;
 }
 
-export interface FactSource {
+export interface FactReference {
     id: number;
     title: string;
     icon: string;
-    website: string;
+    url: string;
 }
 
 export interface Fact {
     id: number;
     title: string;
-    sources: FactSource[];
+    references: FactReference[];
 }
 
 export interface ViewPoint {
@@ -26,7 +26,7 @@ export interface ViewPoint {
     created: Date;
     content: string;
     facts: Fact[];
-    thumbsup: number;
-    up: number;
-    thumbsdown: number;
+    like: number;
+    reasonable: number;
+    dislike: number;
 }

@@ -14,14 +14,14 @@ export default function FactCard({ fact, factindex }: FactCardProps) {
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>
                 {/* sources */}
 
-                {fact.sources.map((source) => (
-                    <div key={source.id} className="flex items-center">
+                {fact.references.map((refference) => (
+                    <div key={refference.id} className="flex items-center">
                         <img
                             className="inline-block h-3 w-3 rounded-full"
-                            src={source.icon}
+                            src={refference.icon}
                         />
                         <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
-                            {source.website}
+                            {refference.url}
                         </h1>
                     </div>
                 ))}
