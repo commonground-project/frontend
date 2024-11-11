@@ -7,12 +7,30 @@ import {
     mockEmptyIssue,
 } from "@/mock/conversationMock";
 import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
+import type { Metadata } from "next";
+import { title } from "process";
 
 type IssueViewProps = {
     params: {
         id: string;
     };
 };
+type MetadataProps = {
+    params: { id: string };
+};
+
+export async function generateMetadata({
+    params,
+}: MetadataProps): Promise<Metadata> {
+    const id = params.id;
+    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+    const viewpoints = id == "1" ? mockViewPointList : [];
+    return {
+        title: issue.title,
+        keywords: "social-issues, viewpoints, rational-discussion",
+        description: issue.summary,
+    };
+}
 
 export default function IssueView({ params }: IssueViewProps) {
     const { id } = params;
@@ -21,11 +39,6 @@ export default function IssueView({ params }: IssueViewProps) {
     const viewpoints = id == "1" ? mockViewPointList : [];
     return (
         <div>
-            <Meta
-                title={issue.title}
-                keywords="social-issues, viewpoints, rational-discussion"
-                description={issue.summary}
-            />
             <div className="flex min-h-screen flex-col bg-neutral-200">
                 <main className="flex flex-grow flex-col items-center p-8 pb-12">
                     {/* issue */}
