@@ -1,4 +1,4 @@
-export type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
+export type SessionStatus = "loading" | "authenticated" | "unauthenticated";
 
 export interface User {
     name: string | null;
@@ -9,6 +9,6 @@ export interface User {
 export interface Session {
     data: User | null;
     status: SessionStatus;
-    login: (token: string) => void; 
-    logout: () => void; 
-  }
+    login: (token: string) => void;
+    logout: () => void;
+}

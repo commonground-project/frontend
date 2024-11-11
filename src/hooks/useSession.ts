@@ -12,7 +12,7 @@ export function useSession(): Session {
         login: () => {},
         logout: () => {},
     });
-    
+
     useEffect(() => {
         checkSession();
     });
