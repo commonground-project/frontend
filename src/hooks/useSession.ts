@@ -13,9 +13,12 @@ export default function useSession(): Session {
         logout: () => {},
     });
 
-    const handleLogin = useCallback((token: string) => {
-        setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
-    }, [setCookie]);
+    const handleLogin = useCallback(
+        (token: string) => {
+            setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
+        },
+        [setCookie],
+    );
 
     const handleLogout = useCallback(() => {
         removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
@@ -31,7 +34,7 @@ export default function useSession(): Session {
 
     useEffect(() => {
         const checkSession = () => {
-            try {    
+            try {
                 if (!sessionToken) {
                     setSession({
                         data: null,
@@ -41,14 +44,14 @@ export default function useSession(): Session {
                     });
                     return;
                 }
-    
+
                 const user = decodeToken<User>(sessionToken);
-    
+
                 if (!user) {
                     handleLogout();
                     return;
                 }
-    
+
                 setSession({
                     data: {
                         name: user.name ?? null,
