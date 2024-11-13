@@ -56,7 +56,7 @@ export default function useSession(): Session {
                     data: {
                         name: user.name ?? null,
                         email: user.email ?? null,
-                        profile_image: user.profile_image ?? null,
+                        image: user.image ?? null,
                     },
                     status: "authenticated",
                     login: handleLogin,
@@ -69,7 +69,7 @@ export default function useSession(): Session {
         };
 
         checkSession();
-    }, [cookies, sessionToken, handleLogin, handleLogout]);
+    }, [sessionToken, handleLogin, handleLogout]);
 
     return {
         ...session,
