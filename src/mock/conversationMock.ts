@@ -1,4 +1,5 @@
 import { Fact, Issue, ViewPoint } from "@/types/conversations.types";
+import { UserRepresentation } from "@/types/users.types";
 
 export const mockIssue: Issue = {
     id: 1,
@@ -31,16 +32,18 @@ export const mockFact: Fact = {
     ],
 };
 
+export const mockUser: UserRepresentation = {
+    username: "Sarah Fields",
+    avatar: "/favicon.ico",
+};
+
 export const mockViewPoint1: ViewPoint = {
     id: 1,
     title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
-    user: {
-        username: "Sarah Fields",
-        avatar: "/favicon.ico",
-    },
+    user: mockUser,
     created: new Date(),
     content:
-        "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.",
+        "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.\nThis is the second paragraph.",
     facts: [mockFact, mockFact, mockFact, mockFact],
     like: 23,
     reasonable: 4,
@@ -50,10 +53,7 @@ export const mockViewPoint1: ViewPoint = {
 export const mockViewPoint2: ViewPoint = {
     id: 2,
     title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
-    user: {
-        username: "Sarah Fields",
-        avatar: "/favicon.ico",
-    },
+    user: mockUser,
     created: new Date(),
     content:
         "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.",
@@ -65,10 +65,7 @@ export const mockViewPoint2: ViewPoint = {
 export const mockViewPoint3: ViewPoint = {
     id: 3,
     title: "We should not lose sight of the fact that sustainable sourcing of materials is crucial for true environmental benefits.",
-    user: {
-        username: "Sarah Fields",
-        avatar: "/favicon.ico",
-    },
+    user: mockUser,
     created: new Date(),
     content:
         "This could be the game-changer we’ve been waiting for in the EV space,” said Dr. Susan Martin, an energy storage expert at Stanford University. “However, we need to ensure that the production process is as sustainable as the vehicles themselves.",

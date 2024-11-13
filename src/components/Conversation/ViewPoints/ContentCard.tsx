@@ -6,106 +6,94 @@ import {
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
+import { ArrowDownIcon } from "@heroicons/react/24/outline";
+import Avatar from "../Avatar/Avatar";
+
 type ContentCardProps = {
     viewpoint: ViewPoint;
 };
+
+enum ReactionStatus {
+    like = "like",
+    dislike = "dislike",
+    reasonable = "reasonable",
+    null = "null",
+}
+
 export default function ContentCard({ viewpoint }: ContentCardProps) {
-    const [like, setLike] = useState(false);
-    const [dislike, setDislike] = useState(false);
-    const [reasonable, setReasonable] = useState(false);
-    const [likeNum, setLikeNum] = useState(viewpoint.like);
-    const [dislikeNum, setDislikeNum] = useState(viewpoint.dislike);
-    const [reasonableNum, setReasonableNum] = useState(viewpoint.reasonable);
+    const [reactionStatus, setReactionStatus] = useState<ReactionStatus>(
+        ReactionStatus.null,
+    );
+    const [showFullContent, setShowFullContent] = useState<boolean>(false);
 
-    function HandleLike() {
-        if (dislike === true) {
-            setDislike(false);
-            setLike(true);
-            setLikeNum(likeNum + 1);
-            setDislikeNum(dislikeNum - 1);
-            return;
-        } else if (like === true) {
-            setLike(false);
-            setLikeNum(likeNum - 1);
-            return;
-        } else if (like === false) {
-            setLike(true);
-            setLikeNum(likeNum + 1);
-            return;
-        }
-    }
-    function HandleDislike() {
-        if (like === true) {
-            setLike(false);
-            setDislike(true);
-            setDislikeNum(dislikeNum + 1);
-            setLikeNum(likeNum - 1);
-            return;
-        } else if (dislike === true) {
-            setDislike(false);
-            setDislikeNum(dislikeNum - 1);
-            return;
-        } else if (dislike === false) {
-            setDislike(true);
-            setDislikeNum(dislikeNum + 1);
-            return;
-        }
-    }
-    function HandleReasonable() {
-        if (reasonable === true) {
-            setReasonable(false);
-            setReasonableNum(reasonableNum - 1);
-            return;
-        } else {
-            setReasonable(true);
-            setReasonableNum(reasonableNum + 1);
-            return;
-        }
+    let content = viewpoint.content;
+
+    if (!showFullContent) {
+        content = viewpoint.content.split("\n")[0];
     }
 
-    console.log(like);
+    const handleReaction = (reaction: ReactionStatus) => {
+        setReactionStatus((prev) =>
+            prev === reaction ? ReactionStatus.null : reaction,
+        );
+    };
 
     return (
         <div>
-            <img
-                className="inline-block h-4 w-4 rounded-full"
-                src={viewpoint.user.avatar}
-                alt="userimage"
-            />
-            <h1 className="ml-2 inline-block text-xs font-normal text-neutral-600">
-                {viewpoint.user.username}
-            </h1>
-            <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
-                {viewpoint.created.toLocaleDateString()}
-            </h1>
+            <div className="mb-1 flex">
+                <div className="inline">
+                    <Avatar user={viewpoint.user} />
+                </div>
+                <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
+                    {viewpoint.created.toLocaleDateString()}
+                </h1>
+            </div>
             <h1 className="text-lg font-semibold text-neutral-700">
                 {viewpoint.title}
             </h1>
             <p className="text-base font-normal text-black">
-                {viewpoint.content}
+                {content}
+                <button
+                    className="pl-2 text-base font-semibold text-emerald-600 underline"
+                    onClick={() => setShowFullContent((prev) => !prev)}
+                >
+                    {showFullContent ? "顯示較少" : "查看完整觀點"}
+                    <ArrowDownIcon className="inline size-5 fill-none stroke-emerald-600 stroke-[1.5]" />
+                </button>
             </p>
             <div className="mt-2 flex">
                 {/* like */}
-                <button onClick={() => HandleLike()}>
+                <button onClick={() => handleReaction(ReactionStatus.like)}>
                     <HandThumbUpIcon
-                        className={`size-6 fill-none ${like ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.like ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">{likeNum}</h1>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {viewpoint.like +
+                        (reactionStatus === ReactionStatus.like ? 1 : 0)}
+                </h1>
                 {/* reasonable */}
-                <button onClick={() => HandleReasonable()}>
+                <button
+                    onClick={() => handleReaction(ReactionStatus.reasonable)}
+                >
                     <ArrowUpCircleIcon
-                        className={`size-6 fill-none ${reasonable ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.reasonable ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">{reasonableNum}</h1>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {viewpoint.reasonable +
+                        (reactionStatus === ReactionStatus.reasonable ? 1 : 0)}
+                </h1>
                 {/* dislike */}
-                <button onClick={() => HandleDislike()}>
+                <button onClick={() => handleReaction(ReactionStatus.dislike)}>
                     <HandThumbDownIcon
-                        className={`size-6 fill-none ${dislike ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.dislike ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">{dislikeNum}</h1>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {viewpoint.dislike +
+                        (reactionStatus === ReactionStatus.dislike ? 1 : 0)}
+                </h1>
             </div>
         </div>
     );

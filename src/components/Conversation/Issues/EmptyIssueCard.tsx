@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
+
 type EmptyIssueCardProps = {
     id: number;
 };
+
 export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
     console.log(`EmtpyIssueCard id: ${id}`);
     return (

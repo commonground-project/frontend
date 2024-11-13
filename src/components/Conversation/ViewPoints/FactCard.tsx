@@ -1,14 +1,15 @@
 import { Fact } from "@/types/conversations.types";
+
 type FactCardProps = {
     fact: Fact;
-    factindex: number;
+    factIndex: number;
 };
 
-export default function FactCard({ fact, factindex }: FactCardProps) {
+export default function FactCard({ fact, factIndex }: FactCardProps) {
     return (
         <div className="flex">
             <h1 className="inline-block text-xs font-normal text-black">
-                [{factindex + 1}]
+                [{factIndex + 1}]
             </h1>
             <div className="inline-block px-1">
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>

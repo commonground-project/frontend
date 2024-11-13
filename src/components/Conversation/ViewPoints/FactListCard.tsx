@@ -14,7 +14,7 @@ export default function FactListCard({ facts }: FactListCardProps) {
                     {/* <div className="absolute top-0 mb-2 h-4 font-normal text-black"></div> */}
                     {facts.map((fact, index) => (
                         <div key={fact.id}>
-                            <FactCard fact={fact} factindex={index} />
+                            <FactCard fact={fact} factIndex={index} />
                             {index !== facts.length - 1 && (
                                 <hr className="my-1 border-neutral-400" />
                             )}
