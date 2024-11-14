@@ -20,6 +20,7 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                         <img
                             className="inline-block h-3 w-3 rounded-full"
                             src={refference.icon}
+                            alt=""
                         />
                         <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
                             {refference.url}
