@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { FcGoogle } from "react-icons/fc";
 import useSession from "@/hooks/useSession";
 
@@ -10,6 +9,7 @@ function LoginContent() {
     const { status, login } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const SessionToken = process.env.NEXT_PUBLIC_TEST_TOKEN;
 
     useEffect(() => {
         const token = searchParams?.get("token");
@@ -25,11 +25,12 @@ function LoginContent() {
         }
     }, [status, router]);
 
-    const SesssionToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiQ29tbW9uZ3JvdW5kIiwiZW1haWwiOiJqd3RAY29tbW9uZ3JvdW5kLnR3IiwiaW1hZ2UiOiJodHRwczovL2ltZ3VyLmNvbS9rUXZYdWtOLnBuZyJ9.qMw3VIN5mtGzXSIBcPk8tgThbprEvOOcM-lrQuzWKB0";
-
     const handleLogin = () => {
-        login(SesssionToken);
+        if (SessionToken) {
+            login(SessionToken);
+        } else {
+            console.error("SessionToken is undefined");
+        }
     };
 
     if (status === "loading") {
