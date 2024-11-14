@@ -1,12 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ViewPoint } from "@/types/conversations.types";
+import { Spoiler } from "@mantine/core";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
-import { ArrowDownIcon } from "@heroicons/react/24/outline";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import Avatar from "../Avatar/Avatar";
 
 type ContentCardProps = {
@@ -24,14 +25,14 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
     const [reactionStatus, setReactionStatus] = useState<ReactionStatus>(
         ReactionStatus.null,
     );
-    const [showFullContent, setShowFullContent] = useState<boolean>(false);
+    const [showContentHeight, setShowContentHeight] = useState<number>(0);
+    const firstParagraphHeight = useRef<HTMLParagraphElement | null>(null);
 
-    let content = viewpoint.content;
-
-    if (!showFullContent) {
-        content = viewpoint.content.split("\n")[0];
-    }
-
+    useEffect(() => {
+        if (firstParagraphHeight.current) {
+            setShowContentHeight(firstParagraphHeight.current.clientHeight);
+        }
+    }, []);
     const handleReaction = (reaction: ReactionStatus) => {
         setReactionStatus((prev) =>
             prev === reaction ? ReactionStatus.null : reaction,
@@ -51,17 +52,42 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
             <h1 className="text-lg font-semibold text-neutral-700">
                 {viewpoint.title}
             </h1>
-            <p className="text-base font-normal text-black">
-                {content}
-                <button
-                    className="pl-2 text-base font-semibold text-emerald-600 underline"
-                    onClick={() => setShowFullContent((prev) => !prev)}
+            <Spoiler
+                maxHeight={showContentHeight}
+                showLabel={
+                    <span>
+                        查看完整觀點
+                        <ArrowDownIcon className="inline size-5 fill-none stroke-emerald-600 stroke-[1.5]" />
+                    </span>
+                }
+                hideLabel={
+                    <span>
+                        顯示較少
+                        <ArrowUpIcon className="inline size-5 fill-none stroke-emerald-600 stroke-[1.5]" />
+                    </span>
+                }
+                classNames={{ control: "text-emerald-600 underline" }}
+            >
+                <p
+                    key={0}
+                    ref={firstParagraphHeight}
+                    className="text-base font-normal text-black"
                 >
-                    {showFullContent ? "顯示較少" : "查看完整觀點"}
-                    <ArrowDownIcon className="inline size-5 fill-none stroke-emerald-600 stroke-[1.5]" />
-                </button>
-            </p>
-            <div className="mt-2 flex">
+                    {viewpoint.content.split("\n")[0]}
+                </p>
+                {viewpoint.content.split("\n").map(
+                    (paragraph, index) =>
+                        index !== 0 && (
+                            <p
+                                key={index}
+                                className="text-base font-normal text-black"
+                            >
+                                {paragraph}
+                            </p>
+                        ),
+                )}
+            </Spoiler>
+            <div className="flex pt-2">
                 {/* like */}
                 <button onClick={() => handleReaction(ReactionStatus.like)}>
                     <HandThumbUpIcon
