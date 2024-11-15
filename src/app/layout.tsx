@@ -11,6 +11,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className="pt-14 antialiased">
+                <div className="fixed bottom-0 left-0 right-0 top-0 bg-neutral-200" />
                 <Header />
                 <MantineProvider
                     defaultColorScheme="light"
