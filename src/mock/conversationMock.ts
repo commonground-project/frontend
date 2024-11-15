@@ -21,13 +21,13 @@ export const mockFact: Fact = {
             id: 1,
             title: "battery",
             icon: "/favicon.ico",
-            url: "cutedge.com",
+            url: "https://www.google.com",
         },
         {
             id: 2,
             title: "energy",
             icon: "/favicon.ico",
-            url: "science.tw",
+            url: "https://google.com",
         },
     ],
 };

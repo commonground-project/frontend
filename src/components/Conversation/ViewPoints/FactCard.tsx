@@ -1,4 +1,5 @@
 import { Fact } from "@/types/conversations.types";
+import Link from "next/link";
 
 type FactCardProps = {
     fact: Fact;
@@ -15,17 +16,26 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>
                 {/* sources */}
 
-                {fact.references.map((refference) => (
-                    <div key={refference.id} className="flex items-center">
+                {fact.references.map((reference) => (
+                    <Link
+                        href={reference.url}
+                        passHref
+                        target="_blank"
+                        key={reference.id}
+                        className="flex items-center"
+                    >
                         <img
                             className="inline-block h-3 w-3 rounded-full"
-                            src={refference.icon}
+                            src={reference.icon}
                             alt=""
                         />
                         <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
-                            {refference.url}
+                            {reference.url.replace(
+                                /(https?:\/\/)?(www\.)?/,
+                                "",
+                            )}
                         </h1>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>

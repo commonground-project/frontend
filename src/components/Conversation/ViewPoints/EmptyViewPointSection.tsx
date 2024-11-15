@@ -12,14 +12,16 @@ export default function EmptyViewPointCard({ id }: EmptyViewPointCardProps) {
             <h1 className="text-center text-lg font-semibold text-neutral-500">
                 目前還沒有人發表觀點
             </h1>
-            <h1 className="text-center text-lg font-semibold text-neutral-500">
+            <h1 className="mb-2 text-center text-lg font-semibold text-neutral-500">
                 想為這個議題補充點什麼嗎?
             </h1>
-            <Link href="" className="item-center flex justify-center pt-2">
-                <PlusIcon className="inline h-6 w-6 stroke-emerald-500 stroke-1" />
-                <h1 className="inline text-lg font-semibold text-emerald-500">
-                    新增事實
-                </h1>
+            <Link href="">
+                <div className="flex items-center justify-center gap-1">
+                    <PlusIcon className="h-6 w-6 stroke-emerald-500 stroke-[1.5]" />
+                    <h1 className="text-lg font-semibold text-emerald-500">
+                        新增事實
+                    </h1>
+                </div>
             </Link>
         </div>
     );

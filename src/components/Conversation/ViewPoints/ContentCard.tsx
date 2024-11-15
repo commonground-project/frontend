@@ -8,7 +8,7 @@ import {
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
-import Avatar from "../Avatar/Avatar";
+import { Avatar } from "@mantine/core";
 
 type ContentCardProps = {
     viewpoint: ViewPoint;
@@ -33,6 +33,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
             setShowContentHeight(firstParagraphHeight.current.clientHeight);
         }
     }, []);
+
     const handleReaction = (reaction: ReactionStatus) => {
         setReactionStatus((prev) =>
             prev === reaction ? ReactionStatus.null : reaction,
@@ -42,9 +43,15 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
     return (
         <div>
             <div className="mb-1 flex">
-                <div className="inline">
-                    <Avatar user={viewpoint.user} />
-                </div>
+                <Avatar
+                    name={viewpoint.user.username}
+                    src={viewpoint.user.avatar}
+                    alt=""
+                    size="1rem"
+                />
+                <h1 className="ml-1.5 inline-block text-xs font-normal text-neutral-600">
+                    {viewpoint.user.username}
+                </h1>
                 <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
                     {viewpoint.created.toLocaleDateString()}
                 </h1>
@@ -66,7 +73,10 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                         <ArrowUpIcon className="inline size-5 fill-none stroke-emerald-600 stroke-[1.5]" />
                     </span>
                 }
-                classNames={{ control: "text-emerald-600 underline" }}
+                classNames={{
+                    control:
+                        "text-emerald-600 text-base font-semibold underline underline-offset-2 decoration-1",
+                }}
             >
                 <p
                     key={0}
@@ -75,17 +85,17 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                 >
                     {viewpoint.content.split("\n")[0]}
                 </p>
-                {viewpoint.content.split("\n").map(
-                    (paragraph, index) =>
-                        index !== 0 && (
-                            <p
-                                key={index}
-                                className="text-base font-normal text-black"
-                            >
-                                {paragraph}
-                            </p>
-                        ),
-                )}
+                {viewpoint.content
+                    .split("\n")
+                    .slice(1)
+                    .map((paragraph, index) => (
+                        <p
+                            key={index}
+                            className="text-base font-normal text-black"
+                        >
+                            {paragraph}
+                        </p>
+                    ))}
             </Spoiler>
             <div className="flex pt-2">
                 {/* like */}
