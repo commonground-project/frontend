@@ -18,8 +18,8 @@ export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
             </h1>
             <Link href="">
                 <div className="flex items-center justify-center gap-1">
-                    <PlusIcon className="h-6 w-6 stroke-emerald-500 stroke-[1.5]" />
-                    <h1 className="text-lg font-semibold text-emerald-500">
+                    <PlusIcon className="h-6 w-6 stroke-emerald-600 stroke-[1.5]" />
+                    <h1 className="text-lg font-semibold text-emerald-600">
                         新增事實
                     </h1>
                 </div>
