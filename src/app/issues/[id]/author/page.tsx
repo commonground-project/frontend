@@ -15,7 +15,7 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return (
         <div className="flex min-h-screen flex-col bg-neutral-200">
-            <main className="flex flex-grow flex-col items-center p-8">
+            <main className="flex flex-grow flex-row items-stretch justify-center p-8">
                 <div className="w-full max-w-[1292px]">
                     <Link
                         href={`/issues/${id}`}
