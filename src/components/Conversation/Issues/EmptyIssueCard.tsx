@@ -35,7 +35,7 @@ export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
             </div>
             <Modal
                 opened={openModal}
-                onClose={() => setOpenModal((prev) => !prev)}
+                onClose={() => setOpenModal(false)}
                 title="新增事實"
             ></Modal>
         </div>
