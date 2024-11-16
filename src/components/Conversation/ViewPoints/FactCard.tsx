@@ -21,6 +21,7 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                         href={reference.url}
                         passHref
                         target="_blank"
+                        rel="noopener noreferrer"
                         key={reference.id}
                         className="flex items-center"
                     >

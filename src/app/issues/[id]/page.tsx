@@ -20,7 +20,7 @@ export async function generateMetadata({
     const id = params.id;
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return {
-        title: issue.title,
+        title: `CommonGround - ${issue.title}`,
         keywords: "social-issues, viewpoints, rational-discussion",
         description: issue.summary,
     };

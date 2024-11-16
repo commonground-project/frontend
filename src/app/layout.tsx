@@ -10,19 +10,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className="pt-14 antialiased">
-                <div className="fixed inset-0 z-0 bg-neutral-200" />
+            <body className="bg-neutral-200 pt-14 antialiased">
                 <Header />
-                <MantineProvider
-                    defaultColorScheme="light"
-                    theme={{
-                        fontFamily: "var(--font-geist-sans)", // Use Geist Sans as the default font
-                        fontFamilyMonospace: "var(--font-geist-mono)", // Use Geist Mono for monospace text
-                        headings: { fontFamily: "var(--font-geist-sans)" }, // Use Geist Sans for headings
-                    }}
-                >
-                    <div className="relative z-10">{children}</div>
-                </MantineProvider>
+                <MantineProvider>{children}</MantineProvider>
             </body>
         </html>
     );
