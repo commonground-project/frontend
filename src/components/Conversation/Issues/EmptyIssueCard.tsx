@@ -1,13 +1,15 @@
+"use client";
 import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 import { Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
+// import { useDisclosure } from "@mantine/hooks";
 
 type EmptyIssueCardProps = {
     id: number;
 };
 
 export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
-    const [opened, { open, close }] = useDisclosure(false);
+    const [openModal, setOpenModal] = useState(false);
 
     console.log(`EmptyIssueCard id: ${id}`);
 
@@ -21,14 +23,21 @@ export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
                 想為這個議題補充點什麼嗎?
             </h1>
             <div className="flex justify-center">
-                <button onClick={open} className="flex items-center gap-1">
+                <button
+                    onClick={() => setOpenModal(true)}
+                    className="flex items-center gap-1"
+                >
                     <PlusIcon className="h-6 w-6 stroke-emerald-600 stroke-[1.5]" />
                     <h1 className="text-lg font-semibold text-emerald-600">
                         新增事實
                     </h1>
                 </button>
             </div>
-            <Modal opened={opened} onClose={close} title="新增事實"></Modal>
+            <Modal
+                opened={openModal}
+                onClose={() => setOpenModal((prev) => !prev)}
+                title="新增事實"
+            ></Modal>
         </div>
     );
 }
