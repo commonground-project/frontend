@@ -4,6 +4,7 @@ export interface Issue {
     id: number;
     title: string;
     summary: string;
+    facts: Fact[];
 }
 
 export interface FactReference {
