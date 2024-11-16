@@ -10,6 +10,7 @@ export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
     const [opened, { open, close }] = useDisclosure(false);
 
     console.log(`EmptyIssueCard id: ${id}`);
+
     return (
         <div>
             <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />
