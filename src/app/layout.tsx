@@ -13,7 +13,7 @@ export default function RootLayout({
             <body className="fixed inset-0 bg-neutral-200 pt-14 antialiased">
                 <MantineProvider>
                     <Header />
-                    <div className="h-[calc(100%-3.5rem)] overflow-y-scroll">
+                    <div className="h-[calc(100vh-56px)] overflow-y-auto">
                         {children}
                     </div>
                 </MantineProvider>
