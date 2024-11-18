@@ -1,51 +1,24 @@
-import { Button } from "@mantine/core";
-import QueryWrapper from "./query/wrapper";
+import { mockEmptyIssue, mockIssue, mockUser } from "@/mock/conversationMock";
+import HomePageCard from "../components/HomePage/HomePageCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "CommonGround",
+    description: "A platform for people to discuss and share their opinions.",
+};
 
 export default function Page() {
+    const issues = [mockIssue, mockEmptyIssue];
+    const user = mockUser;
+
     return (
-        <div className="flex min-h-screen flex-col">
-            <main className="flex flex-grow flex-col items-center justify-center p-8">
-                <h1 className="mb-8 text-4xl font-bold">
-                    CommonGround Project
+        <div className="flex min-h-screen flex-col bg-neutral-200">
+            <main className="flex flex-grow flex-col items-center p-8">
+                <h1 className="w-full max-w-3xl pb-3 text-2xl font-semibold text-neutral-900">
+                    {user.username}, 歡迎來到 CommonGround
                 </h1>
-
-                <div className="mb-8 max-w-2xl text-center">
-                    <p className="mb-4 text-lg">
-                        Welcome to the CommonGround Project. We aim to bring
-                        people together and find common ground on important
-                        issues.
-                    </p>
-                    <ol className="list-inside list-decimal text-left">
-                        <li className="mb-2">Explore diverse perspectives</li>
-                        <li className="mb-2">
-                            Engage in meaningful discussions
-                        </li>
-                        <li>Find solutions through collaboration</li>
-                    </ol>
-                </div>
-
-                <div className="mb-8 flex flex-col items-center gap-4 sm:flex-row">
-                    <Button
-                        className="bg-blue-500 text-white hover:bg-blue-600"
-                        component="a"
-                        href="/explore"
-                    >
-                        Start Exploring
-                    </Button>
-                    <Button
-                        variant="outline"
-                        className="border-blue-500 text-blue-500 hover:bg-blue-50"
-                        component="a"
-                        href="/about"
-                    >
-                        About Us
-                    </Button>
-                </div>
-                <QueryWrapper />
+                <HomePageCard issues={issues} />
             </main>
-            <footer className="bg-black-100 mt-auto p-4 text-center">
-                <p>&copy; 2024 CommonGround Project. All rights reserved.</p>
-            </footer>
         </div>
     );
 }
