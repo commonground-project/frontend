@@ -10,9 +10,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className="bg-neutral-200 pt-14 antialiased">
-                <Header />
-                <MantineProvider>{children}</MantineProvider>
+            <body className="fixed inset-0 bg-neutral-200 pt-14 antialiased">
+                <MantineProvider>
+                    <Header />
+                    <div className="h-[calc(100%-3.5rem)] overflow-y-scroll">
+                        {children}
+                    </div>
+                </MantineProvider>
             </body>
         </html>
     );
