@@ -2,6 +2,7 @@
 
 @layer tailwind {
     @tailwind base;
+    @tailwind base;
 }
 
 @tailwind components;

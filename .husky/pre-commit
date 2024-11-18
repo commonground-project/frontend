@@ -1,2 +1,4 @@
-pnpm build
-pnpm lint
+pnpm run build
+pnpm run lint
+pnpm run test
+pnpm exec prettier --ignore-unknown --write .
