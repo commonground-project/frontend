@@ -1,66 +1,78 @@
 import { useState, useEffect, useCallback } from "react";
 import { decodeToken } from "react-jwt";
 import { useCookies } from "react-cookie";
-import { User, Session } from "@/types/session.types";
+import { User, Session, SessionState, SessionStatus } from "@/types/session.types";
 import { COOKIE_AUTH_NAME, COOKIE_OPTIONS } from "@/lib/auth/constants";
 
 export default function useSession(): Session {
     const [cookies, setCookie, removeCookie] = useCookies([COOKIE_AUTH_NAME]);
-    const [session, setSession] = useState<Session>({
+    const [session, setSession] = useState<SessionState>({
         data: null,
         status: "loading",
-        login: () => {},
-        logout: () => {},
     });
+    const sessionToken = cookies[COOKIE_AUTH_NAME];
+
+    const updateSessionState = useCallback((
+        status: SessionStatus,
+        userData: User | null = null
+    ) => {
+        setSession({
+            data: userData,
+            status,
+        });
+    }, []);
 
     const handleLogin = useCallback(
         (token: string) => {
-            setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
+            try {
+                const user = decodeToken<User>(token);
+
+                if (!user) {
+                    throw new Error("Invalid token");
+                }
+                
+                setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
+                updateSessionState("authenticated", {
+                        name: user.name?? null,
+                        email: user.email?? null,
+                        image: user.image?? null,
+                });
+                console.log("Login successful", user);
+            } catch (error) {
+                console.error("Login failed:", error);
+                updateSessionState("unauthenticated", null);
+            }
         },
-        [setCookie],
+        [setCookie, updateSessionState],
     );
 
     const handleLogout = useCallback(() => {
-        removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
-        setSession({
-            data: null,
-            status: "unauthenticated",
-            login: handleLogin,
-            logout: handleLogout,
-        });
-    }, [handleLogin, removeCookie]);
-
-    const sessionToken = cookies[COOKIE_AUTH_NAME];
+        try {
+            removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
+            updateSessionState("unauthenticated", null);
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    }, [removeCookie, updateSessionState]);
 
     useEffect(() => {
         const checkSession = () => {
             try {
                 if (!sessionToken) {
-                    setSession({
-                        data: null,
-                        status: "unauthenticated",
-                        login: handleLogin,
-                        logout: handleLogout,
-                    });
+                    updateSessionState("unauthenticated", null);
                     return;
                 }
 
                 const user = decodeToken<User>(sessionToken);
-
                 if (!user) {
                     handleLogout();
                     return;
                 }
 
-                setSession({
-                    data: {
-                        name: user.name ?? null,
-                        email: user.email ?? null,
-                        image: user.image ?? null,
-                    },
-                    status: "authenticated",
-                    login: handleLogin,
-                    logout: handleLogout,
+                updateSessionState("authenticated", {
+                    name: user.name ?? null,
+                    email: user.email ?? null,
+                    image: user.image ?? null,
                 });
             } catch (error) {
                 console.error("Session check failed:", error);
@@ -69,7 +81,7 @@ export default function useSession(): Session {
         };
 
         checkSession();
-    }, [sessionToken, handleLogin, handleLogout]);
+    }, [sessionToken, handleLogout, updateSessionState]);
 
     return {
         ...session,

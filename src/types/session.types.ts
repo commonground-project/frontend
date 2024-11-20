@@ -6,9 +6,12 @@ export interface User {
     image: string | null;
 }
 
-export interface Session {
+export interface SessionState {
     data: User | null;
     status: SessionStatus;
+}
+
+export interface Session extends SessionState {
     login: (token: string) => void;
     logout: () => void;
 }
