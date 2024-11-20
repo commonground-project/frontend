@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { decodeToken } from "react-jwt";
 import { useCookies } from "react-cookie";
-import { User, Session, SessionState, SessionStatus } from "@/types/session.types";
+import {
+    User,
+    Session,
+    SessionState,
+    SessionStatus,
+} from "@/types/session.types";
 import { COOKIE_AUTH_NAME, COOKIE_OPTIONS } from "@/lib/auth/constants";
 
 export default function useSession(): Session {
@@ -12,15 +17,15 @@ export default function useSession(): Session {
     });
     const sessionToken = cookies[COOKIE_AUTH_NAME];
 
-    const updateSessionState = useCallback((
-        status: SessionStatus,
-        userData: User | null = null
-    ) => {
-        setSession({
-            data: userData,
-            status,
-        });
-    }, []);
+    const updateSessionState = useCallback(
+        (status: SessionStatus, userData: User | null = null) => {
+            setSession({
+                data: userData,
+                status,
+            });
+        },
+        [],
+    );
 
     const handleLogin = useCallback(
         (token: string) => {
@@ -30,12 +35,12 @@ export default function useSession(): Session {
                 if (!user) {
                     throw new Error("Invalid token");
                 }
-                
+
                 setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
                 updateSessionState("authenticated", {
-                        name: user.name?? null,
-                        email: user.email?? null,
-                        image: user.image?? null,
+                    name: user.name ?? null,
+                    email: user.email ?? null,
+                    image: user.image ?? null,
                 });
                 console.log("Login successful", user);
             } catch (error) {
