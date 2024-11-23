@@ -32,7 +32,7 @@ export default function UserNameInput({
             </h2>
             <input
                 type="text"
-                className="w-full max-w-[430px] rounded-sm border-[1px] border-gray-300 bg-transparent px-4 py-[6px]"
+                className={`w-full max-w-[430px] rounded-sm border-[1px] ${valid ? "border-gray-300" : "border-red-500 focus:outline-red-500"} bg-transparent px-4 py-[6px]`}
                 placeholder="您的使用者名稱"
                 value={userName}
                 onChange={handleInputChange}
