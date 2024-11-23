@@ -3,6 +3,13 @@ import { useState } from "react";
 import NicknameInput from "@/components/Onboarding/NicknameInput";
 import UserNameInput from "./UserNameInput";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "CommonGround - Onboarding",
+    keywords: "onboarding, user, registration",
+    description: "CommonGround onboarding page for new users",
+};
 
 export default function OnboardingCard() {
     const [userName, setUserName] = useState<string>("");
