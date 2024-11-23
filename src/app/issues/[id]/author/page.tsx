@@ -3,12 +3,29 @@ import Link from "next/link";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import FactListCard from "@/components/AuthorViewpoint/FactListCard";
 import { mockEmptyIssue, mockIssue } from "@/mock/conversationMock";
+import { Metadata } from "next";
 
 type AuthorViewPointProps = {
     params: {
         id: string;
     };
 };
+
+type MetadataProps = {
+    params: { id: string };
+};
+
+export async function generateMetadata({
+    params,
+}: MetadataProps): Promise<Metadata> {
+    const id = params.id;
+    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+    return {
+        title: `CommonGround - ${issue.title}`,
+        keywords: "social-issues, viewpoints, rational-discussion",
+        description: issue.summary,
+    };
+}
 
 export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
     const { id } = params;
