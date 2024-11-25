@@ -5,12 +5,10 @@ type FactCardProps = {
     fact: Fact;
 };
 
-export default function FactCard({ fact }: FactCardProps) {
+export default function EditViewpointFact({ fact }: FactCardProps) {
     return (
-        <div className="">
+        <div>
             <h1 className="text-lg font-normal text-black">{fact.title}</h1>
-            {/* sources */}
-
             {fact.references.map((reference) => (
                 <div key={reference.id} className="mt-1">
                     <Link
@@ -21,10 +19,7 @@ export default function FactCard({ fact }: FactCardProps) {
                     >
                         <img className="h-4 w-4" src={reference.icon} alt="" />
                         <h1 className="text-sm font-normal text-neutral-500">
-                            {reference.url.replace(
-                                /(https?:\/\/)?(www\.)?/,
-                                "",
-                            )}
+                            {new URL(reference.url).hostname}
                         </h1>
                         <h1 className="text-sm font-normal text-neutral-500">
                             {reference.title}

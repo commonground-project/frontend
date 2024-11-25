@@ -1,6 +1,7 @@
 import { Fact } from "@/types/conversations.types";
-import FactCard from "@/components/AuthorViewpoint/FactCard";
+import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { TextInput } from "@mantine/core";
 
 type FactListCardProps = {
     facts: Fact[];
@@ -14,8 +15,13 @@ export default function FactListCard({ facts }: FactListCardProps) {
             </h1>
             <div className="mb-2 flex w-full items-center py-1 pr-[52px]">
                 <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
-                <input
-                    className="ml-2 w-full bg-transparent text-lg font-normal text-neutral-500 focus:border-b-2 focus:border-b-emerald-500 focus:outline-none"
+                <TextInput
+                    variant="unstyled"
+                    radius={0}
+                    w="100%"
+                    classNames={{
+                        input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
+                    }}
                     placeholder="搜尋 CommonGround"
                 />
             </div>
@@ -23,7 +29,7 @@ export default function FactListCard({ facts }: FactListCardProps) {
                 <div className="flex flex-col gap-3 pl-7 pr-4">
                     {facts.map((fact) => (
                         <div key={fact.id}>
-                            <FactCard fact={fact} />
+                            <EditViewpointFact fact={fact} />
                         </div>
                     ))}
                 </div>

@@ -15,15 +15,10 @@ type MetadataProps = {
     params: { id: string };
 };
 
-export async function generateMetadata({
-    params,
-}: MetadataProps): Promise<Metadata> {
-    const id = params.id;
-    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+export async function generateMetadata({}: MetadataProps): Promise<Metadata> {
     return {
-        title: `CommonGround - ${issue.title}`,
+        title: `CommonGround - 撰寫觀點`,
         keywords: "social-issues, viewpoints, rational-discussion",
-        description: issue.summary,
     };
 }
 
@@ -32,7 +27,6 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
-            {/* <div className="flex w-full flex-col justify-center"> */}
             <Link
                 href={`/issues/${id}`}
                 className="mb-2 ml-7 flex w-[100px] items-center text-lg font-semibold text-neutral-500 duration-300 hover:text-emerald-500"
@@ -40,7 +34,8 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
                 <ArrowLongLeftIcon className="mr-1 inline-block h-6 w-6" />
                 返回議題
             </Link>
-            <div className="flex h-[calc(100hv-56px-69px-32px)] w-full items-stretch gap-7">
+            <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
+                {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
                 <div className="w-2/3">
                     <ViewpointCard />
                 </div>
@@ -48,7 +43,6 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
                     <FactListCard facts={issue.facts} />
                 </div>
             </div>
-            {/* </div> */}
         </main>
     );
 }
