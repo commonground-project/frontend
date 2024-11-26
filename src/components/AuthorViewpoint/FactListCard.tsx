@@ -1,15 +1,22 @@
+"use client";
 import { Fact } from "@/types/conversations.types";
 import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
+import { useState } from "react";
 
 type FactListCardProps = {
     facts: Fact[];
 };
 
 export default function FactListCard({ facts }: FactListCardProps) {
+    const [searchData, setSearchData] = useState<string[]>([
+        "This development could disrupt the EV market",
+        "Google.com",
+        "CommonGround",
+    ]);
     return (
-        <div className="h-[calc(100vh-56px-69px-32px)] rounded-lg bg-neutral-100 px-7 py-4">
+        <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
             <h1 className="mb-1 text-lg font-semibold text-neutral-700">
                 事實
             </h1>
@@ -18,11 +25,7 @@ export default function FactListCard({ facts }: FactListCardProps) {
                 <Select
                     variant="unstyled"
                     searchable
-                    data={[
-                        "This development could disrupt the EV market",
-                        "Google.com",
-                        "CommonGround",
-                    ]}
+                    data={searchData}
                     checkIconPosition="right"
                     radius={0}
                     w="100%"
@@ -32,7 +35,9 @@ export default function FactListCard({ facts }: FactListCardProps) {
                     placeholder="搜尋 CommonGround"
                 />
             </div>
-            <div className="h-[calc(100vh-56px-69px-32px-92px-16px)] overflow-auto">
+            <div className="h-[calc(100vh-265px)] overflow-auto">
+                {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
+                + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col gap-3 pl-7 pr-4">
                     {facts.map((fact) => (
                         <div key={fact.id}>
