@@ -1,7 +1,7 @@
 import { Fact } from "@/types/conversations.types";
 import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { TextInput } from "@mantine/core";
+import { Select, Button } from "@mantine/core";
 
 type FactListCardProps = {
     facts: Fact[];
@@ -15,8 +15,15 @@ export default function FactListCard({ facts }: FactListCardProps) {
             </h1>
             <div className="mb-2 flex w-full items-center py-1 pr-[52px]">
                 <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
-                <TextInput
+                <Select
                     variant="unstyled"
+                    searchable
+                    data={[
+                        "This development could disrupt the EV market",
+                        "Google.com",
+                        "CommonGround",
+                    ]}
+                    checkIconPosition="right"
                     radius={0}
                     w="100%"
                     classNames={{
@@ -33,12 +40,17 @@ export default function FactListCard({ facts }: FactListCardProps) {
                         </div>
                     ))}
                 </div>
-                <div className="mt-2 pl-7">
-                    <button className="flex items-center gap-2 text-neutral-600">
-                        <PlusIcon className="h-6 w-6" />
-                        <h1 className="text-base font-normal">引入一條事實</h1>
-                    </button>
-                </div>
+
+                <Button
+                    variant="transparent"
+                    leftSection={<PlusIcon className="h-6 w-6" />}
+                    classNames={{
+                        root: "px-0 ml-7 mt-2 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
+                        section: "mr-2",
+                    }}
+                >
+                    引入一條事實
+                </Button>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { TextInput, Textarea } from "@mantine/core";
+import { Button, TextInput, Textarea } from "@mantine/core";
 
 export default function ViewpointCard() {
     return (
@@ -26,14 +26,28 @@ export default function ViewpointCard() {
                 }}
             />
             <div className="flex justify-end gap-3">
-                <button className="flex h-8 w-[76px] items-center justify-center gap-1 rounded-[4px] border-[1px] border-neutral-600 stroke-neutral-600 text-sm font-normal text-neutral-600">
-                    <TrashIcon className="inline-block h-5 w-5" />
+                <Button
+                    variant="outline"
+                    color="#525252"
+                    leftSection={<TrashIcon className="h-5 w-5" />}
+                    classNames={{
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
+                        section: "mr-1",
+                    }}
+                >
                     刪除
-                </button>
-                <button className="flex h-8 w-[76px] items-center justify-center gap-1 rounded-[4px] border-[1px] border-blue-600 bg-blue-600 text-sm font-normal text-white">
-                    <PlusIcon className="inline-block h-5 w-5" />
+                </Button>
+                <Button
+                    variant="filled"
+                    color="#2563eb"
+                    leftSection={<PlusIcon className="h-5 w-5" />}
+                    classNames={{
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
+                        section: "mr-1",
+                    }}
+                >
                     發表
-                </button>
+                </Button>
             </div>
         </div>
     );
