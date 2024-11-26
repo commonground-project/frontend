@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { Input } from "@mantine/core";
+import { z } from "zod";
 
 type UserNameInputProps = {
     userName: string;
@@ -12,33 +14,42 @@ export default function UserNameInput({
 }: UserNameInputProps) {
     const [valid, setValid] = useState<boolean>(true);
 
-    const userNamePattern = /^[a-zA-Z0-9._-]*$/;
+    const userNameSchema = z.string().regex(/^[a-zA-Z0-9._-]*$/);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setUserName(value);
-        setValid(userNamePattern.test(value));
+        try {
+            userNameSchema.parse(value);
+            setValid(true);
+        } catch {
+            setValid(false);
+        }
     };
     return (
-        <div className="pb-[30px]">
-            <label className="pb-1 text-[16px] font-semibold">
-                <h1 className="inline text-neutral-900">使用者名稱</h1>
-                <h1 className="inline text-red-500">*</h1>
-            </label>
-            <h2
-                className={`pb-2 text-[14px] font-normal ${valid ? "text-[#868E96]" : "text-red-500"}`}
-            >
-                您在平台上的 ID；請使用英文字母、數字或半形句點、底線與減號
-            </h2>
-            <input
-                type="text"
-                className={`w-full max-w-[430px] rounded-sm border-[1px] ${valid ? "border-gray-300" : "border-red-500 focus:outline-red-500"} bg-transparent px-4 py-[6px]`}
-                placeholder="您的使用者名稱"
+        <Input.Wrapper
+            required
+            label="使用者名稱"
+            description="您在平台上的 ID；請使用英文字母、數字或半形句點、底線與減號"
+            error={
+                valid
+                    ? null
+                    : "存在不允許的字元，請使用英文字母、數字或半形句點、底線與減號"
+            }
+            classNames={{
+                root: "w-full max-w-[430px] pb-[30px]",
+                label: "pb-1 text-[16px] font-semibold text-neutral-900",
+                description: `pb-2 text-[14px] font-normal ${valid ? "text-[#868E96]" : "text-red-500"}`,
+            }}
+        >
+            <Input
+                required
                 value={userName}
                 onChange={handleInputChange}
-                pattern="^[a-zA-Z0-9._-]+$"
-                title="username"
+                classNames={{
+                    input: `bg-transparent px-4 py-[6px] text-[16px] font-normal ${valid ? "" : "border-red-500 focus:outline-red-500"}`,
+                }}
             />
-        </div>
+        </Input.Wrapper>
     );
 }
