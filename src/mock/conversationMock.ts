@@ -19,15 +19,53 @@ export const mockFact: Fact = {
     references: [
         {
             id: 1,
-            title: "battery",
+            title: "New Tech Reshapes Electric Vehicle Landscape",
             icon: "/favicon.ico",
             url: "https://www.google.com",
         },
         {
             id: 2,
-            title: "energy",
+            title: "Battery Advancement Sparks Market Revolution",
             icon: "/favicon.ico",
             url: "https://google.com",
+        },
+    ],
+};
+
+export const mockFact2: Fact = {
+    id: 1,
+    title: "This development could disrupt the EV market2",
+    references: [
+        {
+            id: 1,
+            title: "電池進步引發市場革命",
+            icon: "/favicon.ico",
+            url: "https://google.com",
+        },
+    ],
+};
+
+export const mockFact3: Fact = {
+    id: 1,
+    title: "This development could disrupt the EV market3",
+    references: [
+        {
+            id: 1,
+            title: "New Tech Reshapes Electric Vehicle Landscapeepewijriwejfkljnfklfdijwdlfoiwefjowenfoiwaaaaaaaaaaa",
+            icon: "/favicon.ico",
+            url: "https://www.google.com",
+        },
+        {
+            id: 2,
+            title: "Battery Advancement Sparks Market Revolution",
+            icon: "/favicon.ico",
+            url: "https://google.com",
+        },
+        {
+            id: 3,
+            title: "電池進步引發市場革命",
+            icon: "/favicon.ico",
+            url: "https://lunarhosts.com",
         },
     ],
 };

@@ -35,7 +35,7 @@ export default function IssueCard({ issueId }: IssueCardProps) {
                     <p className="text-lg font-normal">{issue.summary}</p>
                     <div className="mt-3">
                         <Link
-                            href=""
+                            href={`/issues/${issue.id}/facts`}
                             className="text-lg font-semibold transition-colors duration-300 hover:text-emerald-500"
                         >
                             查看所有事實
