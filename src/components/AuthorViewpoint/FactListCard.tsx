@@ -10,7 +10,7 @@ type FactListCardProps = {
 };
 
 export default function FactListCard({ facts }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<string[]>([
+    const [searchData] = useState<string[]>([
         "This development could disrupt the EV market",
         "Google.com",
         "CommonGround",
