@@ -3,7 +3,7 @@ import { Button, TextInput, Textarea } from "@mantine/core";
 
 export default function ViewpointCard() {
     return (
-        <div className="flex h-[calc(100vh-56px-69px-32px)] flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
+        <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 variant="unstyled"
@@ -22,7 +22,7 @@ export default function ViewpointCard() {
                 placeholder="開始打字，或選取一段文字來新增引注資料"
                 classNames={{
                     wrapper: "h-full",
-                    input: "h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
+                    input: "h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500",
                 }}
             />
             <div className="flex justify-end gap-3">
