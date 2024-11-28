@@ -1,11 +1,18 @@
+"use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Button, TextInput, Textarea } from "@mantine/core";
+import { Button, TextInput /*Textarea*/ } from "@mantine/core";
+import { useState } from "react";
 
 export default function ViewpointCard() {
+    const [viewpointTitle, setViewpointTitle] = useState("");
+    const [viewpointContent, setViewpointContent] = useState("");
+
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
+                value={viewpointTitle.replace(/\n/g, "\n\n\n")}
+                onChange={(e) => setViewpointTitle(e.currentTarget.value)}
                 variant="unstyled"
                 radius={0}
                 placeholder="用一句話簡述你的觀點"
@@ -14,7 +21,9 @@ export default function ViewpointCard() {
                     input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
                 }}
             />
-            <Textarea
+            {/* <Textarea
+                value={viewpointContent}
+                onChange={(e) => setViewpointContent(e.currentTarget.value)}
                 variant="unstyled"
                 radius={0}
                 h="100%"
@@ -24,7 +33,18 @@ export default function ViewpointCard() {
                     wrapper: "h-full",
                     input: "h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500",
                 }}
-            />
+            ></Textarea> */}
+            <div
+                contentEditable="true"
+                onChange={(e) => setViewpointContent(e.currentTarget.innerText)}
+                className="h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-none"
+            >
+                {viewpointContent.split("\n").map((paragraph, index) => (
+                    <p key={index} className="pb-[6px]">
+                        {paragraph}
+                    </p>
+                ))}
+            </div>
             <div className="flex justify-end gap-3">
                 <Button
                     variant="outline"
