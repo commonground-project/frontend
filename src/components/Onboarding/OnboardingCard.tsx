@@ -1,17 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import NicknameInput from "@/components/Onboarding/NicknameInput";
-import UserNameInput from "./UserNameInput";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { Metadata } from "next";
-import { Button } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-
-export const metadata: Metadata = {
-    title: "CommonGround - Onboarding",
-    keywords: "onboarding, user, registration",
-    description: "CommonGround onboarding page for new users",
-};
 
 export default function OnboardingCard() {
     const userNameSchema = /^[a-zA-Z0-9._-]*$/;
@@ -47,18 +38,40 @@ export default function OnboardingCard() {
                 歡迎來到 CommonGround
             </h1>
             <form onSubmit={form.onSubmit(setSubmittedValues)}>
-                <NicknameInput form={form} inputValueName="nickname" />
-                <UserNameInput form={form} inputValueName="username" />
+                <TextInput
+                    label="使用者名稱"
+                    description="您在平台上的 ID；請使用英文字母、數字或半形句點、底線與減號"
+                    required
+                    {...form.getInputProps("nickname")}
+                    key={form.key("nickname")}
+                    size="md"
+                    classNames={{
+                        root: "w-full max-w-[430px] pb-[30px]",
+                        //     label: "pb-1 text-[16px] font-semibold text-neutral-900",
+                        //     description: `pb-2 text-[14px] font-normal text-[#868E96]"`,
+                        //     input: "bg-transparent px-4 py-[6px] text-[16px] font-normal",
+                    }}
+                />
+                <TextInput
+                    label="使用者名稱"
+                    description="您在平台上的 ID；請使用英文字母、數字或半形句點、底線與減號"
+                    required
+                    {...form.getInputProps("username")}
+                    key={form.key("username")}
+                    classNames={{
+                        root: "w-full max-w-[430px] pb-[30px]",
+                        label: "pb-1 text-[16px] font-semibold text-neutral-900",
+                        description: `pb-2 text-[14px] font-normal text-[#868E96]"`,
+                        input: "bg-transparent px-4 py-[6px] text-[16px] font-normal",
+                    }}
+                />
                 <Button
                     type="submit"
                     color="#2563eb"
                     rightSection={
                         <PaperAirplaneIcon className="size-4 stroke-white" />
                     }
-                    classNames={{
-                        root: "p-0 h-6 w-[84px] text-xs font-normal text-white",
-                        section: "ml-1",
-                    }}
+                    size="sm"
                 >
                     開始使用
                 </Button>
