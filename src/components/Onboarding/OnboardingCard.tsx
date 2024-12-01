@@ -39,17 +39,15 @@ export default function OnboardingCard() {
             </h1>
             <form onSubmit={form.onSubmit(setSubmittedValues)}>
                 <TextInput
-                    label="使用者名稱"
-                    description="您在平台上的 ID；請使用英文字母、數字或半形句點、底線與減號"
+                    label="暱稱"
+                    description="我們該如何稱呼您？"
                     required
                     {...form.getInputProps("nickname")}
                     key={form.key("nickname")}
                     size="md"
                     classNames={{
                         root: "w-full max-w-[430px] pb-[30px]",
-                        //     label: "pb-1 text-[16px] font-semibold text-neutral-900",
-                        //     description: `pb-2 text-[14px] font-normal text-[#868E96]"`,
-                        //     input: "bg-transparent px-4 py-[6px] text-[16px] font-normal",
+                        input: "bg-transparent",
                     }}
                 />
                 <TextInput
@@ -58,11 +56,10 @@ export default function OnboardingCard() {
                     required
                     {...form.getInputProps("username")}
                     key={form.key("username")}
+                    size="md"
                     classNames={{
                         root: "w-full max-w-[430px] pb-[30px]",
-                        label: "pb-1 text-[16px] font-semibold text-neutral-900",
-                        description: `pb-2 text-[14px] font-normal text-[#868E96]"`,
-                        input: "bg-transparent px-4 py-[6px] text-[16px] font-normal",
+                        input: "bg-transparent",
                     }}
                 />
                 <Button
