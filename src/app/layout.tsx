@@ -13,7 +13,7 @@ export default function RootLayout({
             <body className="fixed inset-0 bg-neutral-200 pt-14 antialiased">
                 <MantineProvider>
                     <Header />
-                    <div className="h-[calc(100vh-56px)] absolute left-0 right-0 top-14 overflow-y-auto">
+                    <div className="absolute left-0 right-0 top-14 h-[calc(100vh-56px)] overflow-y-auto">
                         {children}
                     </div>
                 </MantineProvider>

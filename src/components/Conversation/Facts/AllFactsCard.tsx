@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Fact } from "@/types/conversations.types";
 import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -21,9 +21,7 @@ export default function AllFactsCard({ facts, issueId }: AllFactsCardProps) {
     return (
         <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             {/* Title */}
-            <h1 className="py-1 font-sans text-2xl font-bold">
-                {issue.title}
-            </h1>
+            <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
 
             {/* Facts Section */}
             <div className="mt-3">
@@ -77,7 +75,7 @@ export default function AllFactsCard({ facts, issueId }: AllFactsCardProps) {
             </button>
 
             {/* Fact Modal */}
-            <FactModel 
+            <FactModel
                 opened={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
             />
