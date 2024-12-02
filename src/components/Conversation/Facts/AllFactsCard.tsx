@@ -1,9 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState } from 'react';
 import { Fact } from "@/types/conversations.types";
-import { mockIssue } from "@/mock/conversationMock";
+import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import FactModel from "../Facts/FactModel";
 import Link from "next/link";
 
 type AllFactsCardProps = {
@@ -11,12 +12,17 @@ type AllFactsCardProps = {
     issueId: string;
 };
 
-export default function AllFactsCard({ facts }: AllFactsCardProps) {
+export default function AllFactsCard({ facts, issueId }: AllFactsCardProps) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const issue = issueId == "1" ? mockIssue : mockEmptyIssue;
+    console.log(issueId);
+    console.log(issue);
+
     return (
         <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             {/* Title */}
             <h1 className="py-1 font-sans text-2xl font-bold">
-                {mockIssue.title}
+                {issue.title}
             </h1>
 
             {/* Facts Section */}
@@ -26,9 +32,7 @@ export default function AllFactsCard({ facts }: AllFactsCardProps) {
                 </h2>
                 {facts.map((fact) => (
                     <div key={fact.id} className="mb-2">
-                        <p className="mb-2 text-lg text-black">
-                            {fact.title}
-                        </p>
+                        <p className="mb-2 text-lg text-black">{fact.title}</p>
                         <div className="space-y-1">
                             {fact.references.map((reference) => (
                                 <Link
@@ -51,7 +55,9 @@ export default function AllFactsCard({ facts }: AllFactsCardProps) {
                                             )}
                                         </span>
                                         <span className="text-sm text-gray-600">
-                                            {reference.title.length > 94 ? `${reference.title.slice(0, 94)}...` : reference.title}
+                                            {reference.title.length > 94
+                                                ? `${reference.title.slice(0, 94)}...`
+                                                : reference.title}
                                         </span>
                                     </div>
                                 </Link>
@@ -62,13 +68,19 @@ export default function AllFactsCard({ facts }: AllFactsCardProps) {
             </div>
 
             {/* Add Fact Button */}
-            <Link
-                href=""
+            <button
+                onClick={() => setIsModalOpen(true)}
                 className="mt-4 flex cursor-pointer items-center gap-1 font-sans font-bold text-black"
             >
                 <PlusIcon className="h-5 w-5" />
                 <span>新增事實</span>
-            </Link>
+            </button>
+
+            {/* Fact Modal */}
+            <FactModel 
+                opened={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

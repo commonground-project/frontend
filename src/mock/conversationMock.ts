@@ -51,7 +51,7 @@ export const mockFact3: Fact = {
     references: [
         {
             id: 1,
-            title: "New Tech Reshapes Electric Vehicle Landscapeepewijriwejfkljnfklfdijwdlfoiwefjowenfoiwaaaaaaaaaaa",
+            title: "New Tech Reshapes Electric Vehicle Lands ",
             icon: "/favicon.ico",
             url: "https://www.google.com",
         },
@@ -65,7 +65,7 @@ export const mockFact3: Fact = {
             id: 3,
             title: "電池進步引發市場革命",
             icon: "/favicon.ico",
-            url: "https://lunarhosts.com",
+            url: "https://google.com",
         },
     ],
 };
