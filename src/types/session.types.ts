@@ -1,17 +1,15 @@
-export type SessionStatus = "loading" | "authenticated" | "unauthenticated";
-
 export interface User {
-    name: string | null;
-    email: string | null;
-    image: string | null;
+    username: string;
+    nickname: string;
+    email: string;
+    avatar: string;
 }
 
-export interface SessionState {
+export interface Session {
     data: User | null;
-    status: SessionStatus;
 }
 
-export interface Session extends SessionState {
-    login: (token: string) => void;
-    logout: () => void;
+export interface Auth {
+    login: (token: string) => Promise<User | null>;
+    logout: () => Promise<void>;
 }
