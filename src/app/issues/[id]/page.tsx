@@ -31,14 +31,11 @@ export default function IssueView({ params }: IssueViewProps) {
     console.log(id);
 
     return (
-        <div className="flex min-h-screen flex-col bg-neutral-200">
+        <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                {/* issue */}
                 <IssueCard issueId={id} />
-                {/* view */}
                 <ViewPointList issueId={id} />
             </main>
-            {/* textbar */}
             <AddViewPointBar id={id} />
         </div>
     );
