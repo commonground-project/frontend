@@ -26,43 +26,46 @@ export default function AllFactsCard({ facts, issueId }: AllFactsCardProps) {
                 <h2 className="mb-1 text-lg font-semibold text-black">
                     所有事實
                 </h2>
-                {facts.map((fact) => (
-                    fact.id === Number(issueId) && (
-                        <div key={fact.id} className="mb-2">
-                            <p className="mb-2 text-lg text-black">{fact.title}</p>
-                            <div className="space-y-1">
-                                {fact.references.map((reference) => (
-                                    <Link
-                                        key={reference.id}
-                                        href={reference.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-2 rounded-full bg-gray-200/50 p-[0.3%] hover:bg-gray-200"
-                                    >
-                                        <img
-                                            className="ml-2 h-3 w-3 rounded-full"
-                                            src={reference.icon}
-                                            alt=""
-                                        />
-                                        <div className="flex items-center gap-x-2">
-                                            <span className="font-sans text-xs font-normal text-neutral-500">
-                                                {reference.url.replace(
-                                                    /(https?:\/\/)?(www\.)?/,
-                                                    "",
-                                                )}
-                                            </span>
-                                            <span className="text-sm text-gray-600">
-                                                {reference.title.length > 94
-                                                    ? `${reference.title.slice(0, 94)}...`
-                                                    : reference.title}
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
+                {facts.map(
+                    (fact) =>
+                        fact.id === Number(issueId) && (
+                            <div key={fact.id} className="mb-2">
+                                <p className="mb-2 text-lg text-black">
+                                    {fact.title}
+                                </p>
+                                <div className="space-y-1">
+                                    {fact.references.map((reference) => (
+                                        <Link
+                                            key={reference.id}
+                                            href={reference.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 rounded-full bg-gray-200/50 p-[0.3%] hover:bg-gray-200"
+                                        >
+                                            <img
+                                                className="ml-2 h-3 w-3 rounded-full"
+                                                src={reference.icon}
+                                                alt=""
+                                            />
+                                            <div className="flex items-center gap-x-2">
+                                                <span className="font-sans text-xs font-normal text-neutral-500">
+                                                    {reference.url.replace(
+                                                        /(https?:\/\/)?(www\.)?/,
+                                                        "",
+                                                    )}
+                                                </span>
+                                                <span className="text-sm text-gray-600">
+                                                    {reference.title.length > 94
+                                                        ? `${reference.title.slice(0, 94)}...`
+                                                        : reference.title}
+                                                </span>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )
-                ))}
+                        ),
+                )}
             </div>
 
             {/* Add Fact Button */}

@@ -18,20 +18,26 @@ type FactModelProps = {
     onClose: () => void;
     onUpdate?: (updateFact: Fact) => void;
     fact?: Fact;
-
 };
 
-export default function FactModel({ opened, onClose, onUpdate, fact }: FactModelProps) {
+export default function FactModel({
+    opened,
+    onClose,
+    onUpdate,
+    fact,
+}: FactModelProps) {
     const [url, setUrl] = useState("http://localhost:3000");
     const [tempReferences, setTempReferences] = useState<FactReference[]>([]);
-    const [references, setReferences] = useState<FactReference[]>(fact?.references?.map(ref => ({
-        ...ref,
-        domain: new URL(ref.url).hostname
-    })) || []);
+    const [references, setReferences] = useState<FactReference[]>(
+        fact?.references?.map((ref) => ({
+            ...ref,
+            domain: new URL(ref.url).hostname,
+        })) || [],
+    );
 
     const addReference = () => {
         try {
-            const iframe = document.querySelector('iframe');
+            const iframe = document.querySelector("iframe");
             const iframeTitle = iframe?.contentDocument?.title;
             if (iframeTitle) {
                 const newReference: FactReference = {
@@ -45,7 +51,6 @@ export default function FactModel({ opened, onClose, onUpdate, fact }: FactModel
                 console.log("New Reference:", newReference);
                 toast.success("已暫時新增引述資料至右側");
             }
-
         } catch (error) {
             toast.error(String(error));
         }
@@ -67,9 +72,9 @@ export default function FactModel({ opened, onClose, onUpdate, fact }: FactModel
             references: [...references, ...tempReferences],
         });
 
-        setReferences(prev => [...prev, ...tempReferences]);
+        setReferences((prev) => [...prev, ...tempReferences]);
         setTempReferences([]);
-        
+
         toast.success("成功新增引述資料");
         onClose();
     };
@@ -149,7 +154,10 @@ export default function FactModel({ opened, onClose, onUpdate, fact }: FactModel
                                         />
                                         <div className="flex items-center gap-x-2">
                                             <div className="text-xs text-gray-500">
-                                                {new URL(reference.url).hostname}
+                                                {
+                                                    new URL(reference.url)
+                                                        .hostname
+                                                }
                                             </div>
                                         </div>
                                     </Link>
@@ -171,9 +179,10 @@ export default function FactModel({ opened, onClose, onUpdate, fact }: FactModel
 
                     {/* Submit Button */}
                     <div className="mt-2 flex justify-end">
-                        <Button 
-                        onClick={createFacts}
-                        className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800">
+                        <Button
+                            onClick={createFacts}
+                            className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800"
+                        >
                             <PlusIcon className="mr-1 h-4 w-4" />
                             建立
                         </Button>
