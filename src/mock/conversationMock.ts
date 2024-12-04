@@ -33,7 +33,7 @@ export const mockFact: Fact = {
 };
 
 export const mockFact2: Fact = {
-    id: 1,
+    id: 2,
     title: "This development could disrupt the EV market2",
     references: [
         {

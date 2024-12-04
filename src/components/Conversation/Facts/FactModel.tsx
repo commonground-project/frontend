@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Modal, Button } from "@mantine/core";
+import { toast } from "sonner";
 import {
     LinkIcon,
     PlusIcon,
@@ -9,50 +10,68 @@ import {
     ArrowLongLeftIcon,
     ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
+import { Fact, FactReference } from "@/types/conversations.types";
 import Link from "next/link";
-
-type Reference = {
-    id: number;
-    url: string;
-    domain: string;
-    title: string;
-};
 
 type FactModelProps = {
     opened: boolean;
     onClose: () => void;
+    onUpdate?: (updateFact: Fact) => void;
+    fact?: Fact;
+
 };
 
-export default function FactModel({ opened, onClose }: FactModelProps) {
+export default function FactModel({ opened, onClose, onUpdate, fact }: FactModelProps) {
     const [url, setUrl] = useState("http://localhost:3000");
-    const [references, setReferences] = useState<Reference[]>([
-        {
-            id: 1,
-            url: "https://www.twreporter.org/",
-            domain: "twreporter.org",
-            title: "台灣的安眠藥失控問題已經超標",
-        },
-        {
-            id: 2,
-            url: "https://www.twreporter.org/",
-            domain: "twreporter.org",
-            title: "台灣的安眠藥失控問題已經超標",
-        },
-    ]);
+    const [tempReferences, setTempReferences] = useState<FactReference[]>([]);
+    const [references, setReferences] = useState<FactReference[]>(fact?.references?.map(ref => ({
+        ...ref,
+        domain: new URL(ref.url).hostname
+    })) || []);
 
     const addReference = () => {
-        const newReference = {
-            id: references.length + 1,
-            url: url,
-            domain: new URL(url).hostname,
-            title: "新增的引述資料標題", // 這裡可以改成從 iframe 抓取的標題
-        };
-        setReferences([...references, newReference]);
-        setUrl("http://localhost:3000"); // 重置輸入框
+        try {
+            const iframe = document.querySelector('iframe');
+            const iframeTitle = iframe?.contentDocument?.title;
+            if (iframeTitle) {
+                const newReference: FactReference = {
+                    id: references.length + tempReferences.length + 1,
+                    url: url,
+                    icon: "/favicon.ico",
+                    title: iframeTitle || "無標題",
+                };
+                // setReferences([...references, newReference]);
+                setTempReferences([...tempReferences, newReference]);
+                console.log("New Reference:", newReference);
+                toast.success("已暫時新增引述資料至右側");
+            }
+
+        } catch (error) {
+            toast.error(String(error));
+        }
     };
 
     const removeReference = (id: number) => {
         setReferences(references.filter((ref) => ref.id !== id));
+        setTempReferences(tempReferences.filter((ref) => ref.id !== id));
+    };
+
+    const createFacts = () => {
+        if (!fact || !onUpdate) {
+            toast.error("無法更新事實");
+            return;
+        }
+
+        onUpdate({
+            ...fact,
+            references: [...references, ...tempReferences],
+        });
+
+        setReferences(prev => [...prev, ...tempReferences]);
+        setTempReferences([]);
+        
+        toast.success("成功新增引述資料");
+        onClose();
     };
 
     return (
@@ -110,8 +129,8 @@ export default function FactModel({ opened, onClose }: FactModelProps) {
                 <div className="relative flex w-1/3 flex-col p-2">
                     <h2 className="mb-2 text-lg font-bold">引註資料</h2>
 
-                    <div className="h-[calc(100%-60px)] flex-1 space-y-3 overflow-y-auto pr-2">
-                        {references.map((reference) => (
+                    <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
+                        {[...references, ...tempReferences].map((reference) => (
                             <div
                                 key={reference.id}
                                 className="group flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
@@ -124,13 +143,13 @@ export default function FactModel({ opened, onClose }: FactModelProps) {
                                         className="flex items-center gap-2 rounded-full bg-gray-200/50 px-3 py-1"
                                     >
                                         <img
-                                            src="/favicon.ico"
+                                            src={reference.icon}
                                             alt="website icon"
                                             className="h-4 w-4 rounded-full"
                                         />
                                         <div className="flex items-center gap-x-2">
                                             <div className="text-xs text-gray-500">
-                                                {reference.domain}
+                                                {new URL(reference.url).hostname}
                                             </div>
                                         </div>
                                     </Link>
@@ -152,7 +171,9 @@ export default function FactModel({ opened, onClose }: FactModelProps) {
 
                     {/* Submit Button */}
                     <div className="mt-2 flex justify-end">
-                        <Button className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800">
+                        <Button 
+                        onClick={createFacts}
+                        className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800">
                             <PlusIcon className="mr-1 h-4 w-4" />
                             建立
                         </Button>
