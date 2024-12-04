@@ -1,41 +1,26 @@
 "use client";
 
-import { Toaster } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Toaster } from "sonner";
 import useSession from "@/hooks/useSession";
 
-function LoginContent() {
+export default function LoginPage() {
     const { login } = useAuth();
     const session = useSession();
     const router = useRouter();
-    const searchParams = useSearchParams();
     const SessionToken = process.env.NEXT_PUBLIC_TEST_TOKEN;
-
-    useEffect(() => {
-        const token = searchParams?.get("token");
-        if (!token) return;
-
-        login(token)
-            .then(() => router.replace("/"))
-            .catch((error) => console.error("Login failed:", error));
-    }, [login, router, searchParams]);
 
     useEffect(() => {
         if (!session.data) return;
 
-        if (!session.data.username || !session.data.nickname) {
+        if (session.data && !session.data.username || !session.data.nickname) {
             router.replace("/onboard");
         } else {
             router.replace("/");
         }
     }, [session.data, router]);
-
-    if (session.data) {
-        console.log(session.data);
-        return null;
-    }
 
     const handleLogin = () => {
         if (!SessionToken) {
@@ -43,9 +28,10 @@ function LoginContent() {
             return;
         }
 
-        login(SessionToken)
-            .then(() => router.replace("/"))
-            .catch((error) => console.error("Login failed:", error));
+        const user = login(SessionToken);
+        if (user) {
+            router.replace("/");
+        }
     };
 
     return (
@@ -86,20 +72,5 @@ function LoginContent() {
                 <Toaster />
             </div>
         </div>
-    );
-}
-
-export default function LoginPage() {
-    return (
-        <Suspense
-            fallback={
-                <div className="flex items-center text-center">
-                    <p>Loading...</p>
-                    <span className="animate-spin">⌛</span>
-                </div>
-            }
-        >
-            <LoginContent />
-        </Suspense>
     );
 }

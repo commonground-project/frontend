@@ -10,6 +10,6 @@ export interface Session {
 }
 
 export interface Auth {
-    login: (token: string) => Promise<User | null>;
-    logout: () => Promise<void>;
+    login: (token: string) => User | null;
+    logout: () => void;
 }

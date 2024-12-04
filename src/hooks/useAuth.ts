@@ -1,30 +1,26 @@
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
 import { COOKIE_AUTH_NAME, COOKIE_OPTIONS } from "@/lib/auth/constants";
-import { authService } from "@/lib/auth/authService";
-import { Auth } from "@/types/session.types";
+import { decodeToken } from "react-jwt";
+import { User, Auth } from "@/types/session.types";
 
 export function useAuth(): Auth {
     const [, setCookie, removeCookie] = useCookies([COOKIE_AUTH_NAME]);
+    
+    const login = (token: string) => {
+        const decodedToken = decodeToken<User>(token);
 
-    const login = async (token: string) => {
-        try {
-            const user = authService(token);
-            await setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
-            return user;
-        } catch (error) {
-            toast.error(String(error));
-            throw error;
+        if (!decodedToken) {
+            toast.error("Invalid token");
+            return null;
         }
+        
+        setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
+        return decodedToken;
     };
 
-    const logout = async () => {
-        try {
-            await removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
-        } catch (error) {
-            toast.error(String(error));
-            throw error;
-        }
+    const logout = () => {
+        removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
     };
 
     return { login, logout };
