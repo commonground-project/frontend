@@ -6,7 +6,7 @@ import { User, Auth } from "@/types/session.types";
 
 export function useAuth(): Auth {
     const [, setCookie, removeCookie] = useCookies([COOKIE_AUTH_NAME]);
-    
+
     const login = (token: string) => {
         const decodedToken = decodeToken<User>(token);
 
@@ -14,7 +14,7 @@ export function useAuth(): Auth {
             toast.error("Invalid token");
             return null;
         }
-        
+
         setCookie(COOKIE_AUTH_NAME, token, COOKIE_OPTIONS);
         return decodedToken;
     };

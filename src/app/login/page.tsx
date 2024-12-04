@@ -15,7 +15,10 @@ export default function LoginPage() {
     useEffect(() => {
         if (!session.data) return;
 
-        if (session.data && !session.data.username || !session.data.nickname) {
+        if (
+            (session.data && !session.data.username) ||
+            !session.data.nickname
+        ) {
             router.replace("/onboard");
         } else {
             router.replace("/");
