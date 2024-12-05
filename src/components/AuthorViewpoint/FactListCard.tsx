@@ -20,19 +20,36 @@ export default function FactListCard({
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
 
     useEffect(() => {
-        const selectedFact: Fact | undefined = searchData.find(
+        const selectedFact = searchData.find(
             (fact) => String(fact.id) == selectedFactId,
         );
         if (selectedFact) {
+            //move the selected fact to the viewpointFactList
             setViewpointFactList([...viewpointFactList, selectedFact]);
+
+            //remove the selected fact from the searchData
+            const newSearchData = searchData.filter(
+                (fact) => fact.id !== selectedFact.id,
+            );
+            setSearchData(newSearchData);
         }
     }, [selectedFactId, setSelectedFactId]);
 
     const removeFact = (factId: string) => {
+        //remove the fact from the viewpointFactList
+        const removedFact = viewpointFactList.find(
+            (fact) => String(fact.id) == factId,
+        );
         const newSelectedFacts = viewpointFactList.filter(
             (fact) => String(fact.id) !== factId,
         );
         setViewpointFactList(newSelectedFacts);
+
+        //add the fact back to the searchData
+        const newSearchData = [...searchData, removedFact].filter(
+            (fact): fact is Fact => fact !== undefined,
+        );
+        setSearchData(newSearchData);
 
         console.log(
             "factlist",

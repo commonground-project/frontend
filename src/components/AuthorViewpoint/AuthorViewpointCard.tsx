@@ -26,23 +26,16 @@ export default function AuthorViewpointCard({
         console.log(viewpoint);
     };
 
-    const discardViewpoint = () => {
-        console.log("Discard viewpoint");
-        setViewpointTitle("");
-        setViewpointContent("");
-        setViewpointFactList([]);
-    };
-
     return (
         <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
             {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
             <div className="w-2/3">
                 <ViewpointCard
+                    issueId={issueId}
                     viewpointTitle={viewpointTitle}
                     setViewpointTitle={setViewpointTitle}
                     setViewpointContent={setViewpointContent}
                     publishViewpoint={publishViewpoint}
-                    discardViewpoint={discardViewpoint}
                 />
             </div>
             <div className="w-1/3">
