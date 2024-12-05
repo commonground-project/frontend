@@ -2,21 +2,22 @@
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 type ViewpointCardProps = {
+    issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
     setViewpointContent: (value: string) => void;
     publishViewpoint: () => void;
-    discardViewpoint: () => void;
 };
 
 export default function ViewpointCard({
+    issueId,
     viewpointTitle,
     setViewpointTitle,
     setViewpointContent,
     publishViewpoint,
-    discardViewpoint,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -43,13 +44,6 @@ export default function ViewpointCard({
         );
 
         publishViewpoint();
-    };
-
-    const onDiscard = () => {
-        if (inputRef.current) inputRef.current.innerHTML = "";
-        setContentEmpty(true);
-        setViewpointContent("");
-        discardViewpoint();
     };
 
     return (
@@ -109,6 +103,8 @@ export default function ViewpointCard({
             />
             <div className="flex justify-end gap-3">
                 <Button
+                    component={Link}
+                    href={`/issues/${issueId}`}
                     variant="outline"
                     color="#525252"
                     leftSection={<TrashIcon className="h-5 w-5" />}
@@ -116,7 +112,6 @@ export default function ViewpointCard({
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
                         section: "mr-1",
                     }}
-                    onClick={onDiscard}
                 >
                     刪除
                 </Button>
@@ -124,8 +119,9 @@ export default function ViewpointCard({
                     variant="filled"
                     color="#2563eb"
                     leftSection={<PlusIcon className="h-5 w-5" />}
+                    disabled={viewpointTitle == "" || contentEmpty}
                     classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
                         section: "mr-1",
                     }}
                     onClick={onPublish}
