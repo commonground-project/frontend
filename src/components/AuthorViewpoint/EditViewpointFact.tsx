@@ -1,14 +1,30 @@
 import { Fact } from "@/types/conversations.types";
+import { Button } from "@mantine/core";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 type FactCardProps = {
     fact: Fact;
+    removeFact: (id: string) => void;
 };
 
-export default function EditViewpointFact({ fact }: FactCardProps) {
+export default function EditViewpointFact({ fact, removeFact }: FactCardProps) {
     return (
         <div>
-            <h1 className="text-lg font-normal text-black">{fact.title}</h1>
+            <div className="group flex">
+                <h1 className="float-left text-lg font-normal text-black">
+                    {fact.title}
+                </h1>
+                <Button
+                    variant="transparent"
+                    classNames={{
+                        root: "float-right pr-1 pl-0 flex opacity-0 group-hover:opacity-100",
+                    }}
+                    onClick={() => removeFact(String(fact.id))}
+                >
+                    <XMarkIcon className="size-6 stroke-black hover:stroke-red-600" />
+                </Button>
+            </div>
             {fact.references.map((reference) => (
                 <div key={reference.id} className="mt-1">
                     <Link

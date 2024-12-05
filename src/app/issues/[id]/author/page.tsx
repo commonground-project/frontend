@@ -2,7 +2,6 @@ import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
 import Link from "next/link";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import FactListCard from "@/components/AuthorViewpoint/FactListCard";
-import { mockEmptyIssue, mockIssue } from "@/mock/conversationMock";
 import { Metadata } from "next";
 
 type AuthorViewPointProps = {
@@ -11,20 +10,14 @@ type AuthorViewPointProps = {
     };
 };
 
-type MetadataProps = {
-    params: { id: string };
+export const metadata: Metadata = {
+    title: "CommonGround - 撰寫觀點",
+    keywords: "社會時事, 觀點, 理性討論, 撰寫觀點",
 };
 
-export async function generateMetadata({}: MetadataProps): Promise<Metadata> {
-    return {
-        title: `CommonGround - 撰寫觀點`,
-        keywords: "social-issues, viewpoints, rational-discussion",
-    };
-}
-
 export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
-    const { id } = params;
-    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+    const id = params.id;
+
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
             <Link
@@ -40,7 +33,7 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
                     <ViewpointCard />
                 </div>
                 <div className="w-1/3">
-                    <FactListCard facts={issue.facts} />
+                    <FactListCard />
                 </div>
             </div>
         </main>
