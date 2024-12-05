@@ -1,47 +1,38 @@
 "use client";
 import { Fact } from "@/types/conversations.types";
-import { useDebouncedValue } from "@mantine/hooks";
 import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query"; // eslint-disable-line
 import { allFacts } from "@/mock/conversationMock";
 
-export default function FactListCard() {
+type FactListCardProps = {
+    viewpointFactList: Fact[];
+    setViewpointFactList: (FactList: Fact[]) => void;
+};
+
+export default function FactListCard({
+    viewpointFactList,
+    setViewpointFactList,
+}: FactListCardProps) {
     const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
-    const [selectedFacts, setSelectedFacts] = useState<Fact[]>([]);
     const [selectedFactId, setSelectedFactId] = useState<string>("");
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
-    const debouncedSearchValue = useDebouncedValue(searchValue, 500); // eslint-disable-line
-
-    // const mutation = useMutation({
-    //     mutationFn: () =>
-    //         new Promise((resolve) => {
-    //             setTimeout(() => {
-    //                 resolve(console.log("Add Fact Success"));
-    //             }, 500);
-    //         }).then(() => setSearchData(allFacts)),
-    // });
-
-    // useEffect(() => {
-    //     mutation.mutate();
-    // }, [debouncedSearchValue]);
 
     useEffect(() => {
         const selectedFact: Fact | undefined = searchData.find(
             (fact) => String(fact.id) == selectedFactId,
         );
         if (selectedFact) {
-            setSelectedFacts([...selectedFacts, selectedFact]);
+            setViewpointFactList([...viewpointFactList, selectedFact]);
         }
     }, [selectedFactId, setSelectedFactId]);
 
     const removeFact = (factId: string) => {
-        const newSelectedFacts = selectedFacts.filter(
+        const newSelectedFacts = viewpointFactList.filter(
             (fact) => String(fact.id) !== factId,
         );
-        setSelectedFacts(newSelectedFacts);
+        setViewpointFactList(newSelectedFacts);
 
         console.log(
             "factlist",
@@ -83,7 +74,7 @@ export default function FactListCard() {
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col gap-3 pl-7 pr-4">
-                    {selectedFacts.map((fact) => (
+                    {viewpointFactList.map((fact) => (
                         <EditViewpointFact
                             key={fact.id}
                             fact={fact}

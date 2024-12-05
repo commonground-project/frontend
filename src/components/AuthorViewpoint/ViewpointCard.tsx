@@ -3,12 +3,26 @@ import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
 
-export default function ViewpointCard() {
-    const [viewpointTitle, setViewpointTitle] = useState("");
+type ViewpointCardProps = {
+    viewpointTitle: string;
+    setViewpointTitle: (value: string) => void;
+    setViewpointContent: (value: string) => void;
+    publishViewpoint: () => void;
+    discardViewpoint: () => void;
+};
+
+export default function ViewpointCard({
+    viewpointTitle,
+    setViewpointTitle,
+    setViewpointContent,
+    publishViewpoint,
+    discardViewpoint,
+}: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        //manage the placeholder in the content area
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
             return;
         const placeholderElement = document.createElement("p");
@@ -18,10 +32,31 @@ export default function ViewpointCard() {
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
+    const onPublish = () => {
+        if (viewpointTitle == "" || contentEmpty) {
+            console.log("Title and Content MUST NOT be empty");
+            return;
+        }
+
+        setViewpointContent(
+            inputRef.current?.textContent ? inputRef.current?.textContent : "",
+        );
+
+        publishViewpoint();
+    };
+
+    const onDiscard = () => {
+        if (inputRef.current) inputRef.current.innerHTML = "";
+        setContentEmpty(true);
+        setViewpointContent("");
+        discardViewpoint();
+    };
+
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
+                value={viewpointTitle}
                 onChange={(e) => setViewpointTitle(e.currentTarget.value)}
                 variant="unstyled"
                 radius={0}
@@ -40,6 +75,11 @@ export default function ViewpointCard() {
                         if (node.className.includes("pt-1.5")) return;
                         node.classList.add("pt-1.5");
                     });
+                    setViewpointContent(
+                        e.currentTarget?.textContent
+                            ? e.currentTarget?.textContent
+                            : "",
+                    );
                 }}
                 onFocus={() => {
                     if (!contentEmpty || !inputRef?.current) return;
@@ -76,6 +116,7 @@ export default function ViewpointCard() {
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
                         section: "mr-1",
                     }}
+                    onClick={onDiscard}
                 >
                     刪除
                 </Button>
@@ -87,14 +128,7 @@ export default function ViewpointCard() {
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
                         section: "mr-1",
                     }}
-                    onClick={() => {
-                        console.log(
-                            "Title= ",
-                            viewpointTitle,
-                            "\nContent= ",
-                            inputRef.current?.innerText,
-                        );
-                    }}
+                    onClick={onPublish}
                 >
                     發表
                 </Button>
