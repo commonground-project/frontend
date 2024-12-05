@@ -1,7 +1,6 @@
-import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
 import Link from "next/link";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
-import FactListCard from "@/components/AuthorViewpoint/FactListCard";
+import AuthorViewpointCard from "@/components/AuthorViewpoint/AuthorViewpointCard";
 import { Metadata } from "next";
 
 type AuthorViewPointProps = {
@@ -27,15 +26,7 @@ export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
                 <ArrowLongLeftIcon className="mr-1 inline-block h-6 w-6" />
                 返回議題
             </Link>
-            <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
-                {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
-                <div className="w-2/3">
-                    <ViewpointCard />
-                </div>
-                <div className="w-1/3">
-                    <FactListCard />
-                </div>
-            </div>
+            <AuthorViewpointCard issueId={id} />
         </main>
     );
 }
