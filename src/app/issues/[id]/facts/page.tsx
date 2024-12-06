@@ -1,15 +1,14 @@
 import { mockFact, mockFact2, mockFact3 } from "@/mock/conversationMock";
 import AllFactsCard from "@/components/Conversation/Facts/AllFactsCard";
 
-type FactsViewrops = {
+type FactsViewProps = {
     params: {
         id: string;
     };
 };
 
-export default function FactsPage({ params }: FactsViewrops) {
+export default function FactsPage({ params }: FactsViewProps) {
     const { id } = params;
-    console.log(id);
 
     return (
         <div className="flex min-h-screen flex-col bg-neutral-200">
