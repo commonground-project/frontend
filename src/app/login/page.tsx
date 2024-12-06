@@ -2,38 +2,35 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
+import { toast } from "sonner";
 import useSession from "@/hooks/useSession";
 
 export default function LoginPage() {
-    const { login } = useAuth();
-    const session = useSession();
+    const { login, data: session } = useSession();
     const router = useRouter();
     const SessionToken = process.env.NEXT_PUBLIC_TEST_TOKEN;
 
     useEffect(() => {
-        if (!session.data) return;
+        if (!session) return;
 
-        if (
-            (session.data && !session.data.username) ||
-            !session.data.nickname
-        ) {
+        if (session.role === "ROLE_NOT_SETUP") {
             router.replace("/onboard");
         } else {
             router.replace("/");
         }
-    }, [session.data, router]);
+    }, [session, router]);
 
     const handleLogin = () => {
         if (!SessionToken) {
-            console.error("SessionToken is undefined");
+            toast.error("SessionToken is undefined");
             return;
         }
 
         const user = login(SessionToken);
-        if (user) {
-            router.replace("/");
+        if (!user) {
+            toast.error("Login failed");
+            return;
         }
     };
 
@@ -46,7 +43,6 @@ export default function LoginPage() {
                         onClick={handleLogin}
                         className="flex items-center space-x-2 rounded-lg bg-white px-4 py-2 text-black transition-colors hover:bg-gray-200"
                     >
-                        {/* Edit SVG */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

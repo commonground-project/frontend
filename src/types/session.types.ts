@@ -5,16 +5,14 @@ export interface User {
     username: string;
     email: string;
     nickname: string;
-    jti: string;
-    nbf: string;
-    exp: string;
+    jti: number;
+    nbf: number;
+    exp: number;
 }
 
 export interface Session {
     data: User | null;
-}
-
-export interface Auth {
     login: (token: string) => User | null;
     logout: () => void;
 }
+
