@@ -7,7 +7,9 @@ import { COOKIE_AUTH_NAME, COOKIE_OPTIONS } from "@/lib/auth/constants";
 
 export default function useSession(): Session {
     const [cookies, setCookie, removeCookie] = useCookies([COOKIE_AUTH_NAME]);
-    const { decodedToken, isExpired, reEvaluateToken } = useJwt<User>(cookies[COOKIE_AUTH_NAME]);
+    const { decodedToken, isExpired, reEvaluateToken } = useJwt<User>(
+        cookies[COOKIE_AUTH_NAME],
+    );
 
     useEffect(() => {
         const sessionToken = cookies[COOKIE_AUTH_NAME];
@@ -31,7 +33,10 @@ export default function useSession(): Session {
             return null;
         }
 
-        setCookie(COOKIE_AUTH_NAME, token, { ...COOKIE_OPTIONS, expires: new Date(decodedToken.exp * 1000) });
+        setCookie(COOKIE_AUTH_NAME, token, {
+            ...COOKIE_OPTIONS,
+            expires: new Date(decodedToken.exp * 1000),
+        });
         reEvaluateToken(token);
         return decodedToken;
     };

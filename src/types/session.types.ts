@@ -15,4 +15,3 @@ export interface Session {
     login: (token: string) => User | null;
     logout: () => void;
 }
-
