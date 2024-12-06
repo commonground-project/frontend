@@ -10,10 +10,7 @@ dependencies:
     version: 2.2.0(react@18.3.1)
   '@mantine/core':
     specifier: ^7.13.1
-    version: 7.13.1(@mantine/hooks@7.14.2)(@types/react@18.3.11)(react-dom@18.3.1)(react@18.3.1)
-  '@mantine/hooks':
-    specifier: ^7.14.2
-    version: 7.14.2(react@18.3.1)
+    version: 7.13.1(@mantine/hooks@7.13.1)(@types/react@18.3.11)(react-dom@18.3.1)(react@18.3.1)
   '@tanstack/react-query':
     specifier: ^5.59.0
     version: 5.59.0(react@18.3.1)
@@ -41,6 +38,9 @@ dependencies:
   react-jwt:
     specifier: ^1.2.2
     version: 1.2.2(react@18.3.1)
+  sonner:
+    specifier: ^1.7.0
+    version: 1.7.0(react-dom@18.3.1)(react@18.3.1)
   zustand:
     specifier: 5.0.0-rc.2
     version: 5.0.0-rc.2(@types/react@18.3.11)(react@18.3.1)
@@ -250,7 +250,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: true
 
-  /@mantine/core@7.13.1(@mantine/hooks@7.14.2)(@types/react@18.3.11)(react-dom@18.3.1)(react@18.3.1):
+  /@mantine/core@7.13.1(@mantine/hooks@7.13.1)(@types/react@18.3.11)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-KH/WrcY/5pf3FxUUbtG77xyd7kfp6SRPAJFkxjFlg9kXroiQ7baljphY371CwPYPINERShUdvCQLpz4r4WMIHA==}
     peerDependencies:
       '@mantine/hooks': 7.13.1
@@ -258,7 +258,7 @@ packages:
       react-dom: ^18.2.0
     dependencies:
       '@floating-ui/react': 0.26.24(react-dom@18.3.1)(react@18.3.1)
-      '@mantine/hooks': 7.14.2(react@18.3.1)
+      '@mantine/hooks': 7.13.1(react@18.3.1)
       clsx: 2.1.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -270,10 +270,10 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mantine/hooks@7.14.2(react@18.3.1):
-    resolution: {integrity: sha512-WN0bEJHw2Lh/2PLqik8rqITJRZAu6A1FK6f+H0SNTrQuWYBPSHdNTqM8hntDnhpM/2mZ52t3VWYgvNVGczLxIw==}
+  /@mantine/hooks@7.13.1(react@18.3.1):
+    resolution: {integrity: sha512-Hfd4v380pPJUKDbARk+egdAanx7bpGZmaOn8G3QBZjwDufVopxip0WPkifUKUIMeYY1CTboa+1go9l56ZWrrSg==}
     peerDependencies:
-      react: ^18.x || ^19.x
+      react: ^18.2.0
     dependencies:
       react: 18.3.1
     dev: false
@@ -2998,6 +2998,16 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
     dev: true
+
+  /sonner@1.7.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-W6dH7m5MujEPyug3lpI2l3TC3Pp1+LTgK0Efg+IHDrBbtEjyCmCHHo6yfNBOsf1tFZ6zf+jceWwB38baC8yO9g==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
 
   /source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
