@@ -5,9 +5,7 @@ import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
 import type { Metadata } from "next";
 
 type IssueViewProps = {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 };
 
 type MetadataProps = {
@@ -26,8 +24,8 @@ export async function generateMetadata({
     };
 }
 
-export default function IssueView({ params }: IssueViewProps) {
-    const { id } = params;
+export default async function IssueView({ params }: IssueViewProps) {
+    const id = (await params).id;
     console.log(id);
 
     return (
