@@ -11,13 +11,13 @@ type IssueViewProps = {
 };
 
 type MetadataProps = {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({
     params,
 }: MetadataProps): Promise<Metadata> {
-    const id = params.id;
+    const id = (await params).id;
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return {
         title: `CommonGround - ${issue.title}`,
