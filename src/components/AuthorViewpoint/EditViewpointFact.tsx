@@ -18,7 +18,7 @@ export default function EditViewpointFact({ fact, removeFact }: FactCardProps) {
                 <Button
                     variant="transparent"
                     classNames={{
-                        root: "float-right pr-1 pl-0 flex opacity-0 group-hover:opacity-100",
+                        root: "float-right pr-1 pl-0 flex invisible group-hover:visible",
                     }}
                     onClick={() => removeFact(String(fact.id))}
                 >

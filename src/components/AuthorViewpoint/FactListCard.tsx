@@ -15,7 +15,7 @@ export default function FactListCard({
     viewpointFactList,
     setViewpointFactList,
 }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
+    const [searchData, setSearchData] = useState<Fact[]>(allFacts);
     const [selectedFactId, setSelectedFactId] = useState<string>("");
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
 
@@ -62,7 +62,7 @@ export default function FactListCard({
             <h1 className="mb-1 text-lg font-semibold text-neutral-700">
                 事實
             </h1>
-            <div className="mb-2 flex w-full items-center py-1 pr-[52px]">
+            <div className="flex w-full items-center py-1 pr-[52px]">
                 <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
                 <Select
                     variant="unstyled"
@@ -90,7 +90,7 @@ export default function FactListCard({
             <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
-                <div className="flex flex-col gap-3 pl-7 pr-4">
+                <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
                     {viewpointFactList.map((fact) => (
                         <EditViewpointFact
                             key={fact.id}
@@ -98,18 +98,18 @@ export default function FactListCard({
                             removeFact={removeFact}
                         />
                     ))}
+                    <Button
+                        variant="transparent"
+                        leftSection={<PlusIcon className="h-6 w-6" />}
+                        classNames={{
+                            root: "px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
+                            inner: "flex justify-start",
+                            section: "mr-2",
+                        }}
+                    >
+                        引入一條事實
+                    </Button>
                 </div>
-
-                <Button
-                    variant="transparent"
-                    leftSection={<PlusIcon className="h-6 w-6" />}
-                    classNames={{
-                        root: "px-0 ml-7 mt-2 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
-                        section: "mr-2",
-                    }}
-                >
-                    引入一條事實
-                </Button>
             </div>
         </div>
     );
