@@ -2,47 +2,59 @@ import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { decodeToken, useJwt } from "react-jwt";
 import { toast } from "sonner";
-import { Session, User } from "@/types/session.types";
-import { COOKIE_AUTH_NAME, COOKIE_OPTIONS } from "@/lib/auth/constants";
+import { DecodedToken, User } from "@/types/session.types";
+
+interface Session {
+    data: User | null;
+    login: (token: string) => User | null;
+    logout: () => void;
+}
 
 export default function useSession(): Session {
-    const [cookies, setCookie, removeCookie] = useCookies([COOKIE_AUTH_NAME]);
+    const [cookies, setCookie, removeCookie] = useCookies(['user-token']);
     const { decodedToken, isExpired, reEvaluateToken } = useJwt<User>(
-        cookies[COOKIE_AUTH_NAME],
+        cookies['user-token'],
     );
 
     useEffect(() => {
-        const sessionToken = cookies[COOKIE_AUTH_NAME];
+        const sessionToken = cookies['user-token'];
         if (!sessionToken) {
             return;
         }
 
         if (sessionToken && (!decodedToken || isExpired)) {
-            removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
+            removeCookie('user-token');
             reEvaluateToken(sessionToken);
             toast.error("Session expired. Please login again.");
             return;
         }
-    }, [cookies, decodedToken, reEvaluateToken]);
+    }, [cookies, decodedToken, isExpired, reEvaluateToken, removeCookie]);
 
     const login = (token: string) => {
-        const decodedToken = decodeToken<User>(token);
-
-        if (!decodedToken) {
+        const userDecodedToken = decodeToken<DecodedToken>(token);
+        
+        if (!userDecodedToken) {
             toast.error("Invalid token");
             return null;
         }
 
-        setCookie(COOKIE_AUTH_NAME, token, {
-            ...COOKIE_OPTIONS,
-            expires: new Date(decodedToken.exp * 1000),
+        const userToken = {
+            role: userDecodedToken.role,
+            username: userDecodedToken.username,
+            email: userDecodedToken.email,
+            nickname: userDecodedToken.nickname
+        }
+
+        setCookie('user-token', token, {
+            expires: new Date(userDecodedToken.exp * 1000),
         });
+
         reEvaluateToken(token);
-        return decodedToken;
+        return userToken;
     };
 
     const logout = () => {
-        removeCookie(COOKIE_AUTH_NAME, COOKIE_OPTIONS);
+        removeCookie('user-token');
         reEvaluateToken("");
     };
 
@@ -50,5 +62,12 @@ export default function useSession(): Session {
         return { data: null, login, logout };
     }
 
-    return { data: decodedToken, login, logout };
+    const userToken = {
+        role: decodedToken.role,
+        username: decodedToken.username,
+        email: decodedToken.email,
+        nickname: decodedToken.nickname
+    };
+
+    return { data: userToken, login, logout };
 }

@@ -1,4 +1,4 @@
-export interface User {
+export interface DecodedToken {
     iss: string;
     sub: string;
     role: string;
@@ -10,8 +10,9 @@ export interface User {
     exp: number;
 }
 
-export interface Session {
-    data: User | null;
-    login: (token: string) => User | null;
-    logout: () => void;
+export interface User {
+    role: string;
+    username: string;
+    email: string;
+    nickname: string;
 }

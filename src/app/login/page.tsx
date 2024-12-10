@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Toaster } from "sonner";
 import { toast } from "sonner";
 import useSession from "@/hooks/useSession";
 
@@ -68,7 +67,6 @@ export default function LoginPage() {
                         <span>Continue with Google</span>
                     </button>
                 </div>
-                <Toaster />
             </div>
         </div>
     );
