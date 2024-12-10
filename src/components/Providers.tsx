@@ -11,7 +11,15 @@ interface Props {
 export default function Providers({ children }: Props) {
     return (
         <MantineProvider>
-            <CookiesProvider defaultSetOptions={{ path: '/', secure: process.env.NODE_ENV === "production", sameSite: "lax" as const }}>{children}</CookiesProvider>
+            <CookiesProvider
+                defaultSetOptions={{
+                    path: "/",
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "lax" as const,
+                }}
+            >
+                {children}
+            </CookiesProvider>
         </MantineProvider>
     );
 }

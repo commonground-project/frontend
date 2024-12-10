@@ -11,19 +11,19 @@ interface Session {
 }
 
 export default function useSession(): Session {
-    const [cookies, setCookie, removeCookie] = useCookies(['user-token']);
+    const [cookies, setCookie, removeCookie] = useCookies(["user-token"]);
     const { decodedToken, isExpired, reEvaluateToken } = useJwt<User>(
-        cookies['user-token'],
+        cookies["user-token"],
     );
 
     useEffect(() => {
-        const sessionToken = cookies['user-token'];
+        const sessionToken = cookies["user-token"];
         if (!sessionToken) {
             return;
         }
 
         if (sessionToken && (!decodedToken || isExpired)) {
-            removeCookie('user-token');
+            removeCookie("user-token");
             reEvaluateToken(sessionToken);
             toast.error("Session expired. Please login again.");
             return;
@@ -32,7 +32,7 @@ export default function useSession(): Session {
 
     const login = (token: string) => {
         const userDecodedToken = decodeToken<DecodedToken>(token);
-        
+
         if (!userDecodedToken) {
             toast.error("Invalid token");
             return null;
@@ -42,10 +42,10 @@ export default function useSession(): Session {
             role: userDecodedToken.role,
             username: userDecodedToken.username,
             email: userDecodedToken.email,
-            nickname: userDecodedToken.nickname
-        }
+            nickname: userDecodedToken.nickname,
+        };
 
-        setCookie('user-token', token, {
+        setCookie("user-token", token, {
             expires: new Date(userDecodedToken.exp * 1000),
         });
 
@@ -54,7 +54,7 @@ export default function useSession(): Session {
     };
 
     const logout = () => {
-        removeCookie('user-token');
+        removeCookie("user-token");
         reEvaluateToken("");
     };
 
@@ -66,7 +66,7 @@ export default function useSession(): Session {
         role: decodedToken.role,
         username: decodedToken.username,
         email: decodedToken.email,
-        nickname: decodedToken.nickname
+        nickname: decodedToken.nickname,
     };
 
     return { data: userToken, login, logout };
