@@ -18,11 +18,16 @@ export default function useSession(): Session {
 
     useEffect(() => {
         const sessionToken = cookies["user-token"];
-        if (!sessionToken) {
-            return;
-        }
 
-        if (sessionToken && (!decodedToken || isExpired)) {
+        // TODO: Implement refresh token mechanism
+        // Currently we just remove the token and show error message when:
+        // 1. Token is corrupted (can't be decoded)
+        // 2. Token is expired
+        // In the future, we should:
+        // 1. Implement refresh token storage
+        // 2. Add API call to get new access token using refresh token
+        // 3. Handle token refresh failure
+        if (!decodedToken && isExpired) {
             removeCookie("user-token");
             reEvaluateToken(sessionToken);
             toast.error("Session expired. Please login again.");
