@@ -46,7 +46,6 @@ export default function FactModel({
                     icon: "/favicon.ico",
                     title: iframeTitle || "無標題",
                 };
-                // setReferences([...references, newReference]);
                 setTempReferences([...tempReferences, newReference]);
                 console.log("New Reference:", newReference);
                 toast.success("已暫時新增引述資料至右側");
@@ -132,7 +131,7 @@ export default function FactModel({
                 </div>
                 {/* Right Side - References */}
                 <div className="relative flex w-1/3 flex-col p-2">
-                    <h2 className="mb-2 text-lg font-bold">引註資料</h2>
+                    <h2 className="mb-2 text-lg font-bold">引述資料</h2>
 
                     <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
                         {[...references, ...tempReferences].map((reference) => (
@@ -170,7 +169,7 @@ export default function FactModel({
                                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     </button>
                                 </div>
-                                <div className="ml-1 mt-2 text-lg text-gray-800">
+                                <div className="max-w-[20rem] truncate ml-1 mt-2 text-lg text-gray-800">
                                     {reference.title}
                                 </div>
                             </div>
