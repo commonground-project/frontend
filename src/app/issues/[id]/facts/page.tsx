@@ -37,9 +37,7 @@ export default function FactsPage({ params }: FactsViewProps) {
                         <h2 className="mb-1 text-lg font-semibold text-black">
                             所有事實
                         </h2>
-                        <AllFactsCard
-                            facts={facts}
-                        />
+                        <AllFactsCard facts={facts} />
                     </div>
 
                     <FactModel
@@ -52,13 +50,13 @@ export default function FactsPage({ params }: FactsViewProps) {
                     <Button
                         onClick={open}
                         leftSection={<PlusIcon className="h-5 w-5" />}
-                        variant="subtle" 
+                        variant="subtle"
                         color="black"
                         size="compact-md"
                         classNames={{
                             root: "px-0 hover:bg-neutral-100",
                             inner: "justify-start",
-                            label: "font-sans font-bold text-md"
+                            label: "font-sans font-bold text-md",
                         }}
                     >
                         新增事實

@@ -169,7 +169,7 @@ export default function FactModel({
                                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     </button>
                                 </div>
-                                <div className="max-w-[20rem] truncate ml-1 mt-2 text-lg text-gray-800">
+                                <div className="ml-1 mt-2 max-w-[20rem] truncate text-lg text-gray-800">
                                     {reference.title}
                                 </div>
                             </div>
