@@ -2,6 +2,8 @@
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
 type ViewpointCardProps = {
@@ -35,7 +37,7 @@ export default function ViewpointCard({
 
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty) {
-            console.log("Title and Content MUST NOT be empty");
+            toast.error("標題和內容不得為空");
             return;
         }
 
@@ -48,6 +50,7 @@ export default function ViewpointCard({
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
+            <ToastContainer />
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 value={viewpointTitle}
@@ -69,17 +72,12 @@ export default function ViewpointCard({
                         if (node.className.includes("pt-1.5")) return;
                         node.classList.add("pt-1.5");
                     });
-                    setViewpointContent(
-                        e.currentTarget?.textContent
-                            ? e.currentTarget?.textContent
-                            : "",
-                    );
                 }}
                 onFocus={() => {
                     if (!contentEmpty || !inputRef?.current) return;
                     inputRef.current.innerHTML = "";
                 }}
-                onBlur={() => {
+                onBlur={(e) => {
                     if (inputRef?.current === null) return;
                     const isEmpty = Array.from(
                         inputRef.current.childNodes,
@@ -98,7 +96,13 @@ export default function ViewpointCard({
                         placeholderElement.textContent =
                             "開始打字，或選取一段文字來新增引注資料";
                         inputRef.current.appendChild(placeholderElement);
+                        return;
                     }
+                    setViewpointContent(
+                        e.currentTarget?.textContent
+                            ? e.currentTarget?.textContent
+                            : "",
+                    );
                 }}
             />
             <div className="flex justify-end gap-3">
