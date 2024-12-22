@@ -2,9 +2,7 @@ import AuthorViewpointCard from "@/components/AuthorViewpoint/AuthorViewpointCar
 import { Metadata } from "next";
 
 type AuthorViewPointProps = {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 };
 
 export const metadata: Metadata = {
@@ -12,8 +10,10 @@ export const metadata: Metadata = {
     keywords: "社會時事, 觀點, 理性討論, 撰寫觀點",
 };
 
-export default function AuthorViewPoint({ params }: AuthorViewPointProps) {
-    const id = params.id;
+export default async function AuthorViewPoint({
+    params,
+}: AuthorViewPointProps) {
+    const id = (await params).id;
 
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
