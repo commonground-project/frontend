@@ -14,6 +14,7 @@ export default function RootLayout({
                 <Providers>
                     <Header />
                     <div className="scrollbar-gutter-stable-both-edges h-[calc(100vh-56px)] overflow-y-auto">
+                        {/* 56px for header */}
                         {children}
                     </div>
                 </Providers>
