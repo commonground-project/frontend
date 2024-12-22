@@ -3,12 +3,12 @@ import { Fact } from "@/types/conversations.types";
 import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { allFacts } from "@/mock/conversationMock";
 
 type FactListCardProps = {
     viewpointFactList: Fact[];
-    setViewpointFactList: (FactList: Fact[]) => void;
+    setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
 };
 
 export default function FactListCard({
@@ -21,40 +21,41 @@ export default function FactListCard({
 
     useEffect(() => {
         const selectedFact = searchData.find(
-            (fact) => String(fact.id) == selectedFactId,
+            (fact) => String(fact.id) === selectedFactId,
         );
         if (selectedFact) {
             //move the selected fact to the viewpointFactList
-            setViewpointFactList([...viewpointFactList, selectedFact]);
+            setViewpointFactList((prev) => [...prev, selectedFact]);
 
             //remove the selected fact from the searchData
             const newSearchData = searchData.filter(
                 (fact) => fact.id !== selectedFact.id,
             );
             setSearchData(newSearchData);
+            setSelectedFactId("");
         }
-    }, [selectedFactId, setSelectedFactId]);
+    }, [
+        selectedFactId,
+        setSelectedFactId,
+        viewpointFactList,
+        setViewpointFactList,
+        searchData,
+    ]);
 
     const removeFact = (factId: string) => {
         //remove the fact from the viewpointFactList
         const removedFact = viewpointFactList.find(
             (fact) => String(fact.id) == factId,
         );
-        const newSelectedFacts = viewpointFactList.filter(
-            (fact) => String(fact.id) !== factId,
+        setViewpointFactList(
+            viewpointFactList.filter((fact) => String(fact.id) !== factId),
         );
-        setViewpointFactList(newSelectedFacts);
 
         //add the fact back to the searchData
         const newSearchData = [...searchData, removedFact].filter(
             (fact): fact is Fact => fact !== undefined,
         );
         setSearchData(newSearchData);
-
-        console.log(
-            "factlist",
-            newSelectedFacts.map((fact) => fact.id),
-        );
     };
 
     return (
@@ -70,7 +71,7 @@ export default function FactListCard({
                     value={searchValue}
                     onChange={(selectedFactId) => {
                         setSelectedFactId(selectedFactId ? selectedFactId : "");
-                        console.log("User selected id:", selectedFactId);
+                        console.log("User selected fact id:", selectedFactId);
                     }}
                     data={searchData.map((fact) => ({
                         value: String(fact.id),
