@@ -2,17 +2,15 @@
 import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 import { Modal } from "@mantine/core";
 import { useState } from "react";
-// import { useDisclosure } from "@mantine/hooks";
 
 type EmptyIssueCardProps = {
-    id: number;
+    id: string;
 };
 
 export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
+    console.log(id);
+
     const [openModal, setOpenModal] = useState(false);
-
-    console.log(`EmptyIssueCard id: ${id}`);
-
     return (
         <div>
             <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />
