@@ -4,16 +4,14 @@ import { RectangleStackIcon } from "@heroicons/react/24/outline";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
-import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
+import { Issue } from "@/types/conversations.types";
 import { Tooltip } from "@mantine/core";
 
 type IssueCardProps = {
-    issueId: string;
+    issue: Issue;
 };
 
-export default function IssueCard({ issueId }: IssueCardProps) {
-    const issue = issueId == "1" ? mockIssue : mockEmptyIssue;
-
+export default function IssueCard({ issue }: IssueCardProps) {
     return (
         <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>

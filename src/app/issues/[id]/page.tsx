@@ -1,39 +1,62 @@
 import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
-import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
 import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
 import type { Metadata } from "next";
+import { Issue } from "@/types/conversations.types";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 type IssueViewProps = {
-    params: Promise<{ id: string }>;
+    issueId: string;
+    issue: Issue;
 };
 
 type MetadataProps = {
-    params: Promise<{ id: string }>;
+    issue: Issue;
 };
 
-export async function generateMetadata({
-    params,
-}: MetadataProps): Promise<Metadata> {
-    const id = (await params).id;
-    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+export const getServerSideProps = (async (context) => {
+    const id = context.params?.id as string;
+
+    const token = process.env.TMP_JWT_TOKEN;
+
+    const issue: Issue = (await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/issues/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    ).then((res) => res.json())) satisfies Issue;
+
     return {
-        title: `CommonGround - ${issue.title}`,
-        keywords: "social-issues, viewpoints, rational-discussion",
-        description: issue.description,
+        props: {
+            issueId: id,
+            issue,
+        },
     };
-}
+}) satisfies GetServerSideProps<IssueViewProps>;
 
-export default async function IssueView({ params }: IssueViewProps) {
-    const id = (await params).id;
+// export async function generateMetadata({
+//     issue,
+// }: MetadataProps): Promise<Metadata> {
+//     return {
+//         title: `CommonGround - ${issue.title}`,
+//         keywords: "social-issues, viewpoints, rational-discussion",
+//         description: issue.description,
+//     };
+// }
 
+export default function IssueView(
+    props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) {
+    const { issueId, issue } = props;
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                <IssueCard issueId={id} />
-                <ViewPointList issueId={id} />
+                <IssueCard issue={issue} />
+                <ViewPointList issueId={issueId} />
             </main>
-            <AddViewPointBar id={id} />
+            <AddViewPointBar id={issueId} />
         </div>
     );
 }
