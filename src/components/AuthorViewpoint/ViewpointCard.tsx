@@ -2,8 +2,7 @@
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster, toast } from "sonner";
 import Link from "next/link";
 
 type ViewpointCardProps = {
@@ -50,7 +49,7 @@ export default function ViewpointCard({
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
-            <ToastContainer />
+            <Toaster />
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 value={viewpointTitle}
