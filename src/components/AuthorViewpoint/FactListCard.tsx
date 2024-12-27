@@ -24,6 +24,15 @@ export default function FactListCard({
             (fact) => String(fact.id) === selectedFactId,
         );
         if (selectedFact) {
+            //check if the selected fact exists in search data
+            const isFactExist = searchData.some(
+                (fact) => fact.id === selectedFact.id,
+            );
+            if (!isFactExist) {
+                console.error("Selected fact does not exist in search data");
+                return;
+            }
+
             //move the selected fact to the viewpointFactList
             setViewpointFactList((prev) => [...prev, selectedFact]);
 
@@ -41,21 +50,30 @@ export default function FactListCard({
         setViewpointFactList,
         searchData,
     ]);
-
+    //remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
-        //remove the fact from the viewpointFactList
         const removedFact = viewpointFactList.find(
             (fact) => String(fact.id) == factId,
         );
-        setViewpointFactList(
-            viewpointFactList.filter((fact) => String(fact.id) !== factId),
+        setViewpointFactList((prev) =>
+            prev.filter((fact) => String(fact.id) !== factId),
         );
 
-        //add the fact back to the searchData
-        const newSearchData = [...searchData, removedFact].filter(
-            (fact): fact is Fact => fact !== undefined,
+        //check if the removed fact exists in searchData
+        const isFactExist = searchData.some(
+            (fact) => fact.id === removedFact?.id,
         );
-        setSearchData(newSearchData);
+        if (isFactExist) {
+            console.error("Removed fact already exists in search data");
+            return;
+        }
+
+        //add the fact back to the searchData
+        setSearchData((prev) =>
+            [...prev, removedFact].filter(
+                (fact): fact is Fact => fact !== undefined,
+            ),
+        );
     };
 
     return (
@@ -85,7 +103,18 @@ export default function FactListCard({
                         input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
                     }}
                     placeholder="搜尋 CommonGround"
-                    nothingFoundMessage="自行新增事實"
+                    nothingFoundMessage={
+                        <Button
+                            variant="transparent"
+                            classNames={{
+                                root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
+                                inner: "flex justify-start",
+                                label: "whitespace-normal text-left",
+                            }}
+                        >
+                            找不到想引著的事實嗎？將其引入 CommonGround 吧!
+                        </Button>
+                    }
                 />
             </div>
             <div className="h-[calc(100vh-265px)] overflow-auto">
