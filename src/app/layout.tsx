@@ -2,8 +2,6 @@ import Header from "../components/AppShell/Header";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./globals.css";
-import Providers from "./providers";
-import Header from "../components/AppShell/Header";
 
 export default function RootLayout({
     children,
