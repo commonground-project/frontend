@@ -8,7 +8,10 @@ type FactCardProps = {
     removeFact: (id: string) => void;
 };
 
-export default function EditViewpointFact({ fact, removeFact }: FactCardProps) {
+export default function EditableViewpointReference({
+    fact,
+    removeFact,
+}: FactCardProps) {
     return (
         <div>
             <div className="group flex">

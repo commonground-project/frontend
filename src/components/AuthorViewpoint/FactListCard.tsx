@@ -1,6 +1,6 @@
 "use client";
 import { Fact } from "@/types/conversations.types";
-import EditViewpointFact from "@/components/AuthorViewpoint/EditViewpointFact";
+import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
@@ -122,7 +122,7 @@ export default function FactListCard({
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
                     {viewpointFactList.map((fact) => (
-                        <EditViewpointFact
+                        <EditableViewpointReference
                             key={fact.id}
                             fact={fact}
                             removeFact={removeFact}
