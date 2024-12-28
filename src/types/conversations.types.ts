@@ -1,4 +1,4 @@
-import { UserRepresentation } from "./users.types";
+import { UserProfile } from "./users.types";
 
 export interface Issue {
     id: number;
@@ -23,7 +23,7 @@ export interface Fact {
 export interface ViewPoint {
     id: number;
     title: string;
-    user: UserRepresentation;
+    user: UserProfile;
     created: Date;
     content: string;
     facts: Fact[];
