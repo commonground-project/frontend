@@ -42,7 +42,7 @@ export default async function IssueView({ params }: IssueViewProps) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.TMP_JWT_TOKEN}`,
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
             },
         },
     ).then((res) => res.json());
