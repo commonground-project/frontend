@@ -5,19 +5,17 @@ import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
 import type { Metadata } from "next";
 
 type IssueViewProps = {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 };
 
 type MetadataProps = {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({
     params,
 }: MetadataProps): Promise<Metadata> {
-    const id = params.id;
+    const id = (await params).id;
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return {
         title: `CommonGround - ${issue.title}`,
@@ -26,19 +24,16 @@ export async function generateMetadata({
     };
 }
 
-export default function IssueView({ params }: IssueViewProps) {
-    const { id } = params;
+export default async function IssueView({ params }: IssueViewProps) {
+    const id = (await params).id;
     console.log(id);
 
     return (
-        <div className="flex min-h-screen flex-col bg-neutral-200">
+        <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                {/* issue */}
                 <IssueCard issueId={id} />
-                {/* view */}
                 <ViewPointList issueId={id} />
             </main>
-            {/* textbar */}
             <AddViewPointBar id={id} />
         </div>
     );

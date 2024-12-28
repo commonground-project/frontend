@@ -1,56 +1,33 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
-import useSession from "@/hooks/useSession";
+import { useRouter } from "next/navigation";
 
-function LoginContent() {
-    const { status, login } = useSession();
+export default function LoginPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const SessionToken = process.env.NEXT_PUBLIC_TEST_TOKEN;
 
-    useEffect(() => {
-        const token = searchParams?.get("token");
-        if (token) {
-            login(token);
-            router.replace("/");
-        }
-    }, [searchParams, login, status, router]);
+    const handleLogin = (redirectTo?: string) => {
+        if (!window)
+            return console.error("This action is not supported server-side!");
 
-    useEffect(() => {
-        if (status === "authenticated") {
-            router.push("/");
+        const callbackURL = `${window.location.protocol}//${window.location.host}/auth/callback`;
+        let redirectURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/oauth2/google?c=${callbackURL}`;
+        if (redirectTo) {
+            redirectURL += `&r=${redirectTo}`;
         }
-    }, [status, router]);
-
-    const handleLogin = () => {
-        if (SessionToken) {
-            login(SessionToken);
-        } else {
-            console.error("SessionToken is undefined");
-        }
+        router.push(redirectURL);
     };
 
-    if (status === "loading") {
-        return (
-            <div className="flex items-center text-center">
-                <p>Loading...</p>
-                <span className="animate-spin">⌛</span>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex min-h-full items-center justify-center">
-            <div className="center rounded-lg bg-gray-100 px-20 py-10 font-bold text-black shadow-md">
+        <div className="flex min-h-screen w-full items-center justify-center">
+            <div className="rounded-lg bg-gray-100 px-20 py-10 font-bold text-black shadow-md">
                 <h1 className="mb-4 text-center text-2xl">登入 CommonGround</h1>
                 <div className="flex justify-center">
                     <button
-                        onClick={handleLogin}
+                        onClick={() =>
+                            handleLogin("http://localhost:3000/test/")
+                        }
                         className="flex items-center space-x-2 rounded-lg bg-white px-4 py-2 text-black transition-colors hover:bg-gray-200"
                     >
-                        {/* Edit SVG */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -78,20 +55,5 @@ function LoginContent() {
                 </div>
             </div>
         </div>
-    );
-}
-
-export default function LoginPage() {
-    return (
-        <Suspense
-            fallback={
-                <div className="flex items-center text-center">
-                    <p>Loading...</p>
-                    <span className="animate-spin">⌛</span>
-                </div>
-            }
-        >
-            <LoginContent />
-        </Suspense>
     );
 }

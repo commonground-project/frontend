@@ -2,8 +2,11 @@
 
 @layer tailwind {
     @tailwind base;
-    @tailwind base;
 }
 
 @tailwind components;
 @tailwind utilities;
+
+.scrollbar-gutter-stable-both-edges {
+    scrollbar-gutter: stable both-edges;
+}
