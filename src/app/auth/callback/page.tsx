@@ -37,7 +37,7 @@ export default function CallbackPage() {
         }
 
         router.push(redirectTo ? redirectTo : "/");
-    }, []);
+    }, [login, router]);
 
     return <div></div>;
 }
