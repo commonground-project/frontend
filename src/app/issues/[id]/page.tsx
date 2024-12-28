@@ -1,43 +1,19 @@
 import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
-import type { Metadata } from "next";
+// import type { Metadata } from "next";
 import { Issue } from "@/types/conversations.types";
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 type IssueViewProps = {
-    issueId: string;
-    issue: Issue;
+    params: Promise<{ id: string }>;
 };
 
-type MetadataProps = {
-    issue: Issue;
-};
-
-export const getServerSideProps = (async (context) => {
-    const id = context.params?.id as string;
-
-    const token = process.env.TMP_JWT_TOKEN;
-
-    const issue: Issue = (await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/issues/${id}`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        },
-    ).then((res) => res.json())) satisfies Issue;
-
-    return {
-        props: {
-            issueId: id,
-            issue,
-        },
-    };
-}) satisfies GetServerSideProps<IssueViewProps>;
+// type MetadataProps = {
+//     params: Promise<{ id: string }>;
+// };
 
 // export async function generateMetadata({
-//     issue,
+//     params,
 // }: MetadataProps): Promise<Metadata> {
 //     return {
 //         title: `CommonGround - ${issue.title}`,
@@ -46,11 +22,21 @@ export const getServerSideProps = (async (context) => {
 //     };
 // }
 
-export default function IssueView(
-    props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
-    const { issueId, issue } = props;
-    return (
+export default async function IssueView({ params }: IssueViewProps) {
+    const issueId = (await params).id;
+
+    const issue: Issue = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.TMP_JWT_TOKEN}`,
+            },
+        },
+    ).then((res) => res.json());
+
+    return issue ? (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
                 <IssueCard issue={issue} />
@@ -58,5 +44,7 @@ export default function IssueView(
             </main>
             <AddViewPointBar id={issueId} />
         </div>
+    ) : (
+        <div>Loading...</div>
     );
 }
