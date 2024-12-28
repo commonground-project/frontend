@@ -15,7 +15,7 @@ export default function FactListCard({
     viewpointFactList,
     setViewpointFactList,
 }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<Fact[]>(allFacts);
+    const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string>("");
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
 
@@ -33,14 +33,20 @@ export default function FactListCard({
                 return;
             }
 
-            //move the selected fact to the viewpointFactList
+            //check if the selected fact exists in viewpointFactList
+            const isFactExistInList = viewpointFactList.some(
+                (fact) => fact.id === selectedFact.id,
+            );
+            if (isFactExistInList) {
+                console.error(
+                    "Selected fact already exists in viewpointFactList",
+                );
+                return;
+            }
+
+            //add the selected fact to the viewpointFactList
             setViewpointFactList((prev) => [...prev, selectedFact]);
 
-            //remove the selected fact from the searchData
-            const newSearchData = searchData.filter(
-                (fact) => fact.id !== selectedFact.id,
-            );
-            setSearchData(newSearchData);
             setSelectedFactId("");
         }
     }, [
@@ -52,27 +58,8 @@ export default function FactListCard({
     ]);
     //remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
-        const removedFact = viewpointFactList.find(
-            (fact) => String(fact.id) == factId,
-        );
         setViewpointFactList((prev) =>
             prev.filter((fact) => String(fact.id) !== factId),
-        );
-
-        //check if the removed fact exists in searchData
-        const isFactExist = searchData.some(
-            (fact) => fact.id === removedFact?.id,
-        );
-        if (isFactExist) {
-            console.error("Removed fact already exists in search data");
-            return;
-        }
-
-        //add the fact back to the searchData
-        setSearchData((prev) =>
-            [...prev, removedFact].filter(
-                (fact): fact is Fact => fact !== undefined,
-            ),
         );
     };
 
@@ -91,10 +78,23 @@ export default function FactListCard({
                         setSelectedFactId(selectedFactId ? selectedFactId : "");
                         console.log("User selected fact id:", selectedFactId);
                     }}
-                    data={searchData.map((fact) => ({
-                        value: String(fact.id),
-                        label: fact.title,
-                    }))}
+                    data={searchData
+                        .map((fact) =>
+                            //check if searchData already exists in viewpointFactList
+                            viewpointFactList.some(
+                                (viewpointFact) => viewpointFact.id === fact.id,
+                            )
+                                ? //if exists, return null. No need to show in the search result
+                                  null
+                                : {
+                                      value: String(fact.id),
+                                      label: fact.title,
+                                  },
+                        )
+                        .filter(
+                            (item): item is { value: string; label: string } =>
+                                item !== null,
+                        )}
                     checkIconPosition="right"
                     radius={0}
                     w="100%"
