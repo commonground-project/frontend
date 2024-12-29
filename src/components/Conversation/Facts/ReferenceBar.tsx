@@ -11,6 +11,8 @@ export default function ReferenceBar({
     reference,
     showSrcTitle,
 }: FactBarProps) {
+    const pageURL = new URL(reference.url);
+
     return (
         <Link
             key={reference.id}
@@ -22,8 +24,8 @@ export default function ReferenceBar({
             {reference.icon.length ? (
                 <img
                     className="h-4 w-4 rounded-full"
-                    src={reference.icon}
-                    alt=""
+                    src={`${pageURL.protocol}//${pageURL.host}${reference.icon}`}
+                    alt="favicon"
                 />
             ) : (
                 <GlobeAltIcon className="h-4 w-4 text-gray-600" />
@@ -31,7 +33,7 @@ export default function ReferenceBar({
 
             <div className="flex items-center">
                 <span className="font-sans text-sm font-normal text-neutral-500">
-                    {new URL(reference.url).hostname.replace("www.", "")}
+                    {pageURL.hostname.replace("www.", "")}
                 </span>
                 {showSrcTitle && (
                     <span className="max-w-[38rem] truncate text-sm text-gray-600">
