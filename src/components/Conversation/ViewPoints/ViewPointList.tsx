@@ -1,53 +1,84 @@
 "use client";
 import EmptyViewPointCard from "@/components/Conversation/ViewPoints/EmptyViewPointSection";
 import ViewPointCard from "@/components/Conversation/ViewPoints/ViewPointCard";
-import { useEffect, useState } from "react";
-import { ViewPoint } from "@/types/conversations.types";
+import { useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 
 type ViewPointListProps = {
     issueId: string;
 };
 
 export default function ViewPointList({ issueId }: ViewPointListProps) {
-    const [viewpoints, setViewpoints] = useState<ViewPoint[]>([]);
+    const { ref, inView } = useInView();
+
+    const fetchViewpoints = async ({ pageParam }: { pageParam: number }) => {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=5&page=${pageParam}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                },
+            },
+        );
+        return res.json();
+    };
+
+    const {
+        data,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        status,
+    } = useInfiniteQuery({
+        queryKey: ["viewpoints", issueId],
+        queryFn: fetchViewpoints,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.page.number + 1 < lastPage.page.totalPage)
+                return lastPage.page.number + 1;
+        },
+    });
 
     useEffect(() => {
-        console.log(`fetching viewpoints ${issueId}`);
-        const fetchData = async () => {
-            console.log(
-                `access token ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
-            );
-            const data = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=10`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
-                    },
-                },
-            ).then((res) => res.json());
-            console.log(data);
-            setViewpoints(() => data.content);
-        };
-        fetchData();
-    }, [issueId]);
+        if (!inView) return;
+        console.log("last item in view");
+        if (!hasNextPage || isFetchingNextPage) return;
+        fetchNextPage();
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    if (status === "pending") {
+        return <h1>載入中...</h1>;
+    }
+
+    if (error) {
+        return <h1> 無法取得議題資訊，請再試一次或是檢查網路連線 </h1>;
+    }
 
     return (
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="mb-2 text-xl font-semibold">查看所有觀點</h1>
-            {viewpoints.length === 0 ? (
+            {data.pages[0].content.length == 0 ? (
                 <EmptyViewPointCard id={issueId} />
             ) : (
                 <div className="flex-col">
-                    {viewpoints.map((viewpoint, index) => (
-                        <div key={viewpoint.id}>
-                            <ViewPointCard viewpoint={viewpoint} />
-                            {index !== viewpoints.length - 1 && (
-                                <hr className="my-4 w-full border-neutral-500" />
-                            )}
-                        </div>
-                    ))}
+                    {data.pages
+                        .map((page) => page.content)
+                        .flat()
+                        .map((viewpoint, index, array) => (
+                            <div
+                                key={viewpoint.id}
+                                ref={index === array.length - 1 ? ref : null}
+                            >
+                                <ViewPointCard viewpoint={viewpoint} />
+                                {index !== array.length - 1 && (
+                                    <hr className="my-4 w-full border-neutral-500" />
+                                )}
+                            </div>
+                        ))}
                 </div>
             )}
         </div>

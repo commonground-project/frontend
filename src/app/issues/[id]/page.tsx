@@ -22,10 +22,11 @@ export async function generateMetadata({
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.TMP_JWT_TOKEN}`,
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
             },
         },
     ).then((res) => res.json());
+
     return {
         title: `CommonGround - ${issue.title}`,
         keywords: "social-issues, viewpoints, rational-discussion",
@@ -36,7 +37,7 @@ export async function generateMetadata({
 export default async function IssueView({ params }: IssueViewProps) {
     const issueId = (await params).id;
 
-    const issue: Issue = await fetch(
+    const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
         {
             method: "GET",
@@ -45,9 +46,19 @@ export default async function IssueView({ params }: IssueViewProps) {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
             },
         },
-    ).then((res) => res.json());
+    ).catch(() => {
+        console.log(`HTTP error!`);
+        return;
+    });
 
-    return issue ? (
+    if (!response?.ok) {
+        console.log(`HTTP error! status: ${response?.status}`);
+        return <h1> 無法取得議題資訊，請再試一次或是檢查網路連線 </h1>;
+    }
+
+    const issue: Issue = await response.json();
+
+    return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
                 <IssueCard issue={issue} />
@@ -55,7 +66,5 @@ export default async function IssueView({ params }: IssueViewProps) {
             </main>
             <AddViewPointBar id={issueId} />
         </div>
-    ) : (
-        <div>Loading...</div>
     );
 }
