@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { ViewPoint } from "@/types/conversations.types";
+import type { ViewPoint } from "@/types/conversations.types";
 import { Spoiler } from "@mantine/core";
 import {
     HandThumbUpIcon,

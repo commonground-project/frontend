@@ -1,7 +1,7 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
     isServer,
     QueryClient,

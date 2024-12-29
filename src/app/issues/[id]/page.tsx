@@ -20,13 +20,12 @@ export async function generateMetadata({
     return {
         title: `CommonGround - ${issue.title}`,
         keywords: "social-issues, viewpoints, rational-discussion",
-        description: issue.summary,
+        description: issue.description,
     };
 }
 
 export default async function IssueView({ params }: IssueViewProps) {
     const id = (await params).id;
-    console.log(id);
 
     return (
         <div>
