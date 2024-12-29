@@ -1,4 +1,4 @@
-import type { DecodedToken, User } from "@/types/users.types";
+import { DecodedToken, User } from "@/types/users.types";
 import { decodeToken } from "react-jwt";
 
 export const decodeUserFromString = (token: string): User | null => {

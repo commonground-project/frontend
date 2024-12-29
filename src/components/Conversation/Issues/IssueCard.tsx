@@ -17,7 +17,7 @@ export default function IssueCard({ issueId }: IssueCardProps) {
     return (
         <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
-            {issue.description !== "" ? (
+            {issue.summary !== "" ? (
                 <div className="mt-3">
                     <div className="mb-1 flex items-center">
                         <h1 className="inline text-lg font-semibold">
@@ -32,10 +32,10 @@ export default function IssueCard({ issueId }: IssueCardProps) {
                             <InformationCircleIcon className="ml-1 inline-block h-5 w-5" />
                         </Tooltip>
                     </div>
-                    <p className="text-lg font-normal">{issue.description}</p>
+                    <p className="text-lg font-normal">{issue.summary}</p>
                     <div className="mt-3">
                         <Link
-                            href={`/issues/${issue.id}/facts`}
+                            href=""
                             className="text-lg font-semibold transition-colors duration-300 hover:text-emerald-500"
                         >
                             查看所有事實
@@ -44,7 +44,7 @@ export default function IssueCard({ issueId }: IssueCardProps) {
                     </div>
                 </div>
             ) : (
-                <EmptyIssueCard issueId={issue.id} />
+                <EmptyIssueCard id={issue.id} />
             )}
         </div>
     );
