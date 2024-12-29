@@ -21,6 +21,8 @@ export interface FactReference {
     url: string;
     icon: string;
     title: string;
+    icon: string;
+    url: string;
 }
 
 export interface Fact {

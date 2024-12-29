@@ -1,4 +1,4 @@
-import type { Issue } from "@/types/conversations.types";
+import { Issue } from "@/types/conversations.types";
 import Link from "next/link";
 
 type HomePageCardProps = {
@@ -15,7 +15,7 @@ export default function HomePageCard({ issues }: HomePageCardProps) {
                             {issue.title}
                         </h1>
                         <p className="mt-1 text-base font-normal">
-                            {issue.description}
+                            {issue.summary}
                         </p>
                         {index !== issues.length - 1 && (
                             <hr className="my-3 border-neutral-500" />
