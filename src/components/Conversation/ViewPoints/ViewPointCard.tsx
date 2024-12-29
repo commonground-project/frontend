@@ -1,4 +1,4 @@
-import type { ViewPoint } from "@/types/conversations.types";
+import { ViewPoint } from "@/types/conversations.types";
 import ContentCard from "./ContentCard";
 import FactListCard from "./FactListCard";
 

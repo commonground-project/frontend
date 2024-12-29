@@ -5,9 +5,8 @@ type EmptyViewPointCardProps = {
     id: string;
 };
 
-export default function EmptyViewPointCard({
-    id: __id,
-}: EmptyViewPointCardProps) {
+export default function EmptyViewPointCard({ id }: EmptyViewPointCardProps) {
+    console.log(`EmptyViewPointCard id: ${id}`);
     return (
         <div>
             <h1 className="text-center text-lg font-semibold text-neutral-500">

@@ -9,15 +9,8 @@
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
-        "args": "all",
-        "argsIgnorePattern": "^__",
-        "caughtErrors": "all",
-        "caughtErrorsIgnorePattern": "^__",
-        "varsIgnorePattern": "^__",
-        "ignoreRestSiblings": true,
         "destructuredArrayIgnorePattern": "^__"
       }
-    ],
-    "@typescript-eslint/consistent-type-imports": "error"
+    ]
   }
 }
