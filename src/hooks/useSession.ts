@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { decodeToken } from "react-jwt";
 import { useCookies } from "react-cookie";
-import {
+import type {
     User,
     Session,
     SessionState,
@@ -42,7 +42,6 @@ export default function useSession(): Session {
                     email: user.email ?? null,
                     image: user.image ?? null,
                 });
-                console.log("Login successful", user);
             } catch (error) {
                 console.error("Login failed:", error);
                 updateSessionState("unauthenticated", null);

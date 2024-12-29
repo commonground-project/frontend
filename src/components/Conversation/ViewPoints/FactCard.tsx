@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import Link from "next/link";
 
 type FactCardProps = {

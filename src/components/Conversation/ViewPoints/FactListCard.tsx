@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import FactCard from "@/components/Conversation/ViewPoints/FactCard";
 
 type FactListCardProps = {

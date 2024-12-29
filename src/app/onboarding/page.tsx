@@ -1,5 +1,5 @@
 import OnboardingCard from "@/components/Onboarding/OnboardingCard";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "CommonGround - 開始使用",

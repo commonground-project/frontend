@@ -1,23 +1,35 @@
-import { UserProfile } from "./users.types";
-
-export interface Issue {
-    id: number;
-    title: string;
-    summary: string;
-    facts: Fact[];
-}
+import type { UserProfile } from "./users.types";
 
 export interface FactReference {
-    id: number;
-    title: string;
-    icon: string;
+    id: string;
+    createdAt: Date;
     url: string;
+    icon: string;
+    title: string;
 }
 
 export interface Fact {
-    id: number;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
     title: string;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string;
     references: FactReference[];
+}
+
+export interface Issue {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    insight: string;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string;
+    facts: Fact[];
 }
 
 export interface ViewPoint {

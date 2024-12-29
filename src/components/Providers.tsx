@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { MantineProvider } from "@mantine/core";
 import { CookiesProvider } from "react-cookie";
 

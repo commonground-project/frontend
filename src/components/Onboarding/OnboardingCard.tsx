@@ -27,7 +27,6 @@ export default function OnboardingCard() {
 
     useEffect(() => {
         if (submittedValues) {
-            console.log("Submitted values:", submittedValues);
             window.location.href = "/";
         }
     }, [submittedValues, setSubmittedValues]);
