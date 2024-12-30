@@ -8,9 +8,9 @@ import {
 import { User } from "@/types/users.types";
 
 export const mockUser: User = {
-    id: "00000000-0000-0000-0000-000000000001",
-    username: "sarah",
-    nickname: "Sarah",
+    id: "00000000-0000-0000-0000-000000000000",
+    username: "Sarah",
+    nickname: "sarah",
     avatar: "",
 };
 
