@@ -28,5 +28,6 @@ const convertTailwindToMantineColors = (
 
 export const CommonGroundMantineTheme = createTheme({
     colors: convertTailwindToMantineColors(fullConfig),
+    primaryColor: "emerald",
     primaryShade: 6,
 });
