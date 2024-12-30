@@ -16,7 +16,7 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>
                 {fact.references.map((reference) => (
                     <Link
-                        href={reference.url}
+                        href={decodeURIComponent(reference.url)}
                         passHref
                         target="_blank"
                         rel="noopener noreferrer"
@@ -29,7 +29,7 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                             alt=""
                         />
                         <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
-                            {reference.url.replace(
+                            {decodeURIComponent(reference.url).replace(
                                 /(https?:\/\/)?(www\.)?/,
                                 "",
                             )}
