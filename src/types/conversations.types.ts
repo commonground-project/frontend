@@ -1,58 +1,33 @@
-import { UUID } from "crypto";
+import { UserProfile } from "./users.types";
 
 export interface Issue {
-    id: UUID;
-    createdAt: Date;
-    updatedAt: Date;
+    id: number;
     title: string;
-    description: string;
-    insight: string;
-    authorId: UUID;
-    authorName: string;
-    authorAvatar: string;
+    summary: string;
     facts: Fact[];
 }
 
 export interface FactReference {
-    id: UUID;
-    createdAt: Date;
-    url: string;
-    icon: string;
+    id: number;
     title: string;
+    icon: string;
+    url: string;
 }
 
 export interface Fact {
-    id: UUID;
-    createdAt: Date;
-    updatedAt: Date;
+    id: number;
     title: string;
-    authorId: UUID;
-    authorName: string;
-    authorAvatar: string;
     references: FactReference[];
 }
 
-export enum Reaction {
-    NONE = "NONE",
-    LIKE = "LIKE",
-    REASONABLE = "REASONABLE",
-    DISLIKE = "DISLIKE",
-}
-
 export interface ViewPoint {
-    id: UUID;
-    createdAt: Date;
-    updatedAt: Date;
+    id: number;
     title: string;
+    user: UserProfile;
+    created: Date;
     content: string;
-    authorId: UUID;
-    authorName: string;
-    authorAvatar: string;
-    userReaction: {
-        reaction: Reaction;
-    };
-    likeCount: number;
-    reasonableCount: number;
-    dislikeCount: number;
     facts: Fact[];
+    like: number;
+    reasonable: number;
+    dislike: number;
 }
