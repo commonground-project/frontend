@@ -14,8 +14,6 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
             </h1>
             <div className="inline-block px-1">
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>
-                {/* sources */}
-
                 {fact.references.map((reference) => (
                     <Link
                         href={reference.url}
