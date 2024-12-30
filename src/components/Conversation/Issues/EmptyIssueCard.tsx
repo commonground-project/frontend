@@ -40,7 +40,9 @@ export default function EmptyIssueCard({ issueId }: EmptyIssueCardProps) {
                 creationID={creationId}
                 setCreationID={setCreationId}
                 issueId={issueId}
-                onSuccess={() => router.push(`/issues/${issueId}/facts`)}
+                factCreationCallback={() =>
+                    router.push(`/issues/${issueId}/facts`)
+                }
             />
         </div>
     );
