@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
 import { Reaction } from "@/types/conversations.types";
 
 type ContentCardProps = {
@@ -17,8 +18,13 @@ type ContentCardProps = {
 
 export default function ContentCard({ viewpoint }: ContentCardProps) {
     const [reactionStatus, setReactionStatus] = useState<Reaction>(
-        Reaction.NONE,
+        viewpoint.userReaction.reaction,
     );
+    const [countMap, setCountMap] = useState({
+        [Reaction.LIKE]: viewpoint.likeCount,
+        [Reaction.REASONABLE]: viewpoint.reasonableCount,
+        [Reaction.DISLIKE]: viewpoint.dislikeCount,
+    });
     const [showContentHeight, setShowContentHeight] = useState<number>(0);
     const firstParagraphHeight = useRef<HTMLParagraphElement | null>(null);
 
@@ -28,10 +34,54 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         }
     }, []);
 
+    const updateReaction = useMutation({
+        mutationFn: (reaction: Reaction) => {
+            return fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpoint.id}/reaction/me`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                    },
+                    body: JSON.stringify({
+                        reaction: reaction,
+                    }),
+                },
+            );
+        },
+    });
+
     const handleReaction = (reaction: Reaction) => {
+        if (reaction == Reaction.NONE) return;
+
+        const prevCount = countMap;
+        const prevReaction = reactionStatus;
+        const newCount = { ...countMap };
+
+        if (reactionStatus === Reaction.NONE) {
+            newCount[reaction] += 1;
+        } else if (reactionStatus === reaction) {
+            newCount[reaction] -= 1;
+            reaction = Reaction.NONE;
+        } else {
+            newCount[reaction] += 1;
+            newCount[reactionStatus] -= 1;
+        }
+
+        //optimistic update
+        setCountMap(() => newCount);
         setReactionStatus((prev) =>
             prev === reaction ? Reaction.NONE : reaction,
         );
+
+        //mutate
+        updateReaction.mutate(reaction);
+        //mutate error return to previous state
+        if (updateReaction.isError) {
+            setReactionStatus(() => prevReaction);
+            setCountMap(() => prevCount);
+        }
     };
 
     return (
@@ -99,8 +149,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.likeCount +
-                        (reactionStatus === Reaction.LIKE ? 1 : 0)}
+                    {countMap[Reaction.LIKE]}
                 </h1>
                 {/* reasonable */}
                 <button onClick={() => handleReaction(Reaction.REASONABLE)}>
@@ -109,8 +158,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.reasonableCount +
-                        (reactionStatus === Reaction.REASONABLE ? 1 : 0)}
+                    {countMap[Reaction.REASONABLE]}
                 </h1>
                 {/* dislike */}
                 <button onClick={() => handleReaction(Reaction.DISLIKE)}>
@@ -119,8 +167,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.dislikeCount +
-                        (reactionStatus === Reaction.DISLIKE ? 1 : 0)}
+                    {countMap[Reaction.DISLIKE]}
                 </h1>
             </div>
         </div>

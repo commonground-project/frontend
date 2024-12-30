@@ -14,7 +14,7 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
 
     const fetchViewpoints = async ({ pageParam }: { pageParam: number }) => {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=5&page=${pageParam}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=10&page=${pageParam}`,
             {
                 method: "GET",
                 headers: {

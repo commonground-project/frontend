@@ -7,9 +7,9 @@ type FactListCardProps = {
 
 export default function FactListCard({ facts }: FactListCardProps) {
     return (
-        <div className="flex flex-col">
+        <div className="flex max-w-full flex-col">
             <h1 className="my-2 text-xs font-extrabold text-black">引注事實</h1>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-auto">
                 <div className="max-h-0">
                     {/* <div className="absolute top-0 mb-2 h-4 font-normal text-black"></div> */}
                     {facts.map((fact, index) => (
