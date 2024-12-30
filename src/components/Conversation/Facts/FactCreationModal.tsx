@@ -17,19 +17,20 @@ import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getI
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
+import { toast } from "sonner";
 
 type FactModelProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
-    onSuccess?: (createdFacts: Fact[]) => void;
+    factCreationCallback?: (createdFacts: Fact[]) => void;
 };
 
 export default function FactCreationModal({
     issueId,
     creationID,
     setCreationID,
-    onSuccess,
+    factCreationCallback,
 }: FactModelProps) {
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("https://you.com");
@@ -59,51 +60,54 @@ export default function FactCreationModal({
         ]);
     };
 
-    const correlateFactIssueMutation = useMutation({
-        mutationKey: ["correlateFactIssue", creationID],
-        mutationFn: (vars: { factId: string }) =>
-            relateFactToIssue(
-                vars.factId,
+    const createFactMutation = useMutation({
+        mutationKey: ["createFact", creationID],
+        mutationFn: async (vars: {
+            title: string;
+            references: FactReference[];
+        }) => {
+            const isolatedFact = await createIsolatedFact(
+                cookies.auth_token as string,
+                JSON.stringify({
+                    title: vars.title,
+                    references: vars.references,
+                }),
+            );
+            const correlatedFact = await relateFactToIssue(
+                isolatedFact.id,
                 issueId,
                 cookies.auth_token as string,
-            ),
-        onSuccess: (response) => {
+            );
+            return correlatedFact;
+        },
+        onSuccess(data) {
             queryClient.setQueryData(
                 ["facts", issueId],
-                (data: {
+                (queryData: {
                     pages: PaginatedIssueFactsByIdResponse[];
                     pageParams: number[];
                 }) => {
-                    const newQueryData = data.pages;
+                    const newQueryData = queryData.pages;
                     newQueryData[0].content = [
-                        ...response.facts,
+                        ...data.facts,
                         ...newQueryData[0].content,
                     ];
                     return {
                         pages: newQueryData,
-                        pageParams: data.pageParams,
+                        pageParams: queryData.pageParams,
                     };
                 },
             );
 
             queryClient.invalidateQueries({ queryKey: ["facts", issueId] });
             setCreationID(null);
-            if (onSuccess) onSuccess(response.facts);
+            if (factCreationCallback) factCreationCallback(data.facts);
         },
-    });
-
-    const createFactMutation = useMutation({
-        mutationKey: ["createFact", creationID],
-        mutationFn: (vars: { title: string; references: FactReference[] }) =>
-            createIsolatedFact(
-                cookies.auth_token as string,
-                JSON.stringify({
-                    title: vars.title,
-                    references: vars.references,
-                }),
-            ),
-        onSuccess: (data) => {
-            correlateFactIssueMutation.mutate({ factId: data.id });
+        onError(err) {
+            console.error(err);
+            toast.error("發生位置的錯誤", {
+                description: "建立事實時發生錯誤，請再試一次",
+            });
         },
     });
 

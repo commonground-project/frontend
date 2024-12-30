@@ -19,8 +19,8 @@ export const relateFactToIssue = async (
             },
             body: JSON.stringify({ factIds: [factId] }),
         },
-    ).then(async (res) => {
-        const data = await res.json();
-        return data;
+    ).then((res) => {
+        if (!res.ok) throw new Error("Failed to relate fact to issue");
+        return res.json();
     });
 };

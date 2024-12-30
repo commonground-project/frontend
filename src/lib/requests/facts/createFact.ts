@@ -11,5 +11,8 @@ export const createIsolatedFact = async (
             Authorization: `Bearer ${userToken}`,
         },
         body: body,
-    }).then((res) => res.json());
+    }).then((res) => {
+        if (!res.ok) throw new Error("Failed to create fact");
+        return res.json();
+    });
 };
