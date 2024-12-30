@@ -6,14 +6,6 @@ import {
     Reaction,
 } from "@/types/conversations.types";
 import { User } from "@/types/users.types";
-import {
-    Fact,
-    Issue,
-    ViewPoint,
-    FactReference,
-    Reaction,
-} from "@/types/conversations.types";
-import { User } from "@/types/users.types";
 
 export const mockUser: User = {
     id: "00000000-0000-0000-0000-000000000000",
@@ -32,16 +24,8 @@ const mockFactReference: FactReference = {
 
 export const mockFact: Fact = {
     id: "00000000-0000-0000-0000-000000000002",
-export const mockFact: Fact = {
-    id: "00000000-0000-0000-0000-000000000002",
     createdAt: new Date(),
     updatedAt: new Date(),
-    title: "Example Fact",
-    authorId: "00000000-0000-0000-0000-000000000003",
-    authorName: "John Doe",
-    authorAvatar: "https://example.com/avatar.png",
-    references: [mockFactReference],
-};
     title: "Example Fact",
     authorId: "00000000-0000-0000-0000-000000000003",
     authorName: "John Doe",
@@ -60,25 +44,11 @@ export const mockIssue: Issue = {
     authorName: "Jane Doe",
     authorAvatar: "https://example.com/avatar.png",
     facts: [mockFact, mockFact],
-    id: "00000000-0000-0000-0000-000000000004",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    title: "Example Issue",
-    description: "This is an example issue description.",
-    insight: "This is an example insight.",
-    authorId: "00000000-0000-0000-0000-000000000005",
-    authorName: "Jane Doe",
-    authorAvatar: "https://example.com/avatar.png",
-    facts: [mockFact, mockFact],
 };
 
 export const mockEmptyIssue: Issue = {
     id: "00000000-0000-0000-0000-000000000003",
-    id: "00000000-0000-0000-0000-000000000003",
     title: "CommonGround, A New Social Media Platform Game Changer!",
-    facts: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
     facts: [],
     createdAt: new Date(),
     updatedAt: new Date(),

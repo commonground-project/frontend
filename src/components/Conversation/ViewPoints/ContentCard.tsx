@@ -1,17 +1,15 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { ViewPoint } from "@/types/conversations.types";
-import { Spoiler } from "@mantine/core";
+import { ViewPoint, Reaction } from "@/types/conversations.types";
+import { Spoiler, Avatar } from "@mantine/core";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
-import { Avatar } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import { Reaction } from "@/types/conversations.types";
 
 type ContentCardProps = {
     viewpoint: ViewPoint;
