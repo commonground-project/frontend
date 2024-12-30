@@ -5,7 +5,7 @@ import { useState } from "react";
 // import { useDisclosure } from "@mantine/hooks";
 
 type EmptyIssueCardProps = {
-    id: number;
+    id: string;
 };
 
 export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {

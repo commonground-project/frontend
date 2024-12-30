@@ -5,11 +5,13 @@ import {
     FactReference,
     Reaction,
 } from "@/types/conversations.types";
-import { UserRepresentation } from "@/types/users.types";
+import { User } from "@/types/users.types";
 
-export const mockUser: UserRepresentation = {
-    username: "John Doe",
-    avatar: "favicon.ico",
+export const mockUser: User = {
+    id: "00000000-0000-0000-0000-000000000000",
+    username: "Sarah",
+    nickname: "sarah",
+    avatar: "",
 };
 
 const mockFactReference: FactReference = {
