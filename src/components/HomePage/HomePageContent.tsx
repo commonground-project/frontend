@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import HomePageCard from "../../components/HomePage/HomePageCard";
-import HomePagePulseCard from '../../components/HomePage/HomePagePulseCard';
+import HomePagePulseCard from "../../components/HomePage/HomePagePulseCard";
 
 interface HomePageContentProps {
     authToken: string;
@@ -15,15 +15,15 @@ export default function Page({ authToken }: HomePageContentProps) {
     const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery({
         queryKey: ["issues"],
         queryFn: ({ pageParam = 0 }) => {
-            return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issues?size=10&page=${pageParam}`, 
+            return fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issues?size=10&page=${pageParam}`,
                 {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
-                        "Authorization": `Bearer ${authToken}`,
-                    }
-                }
-            )
-            .then((res) => res.json())
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                },
+            ).then((res) => res.json());
         },
         getNextPageParam: (lastPage) => {
             if (lastPage?.page?.number < lastPage?.page?.totalPage - 1) {
@@ -40,7 +40,7 @@ export default function Page({ authToken }: HomePageContentProps) {
         }
     }, [inView, hasNextPage, fetchNextPage]);
 
-    const issues = data?.pages.flatMap(page => page.content) || [];
+    const issues = data?.pages.flatMap((page) => page.content) || [];
     const observerIndex = issues.length - 2;
 
     return (
@@ -48,8 +48,8 @@ export default function Page({ authToken }: HomePageContentProps) {
             {isLoading ? (
                 <HomePagePulseCard />
             ) : (
-                <HomePageCard 
-                    issues={data?.pages.flatMap(page => page.content) || []} 
+                <HomePageCard
+                    issues={data?.pages.flatMap((page) => page.content) || []}
                     observerRef={ref}
                     observerIndex={observerIndex}
                 />
@@ -57,4 +57,3 @@ export default function Page({ authToken }: HomePageContentProps) {
         </>
     );
 }
-

@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
-import { decodeUserFromString } from '@/lib/auth/staticDecode';
-import HomePageContent from '@/components/HomePage/HomePageContent';
+import { cookies } from "next/headers";
+import { decodeUserFromString } from "@/lib/auth/staticDecode";
+import HomePageContent from "@/components/HomePage/HomePageContent";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
     const cookieStore = await cookies();
-    const auth_token = cookieStore.get("auth_token")?.value || '';
+    const auth_token = cookieStore.get("auth_token")?.value || "";
     const user = decodeUserFromString(auth_token);
 
     return (
@@ -23,4 +23,3 @@ export default async function Page() {
         </main>
     );
 }
-

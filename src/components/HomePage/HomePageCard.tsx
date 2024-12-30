@@ -7,12 +7,18 @@ type HomePageCardProps = {
     observerIndex: number;
 };
 
-export default function HomePageCard({ issues, observerRef, observerIndex }: HomePageCardProps) {
+export default function HomePageCard({
+    issues,
+    observerRef,
+    observerIndex,
+}: HomePageCardProps) {
     return (
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 px-7 py-6 text-black">
             {issues.map((issue, index) => (
                 <div key={issue.id} className="group">
-                    <div ref={index === observerIndex ? observerRef : undefined}>
+                    <div
+                        ref={index === observerIndex ? observerRef : undefined}
+                    >
                         <Link href={`/issues/${issue.id}`}>
                             <h1 className="text-lg font-semibold duration-300 group-hover:text-emerald-500">
                                 {issue.title}
