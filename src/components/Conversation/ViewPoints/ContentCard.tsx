@@ -10,6 +10,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
 import { Reaction } from "@/types/conversations.types";
 
 type ContentCardProps = {
@@ -34,15 +35,19 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         }
     }, []);
 
+    const [cookie] = useCookies();
+
     const updateReaction = useMutation({
         mutationFn: (reaction: Reaction) => {
+            const auth_token = cookie.auth_token;
+
             return fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpoint.id}/reaction/me`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                        Authorization: `Bearer ${auth_token}`,
                     },
                     body: JSON.stringify({
                         reaction: reaction,
