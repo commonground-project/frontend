@@ -11,7 +11,7 @@ export default function ReferenceBar({
     reference,
     showSrcTitle,
 }: FactBarProps) {
-    const pageURL = new URL(reference.url);
+    const pageURL = new URL(decodeURIComponent(reference.url));
 
     return (
         <Link
