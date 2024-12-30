@@ -2,6 +2,7 @@ import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBa
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Issue } from "@/types/conversations.types";
 
 type IssueViewProps = {
@@ -16,13 +17,16 @@ export async function generateMetadata({
     params,
 }: MetadataProps): Promise<Metadata> {
     const issueId = (await params).id;
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token")?.value || "";
+
     const issue: Issue = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
         {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                Authorization: `Bearer ${auth_token}`,
             },
         },
     ).then((res) => res.json());
@@ -36,6 +40,8 @@ export async function generateMetadata({
 
 export default async function IssueView({ params }: IssueViewProps) {
     const issueId = (await params).id;
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token")?.value || "";
 
     const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
@@ -43,7 +49,7 @@ export default async function IssueView({ params }: IssueViewProps) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                Authorization: `Bearer ${auth_token}`,
             },
         },
     ).catch(() => {

@@ -3,6 +3,7 @@ import EmptyViewPointCard from "@/components/Conversation/ViewPoints/EmptyViewPo
 import ViewPointCard from "@/components/Conversation/ViewPoints/ViewPointCard";
 import { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
 
 type ViewPointListProps = {
@@ -12,6 +13,9 @@ type ViewPointListProps = {
 export default function ViewPointList({ issueId }: ViewPointListProps) {
     const { ref, inView } = useInView();
 
+    const [cookie] = useCookies();
+    const auth_token = cookie.auth_token;
+
     const fetchViewpoints = async ({ pageParam }: { pageParam: number }) => {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=10&page=${pageParam}`,
@@ -19,7 +23,7 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMP_JWT_TOKEN}`,
+                    Authorization: `Bearer ${auth_token}`,
                 },
             },
         );
