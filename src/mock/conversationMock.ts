@@ -5,12 +5,7 @@ import {
     FactReference,
     Reaction,
 } from "@/types/conversations.types";
-import { UserRepresentation } from "@/types/users.types";
-
-export const mockUser: UserRepresentation = {
-    username: "John Doe",
-    avatar: "favicon.ico",
-};
+import { User } from "@/types/users.types";
 
 const mockFactReference: FactReference = {
     id: "00000000-0000-0000-0000-000000000001",
@@ -73,6 +68,13 @@ export const mockViewPoint: ViewPoint = {
     reasonableCount: 5,
     dislikeCount: 2,
     facts: [mockFact],
+};
+
+export const mockUser: User = {
+    id: "1",
+    username: "sarah",
+    nickname: "Sarah",
+    avatar: "/favicon.ico",
 };
 
 export const mockViewPointList: ViewPoint[] = [mockViewPoint, mockViewPoint];
