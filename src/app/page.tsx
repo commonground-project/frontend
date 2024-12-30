@@ -11,11 +11,10 @@ export const metadata: Metadata = {
 
 export default async function Page() {
     const issues = [mockIssue, mockEmptyIssue];
-    // const user = mockUser;
 
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token")?.value || "";
-    console.log(auth_token);
+    // console.log(auth_token);
     const user = decodeUserFromString(auth_token);
 
     return (
