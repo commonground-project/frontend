@@ -44,13 +44,13 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         <div>
             <div className="mb-1 flex">
                 <Avatar
-                    name={viewpoint.user.username}
+                    name={viewpoint.user.nickname}
                     src={viewpoint.user.avatar}
                     alt=""
                     size="1rem"
                 />
                 <h1 className="ml-1.5 inline-block text-xs font-normal text-neutral-600">
-                    {viewpoint.user.username}
+                    {viewpoint.user.nickname}
                 </h1>
                 <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
                     {viewpoint.created.toLocaleDateString()}

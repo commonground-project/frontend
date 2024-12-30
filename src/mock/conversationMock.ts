@@ -1,5 +1,5 @@
 import { Fact, Issue, ViewPoint } from "@/types/conversations.types";
-import { UserRepresentation } from "@/types/users.types";
+import { User } from "@/types/users.types";
 
 export const mockFact: Fact = {
     id: 1,
@@ -35,8 +35,10 @@ export const mockEmptyIssue: Issue = {
     facts: [],
 };
 
-export const mockUser: UserRepresentation = {
-    username: "Sarah Fields",
+export const mockUser: User = {
+    id: "1",
+    username: "sarah",
+    nickname: "Sarah",
     avatar: "/favicon.ico",
 };
 
