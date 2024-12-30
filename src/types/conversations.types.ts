@@ -15,8 +15,8 @@ export interface FactReference {
     id: string;
     createdAt: Date;
     url: string;
-    title: string;
     icon: string;
+    title: string;
 }
 
 export interface Fact {
@@ -24,9 +24,9 @@ export interface Fact {
     createdAt: Date;
     updatedAt: Date;
     title: string;
-    authorAvatar: string;
     authorId: string;
     authorName: string;
+    authorAvatar: string;
     references: FactReference[];
 }
 
