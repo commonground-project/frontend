@@ -44,16 +44,16 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         <div>
             <div className="mb-1 flex">
                 <Avatar
-                    name={viewpoint.user.nickname}
-                    src={viewpoint.user.avatar}
+                    name={viewpoint.authorName}
+                    src={viewpoint.authorAvatar}
                     alt=""
                     size="1rem"
                 />
                 <h1 className="ml-1.5 inline-block text-xs font-normal text-neutral-600">
-                    {viewpoint.user.nickname}
+                    {viewpoint.authorName}
                 </h1>
                 <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
-                    {viewpoint.created.toLocaleDateString()}
+                    {viewpoint.createdAt.toLocaleDateString()}
                 </h1>
             </div>
             <h1 className="text-lg font-semibold text-neutral-700">
@@ -105,7 +105,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.like +
+                    {viewpoint.likeCount +
                         (reactionStatus === ReactionStatus.like ? 1 : 0)}
                 </h1>
                 {/* reasonable */}
@@ -117,7 +117,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.reasonable +
+                    {viewpoint.reasonableCount +
                         (reactionStatus === ReactionStatus.reasonable ? 1 : 0)}
                 </h1>
                 {/* dislike */}
@@ -127,7 +127,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.dislike +
+                    {viewpoint.dislikeCount +
                         (reactionStatus === ReactionStatus.dislike ? 1 : 0)}
                 </h1>
             </div>
