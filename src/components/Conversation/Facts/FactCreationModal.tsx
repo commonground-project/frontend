@@ -18,13 +18,11 @@ import { createIsolatedFact } from "@/lib/requests/facts/createFact";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
-import { toast } from "sonner";
 
 type FactModelProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
-    factCreationCallback?: (createdFacts: Fact[]) => void;
     factCreationCallback?: (createdFacts: Fact[]) => void;
 };
 
@@ -32,7 +30,6 @@ export default function FactCreationModal({
     issueId,
     creationID,
     setCreationID,
-    factCreationCallback,
     factCreationCallback,
 }: FactModelProps) {
     const [title, setTitle] = useState("");
@@ -78,27 +75,8 @@ export default function FactCreationModal({
             );
             const correlatedFact = await relateFactToIssue(
                 isolatedFact.id,
-    const createFactMutation = useMutation({
-        mutationKey: ["createFact", creationID],
-        mutationFn: async (vars: {
-            title: string;
-            references: FactReference[];
-        }) => {
-            const isolatedFact = await createIsolatedFact(
-                cookies.auth_token as string,
-                JSON.stringify({
-                    title: vars.title,
-                    references: vars.references,
-                }),
-            );
-            const correlatedFact = await relateFactToIssue(
-                isolatedFact.id,
                 issueId,
                 cookies.auth_token as string,
-            );
-            return correlatedFact;
-        },
-        onSuccess(data) {
             );
             return correlatedFact;
         },
@@ -106,11 +84,9 @@ export default function FactCreationModal({
             queryClient.setQueryData(
                 ["facts", issueId],
                 (queryData: {
-                (queryData: {
                     pages: PaginatedIssueFactsByIdResponse[];
                     pageParams: number[];
                 }) => {
-                    const newQueryData = queryData.pages;
                     const newQueryData = queryData.pages;
                     newQueryData[0].content = [
                         ...data.facts,
@@ -119,7 +95,6 @@ export default function FactCreationModal({
                     ];
                     return {
                         pages: newQueryData,
-                        pageParams: queryData.pageParams,
                         pageParams: queryData.pageParams,
                     };
                 },
