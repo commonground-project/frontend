@@ -2,8 +2,6 @@ import { cookies } from "next/headers";
 import { decodeUserFromString } from "@/lib/auth/staticDecode";
 import HomePageContent from "@/components/HomePage/HomePageContent";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { decodeUserFromString } from "@/lib/auth/staticDecode";
 
 export const metadata: Metadata = {
     title: "CommonGround",
