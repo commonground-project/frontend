@@ -50,12 +50,11 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         onMutate(
             reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
         ) {
-            let prevCount: typeof countMap | null = null;
-            let prevReaction: Reaction | null = null;
+            const prevCount = { ...countMap };
+            const prevReaction = reactionStatus;
 
             //optimistic update
             setCountMap((countMap) => {
-                prevCount = { ...countMap };
                 const newCount = { ...countMap };
 
                 if (reactionStatus === Reaction.NONE) {
@@ -68,13 +67,10 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                 }
                 return newCount;
             });
+
             setReactionStatus((prev) => {
-                prevReaction = prev;
                 return prev === reaction ? Reaction.NONE : reaction;
             });
-
-            if (!prevCount || !prevReaction)
-                throw new Error("prevCount or prevReaction is null");
 
             return { prevCount, prevReaction };
         },
