@@ -16,7 +16,7 @@ export default function FactListCard({
     setViewpointFactList,
 }: FactListCardProps) {
     const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
-    const [selectedFactId, setSelectedFactId] = useState<string>("");
+    const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
 
     useEffect(() => {
@@ -75,8 +75,9 @@ export default function FactListCard({
                     searchable
                     value={searchValue}
                     onChange={(selectedFactId) => {
-                        setSelectedFactId(selectedFactId ? selectedFactId : "");
-                        console.log("User selected fact id:", selectedFactId);
+                        setSelectedFactId(
+                            selectedFactId ? selectedFactId : null,
+                        );
                     }}
                     data={searchData
                         .map((fact) =>
@@ -111,6 +112,7 @@ export default function FactListCard({
                                 inner: "flex justify-start",
                                 label: "whitespace-normal text-left",
                             }}
+                            //TODO: Add onClick event: Open a modal to add a new fact
                         >
                             找不到想引著的事實嗎？將其引入 CommonGround 吧!
                         </Button>

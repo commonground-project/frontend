@@ -40,9 +40,7 @@ export default function ViewpointCard({
             return;
         }
 
-        setViewpointContent(
-            inputRef.current?.textContent ? inputRef.current?.textContent : "",
-        );
+        setViewpointContent(inputRef.current?.textContent ?? "");
 
         publishViewpoint();
     };
