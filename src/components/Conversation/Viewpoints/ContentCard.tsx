@@ -1,14 +1,16 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { ViewPoint, Reaction } from "@/types/conversations.types";
-import { Spoiler } from "@mantine/core";
+import { Spoiler, Avatar } from "@mantine/core";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
-import { Avatar } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { postReaction } from "@/lib/requests/viewpoints/postReaction";
 
 type ContentCardProps = {
     viewpoint: ViewPoint;
@@ -16,8 +18,13 @@ type ContentCardProps = {
 
 export default function ContentCard({ viewpoint }: ContentCardProps) {
     const [reactionStatus, setReactionStatus] = useState<Reaction>(
-        Reaction.NONE,
+        viewpoint.userReaction.reaction,
     );
+    const [countMap, setCountMap] = useState({
+        [Reaction.LIKE]: viewpoint.likeCount,
+        [Reaction.REASONABLE]: viewpoint.reasonableCount,
+        [Reaction.DISLIKE]: viewpoint.dislikeCount,
+    });
     const [showContentHeight, setShowContentHeight] = useState<number>(0);
     const firstParagraphHeight = useRef<HTMLParagraphElement | null>(null);
 
@@ -27,9 +34,73 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         }
     }, []);
 
-    const handleReaction = (reaction: Reaction) => {
-        setReactionStatus((prev) =>
-            prev === reaction ? Reaction.NONE : reaction,
+    const [cookie] = useCookies(["auth_token"]);
+
+    const updateReaction = useMutation({
+        mutationKey: ["updateReaction", viewpoint.id],
+        mutationFn: (reaction: Reaction) =>
+            postReaction({
+                viewpointId: viewpoint.id,
+                reaction,
+                auth_token: cookie.auth_token,
+            }),
+
+        onMutate(reaction: Reaction) {
+            const prevCount = { ...countMap };
+            const prevReaction = reactionStatus;
+
+            //optimistic update
+            setCountMap((countMap) => {
+                const newCount = { ...countMap };
+
+                if (
+                    // cancle reaction
+                    reaction === Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                } else if (
+                    // add reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction === Reaction.NONE
+                ) {
+                    newCount[reaction] += 1;
+                } else if (
+                    // change reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                    newCount[reaction] += 1;
+                }
+
+                return newCount;
+            });
+
+            setReactionStatus((prev) => {
+                return prev === reaction ? Reaction.NONE : reaction;
+            });
+
+            return { prevCount, prevReaction };
+        },
+
+        onSuccess(data) {
+            setReactionStatus(data.reaction);
+            //TODO: update count from server
+        },
+
+        onError(__error, __variables, context) {
+            if (!context) return;
+            setCountMap(context.prevCount);
+            setReactionStatus(context.prevReaction);
+        },
+    });
+
+    const handleReaction = (
+        reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
+    ) => {
+        updateReaction.mutate(
+            reaction === reactionStatus ? Reaction.NONE : reaction,
         );
     };
 
@@ -98,8 +169,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.likeCount +
-                        (reactionStatus === Reaction.LIKE ? 1 : 0)}
+                    {countMap[Reaction.LIKE]}
                 </h1>
                 {/* reasonable */}
                 <button onClick={() => handleReaction(Reaction.REASONABLE)}>
@@ -108,8 +178,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.reasonableCount +
-                        (reactionStatus === Reaction.REASONABLE ? 1 : 0)}
+                    {countMap[Reaction.REASONABLE]}
                 </h1>
                 {/* dislike */}
                 <button onClick={() => handleReaction(Reaction.DISLIKE)}>
@@ -118,8 +187,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.dislikeCount +
-                        (reactionStatus === Reaction.DISLIKE ? 1 : 0)}
+                    {countMap[Reaction.DISLIKE]}
                 </h1>
             </div>
         </div>

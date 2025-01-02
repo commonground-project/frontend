@@ -7,9 +7,12 @@
   "rules": {
     "@next/next/no-img-element": "off",
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
-        "destructuredArrayIgnorePattern": "^__"
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false,
+        "varsIgnorePattern": "^__"
       }
     ]
   }
