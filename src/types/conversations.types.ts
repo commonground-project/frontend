@@ -54,3 +54,13 @@ export interface ViewPoint {
     dislikeCount: number;
     facts: Fact[];
 }
+
+export interface Comment {
+    id: number;
+    user: UserProfile;
+    created: Date;
+    content: string;
+    like: number;
+    reasonable: number;
+    dislike: number;
+}
