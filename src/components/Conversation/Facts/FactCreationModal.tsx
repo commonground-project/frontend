@@ -105,7 +105,7 @@ export default function FactCreationModal({
         },
         onError(err) {
             console.error(err);
-            toast.error("發生位置的錯誤", {
+            toast.error("發生未知的錯誤", {
                 description: "建立事實時發生錯誤，請再試一次",
             });
         },
@@ -153,7 +153,7 @@ export default function FactCreationModal({
                             className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
                             onClick={addReference}
                         >
-                            <span>新增至引述資料</span>
+                            <span>新增至引註資料</span>
                             <ArrowLongRightIcon className="h-4 w-4" />
                         </button>
                     </div>
@@ -171,7 +171,7 @@ export default function FactCreationModal({
                 {/* Right Side - References */}
                 <div className="flex h-full w-1/3 flex-col justify-between p-2">
                     <div>
-                        <h2 className="mb-2 text-lg font-bold">引述資料</h2>
+                        <h2 className="mb-2 text-lg font-bold">引註資料</h2>
                         <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
                             {references.map((reference) => (
                                 <div
