@@ -1,7 +1,7 @@
-import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
+import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
-import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
+import ViewpointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
 
 type IssueViewProps = {
@@ -19,21 +19,22 @@ export async function generateMetadata({
     const issue = id == "1" ? mockIssue : mockEmptyIssue;
     return {
         title: `CommonGround - ${issue.title}`,
-        keywords: "social-issues, viewpoints, rational-discussion",
+        keywords: "社會時事, 觀點, 理性討論",
         description: issue.description,
     };
 }
 
 export default async function IssueView({ params }: IssueViewProps) {
     const id = (await params).id;
+    console.log(id);
 
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
                 <IssueCard issueId={id} />
-                <ViewPointList issueId={id} />
+                <ViewpointList issueId={id} />
             </main>
-            <AddViewPointBar id={id} />
+            <AddViewpointBar id={id} />
         </div>
     );
 }

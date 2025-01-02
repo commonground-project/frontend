@@ -1,5 +1,5 @@
-import type { Fact } from "@/types/conversations.types";
-import FactCard from "@/components/Conversation/ViewPoints/FactCard";
+import { Fact } from "@/types/conversations.types";
+import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 
 type FactListCardProps = {
     facts: Fact[];

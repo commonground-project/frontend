@@ -24,6 +24,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@tailwind-config": [
+        "./tailwind.config.ts"
       ]
     },
     "target": "ES2017"
