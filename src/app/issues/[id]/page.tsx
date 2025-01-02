@@ -1,7 +1,7 @@
 import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
-import ViewPointList from "@/components/Conversation/Viewpoints/ViewpointList";
+import ViewpointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
 
 type IssueViewProps = {
@@ -32,7 +32,7 @@ export default async function IssueView({ params }: IssueViewProps) {
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
                 <IssueCard issueId={id} />
-                <ViewPointList issueId={id} />
+                <ViewpointList issueId={id} />
             </main>
             <AddViewpointBar id={id} />
         </div>

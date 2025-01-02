@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
-type EmptyViewPointCardProps = {
+type EmptyViewpointCardProps = {
     id: string;
 };
 
-export default function EmptyViewpointCard({ id }: EmptyViewPointCardProps) {
+export default function EmptyViewpointCard({ id }: EmptyViewpointCardProps) {
     console.log(`EmptyViewPointCard id: ${id}`);
     return (
         <div>

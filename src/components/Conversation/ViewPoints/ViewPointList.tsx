@@ -6,7 +6,7 @@ type ViewPointListProps = {
     issueId: string;
 };
 
-export default function ViewPointList({ issueId }: ViewPointListProps) {
+export default function ViewpointList({ issueId }: ViewPointListProps) {
     const viewpoints = issueId == "1" ? mockViewPointList : [];
     return (
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
