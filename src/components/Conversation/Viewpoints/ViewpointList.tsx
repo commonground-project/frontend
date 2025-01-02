@@ -55,13 +55,12 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
     return (
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="mb-2 text-xl font-semibold">查看所有觀點</h1>
-            {data?.pages[0].content.length == 0 ? (
+            {data?.pages[0].content.length === 0 ? (
                 <EmptyViewpointCard id={issueId} />
             ) : (
                 <div className="flex-col">
                     {data?.pages
-                        .map((page) => page.content)
-                        .flat()
+                        .flatMap((page) => page.content)
                         .map((viewpoint, index, array) => (
                             <div
                                 key={viewpoint.id}

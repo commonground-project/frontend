@@ -28,8 +28,8 @@ export const postReaction = async ({
             }),
         },
     ).then((res) => {
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        } else return res.json();
+        if (!res.ok) throw new Error(`Error updating reaction: ${res.status}`);
+
+        return res.json();
     });
 };

@@ -14,8 +14,7 @@ export const getIssue = async ({ issueId, auth_token }: getIssueProps) => {
             },
         },
     ).then((res) => {
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        } else return res.json();
+        if (!res.ok) throw new Error(`Error fetching issue: ${res.status}`);
+        return res.json();
     });
 };

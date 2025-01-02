@@ -50,36 +50,44 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         onMutate(
             reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
         ) {
-            const prevCount = countMap;
-            const prevReaction = reactionStatus;
-            const newCount = { ...countMap };
-
-            if (reactionStatus === Reaction.NONE) {
-                newCount[reaction] += 1;
-            } else if (reactionStatus === reaction) {
-                newCount[reaction] -= 1;
-            } else {
-                newCount[reaction] += 1;
-                newCount[reactionStatus] -= 1;
-            }
+            let prevCount: typeof countMap | null = null;
+            let prevReaction: Reaction | null = null;
 
             //optimistic update
-            setCountMap(() => newCount);
-            setReactionStatus((prev) =>
-                prev === reaction ? Reaction.NONE : reaction,
-            );
+            setCountMap((countMap) => {
+                prevCount = { ...countMap };
+                const newCount = { ...countMap };
+
+                if (reactionStatus === Reaction.NONE) {
+                    newCount[reaction] += 1;
+                } else if (reactionStatus === reaction) {
+                    newCount[reaction] -= 1;
+                } else {
+                    newCount[reaction] += 1;
+                    newCount[reactionStatus] -= 1;
+                }
+                return newCount;
+            });
+            setReactionStatus((prev) => {
+                prevReaction = prev;
+                return prev === reaction ? Reaction.NONE : reaction;
+            });
+
+            if (!prevCount || !prevReaction)
+                throw new Error("prevCount or prevReaction is null");
+
             return { prevCount, prevReaction };
         },
 
         onSuccess(data) {
-            setReactionStatus(() => data.reaction);
+            setReactionStatus(data.reaction);
             //TODO: update count from server
         },
 
         onError(__error, __variables, context) {
             if (!context) return;
-            setCountMap(() => context.prevCount);
-            setReactionStatus(() => context.prevReaction);
+            setCountMap(context.prevCount);
+            setReactionStatus(context.prevReaction);
         },
     });
 
