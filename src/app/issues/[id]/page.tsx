@@ -25,7 +25,7 @@ export async function generateMetadata({
 
     return {
         title: `CommonGround - ${issue.title}`,
-        keywords: "social-issues, viewpoints, rational-discussion",
+        keywords: "社會時事, 觀點, 理性討論",
         description: issue.description,
     };
 }

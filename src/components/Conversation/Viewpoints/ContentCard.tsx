@@ -107,6 +107,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                 </h1>
                 <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
                     {new Date(viewpoint.createdAt).toLocaleDateString()}
+                    {viewpoint.createdAt.toLocaleDateString()}
                 </h1>
             </div>
             <h1 className="text-lg font-semibold text-neutral-700">

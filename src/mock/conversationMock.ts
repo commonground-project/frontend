@@ -33,6 +33,8 @@ export const mockFact: Fact = {
     references: [mockFactReference],
 };
 
+export const allFacts: Fact[] = [mockFact1, mockFact2, mockFact3];
+
 export const mockIssue: Issue = {
     id: "00000000-0000-0000-0000-000000000004",
     createdAt: new Date(),
