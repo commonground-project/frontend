@@ -1,13 +1,14 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 import {
     isServer,
     QueryClient,
     QueryClientProvider,
 } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { CommonGroundMantineTheme } from "@/lib/configs/mantine";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -40,7 +41,9 @@ export default function Providers({ children }: ProviderProps) {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <MantineProvider>{children}</MantineProvider>;
+            <MantineProvider theme={CommonGroundMantineTheme}>
+                {children}
+            </MantineProvider>
             <Toaster richColors />
         </QueryClientProvider>
     );
