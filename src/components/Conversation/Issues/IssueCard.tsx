@@ -30,7 +30,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
                             <InformationCircleIcon className="ml-1 inline-block h-5 w-5" />
                         </Tooltip>
                     </div>
-                    <p className="text-lg font-normal">{issue.description}</p>
+                    <p className="text-lg font-normal">{issue.insight}</p>
                     <div className="mt-3">
                         <Link
                             href=""

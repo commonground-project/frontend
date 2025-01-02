@@ -16,7 +16,7 @@ type ViewPointListProps = {
 export default function ViewPointList({ issueId }: ViewPointListProps) {
     const { ref, inView } = useInView();
 
-    const [cookie] = useCookies();
+    const [cookie] = useCookies(["auth_token"]);
 
     const fetchViewpoints = async ({ pageParam }: { pageParam: number }) => {
         const auth_token = cookie.auth_token;

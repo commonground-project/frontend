@@ -33,7 +33,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         }
     }, []);
 
-    const [cookie] = useCookies();
+    const [cookie] = useCookies(["auth_token"]);
 
     const updateReaction = useMutation({
         mutationFn: (reaction: Reaction) => {
