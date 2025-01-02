@@ -2,11 +2,11 @@ import { ViewPoint } from "@/types/conversations.types";
 import ContentCard from "./ContentCard";
 import FactListCard from "./FactListCard";
 
-type ViewPointCardProps = {
+type ViewpointCardProps = {
     viewpoint: ViewPoint;
 };
 
-export default function ViewPointCard({ viewpoint }: ViewPointCardProps) {
+export default function ViewpointCard({ viewpoint }: ViewpointCardProps) {
     return (
         <div className="flex">
             <div className="float-left w-9/12">

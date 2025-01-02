@@ -1,9 +1,10 @@
-import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
+import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
-import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
+import ViewpointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Issue } from "@/types/conversations.types";
+import { getIssue } from "@/lib/requests/issues/getIssue";
 
 type IssueViewProps = {
     params: Promise<{ id: string }>;
@@ -20,16 +21,7 @@ export async function generateMetadata({
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token")?.value || "";
 
-    const issue: Issue = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${auth_token}`,
-            },
-        },
-    ).then((res) => res.json());
+    const issue: Issue = await getIssue({ issueId, auth_token });
 
     return {
         title: `CommonGround - ${issue.title}`,
@@ -43,34 +35,15 @@ export default async function IssueView({ params }: IssueViewProps) {
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token")?.value || "";
 
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${auth_token}`,
-            },
-        },
-    ).catch(() => {
-        console.log(`HTTP error!`);
-        return;
-    });
-
-    if (!response?.ok) {
-        console.log(`HTTP error! status: ${response?.status}`);
-        return <h1> 無法取得議題資訊，請再試一次或是檢查網路連線 </h1>;
-    }
-
-    const issue: Issue = await response.json();
+    const issue: Issue = await getIssue({ issueId, auth_token });
 
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
                 <IssueCard issue={issue} />
-                <ViewPointList issueId={issueId} />
+                <ViewpointList issueId={issueId} />
             </main>
-            <AddViewPointBar id={issueId} />
+            <AddViewpointBar id={issueId} />
         </div>
     );
 }
