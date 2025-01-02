@@ -38,15 +38,13 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
 
     const updateReaction = useMutation({
         mutationKey: ["updateReaction", viewpoint.id],
-        mutationFn: (reaction: Reaction) => {
-            const auth_token = cookie.auth_token;
-
-            return postReaction({
+        mutationFn: (reaction: Reaction) =>
+            postReaction({
                 viewpointId: viewpoint.id,
                 reaction,
-                auth_token,
-            });
-        },
+                auth_token: cookie.auth_token,
+            }),
+
         onMutate(reaction: Reaction) {
             const prevCount = { ...countMap };
             const prevReaction = reactionStatus;

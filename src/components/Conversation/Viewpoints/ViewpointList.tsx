@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer";
 import { Skeleton } from "@mantine/core";
 import { toast } from "sonner";
 import { getIssueViewpoints } from "@/lib/requests/issues/getIssueViewpoints";
+import ViewpointSkeleton from "./ViewpointSkeleton";
 
 type ViewPointListProps = {
     issueId: string;
@@ -71,9 +72,7 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
                                 )}
                             </div>
                         ))}
-                    {status === "pending" && (
-                        <Skeleton height={100} width={728} />
-                    )}
+                    {status === "pending" && <ViewpointSkeleton />}
                 </div>
             )}
         </div>
