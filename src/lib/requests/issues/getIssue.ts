@@ -1,6 +1,6 @@
 import { Issue } from "@/types/conversations.types";
 
-type getIssueProps = {
+type getIssueParams = {
     issueId: string;
     auth_token: string;
 };
@@ -8,7 +8,7 @@ type getIssueProps = {
 export const getIssue = async ({
     issueId,
     auth_token,
-}: getIssueProps): Promise<Issue> => {
+}: getIssueParams): Promise<Issue> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
         {

@@ -1,6 +1,6 @@
 import { ViewPoint } from "@/types/conversations.types";
 
-type getIssueViewpointsProps = {
+type getIssueViewpointsParams = {
     issueId: string;
     pageParam: number;
     auth_token: string;
@@ -20,7 +20,7 @@ export const getIssueViewpoints = async ({
     issueId,
     pageParam,
     auth_token,
-}: getIssueViewpointsProps): Promise<getIssueViewpointsResponse> => {
+}: getIssueViewpointsParams): Promise<getIssueViewpointsResponse> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=10&page=${pageParam}`,
         {
@@ -38,10 +38,13 @@ export const getIssueViewpoints = async ({
                 );
             else return res.json();
         })
-        .then((res) => {
-            res.content.forEach((viewpoint: ViewPoint) => {
-                viewpoint.createdAt = new Date(viewpoint.createdAt);
-            });
-            return res;
+        .then((res: getIssueViewpointsResponse) => {
+            return {
+                ...res,
+                content: res.content.map((viewpoint) => ({
+                    ...viewpoint,
+                    createdAt: new Date(viewpoint.createdAt),
+                })),
+            };
         });
 };
