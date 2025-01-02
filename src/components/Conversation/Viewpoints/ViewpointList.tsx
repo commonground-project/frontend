@@ -18,12 +18,6 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
 
     const [cookie] = useCookies(["auth_token"]);
 
-    const fetchViewpoints = async ({ pageParam }: { pageParam: number }) => {
-        const auth_token = cookie.auth_token;
-
-        return await getIssueViewpoints({ issueId, pageParam, auth_token });
-    };
-
     const {
         data,
         error,
@@ -33,7 +27,12 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
         status,
     } = useInfiniteQuery({
         queryKey: ["viewpoints", issueId],
-        queryFn: fetchViewpoints,
+        queryFn: ({ pageParam }) =>
+            getIssueViewpoints({
+                issueId,
+                pageParam,
+                auth_token: cookie.auth_token,
+            }),
         initialPageParam: 0,
         getNextPageParam: (lastPage) => {
             if (lastPage.page.number + 1 < lastPage.page.totalPage)
