@@ -24,7 +24,7 @@ export default function ReferenceBar({
             {reference.icon.length ? (
                 <img
                     className="h-4 w-4 rounded-full"
-                    src={`${pageURL.protocol}//${pageURL.host}${reference.icon}`}
+                    src={reference.icon}
                     alt="favicon"
                 />
             ) : (
