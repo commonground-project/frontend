@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
-import { Skeleton } from "@mantine/core";
 import { toast } from "sonner";
 import { getIssueViewpoints } from "@/lib/requests/issues/getIssueViewpoints";
 import ViewpointSkeleton from "./ViewpointSkeleton";
