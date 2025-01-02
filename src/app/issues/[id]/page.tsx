@@ -1,8 +1,10 @@
 import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
-import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
-import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
+import ViewpointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { Issue } from "@/types/conversations.types";
+import { getIssue } from "@/lib/requests/issues/getIssue";
 
 type IssueViewProps = {
     params: Promise<{ id: string }>;
@@ -15,26 +17,33 @@ type MetadataProps = {
 export async function generateMetadata({
     params,
 }: MetadataProps): Promise<Metadata> {
-    const id = (await params).id;
-    const issue = id == "1" ? mockIssue : mockEmptyIssue;
+    const issueId = (await params).id;
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token")?.value || "";
+
+    const issue: Issue = await getIssue({ issueId, auth_token });
+
     return {
         title: `CommonGround - ${issue.title}`,
-        keywords: "social-issues, viewpoints, rational-discussion",
+        keywords: "社會時事, 觀點, 理性討論",
         description: issue.description,
     };
 }
 
 export default async function IssueView({ params }: IssueViewProps) {
-    const id = (await params).id;
-    console.log(id);
+    const issueId = (await params).id;
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token")?.value || "";
+
+    const issue: Issue = await getIssue({ issueId, auth_token });
 
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                <IssueCard issueId={id} />
-                <ViewPointList issueId={id} />
+                <IssueCard issue={issue} />
+                <ViewpointList issueId={issueId} />
             </main>
-            <AddViewPointBar id={id} />
+            <AddViewpointBar id={issueId} />
         </div>
     );
 }

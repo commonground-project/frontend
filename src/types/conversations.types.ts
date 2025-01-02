@@ -1,20 +1,18 @@
-import { UUID } from "crypto";
-
 export interface Issue {
-    id: UUID;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     title: string;
     description: string;
     insight: string;
-    authorId: UUID;
+    authorId: string;
     authorName: string;
     authorAvatar: string;
     facts: Fact[];
 }
 
 export interface FactReference {
-    id: UUID;
+    id: string;
     createdAt: Date;
     url: string;
     icon: string;
@@ -22,11 +20,11 @@ export interface FactReference {
 }
 
 export interface Fact {
-    id: UUID;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     title: string;
-    authorId: UUID;
+    authorId: string;
     authorName: string;
     authorAvatar: string;
     references: FactReference[];
@@ -40,12 +38,12 @@ export enum Reaction {
 }
 
 export interface ViewPoint {
-    id: UUID;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
     title: string;
     content: string;
-    authorId: UUID;
+    authorId: string;
     authorName: string;
     authorAvatar: string;
     userReaction: {

@@ -1,12 +1,11 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-type AddViewPointBarProps = {
+type AddViewpointBarProps = {
     id: string;
 };
 
-export default function AddViewPointBar({ id }: AddViewPointBarProps) {
-    console.log(`Try to add Viewpoint on issue ${id}`);
+export default function AddViewpointBar({ id }: AddViewpointBarProps) {
     return (
         <div className="fixed bottom-0 left-0 right-0 flex justify-center px-8 pb-3">
             <Link

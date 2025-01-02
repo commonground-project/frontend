@@ -1,18 +1,21 @@
 "use client";
-import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
-import { Modal } from "@mantine/core";
+
 import { useState } from "react";
-// import { useDisclosure } from "@mantine/hooks";
+import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import { Button } from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
+import FactCreationModal from "../Facts/FactCreationModal";
 
 type EmptyIssueCardProps = {
-    id: string;
+    issueId: string;
 };
 
-export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
+export default function EmptyIssueCard({ issueId }: EmptyIssueCardProps) {
+    const [creationId, setCreationId] = useState<string | null>(null);
+    const router = useRouter();
+
     const [openModal, setOpenModal] = useState(false);
-
-    console.log(`EmptyIssueCard id: ${id}`);
-
     return (
         <div>
             <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />
@@ -23,21 +26,25 @@ export default function EmptyIssueCard({ id }: EmptyIssueCardProps) {
                 想為這個議題補充點什麼嗎?
             </h1>
             <div className="flex justify-center">
-                <button
-                    onClick={() => setOpenModal(true)}
+                <Button
+                    onClick={() => setCreationId(uuidv4())}
                     className="flex items-center gap-1"
+                    variant="transparent"
                 >
                     <PlusIcon className="h-6 w-6 stroke-emerald-600 stroke-[1.5]" />
                     <h1 className="text-lg font-semibold text-emerald-600">
                         新增事實
                     </h1>
-                </button>
+                </Button>
             </div>
-            <Modal
-                opened={openModal}
-                onClose={() => setOpenModal(false)}
-                title="新增事實"
-            ></Modal>
+            <FactCreationModal
+                creationID={creationId}
+                setCreationID={setCreationId}
+                issueId={issueId}
+                factCreationCallback={() =>
+                    router.push(`/issues/${issueId}/facts`)
+                }
+            />
         </div>
     );
 }

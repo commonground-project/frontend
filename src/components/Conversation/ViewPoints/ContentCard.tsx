@@ -1,30 +1,30 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { ViewPoint } from "@/types/conversations.types";
-import { Spoiler } from "@mantine/core";
+import { ViewPoint, Reaction } from "@/types/conversations.types";
+import { Spoiler, Avatar } from "@mantine/core";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
-import { Avatar } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { postReaction } from "@/lib/requests/viewpoints/postReaction";
 
 type ContentCardProps = {
     viewpoint: ViewPoint;
 };
 
-enum ReactionStatus {
-    like = "like",
-    dislike = "dislike",
-    reasonable = "reasonable",
-    null = "null",
-}
-
 export default function ContentCard({ viewpoint }: ContentCardProps) {
-    const [reactionStatus, setReactionStatus] = useState<ReactionStatus>(
-        ReactionStatus.null,
+    const [reactionStatus, setReactionStatus] = useState<Reaction>(
+        viewpoint.userReaction.reaction,
     );
+    const [countMap, setCountMap] = useState({
+        [Reaction.LIKE]: viewpoint.likeCount,
+        [Reaction.REASONABLE]: viewpoint.reasonableCount,
+        [Reaction.DISLIKE]: viewpoint.dislikeCount,
+    });
     const [showContentHeight, setShowContentHeight] = useState<number>(0);
     const firstParagraphHeight = useRef<HTMLParagraphElement | null>(null);
 
@@ -34,9 +34,73 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         }
     }, []);
 
-    const handleReaction = (reaction: ReactionStatus) => {
-        setReactionStatus((prev) =>
-            prev === reaction ? ReactionStatus.null : reaction,
+    const [cookie] = useCookies(["auth_token"]);
+
+    const updateReaction = useMutation({
+        mutationKey: ["updateReaction", viewpoint.id],
+        mutationFn: (reaction: Reaction) =>
+            postReaction({
+                viewpointId: viewpoint.id,
+                reaction,
+                auth_token: cookie.auth_token,
+            }),
+
+        onMutate(reaction: Reaction) {
+            const prevCount = { ...countMap };
+            const prevReaction = reactionStatus;
+
+            //optimistic update
+            setCountMap((countMap) => {
+                const newCount = { ...countMap };
+
+                if (
+                    // cancle reaction
+                    reaction === Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                } else if (
+                    // add reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction === Reaction.NONE
+                ) {
+                    newCount[reaction] += 1;
+                } else if (
+                    // change reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                    newCount[reaction] += 1;
+                }
+
+                return newCount;
+            });
+
+            setReactionStatus((prev) => {
+                return prev === reaction ? Reaction.NONE : reaction;
+            });
+
+            return { prevCount, prevReaction };
+        },
+
+        onSuccess(data) {
+            setReactionStatus(data.reaction);
+            //TODO: update count from server
+        },
+
+        onError(__error, __variables, context) {
+            if (!context) return;
+            setCountMap(context.prevCount);
+            setReactionStatus(context.prevReaction);
+        },
+    });
+
+    const handleReaction = (
+        reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
+    ) => {
+        updateReaction.mutate(
+            reaction === reactionStatus ? Reaction.NONE : reaction,
         );
     };
 
@@ -99,36 +163,31 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
             </Spoiler>
             <div className="flex pt-2">
                 {/* like */}
-                <button onClick={() => handleReaction(ReactionStatus.like)}>
+                <button onClick={() => handleReaction(Reaction.LIKE)}>
                     <HandThumbUpIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.like ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.likeCount +
-                        (reactionStatus === ReactionStatus.like ? 1 : 0)}
+                    {countMap[Reaction.LIKE]}
                 </h1>
                 {/* reasonable */}
-                <button
-                    onClick={() => handleReaction(ReactionStatus.reasonable)}
-                >
+                <button onClick={() => handleReaction(Reaction.REASONABLE)}>
                     <ArrowUpCircleIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.reasonable ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.reasonableCount +
-                        (reactionStatus === ReactionStatus.reasonable ? 1 : 0)}
+                    {countMap[Reaction.REASONABLE]}
                 </h1>
                 {/* dislike */}
-                <button onClick={() => handleReaction(ReactionStatus.dislike)}>
+                <button onClick={() => handleReaction(Reaction.DISLIKE)}>
                     <HandThumbDownIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.dislike ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {viewpoint.dislikeCount +
-                        (reactionStatus === ReactionStatus.dislike ? 1 : 0)}
+                    {countMap[Reaction.DISLIKE]}
                 </h1>
             </div>
         </div>
