@@ -5,10 +5,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "CommonGround",
-    description: "A platform for people to discuss and share their opinions.",
 };
 
-export default async function Page() {
+export default async function HomePage() {
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token")?.value || "";
     const user = decodeUserFromString(auth_token);
@@ -19,7 +18,7 @@ export default async function Page() {
                 {user?.username}, 歡迎來到 CommonGround
             </h1>
 
-            <HomePageContent authToken={auth_token} />
+            <HomePageContent />
         </main>
     );
 }
