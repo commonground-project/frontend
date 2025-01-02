@@ -10,6 +10,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
+import { postReaction } from "@/lib/requests/viewpoints/postReaction";
 
 type ContentCardProps = {
     viewpoint: ViewPoint;
@@ -39,19 +40,11 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         mutationFn: (reaction: Reaction) => {
             const auth_token = cookie.auth_token;
 
-            return fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpoint.id}/reaction/me`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${auth_token}`,
-                    },
-                    body: JSON.stringify({
-                        reaction: reaction,
-                    }),
-                },
-            );
+            return postReaction({
+                viewpointId: viewpoint.id,
+                reaction,
+                auth_token,
+            });
         },
     });
 
