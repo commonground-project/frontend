@@ -1,10 +1,10 @@
-import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import ViewpointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Issue } from "@/types/conversations.types";
 import { getIssue } from "@/lib/requests/issues/getIssue";
+import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 
 type IssueViewProps = {
     params: Promise<{ id: string }>;
