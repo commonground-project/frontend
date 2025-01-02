@@ -37,6 +37,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
     const [cookie] = useCookies(["auth_token"]);
 
     const updateReaction = useMutation({
+        mutationKey: ["updateReaction", viewpoint.id],
         mutationFn: (reaction: Reaction) => {
             const auth_token = cookie.auth_token;
 
@@ -46,38 +47,46 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                 auth_token,
             });
         },
+        onMutate(
+            reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
+        ) {
+            const prevCount = countMap;
+            const prevReaction = reactionStatus;
+            const newCount = { ...countMap };
+
+            if (reactionStatus === Reaction.NONE) {
+                newCount[reaction] += 1;
+            } else if (reactionStatus === reaction) {
+                newCount[reaction] -= 1;
+            } else {
+                newCount[reaction] += 1;
+                newCount[reactionStatus] -= 1;
+            }
+
+            //optimistic update
+            setCountMap(() => newCount);
+            setReactionStatus((prev) =>
+                prev === reaction ? Reaction.NONE : reaction,
+            );
+            return { prevCount, prevReaction };
+        },
+
+        onSuccess(data) {
+            setReactionStatus(() => data.reaction);
+            //TODO: update count from server
+        },
+
+        onError(__error, __variables, context) {
+            if (!context) return;
+            setCountMap(() => context.prevCount);
+            setReactionStatus(() => context.prevReaction);
+        },
     });
 
-    const handleReaction = (reaction: Reaction) => {
-        if (reaction == Reaction.NONE) return;
-
-        const prevCount = countMap;
-        const prevReaction = reactionStatus;
-        const newCount = { ...countMap };
-
-        if (reactionStatus === Reaction.NONE) {
-            newCount[reaction] += 1;
-        } else if (reactionStatus === reaction) {
-            newCount[reaction] -= 1;
-            reaction = Reaction.NONE;
-        } else {
-            newCount[reaction] += 1;
-            newCount[reactionStatus] -= 1;
-        }
-
-        //optimistic update
-        setCountMap(() => newCount);
-        setReactionStatus((prev) =>
-            prev === reaction ? Reaction.NONE : reaction,
-        );
-
-        //mutate
+    const handleReaction = (
+        reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
+    ) => {
         updateReaction.mutate(reaction);
-        //mutate error return to previous state
-        if (updateReaction.isError) {
-            setReactionStatus(() => prevReaction);
-            setCountMap(() => prevCount);
-        }
     };
 
     return (

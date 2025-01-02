@@ -6,11 +6,15 @@ type postReactionProps = {
     auth_token: string;
 };
 
+type postReactionResponse = {
+    reaction: Reaction;
+};
+
 export const postReaction = async ({
     viewpointId,
     reaction,
     auth_token,
-}: postReactionProps) => {
+}: postReactionProps): Promise<postReactionResponse> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpointId}/reaction/me`,
         {
