@@ -4,30 +4,36 @@ import EditableViewpointReference from "@/components/AuthorViewpoint/EditableVie
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { allFacts } from "@/mock/conversationMock";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getPaginatedIssueFactsById } from "@/lib/requests/issues/getIssueFacts";
+import { useCookies } from "react-cookie";
 
 type FactListCardProps = {
+    issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
 };
 
 export default function FactListCard({
+    issueId,
     viewpointFactList,
     setViewpointFactList,
 }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
+    const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
 
     useEffect(() => {
-        const selectedFact = searchData.find(
-            (fact) => String(fact.id) === selectedFactId,
-        );
+        const selectedFact = data?.pages
+            .map((page) => page.content)
+            .flat()
+            .find((fact) => String(fact.id) === selectedFactId);
         if (selectedFact) {
             //check if the selected fact exists in search data
-            const isFactExist = searchData.some(
-                (fact) => fact.id === selectedFact.id,
-            );
+            const isFactExist = data?.pages
+                .map((page) => page.content)
+                .flat()
+                .some((fact) => fact.id === selectedFact.id);
             if (!isFactExist) {
                 console.error("Selected fact does not exist in search data");
                 return;
@@ -54,14 +60,35 @@ export default function FactListCard({
         setSelectedFactId,
         viewpointFactList,
         setViewpointFactList,
-        searchData,
     ]);
+
     //remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
         setViewpointFactList((prev) =>
             prev.filter((fact) => String(fact.id) !== factId),
         );
     };
+
+    const [cookie] = useCookies(["auth_token"]);
+
+    const {
+        data,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        status,
+    } = useInfiniteQuery({
+        queryKey: ["Fact", issueId],
+        queryFn: ({ pageParam }) =>
+            getPaginatedIssueFactsById(issueId, pageParam, cookie.auth_token),
+
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.page.number + 1 < lastPage.page.totalPage)
+                return lastPage.page.number + 1;
+        },
+    });
 
     return (
         <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
@@ -79,7 +106,9 @@ export default function FactListCard({
                             selectedFactId ? selectedFactId : null,
                         );
                     }}
-                    data={searchData
+                    data={data?.pages
+                        .map((page) => page.content)
+                        .flat()
                         .map((fact) =>
                             //check if searchData already exists in viewpointFactList
                             viewpointFactList.some(

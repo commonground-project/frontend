@@ -1,19 +1,25 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
 import FactListCard from "@/components/AuthorViewpoint/FactListCard";
 import { useState } from "react";
 import { Fact } from "@/types/conversations.types";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
+import { useCookies } from "react-cookie";
 
 export default function AuthorViewpoint() {
     const params = useParams();
     const issueId = params.id as string;
 
+    const router = useRouter();
+
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
+
+    const [cookie] = useCookies(["auth_token"]);
 
     const publishViewpoint = () => {
         console.log("Publishing viewpoint");
@@ -24,6 +30,14 @@ export default function AuthorViewpoint() {
             Facts: viewpointFactList,
         };
         console.log(viewpoint);
+        postViewpoint({
+            issueId: issueId,
+            auth_token: cookie.auth_token,
+            title: viewpointTitle,
+            content: viewpointContent,
+            facts: viewpointFactList.map((fact) => fact.id),
+        });
+        router.push(`/issues/${issueId}`);
     };
 
     return (
@@ -48,6 +62,7 @@ export default function AuthorViewpoint() {
                 </div>
                 <div className="w-1/3">
                     <FactListCard
+                        issueId={issueId}
                         viewpointFactList={viewpointFactList}
                         setViewpointFactList={setViewpointFactList}
                     />
