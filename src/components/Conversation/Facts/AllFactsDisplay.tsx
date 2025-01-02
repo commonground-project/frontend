@@ -39,7 +39,7 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     useEffect(() => {
         if (!inView || factQuery.isFetching) return;
         factQuery.fetchNextPage();
-    }, [inView, factQuery]);
+    }, [inView, factQuery.isFetching]);
 
     return (
         <div className="mt-3">
