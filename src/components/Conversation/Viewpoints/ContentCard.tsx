@@ -47,9 +47,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                 auth_token,
             });
         },
-        onMutate(
-            reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
-        ) {
+        onMutate(reaction: Reaction) {
             const prevCount = { ...countMap };
             const prevReaction = reactionStatus;
 
@@ -57,14 +55,27 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
             setCountMap((countMap) => {
                 const newCount = { ...countMap };
 
-                if (reactionStatus === Reaction.NONE) {
+                if (
+                    // cancle reaction
+                    reaction === Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                } else if (
+                    // add reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction === Reaction.NONE
+                ) {
                     newCount[reaction] += 1;
-                } else if (reactionStatus === reaction) {
-                    newCount[reaction] -= 1;
-                } else {
+                } else if (
+                    // change reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
                     newCount[reaction] += 1;
-                    newCount[reactionStatus] -= 1;
                 }
+
                 return newCount;
             });
 
@@ -90,7 +101,9 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
     const handleReaction = (
         reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
     ) => {
-        updateReaction.mutate(reaction);
+        updateReaction.mutate(
+            reaction === reactionStatus ? Reaction.NONE : reaction,
+        );
     };
 
     return (
