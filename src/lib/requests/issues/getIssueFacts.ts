@@ -13,14 +13,15 @@ export type PaginatedIssueFactsByIdResponse = {
 export const getPaginatedIssueFactsById = async (
     issueid: string,
     pageParam: number,
-    auth_token: string,
+    userToken: string,
 ): Promise<PaginatedIssueFactsByIdResponse> => {
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueid}/facts?page=${pageParam}&size=10`,
         {
             method: "GET",
             headers: {
-                Authorization: `Bearer ${auth_token}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userToken}`,
             },
         },
     );
