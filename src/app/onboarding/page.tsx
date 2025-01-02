@@ -1,11 +1,37 @@
 "use client";
-import { useState, useEffect } from "react";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+
 import { Button, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+
+import { useForm, zodResolver } from "@mantine/form";
+import { useCookies } from "react-cookie";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import useAuth from "@/hooks/auth/useAuth";
+import { setupUserRequest } from "@/lib/requests/auth/setupUser";
+import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
 
 export default function OnboardingPage() {
-    const userNameSchema = /^[a-zA-Z0-9._-]*$/;
+    const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
+    const { login } = useAuth();
+    const router = useRouter();
+
+    const onboardingSchema = z.object({
+        username: z
+            .string()
+            .regex(/^[a-zA-Z0-9._-]*$/, {
+                message: "請使用英文字母、數字或半形句點、底線與減號",
+            })
+            .min(4, { message: "使用者名稱需長於 4 個字元" })
+            .max(15, { message: "使用者名稱需短於 15 個字元" }),
+        nickname: z
+            .string()
+            .min(1, { message: "暱稱需長於 1 個字元" })
+            .max(20, { message: "暱稱需短於 20 個字元" }),
+    });
 
     const form = useForm({
         mode: "uncontrolled",
@@ -13,24 +39,33 @@ export default function OnboardingPage() {
             username: "",
             nickname: "",
         },
-        validate: {
-            username: (value) =>
-                userNameSchema.test(value)
-                    ? null
-                    : "存在不允許的字元，請使用英文字母、數字或半形句點、底線與減號",
-        },
+        validate: zodResolver(onboardingSchema),
     });
 
-    const [submittedValues, setSubmittedValues] = useState<
-        typeof form.values | null
-    >(null);
-
-    useEffect(() => {
-        if (submittedValues) {
-            console.log("Submitted values:", submittedValues);
-            window.location.href = "/";
-        }
-    }, [submittedValues, setSubmittedValues]);
+    const setupUserMutation = useMutation({
+        mutationKey: ["setupUser"],
+        mutationFn: async (payload: typeof form.values) => {
+            await setupUserRequest(payload, cookies.auth_token ?? "");
+            return await refreshJwtRequest(cookies.auth_refresh_token ?? "");
+        },
+        onSuccess(data) {
+            if (!data) return router.push("/login");
+            login(data.accessToken, data.refreshToken, data.expirationTime);
+            router.push("/");
+        },
+        onError(error) {
+            console.log(error);
+            console.log(error.message);
+            if (error.message.startsWith("Error setting up user")) {
+                toast.error("設定使用者時發生錯誤，請再試一次", {
+                    description: "若錯誤持續發生，請聯繫 commonground 團隊",
+                });
+            } else {
+                toast.error("重新登入時發生問題，請手動登入");
+                router.push("/login");
+            }
+        },
+    });
 
     return (
         <main className="flex flex-col items-center pt-[76px]">
@@ -38,7 +73,11 @@ export default function OnboardingPage() {
                 <h1 className="mb-4 text-2xl font-semibold text-neutral-900">
                     歡迎來到 CommonGround
                 </h1>
-                <form onSubmit={form.onSubmit(setSubmittedValues)}>
+                <form
+                    onSubmit={form.onSubmit((vals) =>
+                        setupUserMutation.mutate(vals),
+                    )}
+                >
                     <TextInput
                         label="暱稱"
                         description="我們該如何稱呼您？"
