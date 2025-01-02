@@ -44,7 +44,7 @@ export default function IssueCard({ issueId }: IssueCardProps) {
                     </div>
                 </div>
             ) : (
-                <EmptyIssueCard id={issue.id} />
+                <EmptyIssueCard issueId={issue.id} />
             )}
         </div>
     );
