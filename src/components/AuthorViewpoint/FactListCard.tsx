@@ -5,8 +5,10 @@ import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPaginatedIssueFactsById } from "@/lib/requests/issues/getIssueFacts";
+import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import { useCookies } from "react-cookie";
+import { v4 as uuidv4 } from "uuid";
+import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 type FactListCardProps = {
     issueId: string;
@@ -22,6 +24,7 @@ export default function FactListCard({
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
+    const [creationId, setCreationId] = useState<string | null>(null);
 
     useEffect(() => {
         const selectedFact = data?.pages
@@ -81,7 +84,7 @@ export default function FactListCard({
     } = useInfiniteQuery({
         queryKey: ["Fact", issueId],
         queryFn: ({ pageParam }) =>
-            getPaginatedIssueFactsById(issueId, pageParam, cookie.auth_token),
+            getPaginatedIssueFactsBySize(issueId, 200, cookie.auth_token),
 
         initialPageParam: 0,
         getNextPageParam: (lastPage) => {
@@ -135,6 +138,7 @@ export default function FactListCard({
                     placeholder="搜尋 CommonGround"
                     nothingFoundMessage={
                         <Button
+                            onClick={() => setCreationId(uuidv4())}
                             variant="transparent"
                             classNames={{
                                 root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
@@ -148,6 +152,11 @@ export default function FactListCard({
                     }
                 />
             </div>
+            <FactCreationModal
+                issueId={issueId}
+                creationID={creationId}
+                setCreationID={setCreationId}
+            />
             <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
@@ -160,6 +169,7 @@ export default function FactListCard({
                         />
                     ))}
                     <Button
+                        onClick={() => setCreationId(uuidv4())}
                         variant="transparent"
                         leftSection={<PlusIcon className="h-6 w-6" />}
                         classNames={{
