@@ -33,7 +33,40 @@ export const mockFact: Fact = {
     references: [mockFactReference],
 };
 
-export const allFacts: Fact[] = [mockFact1, mockFact2, mockFact3];
+export const mockFact1: Fact = {
+    id: "00000000-0000-0000-0000-000000000003",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example Fact Hello",
+    authorId: "00000000-0000-0000-0000-000000000003",
+    authorName: "John Doe",
+    authorAvatar: "https://example.com/avatar.png",
+    references: [mockFactReference],
+};
+
+export const mockFact2: Fact = {
+    id: "00000000-0000-0000-0000-000000000004",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example Fact Hello World",
+    authorId: "00000000-0000-0000-0000-000000000003",
+    authorName: "John Doe",
+    authorAvatar: "https://example.com/avatar.png",
+    references: [mockFactReference],
+};
+
+export const mockFact3: Fact = {
+    id: "00000000-0000-0000-0000-000000000005",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example Fact Hello World!",
+    authorId: "00000000-0000-0000-0000-000000000003",
+    authorName: "John Doe",
+    authorAvatar: "https://example.com/avatar.png",
+    references: [mockFactReference],
+};
+
+export const allFacts = [mockFact1, mockFact2, mockFact3];
 
 export const mockIssue: Issue = {
     id: "00000000-0000-0000-0000-000000000004",
