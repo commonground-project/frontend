@@ -3,12 +3,14 @@
 import { getPaginatedIssueFactsById } from "@/lib/requests/issues/getIssueFacts";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import ReferenceBar from "./ReferenceBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FactModal from "./FactCreationModal";
 import { Button } from "@mantine/core";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { v4 as uuidv4 } from "uuid";
 import FactSkeleton from "./FactSkeleton";
+import { useCookies } from "react-cookie";
+import { useInView } from "react-intersection-observer";
 
 interface AllFactsDisplayProps {
     issueId: string;
@@ -16,11 +18,12 @@ interface AllFactsDisplayProps {
 
 export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
+    const [cookies] = useCookies(["auth_token"]);
 
     const factQuery = useInfiniteQuery({
         queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
-            getPaginatedIssueFactsById(issueId, pageParam),
+            getPaginatedIssueFactsById(issueId, pageParam, cookies.auth_token),
         initialPageParam: 0,
         getNextPageParam(lastPage, __allPages, lastPageParam) {
             return lastPageParam === lastPage.page.totalPage
@@ -28,6 +31,15 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
                 : lastPageParam + 1;
         },
     });
+
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+    });
+
+    useEffect(() => {
+        if (!inView || factQuery.isFetching) return;
+        factQuery.fetchNextPage();
+    }, [inView, factQuery.isFetching]);
 
     return (
         <div className="mt-3">
@@ -41,9 +53,18 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
                     </>
                 )}
                 {factQuery.data &&
-                    factQuery.data.pages.map((page) =>
-                        page.content.map((fact) => (
-                            <div key={fact.id} className="mb-2">
+                    factQuery.data.pages.map((page, pageIndex, pages) =>
+                        page.content.map((fact, factIndex, facts) => (
+                            <div
+                                key={fact.id}
+                                className="mb-2"
+                                ref={
+                                    pageIndex === pages.length - 1 &&
+                                    factIndex === facts.length - 2
+                                        ? ref
+                                        : undefined
+                                }
+                            >
                                 <p className="mb-2 text-lg text-black">
                                     {fact.title}
                                 </p>
