@@ -1,9 +1,11 @@
 "use client";
-import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
+
 import { useState } from "react";
-import FactCreationModal from "../Facts/FactCreationModal";
+import { PlusIcon, NewspaperIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import { Button } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
+import FactCreationModal from "../Facts/FactCreationModal";
 
 type EmptyIssueCardProps = {
     issueId: string;
@@ -23,17 +25,16 @@ export default function EmptyIssueCard({ issueId }: EmptyIssueCardProps) {
                 想為這個議題補充點什麼嗎?
             </h1>
             <div className="flex justify-center">
-                <button
-                    onClick={() => {
-                        setCreationId(uuidv4());
-                    }}
+                <Button
+                    onClick={() => setCreationId(uuidv4())}
                     className="flex items-center gap-1"
+                    variant="transparent"
                 >
                     <PlusIcon className="h-6 w-6 stroke-emerald-600 stroke-[1.5]" />
                     <h1 className="text-lg font-semibold text-emerald-600">
                         新增事實
                     </h1>
-                </button>
+                </Button>
             </div>
             <FactCreationModal
                 creationID={creationId}
