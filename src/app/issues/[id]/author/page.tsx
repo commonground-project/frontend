@@ -7,7 +7,7 @@ import { Fact } from "@/types/conversations.types";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-export default function AuthorViewPoint() {
+export default function AuthorViewpoint() {
     const params = useParams();
     const issueId = params.id as string;
 

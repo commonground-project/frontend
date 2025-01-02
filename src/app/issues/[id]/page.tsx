@@ -1,7 +1,7 @@
-import AddViewPointBar from "@/components/Conversation/ViewPoints/AddViewPointBar";
+import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 import IssueCard from "@/components/Conversation/Issues/IssueCard";
 import { mockIssue, mockEmptyIssue } from "@/mock/conversationMock";
-import ViewPointList from "@/components/Conversation/ViewPoints/ViewPointList";
+import ViewPointList from "@/components/Conversation/Viewpoints/ViewpointList";
 import type { Metadata } from "next";
 
 type IssueViewProps = {
@@ -34,7 +34,7 @@ export default async function IssueView({ params }: IssueViewProps) {
                 <IssueCard issueId={id} />
                 <ViewPointList issueId={id} />
             </main>
-            <AddViewPointBar id={id} />
+            <AddViewpointBar id={id} />
         </div>
     );
 }

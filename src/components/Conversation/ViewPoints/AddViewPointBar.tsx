@@ -5,7 +5,7 @@ type AddViewPointBarProps = {
     id: string;
 };
 
-export default function AddViewPointBar({ id }: AddViewPointBarProps) {
+export default function AddViewpointBar({ id }: AddViewPointBarProps) {
     console.log(`Try to add Viewpoint on issue ${id}`);
     return (
         <div className="fixed bottom-0 left-0 right-0 flex justify-center px-8 pb-3">

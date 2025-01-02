@@ -1,6 +1,6 @@
 import { mockViewPointList } from "@/mock/conversationMock";
-import EmptyViewPointCard from "@/components/Conversation/ViewPoints/EmptyViewPointSection";
-import ViewPointCard from "@/components/Conversation/ViewPoints/ViewPointCard";
+import EmptyViewpointCard from "@/components/Conversation/Viewpoints/EmptyViewpointSection";
+import ViewpointCard from "@/components/Conversation/Viewpoints/ViewpointCard";
 
 type ViewPointListProps = {
     issueId: string;
@@ -12,12 +12,12 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="mb-2 text-xl font-semibold">查看所有觀點</h1>
             {viewpoints.length === 0 ? (
-                <EmptyViewPointCard id={issueId} />
+                <EmptyViewpointCard id={issueId} />
             ) : (
                 <div className="flex-col">
                     {viewpoints.map((viewpoint, index) => (
                         <div key={viewpoint.id}>
-                            <ViewPointCard viewpoint={viewpoint} />
+                            <ViewpointCard viewpoint={viewpoint} />
                             {index !== viewpoints.length - 1 && (
                                 <hr className="my-4 w-full border-neutral-500" />
                             )}
