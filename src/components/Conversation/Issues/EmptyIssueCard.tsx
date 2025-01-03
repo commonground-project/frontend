@@ -15,7 +15,6 @@ export default function EmptyIssueCard({ issueId }: EmptyIssueCardProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
     const router = useRouter();
 
-    const [openModal, setOpenModal] = useState(false);
     return (
         <div>
             <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />
