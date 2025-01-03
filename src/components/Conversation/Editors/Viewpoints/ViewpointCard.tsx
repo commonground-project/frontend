@@ -11,6 +11,8 @@ type ViewpointCardProps = {
     setViewpointTitle: (value: string) => void;
     publishViewpoint: (content: string[]) => void;
     pendingPublish: boolean;
+    setInSelectionMode: (value: boolean) => void;
+    selectedFacts: number[];
 };
 
 export default function ViewpointCard({
@@ -19,6 +21,8 @@ export default function ViewpointCard({
     setViewpointTitle,
     publishViewpoint,
     pendingPublish,
+    setInSelectionMode,
+    selectedFacts,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -51,20 +55,23 @@ export default function ViewpointCard({
     };
 
     const handleSelection = useCallback(() => {
-        console.log(document.activeElement);
-        if (document.activeElement?.id !== "viewpoint-input") return;
+        // Reset selection mode and tooltip no matter what
+        // Since they will eventually be added back if a selection is made, it is safe to remove them here first
+        // And since React will batch the state updates, calling setInSelectionMode(false) here will not cause the tooltip to flash
+        setInSelectionMode(false);
         document.getElementById("fact-hint-tooltip")?.remove();
+
+        // If the current active element is not the content editable div, stop the tooltip from showing
+        if (document.activeElement?.id !== "viewpoint-input") return;
 
         const selection = window.getSelection();
         if (!selection) return;
         const range = selection.getRangeAt(0);
         if (range.collapsed) return;
 
-        const fragment = range.cloneContents();
-        const selectedText = Array.from(fragment.childNodes)
-            .map((node) => node.textContent)
-            .join("\n");
+        setInSelectionMode(true);
 
+        // Create tooltip element
         const rangeRect = range.getBoundingClientRect();
         const tooltip = document.createElement("div");
         tooltip.className =
@@ -73,9 +80,11 @@ export default function ViewpointCard({
         tooltip.textContent = "從右側選取引註事實";
         document.body.appendChild(tooltip);
 
+        // Calculate the middlepoint of the selection
         const mid =
             Math.min(rangeRect.left, rangeRect.right) +
             Math.abs(rangeRect.left - rangeRect.right) / 2;
+        // Ensure the tooltip is within the viewport
         const leftX = Math.max(
             0,
             Math.min(
@@ -83,21 +92,79 @@ export default function ViewpointCard({
                 window.innerWidth - tooltip.offsetWidth,
             ),
         );
-        console.log(leftX);
 
         tooltip.style.top = `${rangeRect.top - 30}px`;
         tooltip.style.left = `${leftX}px`;
         tooltip.classList.remove("opacity-0");
-    }, []);
+    }, [setInSelectionMode]);
 
     useEffect(() => {
         document.addEventListener("selectionchange", handleSelection);
+        // Since resizing the window can change the position of the tooltip, we need to reposition it
         window.addEventListener("resize", handleSelection);
         return () => {
             document.removeEventListener("selectionchange", handleSelection);
             window.removeEventListener("resize", handleSelection);
         };
     }, [handleSelection]);
+
+    useEffect(() => {
+        if (inputRef?.current === null) return;
+        const selection = window.getSelection();
+        // If there is no selection or the selection is collapsed, stop processing
+        if (!selection || selection.isCollapsed) return;
+
+        const range = selection.getRangeAt(0);
+        if (selectedFacts.length > 0) {
+            // If more than one fact is selected, start adding reference markers
+
+            // Remove any existing reference counters to prevent duplicates
+            const originalOuterSpan =
+                document.getElementsByClassName("reference-marker");
+            if (originalOuterSpan.length > 0) {
+                for (const span of originalOuterSpan) {
+                    for (const child of span.children) {
+                        if (child.classList.contains("reference-counter"))
+                            span.removeChild(child);
+                    }
+                }
+            }
+
+            const outerSpan = document.createElement("span");
+            outerSpan.className = "text-green-500 reference-marker";
+
+            range.surroundContents(outerSpan);
+
+            // Create reference counters
+            const innerSpan = document.createElement("span");
+            innerSpan.classList.add("reference-counter");
+            innerSpan.innerText =
+                " " + selectedFacts.map((fact) => `[${fact + 1}]`).join("");
+            console.log(innerSpan);
+            outerSpan.appendChild(innerSpan);
+        } else {
+            // If no fact is selected, remove all reference markers
+            const spans = inputRef.current.querySelectorAll(
+                "span.text-green-500",
+            );
+            spans.forEach((span) => {
+                for (const child of span.children) {
+                    if (child.classList.contains("reference-counter"))
+                        span.removeChild(child);
+                }
+                const parent = span.parentNode;
+                if (!parent) return;
+                while (span.firstChild) {
+                    parent.insertBefore(span.firstChild, span);
+                }
+                parent.removeChild(span);
+            });
+        }
+
+        // Preserve the selection
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }, [selectedFacts]);
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">

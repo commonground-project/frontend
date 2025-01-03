@@ -19,12 +19,18 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
+    inSelectionMode: boolean;
+    selectedFacts: number[];
+    setSelectedFacts: Dispatch<SetStateAction<number[]>>;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
+    inSelectionMode,
+    selectedFacts,
+    setSelectedFacts,
 }: FactListCardProps) {
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
@@ -149,6 +155,23 @@ export default function FactListCard({
                             fact={fact}
                             index={index + 1}
                             removeFact={removeFact}
+                            inSelectionMode={inSelectionMode}
+                            isSelected={selectedFacts.includes(index)}
+                            setIsSelected={(isSelected) => {
+                                if (isSelected) {
+                                    setSelectedFacts((prev) => [
+                                        ...prev,
+                                        index,
+                                    ]);
+                                } else {
+                                    setSelectedFacts((prev) =>
+                                        prev.filter(
+                                            (selectedFactIndex) =>
+                                                selectedFactIndex !== index,
+                                        ),
+                                    );
+                                }
+                            }}
                         />
                     ))}
                     <Button
