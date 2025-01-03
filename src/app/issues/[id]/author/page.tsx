@@ -7,9 +7,11 @@ import { Fact } from "@/types/conversations.types";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
+import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
 import { useCookies } from "react-cookie";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { pages } from "next/dist/build/templates/app-page";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -18,6 +20,7 @@ export default function AuthorViewpoint() {
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const [cookie] = useCookies(["auth_token"]);
+    const queryClient = useQueryClient();
 
     const issueId = params.id as string;
     const postNewViewpoint = useMutation({
@@ -39,8 +42,31 @@ export default function AuthorViewpoint() {
                 facts: facts,
             }),
 
-        onSuccess() {
+        onSuccess(data) {
             toast.success("觀點發表成功");
+
+            queryClient.setQueryData(
+                ["viewpoints", issueId],
+                (olddata: {
+                    pages: getIssueViewpointsResponse[];
+                    pageParams: number[];
+                }) => {
+                    const newQueryData = olddata.pages;
+                    newQueryData[0].content = [
+                        data,
+                        ...newQueryData[0].content,
+                    ];
+                    return {
+                        pages: newQueryData,
+                        pageParams: olddata.pageParams,
+                    };
+                },
+            );
+
+            queryClient.invalidateQueries({
+                queryKey: ["viewpoints", issueId],
+            });
+
             router.push(`/issues/${issueId}`);
         },
         onError(error) {

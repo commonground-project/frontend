@@ -29,9 +29,14 @@ export const postViewpoint = async ({
                 facts: facts,
             }),
         },
-    ).then((res) => {
-        if (!res.ok) throw new Error(`Error creating viewpoint: ${res.status}`);
+    )
+        .then((res) => {
+            if (!res.ok)
+                throw new Error(`Error creating viewpoint: ${res.status}`);
 
-        return res.json();
-    });
+            return res.json();
+        })
+        .then((res: ViewPoint) => {
+            return { ...res, createdAt: new Date(res.createdAt) };
+        });
 };

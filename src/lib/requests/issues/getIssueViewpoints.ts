@@ -6,7 +6,7 @@ type getIssueViewpointsParams = {
     auth_token: string;
 };
 
-type getIssueViewpointsResponse = {
+export type getIssueViewpointsResponse = {
     content: ViewPoint[];
     page: {
         size: number;
