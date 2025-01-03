@@ -4,7 +4,7 @@ import EditableViewpointReference from "@/components/AuthorViewpoint/EditableVie
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
@@ -83,7 +83,12 @@ export default function FactListCard({
     const { data, error, status } = useInfiniteQuery({
         queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
-            getPaginatedIssueFactsBySize(issueId, 200, cookie.auth_token),
+            getPaginatedIssueFactsBySize(
+                issueId,
+                200,
+                pageParam,
+                cookie.auth_token,
+            ),
 
         initialPageParam: 0,
         getNextPageParam: (lastPage) => {
@@ -134,7 +139,6 @@ export default function FactListCard({
                     checkIconPosition="right"
                     radius={0}
                     w="100%"
-                    limit={10}
                     classNames={{
                         input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
                     }}
