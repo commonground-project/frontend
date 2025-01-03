@@ -1,3 +1,5 @@
+import { ViewPoint } from "@/types/conversations.types";
+
 type postViewpointParams = {
     issueId: string;
     auth_token: string;
@@ -12,7 +14,7 @@ export const postViewpoint = async ({
     title,
     content,
     facts,
-}: postViewpointParams) => {
+}: postViewpointParams): Promise<ViewPoint> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints`,
         {

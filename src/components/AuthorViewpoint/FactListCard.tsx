@@ -8,6 +8,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 type FactListCardProps = {
@@ -90,6 +91,10 @@ export default function FactListCard({
                 return lastPage.page.number + 1;
         },
     });
+
+    if (error) {
+        toast.error("讀取事實時發生錯誤，請再試一次");
+    }
 
     return (
         <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">

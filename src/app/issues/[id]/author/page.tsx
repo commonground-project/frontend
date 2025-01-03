@@ -8,12 +8,14 @@ import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import { useCookies } from "react-cookie";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function AuthorViewpoint() {
     const params = useParams();
-    const issueId = params.id as string;
-
     const router = useRouter();
+
+    const issueId = params.id as string;
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointContent, setViewpointContent] = useState<string>("");
@@ -21,23 +23,41 @@ export default function AuthorViewpoint() {
 
     const [cookie] = useCookies(["auth_token"]);
 
+    const postNewViewpoint = useMutation({
+        mutationKey: ["postNewViewpoint", issueId],
+        mutationFn: ({
+            title,
+            content,
+            facts,
+        }: {
+            title: string;
+            content: string;
+            facts: string[];
+        }) =>
+            postViewpoint({
+                issueId: issueId,
+                auth_token: cookie.auth_token,
+                title: title,
+                content: content,
+                facts: facts,
+            }),
+
+        onSuccess() {
+            router.push(`/issues/${issueId}`);
+        },
+        onError(error) {
+            console.log(`error creating viewpoints: ${error}`);
+            toast.error("發表觀點時發生錯誤，請再試一次");
+        },
+    });
+
     const publishViewpoint = () => {
         console.log("Publishing viewpoint");
-        const viewpoint = {
-            Issue: issueId,
-            Title: viewpointTitle,
-            Content: viewpointContent,
-            Facts: viewpointFactList,
-        };
-        console.log(viewpoint);
-        postViewpoint({
-            issueId: issueId,
-            auth_token: cookie.auth_token,
+        postNewViewpoint.mutate({
             title: viewpointTitle,
             content: viewpointContent,
             facts: viewpointFactList.map((fact) => fact.id),
         });
-        router.push(`/issues/${issueId}`);
     };
 
     return (
