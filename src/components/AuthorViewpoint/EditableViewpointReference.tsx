@@ -14,7 +14,7 @@ export default function EditableViewpointReference({
 }: FactCardProps) {
     return (
         <div>
-            <div className="group flex">
+            <div className="group flex justify-between">
                 <h1 className="float-left text-lg font-normal text-black">
                     {fact.title}
                 </h1>
