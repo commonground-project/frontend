@@ -11,6 +11,7 @@ type ViewpointCardProps = {
     setViewpointTitle: (value: string) => void;
     setViewpointContent: (value: string) => void;
     publishViewpoint: () => void;
+    pendingPublish: boolean;
 };
 
 export default function ViewpointCard({
@@ -19,6 +20,7 @@ export default function ViewpointCard({
     setViewpointTitle,
     setViewpointContent,
     publishViewpoint,
+    pendingPublish,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,11 @@ export default function ViewpointCard({
             return;
         }
 
-        setViewpointContent(inputRef.current?.textContent ?? "");
+        const paragraphs = Array.from(inputRef.current?.childNodes ?? []).map(
+            (node) => node.textContent,
+        );
+        const content = paragraphs.join("\n");
+        setViewpointContent(content);
 
         publishViewpoint();
     };
@@ -97,7 +103,9 @@ export default function ViewpointCard({
                     }
                     setViewpointContent(
                         e.currentTarget?.textContent
-                            ? e.currentTarget?.textContent
+                            ? Array.from(inputRef.current?.childNodes ?? [])
+                                  .map((node) => node.textContent)
+                                  .join("\n")
                             : "",
                     );
                 }}
@@ -126,6 +134,7 @@ export default function ViewpointCard({
                         section: "mr-1",
                     }}
                     onClick={onPublish}
+                    loading={pendingPublish}
                 >
                     發表
                 </Button>

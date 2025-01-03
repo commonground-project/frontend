@@ -90,7 +90,6 @@ export default function FactCreationModal({
                     const newQueryData = queryData.pages;
                     newQueryData[0].content = [
                         ...data.facts,
-                        ...data.facts,
                         ...newQueryData[0].content,
                     ];
                     return {
@@ -106,7 +105,7 @@ export default function FactCreationModal({
         },
         onError(err) {
             console.error(err);
-            toast.error("發生位置的錯誤", {
+            toast.error("發生未知的錯誤", {
                 description: "建立事實時發生錯誤，請再試一次",
             });
         },
