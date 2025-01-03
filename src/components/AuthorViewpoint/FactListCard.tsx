@@ -26,37 +26,49 @@ export default function FactListCard({
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
 
-    useEffect(() => {
+    //remove the fact from the viewpointFactList
+    const removeFact = (factId: string) => {
+        setViewpointFactList((prev) =>
+            prev.filter((fact) => String(fact.id) !== factId),
+        );
+    };
+
+    //add the selected fact to the viewpointFactList
+    const addFact = (factId: string) => {
+        //check if the selected fact exists in search data
+        const isFactExist = data?.pages
+            .map((page) => page.content)
+            .flat()
+            .some((fact) => fact.id === factId);
+        if (!isFactExist) {
+            console.error("Selected fact does not exist in search data");
+            return;
+        }
+
+        //check if the selected fact exists in viewpointFactList
+        const isFactExistInList = viewpointFactList.some(
+            (fact) => fact.id === factId,
+        );
+        if (isFactExistInList) {
+            console.log("Selected fact already exists in viewpointFactList");
+            return;
+        }
+
+        //get the selected fact
         const selectedFact = data?.pages
             .map((page) => page.content)
             .flat()
-            .find((fact) => String(fact.id) === selectedFactId);
-        if (selectedFact) {
-            //check if the selected fact exists in search data
-            const isFactExist = data?.pages
-                .map((page) => page.content)
-                .flat()
-                .some((fact) => fact.id === selectedFact.id);
-            if (!isFactExist) {
-                console.error("Selected fact does not exist in search data");
-                return;
-            }
+            .find((fact) => fact.id === factId);
+        if (!selectedFact) return;
 
-            //check if the selected fact exists in viewpointFactList
-            const isFactExistInList = viewpointFactList.some(
-                (fact) => fact.id === selectedFact.id,
-            );
-            if (isFactExistInList) {
-                console.error(
-                    "Selected fact already exists in viewpointFactList",
-                );
-                return;
-            }
+        //add the selected fact to the viewpointFactList
+        setViewpointFactList((prev) => [...prev, selectedFact]);
+    };
 
-            //add the selected fact to the viewpointFactList
-            setViewpointFactList((prev) => [...prev, selectedFact]);
-
-            setSelectedFactId("");
+    useEffect(() => {
+        if (selectedFactId) {
+            addFact(selectedFactId);
+            setSelectedFactId(null);
         }
     }, [
         selectedFactId,
@@ -64,13 +76,6 @@ export default function FactListCard({
         viewpointFactList,
         setViewpointFactList,
     ]);
-
-    //remove the fact from the viewpointFactList
-    const removeFact = (factId: string) => {
-        setViewpointFactList((prev) =>
-            prev.filter((fact) => String(fact.id) !== factId),
-        );
-    };
 
     const [cookie] = useCookies(["auth_token"]);
 
@@ -149,6 +154,7 @@ export default function FactListCard({
                 issueId={issueId}
                 creationID={creationId}
                 setCreationID={setCreationId}
+                factCreationCallback={(facts) => addFact(facts[0].id)}
             />
             <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
