@@ -14,15 +14,12 @@ import { toast } from "sonner";
 export default function AuthorViewpoint() {
     const params = useParams();
     const router = useRouter();
-
-    const issueId = params.id as string;
-
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
-
     const [cookie] = useCookies(["auth_token"]);
 
+    const issueId = params.id as string;
     const postNewViewpoint = useMutation({
         mutationKey: ["postNewViewpoint", issueId],
         mutationFn: ({
@@ -80,6 +77,7 @@ export default function AuthorViewpoint() {
                         setViewpointTitle={setViewpointTitle}
                         setViewpointContent={setViewpointContent}
                         publishViewpoint={publishViewpoint}
+                        pendingPublish={postNewViewpoint.status === "pending"}
                     />
                 </div>
                 <div className="w-1/3">

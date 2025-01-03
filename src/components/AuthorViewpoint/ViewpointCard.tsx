@@ -11,6 +11,7 @@ type ViewpointCardProps = {
     setViewpointTitle: (value: string) => void;
     setViewpointContent: (value: string) => void;
     publishViewpoint: () => void;
+    pendingPublish: boolean;
 };
 
 export default function ViewpointCard({
@@ -19,6 +20,7 @@ export default function ViewpointCard({
     setViewpointTitle,
     setViewpointContent,
     publishViewpoint,
+    pendingPublish,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -132,6 +134,7 @@ export default function ViewpointCard({
                         section: "mr-1",
                     }}
                     onClick={onPublish}
+                    loading={pendingPublish}
                 >
                     發表
                 </Button>
