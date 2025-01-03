@@ -75,7 +75,7 @@ export default function FactListCard({
     const [cookie] = useCookies(["auth_token"]);
 
     const { data, error, status } = useInfiniteQuery({
-        queryKey: ["Fact", issueId],
+        queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
             getPaginatedIssueFactsBySize(issueId, 200, cookie.auth_token),
 

@@ -90,7 +90,6 @@ export default function FactCreationModal({
                     const newQueryData = queryData.pages;
                     newQueryData[0].content = [
                         ...data.facts,
-                        ...data.facts,
                         ...newQueryData[0].content,
                     ];
                     return {
