@@ -40,7 +40,11 @@ export default function ViewpointCard({
             return;
         }
 
-        setViewpointContent(inputRef.current?.textContent ?? "");
+        const paragraphs = Array.from(inputRef.current?.childNodes ?? []).map(
+            (node) => node.textContent,
+        );
+        const content = paragraphs.join("\n");
+        setViewpointContent(content);
 
         publishViewpoint();
     };
@@ -97,7 +101,9 @@ export default function ViewpointCard({
                     }
                     setViewpointContent(
                         e.currentTarget?.textContent
-                            ? e.currentTarget?.textContent
+                            ? Array.from(inputRef.current?.childNodes ?? [])
+                                  .map((node) => node.textContent)
+                                  .join("\n")
                             : "",
                     );
                 }}

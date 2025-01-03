@@ -43,6 +43,7 @@ export default function AuthorViewpoint() {
             }),
 
         onSuccess() {
+            toast.success("觀點發表成功");
             router.push(`/issues/${issueId}`);
         },
         onError(error) {
@@ -53,6 +54,7 @@ export default function AuthorViewpoint() {
 
     const publishViewpoint = () => {
         console.log("Publishing viewpoint");
+
         postNewViewpoint.mutate({
             title: viewpointTitle,
             content: viewpointContent,
