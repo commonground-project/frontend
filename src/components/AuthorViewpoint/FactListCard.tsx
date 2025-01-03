@@ -15,12 +15,18 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
+    inSelectionMode: boolean;
+    selectedFacts: number[];
+    setSelectedFacts: Dispatch<SetStateAction<number[]>>;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
+    inSelectionMode,
+    selectedFacts,
+    setSelectedFacts,
 }: FactListCardProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
@@ -169,11 +175,28 @@ export default function FactListCard({
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
-                    {viewpointFactList.map((fact) => (
+                    {viewpointFactList.map((fact, index) => (
                         <EditableViewpointReference
                             key={fact.id}
                             fact={fact}
                             removeFact={removeFact}
+                            inSelectionMode={inSelectionMode}
+                            isSelected={selectedFacts.includes(index)}
+                            setIsSelected={(isSelected) => {
+                                if (isSelected) {
+                                    setSelectedFacts((prev) => [
+                                        ...prev,
+                                        index,
+                                    ]);
+                                } else {
+                                    setSelectedFacts((prev) =>
+                                        prev.filter(
+                                            (selectedFactIndex) =>
+                                                selectedFactIndex !== index,
+                                        ),
+                                    );
+                                }
+                            }}
                         />
                     ))}
                     <Button

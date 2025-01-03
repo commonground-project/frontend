@@ -19,6 +19,8 @@ export default function AuthorViewpoint() {
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
+    const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
+    const [selectedFacts, setSelectedFacts] = useState<number[]>([]);
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
 
@@ -85,6 +87,8 @@ export default function AuthorViewpoint() {
         });
     };
 
+    console.log(inSelectionMode);
+
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
             <Link
@@ -104,6 +108,8 @@ export default function AuthorViewpoint() {
                         setViewpointContent={setViewpointContent}
                         publishViewpoint={publishViewpoint}
                         pendingPublish={postNewViewpoint.status === "pending"}
+                        setInSelectionMode={setInSelectionMode}
+                        selectedFacts={selectedFacts}
                     />
                 </div>
                 <div className="w-1/3">
@@ -111,6 +117,9 @@ export default function AuthorViewpoint() {
                         issueId={issueId}
                         viewpointFactList={viewpointFactList}
                         setViewpointFactList={setViewpointFactList}
+                        inSelectionMode={inSelectionMode}
+                        selectedFacts={selectedFacts}
+                        setSelectedFacts={setSelectedFacts}
                     />
                 </div>
             </div>
