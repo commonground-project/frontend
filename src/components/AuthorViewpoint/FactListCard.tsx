@@ -38,8 +38,7 @@ export default function FactListCard({
     const addFact = (factId: string) => {
         //check if the selected fact exists in search data
         const isFactExist = data?.pages
-            .map((page) => page.content)
-            .flat()
+            .flatMap((page) => page.content)
             .some((fact) => fact.id === factId);
         if (!isFactExist) {
             console.error("Selected fact does not exist in search data");
