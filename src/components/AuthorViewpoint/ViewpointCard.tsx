@@ -109,6 +109,33 @@ export default function ViewpointCard({
         };
     }, [handleSelection]);
 
+    const rangeOverlaps = (range: Range, node: Node) => {
+        const nodeRange = document.createRange();
+        nodeRange.selectNode(node);
+        return (
+            range.compareBoundaryPoints(Range.END_TO_START, nodeRange) < 0 &&
+            range.compareBoundaryPoints(Range.START_TO_END, nodeRange) > 0
+        );
+    };
+
+    const decapsuleReferenceMarker = (node: Element) => {
+        const parent = node.parentNode;
+        if (!parent) return;
+
+        // remove the reference counter
+        for (const child of node.children) {
+            if (child.classList.contains("reference-counter")) {
+                node.removeChild(child);
+            }
+        }
+
+        // move the children of the span to the parent
+        while (node.firstChild) {
+            parent.insertBefore(node.firstChild, node);
+        }
+        parent.removeChild(node);
+    };
+
     useEffect(() => {
         if (inputRef?.current === null) return;
         const selection = window.getSelection();
