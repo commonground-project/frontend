@@ -4,13 +4,12 @@ import EditableViewpointReference from "@/components/AuthorViewpoint/EditableVie
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
-import { set } from "zod";
 
 type FactListCardProps = {
     issueId: string;
@@ -35,8 +34,6 @@ export default function FactListCard({
     setCurReferenceMarkerId,
     avaliableMarkerId,
 }: FactListCardProps) {
-    console.log("current reference marker id: ", curReferenceMarkerId);
-
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
@@ -207,7 +204,6 @@ export default function FactListCard({
                                     setSelectedFacts((prev) => {
                                         const newMap = new Map(prev);
                                         if (curReferenceMarkerId !== null) {
-                                            console.log("has marker id");
                                             return newMap.set(
                                                 curReferenceMarkerId,
                                                 [
@@ -224,17 +220,9 @@ export default function FactListCard({
                                                 ) ?? []),
                                                 index,
                                             ]);
-                                            console.log(
-                                                "no marker id, new id = ",
-                                                avaliableMarkerId,
-                                            );
                                         }
                                         return newMap;
                                     });
-                                    console.log(
-                                        "current map: ",
-                                        selectedFacts.entries(),
-                                    );
                                 } else {
                                     setSelectedFacts((prev) => {
                                         const newMap = new Map(prev);

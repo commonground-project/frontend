@@ -202,8 +202,6 @@ export default function ViewpointCard({
     };
 
     useEffect(() => {
-        console.log("selectedFacts changed");
-
         if (inputRef?.current === null) return;
         const selection = window.getSelection();
         // If there is no selection or the selection is collapsed, stop processing
