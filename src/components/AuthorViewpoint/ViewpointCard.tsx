@@ -55,17 +55,77 @@ export default function ViewpointCard({
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
+    const convertReferenceMarkerToText = (node: Element): string => {
+        if (node.className.includes("reference-counter")) return "";
+        let text = " ";
+        text += "[";
+        for (const child of node.childNodes) {
+            if (child.nodeType === Node.TEXT_NODE) {
+                text += child.textContent;
+            }
+            if (
+                child.nodeType === Node.ELEMENT_NODE &&
+                (child as Element).tagName === "SPAN"
+            ) {
+                const input = (child as Element).textContent || "";
+
+                // Remove whitespace and split the string by square brackets
+                const numbers = input.match(/\d+/g)?.map(Number) || [];
+
+                // Map the numbers to their decremented values
+                const decrementedNumbers = numbers.map((num) => num - 1);
+
+                // Join the decremented numbers into the desired format
+                text += `](${decrementedNumbers.join(",")})`.replace(" ", "");
+            }
+        }
+        return text + " ";
+    };
+
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty) {
             toast.error("標題和內容不得為空");
             return;
         }
 
-        const paragraphs = Array.from(inputRef.current?.childNodes ?? []).map(
-            (node) => node.textContent,
-        );
-        const content = paragraphs.join("\n");
+        let content = "";
+        Array.from(inputRef.current?.childNodes ?? []).forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                content += node.textContent;
+                return;
+            }
+            if ((node as HTMLElement).className.includes("reference-marker")) {
+                content += convertReferenceMarkerToText(node as Element);
+                return;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                // new paragraph
+                if ((node as HTMLElement).tagName === "DIV") content += "\n";
+
+                Array.from((node as HTMLElement).childNodes).forEach(
+                    (child) => {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            content += child.textContent;
+                            return;
+                        }
+                        if (
+                            (child as HTMLElement).className.includes(
+                                "reference-marker",
+                            )
+                        ) {
+                            content += convertReferenceMarkerToText(
+                                child as Element,
+                            );
+                        }
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            content += node.textContent;
+                        }
+                    },
+                );
+            }
+        });
         setViewpointContent(content);
+        console.log("viewpoint content: ", content);
 
         publishViewpoint();
     };

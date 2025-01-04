@@ -197,9 +197,6 @@ export default function FactListCard({
                                           ?.includes(index) ?? false)
                             }
                             setIsSelected={(isSelected) => {
-                                console.log(
-                                    `current reference marker id: ${curReferenceMarkerId}`,
-                                );
                                 if (isSelected) {
                                     setSelectedFacts((prev) => {
                                         const newMap = new Map(prev);

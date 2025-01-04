@@ -51,8 +51,6 @@ export default function AuthorViewpoint() {
             }),
 
         onSuccess(data) {
-            toast.success("觀點發表成功");
-
             queryClient.setQueryData(
                 ["viewpoints", issueId],
                 (olddata: {
@@ -75,6 +73,7 @@ export default function AuthorViewpoint() {
                 queryKey: ["viewpoints", issueId],
             });
 
+            toast.success("觀點發表成功");
             router.push(`/issues/${issueId}`);
         },
         onError(error) {

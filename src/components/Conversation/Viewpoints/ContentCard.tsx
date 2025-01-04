@@ -104,6 +104,28 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         );
     };
 
+    const convertCitedText = (input: string) => {
+        // Match all sections with text and numbers
+        const matches = [...input.matchAll(/\[([^\]]+)\]\(([^\)]+)\)/g)];
+
+        let result = input;
+
+        matches.forEach((match) => {
+            const fullMatch = match[0];
+            const text = match[1];
+            const numbers = match[2]
+                .split(",")
+                .map((num) => Number(num.trim()) + 1) // Increment each number by 1
+                .map((num) => `[${num}]`) // Format each number as [n]
+                .join("");
+
+            // Replace the matched section with the desired format
+            result = result.replace(fullMatch, `${text} ${numbers}`);
+        });
+
+        return result;
+    };
+
     return (
         <div>
             <div className="mb-1 flex">
@@ -147,9 +169,9 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     ref={firstParagraphHeight}
                     className="text-base font-normal text-black"
                 >
-                    {viewpoint.content.split("\n")[0]}
+                    {convertCitedText(viewpoint.content).split("\n")[0]}
                 </p>
-                {viewpoint.content
+                {convertCitedText(viewpoint.content)
                     .split("\n")
                     .slice(1)
                     .map((paragraph, index) => (
