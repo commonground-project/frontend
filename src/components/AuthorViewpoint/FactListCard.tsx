@@ -10,14 +10,18 @@ import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+import { set } from "zod";
 
 type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
     inSelectionMode: boolean;
-    selectedFacts: number[];
-    setSelectedFacts: Dispatch<SetStateAction<number[]>>;
+    selectedFacts: Map<number, number[]>;
+    setSelectedFacts: Dispatch<SetStateAction<Map<number, number[]>>>;
+    curReferenceMarkerId: number | null;
+    setCurReferenceMarkerId: (value: number | null) => void;
+    avaliableMarkerId: number;
 };
 
 export default function FactListCard({
@@ -27,7 +31,12 @@ export default function FactListCard({
     inSelectionMode,
     selectedFacts,
     setSelectedFacts,
+    curReferenceMarkerId,
+    setCurReferenceMarkerId,
+    avaliableMarkerId,
 }: FactListCardProps) {
+    console.log("current reference marker id: ", curReferenceMarkerId);
+
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
@@ -181,20 +190,66 @@ export default function FactListCard({
                             fact={fact}
                             removeFact={removeFact}
                             inSelectionMode={inSelectionMode}
-                            isSelected={selectedFacts.includes(index)}
+                            isSelected={
+                                curReferenceMarkerId === null
+                                    ? (selectedFacts
+                                          .get(avaliableMarkerId)
+                                          ?.includes(index) ?? false)
+                                    : (selectedFacts
+                                          .get(curReferenceMarkerId)
+                                          ?.includes(index) ?? false)
+                            }
                             setIsSelected={(isSelected) => {
+                                console.log(
+                                    `current reference marker id: ${curReferenceMarkerId}`,
+                                );
                                 if (isSelected) {
-                                    setSelectedFacts((prev) => [
-                                        ...prev,
-                                        index,
-                                    ]);
-                                } else {
-                                    setSelectedFacts((prev) =>
-                                        prev.filter(
-                                            (selectedFactIndex) =>
-                                                selectedFactIndex !== index,
-                                        ),
+                                    setSelectedFacts((prev) => {
+                                        const newMap = new Map(prev);
+                                        if (curReferenceMarkerId !== null) {
+                                            console.log("has marker id");
+                                            return newMap.set(
+                                                curReferenceMarkerId,
+                                                [
+                                                    ...(newMap.get(
+                                                        curReferenceMarkerId,
+                                                    ) ?? []),
+                                                    index,
+                                                ],
+                                            );
+                                        } else {
+                                            newMap.set(avaliableMarkerId, [
+                                                ...(newMap.get(
+                                                    avaliableMarkerId,
+                                                ) ?? []),
+                                                index,
+                                            ]);
+                                            console.log(
+                                                "no marker id, new id = ",
+                                                avaliableMarkerId,
+                                            );
+                                        }
+                                        return newMap;
+                                    });
+                                    console.log(
+                                        "current map: ",
+                                        selectedFacts.entries(),
                                     );
+                                } else {
+                                    setSelectedFacts((prev) => {
+                                        const newMap = new Map(prev);
+                                        if (curReferenceMarkerId)
+                                            newMap.set(curReferenceMarkerId, [
+                                                ...(newMap
+                                                    .get(curReferenceMarkerId)
+                                                    ?.filter(
+                                                        (id) =>
+                                                            id ===
+                                                            curReferenceMarkerId,
+                                                    ) ?? []),
+                                            ]);
+                                        return newMap;
+                                    });
                                 }
                             }}
                         />
