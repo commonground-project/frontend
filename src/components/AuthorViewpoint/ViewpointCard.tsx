@@ -136,6 +136,33 @@ export default function ViewpointCard({
         parent.removeChild(node);
     };
 
+    const capsuleReferenceMarker = (range: Range, facts: number[]) => {
+        const referenceMarker = document.createElement("span");
+        referenceMarker.className = "text-green-500 reference-marker";
+
+        range.surroundContents(referenceMarker);
+        updateReferenceCounter(referenceMarker, facts);
+    };
+
+    const updateReferenceCounter = (
+        referenceMarker: Element,
+        facts: number[],
+    ) => {
+        const referenceCounter =
+            referenceMarker.querySelector(".reference-counter");
+        if (referenceCounter) {
+            (referenceCounter as HTMLElement).innerText =
+                " " + facts.map((fact) => `[${fact + 1}]`).join("");
+            return;
+        }
+        const newReferenceCounter = document.createElement("span");
+        newReferenceCounter.classList.add("reference-counter");
+        newReferenceCounter.innerText =
+            " " + facts.map((fact) => `[${fact + 1}]`).join("");
+
+        referenceMarker.appendChild(newReferenceCounter);
+    };
+
     useEffect(() => {
         if (inputRef?.current === null) return;
         const selection = window.getSelection();
