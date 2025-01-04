@@ -1,7 +1,14 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useRef, useEffect, useCallback } from "react";
+import {
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+    Dispatch,
+    SetStateAction,
+} from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 
@@ -12,7 +19,11 @@ type ViewpointCardProps = {
     publishViewpoint: (content: string[]) => void;
     pendingPublish: boolean;
     setInSelectionMode: (value: boolean) => void;
-    selectedFacts: number[];
+    selectedFacts: Map<number, number[]>;
+    curReferenceMarkerId: number | null;
+    setCurReferenceMarkerId: (value: number | null) => void;
+    avaliableMarkerId: number;
+    setAvaliableMarkerId: Dispatch<SetStateAction<number>>;
 };
 
 export default function ViewpointCard({
@@ -23,6 +34,10 @@ export default function ViewpointCard({
     pendingPublish,
     setInSelectionMode,
     selectedFacts,
+    curReferenceMarkerId,
+    setCurReferenceMarkerId,
+    avaliableMarkerId,
+    setAvaliableMarkerId,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -70,6 +85,24 @@ export default function ViewpointCard({
         if (range.collapsed) return;
 
         setInSelectionMode(true);
+
+        // Check if the selection overlaps with an existing reference marker
+        // If it does, we assume the user wants to update that marker
+        const existingMarkers =
+            document.getElementsByClassName("reference-marker");
+
+        let selectedMarker: Element | null = null;
+        if (existingMarkers.length > 0) {
+            for (const marker of existingMarkers) {
+                if (rangeOverlaps(range, marker)) {
+                    selectedMarker = marker;
+                    break;
+                }
+            }
+        }
+        setCurReferenceMarkerId(
+            selectedMarker?.id ? parseInt(selectedMarker.id) : null,
+        );
 
         // Create tooltip element
         const rangeRect = range.getBoundingClientRect();
@@ -135,9 +168,14 @@ export default function ViewpointCard({
         parent.removeChild(node);
     };
 
-    const encapsuleReferenceMarker = (range: Range, facts: number[]) => {
+    const encapsuleReferenceMarker = (
+        range: Range,
+        facts: number[],
+        id: number,
+    ) => {
         const referenceMarker = document.createElement("span");
         referenceMarker.className = "text-green-500 reference-marker";
+        referenceMarker.id = String(id);
 
         range.surroundContents(referenceMarker);
         updateReferenceCounter(referenceMarker, facts);
@@ -163,6 +201,8 @@ export default function ViewpointCard({
     };
 
     useEffect(() => {
+        console.log("selectedFacts changed");
+
         if (inputRef?.current === null) return;
         const selection = window.getSelection();
         // If there is no selection or the selection is collapsed, stop processing
@@ -187,17 +227,30 @@ export default function ViewpointCard({
 
         if (selectedMarker) {
             // selected a existing marker, update the facts
-            if (selectedFacts.length === 0) {
+            const facts = selectedFacts.get(Number(selectedMarker.id));
+            if (!facts) {
+                console.error("marker id not setup: ", selectedMarker.id);
+                return;
+            }
+            if (facts.length === 0) {
                 // if no fact is selected, remove the marker
                 decapsuleReferenceMarker(selectedMarker);
                 return;
             }
             // update the reference counter
-            updateReferenceCounter(selectedMarker, selectedFacts);
+            updateReferenceCounter(selectedMarker, facts);
         } else {
             // selected a new range, create a new marker
-            if (selectedFacts.length === 0) return;
-            encapsuleReferenceMarker(range, selectedFacts);
+            if (curReferenceMarkerId === null) {
+                const facts = selectedFacts.get(avaliableMarkerId);
+                if (!facts) {
+                    console.error("marker id not setup: ", avaliableMarkerId);
+                    return;
+                }
+                if (facts.length === 0) return;
+                encapsuleReferenceMarker(range, facts, avaliableMarkerId);
+                setAvaliableMarkerId((prev) => prev + 1);
+            }
         }
 
         // Preserve the selection

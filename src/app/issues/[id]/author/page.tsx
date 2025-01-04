@@ -28,7 +28,14 @@ export default function AuthorViewpoint() {
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
-    const [selectedFacts, setSelectedFacts] = useState<number[]>([]);
+    const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
+        new Map().set(0, []),
+    );
+    const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
+        number | null
+    >(null);
+    const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
+
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
 
@@ -108,7 +115,7 @@ export default function AuthorViewpoint() {
         });
     };
 
-    console.log(inSelectionMode);
+    // console.log(inSelectionMode);
 
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
@@ -130,6 +137,10 @@ export default function AuthorViewpoint() {
                         pendingPublish={postNewViewpoint.status === "pending"}
                         setInSelectionMode={setInSelectionMode}
                         selectedFacts={selectedFacts}
+                        curReferenceMarkerId={curReferenceMarkerId}
+                        setCurReferenceMarkerId={setCurReferenceMarkerId}
+                        avaliableMarkerId={avaliableMarkerId}
+                        setAvaliableMarkerId={setAvaliableMarkerId}
                     />
                 </div>
                 <div className="w-1/3">
@@ -140,6 +151,9 @@ export default function AuthorViewpoint() {
                         inSelectionMode={inSelectionMode}
                         selectedFacts={selectedFacts}
                         setSelectedFacts={setSelectedFacts}
+                        curReferenceMarkerId={curReferenceMarkerId}
+                        setCurReferenceMarkerId={setCurReferenceMarkerId}
+                        avaliableMarkerId={avaliableMarkerId}
                     />
                 </div>
             </div>
