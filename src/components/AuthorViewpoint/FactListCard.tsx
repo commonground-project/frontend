@@ -70,9 +70,9 @@ export default function FactListCard({
         queryFn: ({ pageParam }) =>
             getPaginatedIssueFactsBySize(
                 issueId,
-                200,
                 pageParam,
                 cookie.auth_token,
+                200,
             ),
 
         initialPageParam: 0,
