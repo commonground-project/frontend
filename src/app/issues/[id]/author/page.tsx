@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
+import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
 
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
