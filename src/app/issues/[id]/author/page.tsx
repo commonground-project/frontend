@@ -11,7 +11,6 @@ import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpo
 import { useCookies } from "react-cookie";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { pages } from "next/dist/build/templates/app-page";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -70,7 +69,7 @@ export default function AuthorViewpoint() {
             router.push(`/issues/${issueId}`);
         },
         onError(error) {
-            console.log(`error creating viewpoints: ${error}`);
+            console.error(`error creating viewpoints: ${error}`);
             toast.error("發表觀點時發生錯誤，請再試一次");
         },
     });
