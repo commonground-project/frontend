@@ -3,8 +3,8 @@ import { Fact } from "@/types/conversations.types";
 import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Select, Button } from "@mantine/core";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useState, Dispatch, SetStateAction } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
@@ -23,7 +23,6 @@ export default function FactListCard({
     setViewpointFactList,
 }: FactListCardProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
-    const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
 
@@ -50,32 +49,19 @@ export default function FactListCard({
             (fact) => fact.id === factId,
         );
         if (isFactExistInList) {
-            console.log("Selected fact already exists in viewpointFactList");
+            console.error("Selected fact already exists in viewpointFactList");
             return;
         }
 
         //get the selected fact
         const selectedFact = data?.pages
-            .map((page) => page.content)
-            .flat()
+            .flatMap((page) => page.content)
             .find((fact) => fact.id === factId);
         if (!selectedFact) return;
 
         //add the selected fact to the viewpointFactList
         setViewpointFactList((prev) => [...prev, selectedFact]);
     };
-
-    useEffect(() => {
-        if (selectedFactId) {
-            addFact(selectedFactId);
-            setSelectedFactId(null);
-        }
-    }, [
-        selectedFactId,
-        setSelectedFactId,
-        viewpointFactList,
-        setViewpointFactList,
-    ]);
 
     const [cookie] = useCookies(["auth_token"]);
 
@@ -112,13 +98,10 @@ export default function FactListCard({
                     searchable
                     value={searchValue}
                     onChange={(selectedFactId) => {
-                        setSelectedFactId(
-                            selectedFactId ? selectedFactId : null,
-                        );
+                        if (selectedFactId) addFact(selectedFactId);
                     }}
                     data={data?.pages
-                        .map((page) => page.content)
-                        .flat()
+                        .flatMap((page) => page.content)
                         .map((fact) =>
                             //check if searchData already exists in viewpointFactList
                             viewpointFactList.some(
@@ -151,7 +134,6 @@ export default function FactListCard({
                                 inner: "flex justify-start",
                                 label: "whitespace-normal text-left",
                             }}
-                            //TODO: Add onClick event: Open a modal to add a new fact
                         >
                             找不到想引著的事實嗎？將其引入 CommonGround 吧!
                         </Button>
@@ -162,7 +144,9 @@ export default function FactListCard({
                 issueId={issueId}
                 creationID={creationId}
                 setCreationID={setCreationId}
-                factCreationCallback={(facts) => addFact(facts[0].id)}
+                factCreationCallback={(facts) =>
+                    facts.forEach((fact) => addFact(fact.id))
+                }
             />
             <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
