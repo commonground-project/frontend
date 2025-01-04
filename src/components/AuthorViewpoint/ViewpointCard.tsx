@@ -136,7 +136,7 @@ export default function ViewpointCard({
         parent.removeChild(node);
     };
 
-    const capsuleReferenceMarker = (range: Range, facts: number[]) => {
+    const encapsuleReferenceMarker = (range: Range, facts: number[]) => {
         const referenceMarker = document.createElement("span");
         referenceMarker.className = "text-green-500 reference-marker";
 
@@ -170,50 +170,35 @@ export default function ViewpointCard({
         if (!selection || selection.isCollapsed) return;
 
         const range = selection.getRangeAt(0);
-        if (selectedFacts.length > 0) {
-            // If more than one fact is selected, start adding reference markers
 
-            // Remove any existing reference counters to prevent duplicates
-            const originalOuterSpan =
-                document.getElementsByClassName("reference-marker");
-            if (originalOuterSpan.length > 0) {
-                for (const span of originalOuterSpan) {
-                    for (const child of span.children) {
-                        if (child.classList.contains("reference-counter"))
-                            span.removeChild(child);
-                    }
+        // Check if the selection overlaps with an existing reference marker
+        // If it does, we assume the user wants to update that marker
+        const existingMarkers =
+            document.getElementsByClassName("reference-marker");
+
+        let selectedMarker: Element | null = null;
+        if (existingMarkers.length > 0) {
+            for (const marker of existingMarkers) {
+                if (rangeOverlaps(range, marker)) {
+                    selectedMarker = marker;
+                    break;
                 }
             }
+        }
 
-            const outerSpan = document.createElement("span");
-            outerSpan.className = "text-green-500 reference-marker";
-
-            range.surroundContents(outerSpan);
-
-            // Create reference counters
-            const innerSpan = document.createElement("span");
-            innerSpan.classList.add("reference-counter");
-            innerSpan.innerText =
-                " " + selectedFacts.map((fact) => `[${fact + 1}]`).join("");
-            console.log(innerSpan);
-            outerSpan.appendChild(innerSpan);
+        if (selectedMarker) {
+            // selected a existing marker, update the facts
+            if (selectedFacts.length === 0) {
+                // if no fact is selected, remove the marker
+                decapsuleReferenceMarker(selectedMarker);
+                return;
+            }
+            // update the reference counter
+            updateReferenceCounter(selectedMarker, selectedFacts);
         } else {
-            // If no fact is selected, remove all reference markers
-            const spans = inputRef.current.querySelectorAll(
-                "span.text-green-500",
-            );
-            spans.forEach((span) => {
-                for (const child of span.children) {
-                    if (child.classList.contains("reference-counter"))
-                        span.removeChild(child);
-                }
-                const parent = span.parentNode;
-                if (!parent) return;
-                while (span.firstChild) {
-                    parent.insertBefore(span.firstChild, span);
-                }
-                parent.removeChild(span);
-            });
+            // selected a new range, create a new marker
+            if (selectedFacts.length === 0) return;
+            encapsuleReferenceMarker(range, selectedFacts);
         }
 
         // Preserve the selection
