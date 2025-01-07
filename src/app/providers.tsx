@@ -9,6 +9,10 @@ import {
 } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { CommonGroundMantineTheme } from "@/lib/configs/mantine";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
+import { decodeToken } from "react-jwt";
+import { DecodedToken } from "@/types/users.types";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -32,6 +36,26 @@ function getQueryClient() {
     }
 }
 
+if (typeof window !== "undefined") {
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "", {
+        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+        loaded: (ph) => {
+            // Connect PostHog to the user's identity if they're logged in
+            const userToken = document.cookie
+                .split(";")
+                .map((x) => x.trim().split("="))
+                .find((c) => c[0] == "auth_token")?.[1];
+            const user = decodeToken<DecodedToken>(userToken ?? "");
+            if (user) {
+                ph.identify(user.sub, {
+                    email: user.email,
+                    username: user.username,
+                });
+            }
+        },
+    });
+}
+
 type ProviderProps = {
     children: ReactNode;
 };
@@ -40,11 +64,13 @@ export default function Providers({ children }: ProviderProps) {
     const queryClient = getQueryClient();
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <MantineProvider theme={CommonGroundMantineTheme}>
-                {children}
-            </MantineProvider>
-            <Toaster richColors />
-        </QueryClientProvider>
+        <PostHogProvider client={posthog}>
+            <QueryClientProvider client={queryClient}>
+                <MantineProvider theme={CommonGroundMantineTheme}>
+                    {children}
+                </MantineProvider>
+                <Toaster richColors />
+            </QueryClientProvider>
+        </PostHogProvider>
     );
 }
