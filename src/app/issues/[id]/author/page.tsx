@@ -1,27 +1,36 @@
 "use client";
+
+import { useState } from "react";
+import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
+import { toast } from "sonner";
+
 import { useParams, useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+
+import Link from "next/link";
+import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
+
+import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
+
 import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
 import FactListCard from "@/components/AuthorViewpoint/FactListCard";
-import { useState } from "react";
-import { Fact } from "@/types/conversations.types";
-import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
-import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
-import { useCookies } from "react-cookie";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+
+import type { Fact } from "@/types/conversations.types";
+import { prependPaginatedQueryData } from "@/lib/utils/prepandPaginatedQueryData";
 
 export default function AuthorViewpoint() {
     const params = useParams();
     const router = useRouter();
+    const queryClient = useQueryClient();
+
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const [cookie] = useCookies(["auth_token"]);
-    const queryClient = useQueryClient();
 
     const issueId = params.id as string;
+
     const postNewViewpoint = useMutation({
         mutationKey: ["postNewViewpoint", issueId],
         mutationFn: ({
@@ -50,14 +59,13 @@ export default function AuthorViewpoint() {
                     pages: getIssueViewpointsResponse[];
                     pageParams: number[];
                 }) => {
-                    const newQueryData = olddata.pages;
-                    newQueryData[0].content = [
+                    const updatedData = prependPaginatedQueryData(
                         data,
-                        ...newQueryData[0].content,
-                    ];
+                        olddata.pages,
+                    );
                     return {
-                        pages: newQueryData,
-                        pageParams: olddata.pageParams,
+                        pages: updatedData,
+                        pageParams: updatedData.map((__, i) => i),
                     };
                 },
             );
@@ -69,20 +77,10 @@ export default function AuthorViewpoint() {
             router.push(`/issues/${issueId}`);
         },
         onError(error) {
-            console.error(`error creating viewpoints: ${error}`);
+            console.error(`Error creating viewpoints: ${error}`);
             toast.error("發表觀點時發生錯誤，請再試一次");
         },
     });
-
-    const publishViewpoint = () => {
-        console.log("Publishing viewpoint");
-
-        postNewViewpoint.mutate({
-            title: viewpointTitle,
-            content: viewpointContent,
-            facts: viewpointFactList.map((fact) => fact.id),
-        });
-    };
 
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
@@ -101,7 +99,13 @@ export default function AuthorViewpoint() {
                         viewpointTitle={viewpointTitle}
                         setViewpointTitle={setViewpointTitle}
                         setViewpointContent={setViewpointContent}
-                        publishViewpoint={publishViewpoint}
+                        publishViewpoint={() => {
+                            postNewViewpoint.mutate({
+                                title: viewpointTitle,
+                                content: viewpointContent,
+                                facts: viewpointFactList.map((fact) => fact.id),
+                            });
+                        }}
                         pendingPublish={postNewViewpoint.status === "pending"}
                     />
                 </div>
