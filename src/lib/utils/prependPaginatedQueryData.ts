@@ -54,12 +54,13 @@ export function prependPaginatedQueryData<T>(
         (acc, page) => acc + page.content.length,
         0,
     );
-    return newQueryData.map((page) => ({
+    return newQueryData.map((page, index) => ({
         ...page,
         page: {
-            ...page.page,
+            number: index,
             totalElement: totalItems,
             totalPage: Math.ceil(totalItems / size),
+            size: size,
         },
     }));
 }
