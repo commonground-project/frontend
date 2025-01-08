@@ -152,10 +152,11 @@ export default function FactListCard({
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
-                    {viewpointFactList.map((fact) => (
+                    {viewpointFactList.map((fact, index) => (
                         <EditableViewpointReference
                             key={fact.id}
                             fact={fact}
+                            index={index + 1}
                             removeFact={removeFact}
                         />
                     ))}

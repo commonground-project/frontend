@@ -17,7 +17,7 @@ import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
 import FactListCard from "@/components/AuthorViewpoint/FactListCard";
 
 import type { Fact } from "@/types/conversations.types";
-import { prependPaginatedQueryData } from "@/lib/utils/prepandPaginatedQueryData";
+import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -65,7 +65,9 @@ export default function AuthorViewpoint() {
                     );
                     return {
                         pages: updatedData,
-                        pageParams: updatedData.map((__, i) => i),
+                        pageParams: updatedData.map(
+                            (__: unknown, i: number) => i,
+                        ),
                     };
                 },
             );
