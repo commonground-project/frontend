@@ -19,7 +19,7 @@ export default function ReferenceBar({
             href={reference.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
+            className="flex min-w-0 items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
         >
             {reference.icon.length ? (
                 <img
@@ -35,7 +35,7 @@ export default function ReferenceBar({
                 {pageURL.hostname.replace("www.", "")}
             </span>
             {showSrcTitle && (
-                <span className="max-w-[38rem] truncate text-sm text-gray-600">
+                <span className="truncate text-sm text-gray-600">
                     {reference.title}
                 </span>
             )}
