@@ -31,16 +31,14 @@ export default function ReferenceBar({
                 <GlobeAltIcon className="h-4 w-4 text-gray-600" />
             )}
 
-            <div className="flex items-center">
-                <span className="font-sans text-sm font-normal text-neutral-500">
-                    {pageURL.hostname.replace("www.", "")}
+            <span className="font-sans text-sm font-normal text-neutral-500">
+                {pageURL.hostname.replace("www.", "")}
+            </span>
+            {showSrcTitle && (
+                <span className="max-w-[38rem] truncate text-sm text-gray-600">
+                    {reference.title}
                 </span>
-                {showSrcTitle && (
-                    <span className="max-w-[38rem] truncate text-sm text-gray-600">
-                        {reference.title}
-                    </span>
-                )}
-            </div>
+            )}
         </Link>
     );
 }
