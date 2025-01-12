@@ -1,3 +1,5 @@
+import { parseJsonWhileHandlingErrors } from "../middlewares";
+
 export type RefreshJwtResponse = {
     accessToken: string;
     refreshToken: string;
@@ -10,9 +12,5 @@ export const refreshJwtRequest = async (
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/jwt/refresh/${refresh_token}`,
         { cache: "no-cache" },
-    )
-        .then((res) => res.json())
-        .catch((err) => {
-            throw err;
-        });
+    ).then(parseJsonWhileHandlingErrors);
 };

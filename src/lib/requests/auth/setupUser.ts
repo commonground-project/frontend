@@ -1,4 +1,5 @@
 import type { UserRoles } from "@/types/users.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 export type SetupUserRequestedFields = {
     username: string;
@@ -26,10 +27,5 @@ export const setupUserRequest = async (
             },
             body: JSON.stringify(payload),
         },
-    ).then((res) => {
-        if (!res.ok) {
-            throw new Error(`Error setting up user: ${res.statusText}`);
-        }
-        return res.json();
-    });
+    ).then(parseJsonWhileHandlingErrors);
 };

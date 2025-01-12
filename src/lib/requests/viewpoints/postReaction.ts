@@ -1,4 +1,5 @@
 import type { Reaction } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 type postReactionProps = {
     viewpointId: string;
@@ -27,9 +28,5 @@ export const postReaction = async ({
                 reaction: reaction,
             }),
         },
-    ).then((res) => {
-        if (!res.ok) throw new Error(`Error updating reaction: ${res.status}`);
-
-        return res.json();
-    });
+    ).then(parseJsonWhileHandlingErrors);
 };

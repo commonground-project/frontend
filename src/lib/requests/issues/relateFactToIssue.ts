@@ -1,4 +1,5 @@
 import type { Fact } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 export type relateFactToIssueResponse = {
     facts: Fact[];
@@ -19,8 +20,5 @@ export const relateFactToIssue = async (
             },
             body: JSON.stringify({ factIds: [factId] }),
         },
-    ).then((res) => {
-        if (!res.ok) throw new Error("Failed to relate fact to issue");
-        return res.json();
-    });
+    ).then(parseJsonWhileHandlingErrors);
 };

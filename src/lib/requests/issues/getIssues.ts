@@ -1,4 +1,5 @@
 import type { Issue } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 export type getIssuesResponse = {
     content: Issue[];
@@ -23,8 +24,5 @@ export const getIssues = async (
                 Authorization: `Bearer ${userToken}`,
             },
         },
-    ).then((res) => {
-        if (!res.ok) throw new Error(`Error fetching issues: ${res.status}`);
-        return res.json();
-    });
+    ).then(parseJsonWhileHandlingErrors);
 };

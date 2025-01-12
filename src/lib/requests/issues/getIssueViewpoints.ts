@@ -1,4 +1,5 @@
 import type { ViewPoint } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 type getIssueViewpointsParams = {
     issueId: string;
@@ -31,13 +32,7 @@ export const getIssueViewpoints = async ({
             },
         },
     )
-        .then((res) => {
-            if (!res.ok)
-                throw new Error(
-                    `Error fetching issue viewpoints: ${res.status}`,
-                );
-            else return res.json();
-        })
+        .then(parseJsonWhileHandlingErrors)
         .then((res: getIssueViewpointsResponse) => {
             return {
                 ...res,
