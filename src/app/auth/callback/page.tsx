@@ -36,7 +36,7 @@ export default function CallbackPage() {
             return router.push("/login");
         }
 
-        router.push(redirectTo ? redirectTo : "/");
+        router.push(redirectTo ? decodeURI(redirectTo) : "/");
     }, [login, router]);
 
     return <div></div>;
