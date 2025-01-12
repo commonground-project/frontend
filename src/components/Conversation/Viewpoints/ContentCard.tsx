@@ -107,7 +107,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
 
     const parsedContent = viewpoint.content.replace(
         /\[\s*\]\((\d+)\)/g,
-        (_, num) => ` [${num}]`,
+        (_, num) => ` [${parseInt(num) + 1}]`,
     );
 
     return (
