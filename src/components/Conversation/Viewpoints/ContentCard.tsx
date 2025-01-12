@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { ViewPoint, Reaction } from "@/types/conversations.types";
+import { Reaction } from "@/types/conversations.types";
+import type { ViewPoint } from "@/types/conversations.types";
 import { Spoiler, Avatar } from "@mantine/core";
 import {
     HandThumbUpIcon,
@@ -106,7 +107,7 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
 
     const parsedContent = viewpoint.content.replace(
         /\[\s*\]\((\d+)\)/g,
-        (_, num) => ` [${num}]`,
+        (_, num) => ` [${parseInt(num) + 1}]`,
     );
 
     return (

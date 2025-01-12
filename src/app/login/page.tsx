@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
     const router = useRouter();
 
+    const getSearchParams = (param: string) => {
+        if (typeof window === "undefined") return null;
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    };
+
     const handleLogin = (redirectTo?: string) => {
         if (!window)
             return console.error("This action is not supported server-side!");
@@ -24,7 +30,7 @@ export default function LoginPage() {
                 <div className="flex justify-center">
                     <button
                         onClick={() =>
-                            handleLogin("http://localhost:3000/test/")
+                            handleLogin(getSearchParams("r") ?? undefined)
                         }
                         className="flex items-center space-x-2 rounded-lg bg-white px-4 py-2 text-black transition-colors hover:bg-gray-200"
                     >

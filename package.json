@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint && tsc --noemit",
@@ -12,42 +12,45 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@mantine/core": "^7.14.3",
-    "@mantine/form": "^7.14.3",
-    "@mantine/hooks": "7.14.3",
-    "@tanstack/react-query": "^5.62.3",
+    "@mantine/core": "^7.15.3",
+    "@mantine/form": "^7.15.3",
+    "@mantine/hooks": "7.15.3",
+    "@tanstack/react-query": "^5.64.0",
     "@types/lodash": "^4.17.14",
-    "hooks@7.14.3": "link:mantine/hooks@7.14.3",
     "lodash": "^4.17.21",
-    "next": "15.0.4",
-    "posthog-js": "^1.204.0",
-    "posthog-node": "^4.3.2",
-    "prettier-plugin-tailwindcss": "^0.6.9",
-    "react": "^18.3.1",
+    "next": "15.1.4",
+    "posthog-js": "^1.205.0",
+    "react": "19.0.0",
     "react-cookie": "^7.2.2",
-    "react-dom": "^18.3.1",
+    "react-dom": "19.0.0",
     "react-intersection-observer": "^9.14.1",
     "react-jwt": "^1.2.2",
-    "react-toastify": "^10.0.6",
     "sonner": "^1.7.1",
-    "uuid": "^11.0.3",
-    "zod": "^3.23.8",
-    "zustand": "5.0.2"
+    "uuid": "^11.0.5",
+    "zod": "^3.24.1",
+    "zustand": "5.0.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.0",
-    "@tanstack/eslint-plugin-query": "^5.62.1",
-    "@types/node": "^22.10.1",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
-    "eslint": "^9.16.0",
-    "eslint-config-next": "15.0.4",
+    "@playwright/test": "^1.49.1",
+    "@tanstack/eslint-plugin-query": "^5.62.16",
+    "@types/node": "^22.10.5",
+    "@types/react": "19.0.5",
+    "@types/react-dom": "19.0.3",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "15.1.4",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.7",
     "postcss": "^8.4.49",
     "prettier": "3.4.2",
-    "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.2"
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
   },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.5",
+      "@types/react-dom": "19.0.3"
+    }
+  }
 }

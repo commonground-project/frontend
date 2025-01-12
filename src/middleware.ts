@@ -5,7 +5,7 @@ import { refreshJwtRequest } from "./lib/requests/auth/refreshJwt";
 import { decodeToken } from "react-jwt";
 import type { DecodedToken } from "./types/users.types";
 
-const protectedPaths = ["/onboarding"];
+const protectedPaths = ["/", "/onboarding"];
 
 export async function middleware(request: NextRequest) {
     const userToken = request.cookies.get("auth_token");
@@ -63,13 +63,13 @@ export async function middleware(request: NextRequest) {
         return mdwResponse;
     }
 
-    console.log("User token", decodeToken(userToken?.value ?? ""));
-
     const decodedToken = decodeToken<DecodedToken>(userToken?.value ?? "");
 
     // Rule set: Protected paths
     if (protectedPaths.includes(requestUrl.pathname) && !decodedToken) {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(
+            new URL(`/login?r=${encodeURI(requestUrl.href)}`, request.url),
+        );
     }
 
     // Rule set: Onbaording

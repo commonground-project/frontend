@@ -1,4 +1,5 @@
 import type { Fact } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 export const createIsolatedFact = async (
     userToken: string,
@@ -11,8 +12,5 @@ export const createIsolatedFact = async (
             Authorization: `Bearer ${userToken}`,
         },
         body: body,
-    }).then((res) => {
-        if (!res.ok) throw new Error("Failed to create fact");
-        return res.json();
-    });
+    }).then(parseJsonWhileHandlingErrors);
 };

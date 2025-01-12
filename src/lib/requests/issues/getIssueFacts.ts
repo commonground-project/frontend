@@ -1,4 +1,5 @@
 import type { Fact } from "@/types/conversations.types";
+import { parseJsonWhileHandlingErrors } from "../middlewares";
 
 export type PaginatedIssueFactsByIdResponse = {
     content: Fact[];
@@ -43,5 +44,5 @@ export const getPaginatedIssueFactsBySize = async (
                 Authorization: `Bearer ${userToken}`,
             },
         },
-    ).then((res) => res.json());
+    ).then(parseJsonWhileHandlingErrors);
 };

@@ -4,7 +4,7 @@ import { RectangleStackIcon } from "@heroicons/react/24/outline";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
-import { Issue } from "@/types/conversations.types";
+import type { Issue } from "@/types/conversations.types";
 import { Tooltip } from "@mantine/core";
 
 type IssueCardProps = {

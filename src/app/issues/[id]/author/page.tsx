@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
+import type { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
 import { toast } from "sonner";
 
 import { useParams, useRouter } from "next/navigation";
@@ -79,7 +79,6 @@ export default function AuthorViewpoint() {
             router.push(`/issues/${issueId}`);
         },
         onError(error: Record<string, Record<string, string>> | Error) {
-            console.log("Error!", error);
             if (typeof error === "object" && "data" in error) {
                 if (error.data.type == "type:VALIDATION_ERROR") {
                     toast.error("驗證錯誤", {

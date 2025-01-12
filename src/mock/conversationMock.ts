@@ -1,11 +1,11 @@
-import {
+import type {
     Fact,
     Issue,
     ViewPoint,
     FactReference,
-    Reaction,
 } from "@/types/conversations.types";
-import { User } from "@/types/users.types";
+import { Reaction } from "@/types/conversations.types";
+import type { User } from "@/types/users.types";
 
 export const mockUser: User = {
     id: "00000000-0000-0000-0000-000000000000",

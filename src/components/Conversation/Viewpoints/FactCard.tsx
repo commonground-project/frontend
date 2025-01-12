@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import ViewpointFactReference from "../Facts/ViewpointFactReference";
 
 type FactCardProps = {
