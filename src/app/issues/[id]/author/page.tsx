@@ -13,8 +13,8 @@ import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 
-import ViewpointCard from "@/components/AuthorViewpoint/ViewpointCard";
-import FactListCard from "@/components/AuthorViewpoint/FactListCard";
+import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
+import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
 
 import type { Fact } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
