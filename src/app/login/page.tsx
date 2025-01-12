@@ -1,10 +1,15 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const router = useRouter();
-    const search = useSearchParams();
+
+    const getSearchParams = (param: string) => {
+        if (typeof window === "undefined") return null;
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    };
 
     const handleLogin = (redirectTo?: string) => {
         if (!window)
@@ -18,8 +23,6 @@ export default function LoginPage() {
         router.push(redirectURL);
     };
 
-    console.log(search.get("r"));
-
     return (
         <div className="flex min-h-screen w-full items-center justify-center">
             <div className="rounded-lg bg-gray-100 px-20 py-10 font-bold text-black shadow-md">
@@ -27,7 +30,7 @@ export default function LoginPage() {
                 <div className="flex justify-center">
                     <button
                         onClick={() =>
-                            handleLogin(search.get("r") ?? undefined)
+                            handleLogin(getSearchParams("r") ?? undefined)
                         }
                         className="flex items-center space-x-2 rounded-lg bg-white px-4 py-2 text-black transition-colors hover:bg-gray-200"
                     >
