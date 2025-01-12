@@ -34,7 +34,7 @@ export const getPaginatedIssueFactsBySize = async (
     userToken: string,
     size: number = 10,
 ): Promise<PaginatedIssueFactsByIdResponse> => {
-    const res = await fetch(
+    return fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueid}/facts?page=${pageParam}&size=${size}`,
         {
             method: "GET",
@@ -43,6 +43,5 @@ export const getPaginatedIssueFactsBySize = async (
                 Authorization: `Bearer ${userToken}`,
             },
         },
-    );
-    return res.json();
+    ).then((res) => res.json());
 };

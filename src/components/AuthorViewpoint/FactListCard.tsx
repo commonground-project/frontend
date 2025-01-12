@@ -1,15 +1,18 @@
 "use client";
-import { Fact } from "@/types/conversations.types";
-import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Select, Button } from "@mantine/core";
-import { useState, Dispatch, SetStateAction } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
-import { useCookies } from "react-cookie";
-import { v4 as uuidv4 } from "uuid";
+
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { Select, Button } from "@mantine/core";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+
+import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
+import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+
+import type { Fact } from "@/types/conversations.types";
 
 type FactListCardProps = {
     issueId: string;
@@ -22,50 +25,11 @@ export default function FactListCard({
     viewpointFactList,
     setViewpointFactList,
 }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
-
-    //remove the fact from the viewpointFactList
-    const removeFact = (factId: string) => {
-        setViewpointFactList((prev) =>
-            prev.filter((fact) => String(fact.id) !== factId),
-        );
-    };
-
-    //add the selected fact to the viewpointFactList
-    const addFact = (factId: string) => {
-        //check if the selected fact exists in search data
-        const isFactExist = data?.pages
-            .flatMap((page) => page.content)
-            .some((fact) => fact.id === factId);
-        if (!isFactExist) {
-            console.error("Selected fact does not exist in search data");
-            return;
-        }
-
-        //check if the selected fact exists in viewpointFactList
-        const isFactExistInList = viewpointFactList.some(
-            (fact) => fact.id === factId,
-        );
-        if (isFactExistInList) {
-            console.error("Selected fact already exists in viewpointFactList");
-            return;
-        }
-
-        //get the selected fact
-        const selectedFact = data?.pages
-            .flatMap((page) => page.content)
-            .find((fact) => fact.id === factId);
-        if (!selectedFact) return;
-
-        //add the selected fact to the viewpointFactList
-        setViewpointFactList((prev) => [...prev, selectedFact]);
-    };
-
     const [cookie] = useCookies(["auth_token"]);
 
-    const { data, error, status } = useInfiniteQuery({
+    const { data, error } = useInfiniteQuery({
         queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
             getPaginatedIssueFactsBySize(
@@ -82,9 +46,40 @@ export default function FactListCard({
         },
     });
 
-    if (error) {
-        toast.error("讀取事實時發生錯誤，請再試一次");
-    }
+    useEffect(() => {
+        if (!error) return;
+        toast.error("無法獲取事實列表，請重新整理頁面");
+    }, [error]);
+
+    //remove the fact from the viewpointFactList
+    const removeFact = (factId: string) => {
+        setViewpointFactList((prev) =>
+            prev.filter((fact) => String(fact.id) !== factId),
+        );
+    };
+
+    //add the selected fact to the viewpointFactList
+    const addFact = (factId: string) => {
+        // Check if the selected fact exists in viewpointFactList
+        const factInViewpointFactList = viewpointFactList.some(
+            (fact) => fact.id === factId,
+        );
+        if (factInViewpointFactList) {
+            throw new Error(
+                "Selected fact already exists in viewpointFactList",
+            );
+        }
+
+        const selectedFact = data?.pages
+            .flatMap((page) => page.content)
+            .flat()
+            .find((fact) => fact.id === factId);
+        if (!selectedFact) {
+            throw new Error("Cannot select the selected fact");
+        }
+
+        setViewpointFactList((prev) => [...prev, selectedFact]);
+    };
 
     return (
         <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
@@ -98,29 +93,24 @@ export default function FactListCard({
                     searchable
                     value={searchValue}
                     onChange={(selectedFactId) => {
-                        if (selectedFactId) addFact(selectedFactId);
+                        if (!selectedFactId) return;
+                        addFact(selectedFactId);
                     }}
                     data={data?.pages
                         .flatMap((page) => page.content)
-                        .map((fact) =>
-                            //check if searchData already exists in viewpointFactList
-                            viewpointFactList.some(
-                                (viewpointFact) => viewpointFact.id === fact.id,
-                            )
-                                ? //if exists, return null. No need to show in the search result
-                                  null
-                                : {
-                                      value: String(fact.id),
-                                      label: fact.title,
-                                  },
-                        )
                         .filter(
-                            (item): item is { value: string; label: string } =>
-                                item !== null,
-                        )}
+                            (fact) =>
+                                !viewpointFactList.some(
+                                    (viewpointFact) =>
+                                        viewpointFact.id === fact.id,
+                                ),
+                        )
+                        .map((fact) => ({
+                            value: String(fact.id),
+                            label: fact.title,
+                        }))}
                     checkIconPosition="right"
                     radius={0}
-                    w="100%"
                     classNames={{
                         input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
                     }}
