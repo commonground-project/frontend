@@ -63,8 +63,6 @@ export async function middleware(request: NextRequest) {
         return mdwResponse;
     }
 
-    console.log("User token", decodeToken(userToken?.value ?? ""));
-
     const decodedToken = decodeToken<DecodedToken>(userToken?.value ?? "");
 
     // Rule set: Protected paths

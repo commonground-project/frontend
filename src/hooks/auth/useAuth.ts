@@ -60,7 +60,6 @@ export default function useAuth() {
 
     // Re-evaluate the token when the cookie changes
     useEffect(() => {
-        console.log(cookies.auth_token);
         if (cookies.auth_token != currentToken) {
             setCurrentToken(cookies.auth_token);
             reEvaluateToken(cookies.auth_token);

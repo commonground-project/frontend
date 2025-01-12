@@ -54,8 +54,6 @@ export default function OnboardingPage() {
             router.push("/");
         },
         onError(error) {
-            console.log(error);
-            console.log(error.message);
             if (error.message.startsWith("Error setting up user")) {
                 toast.error("設定使用者時發生錯誤，請再試一次", {
                     description: "若錯誤持續發生，請聯繫 commonground 團隊",
