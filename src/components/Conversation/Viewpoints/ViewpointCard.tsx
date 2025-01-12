@@ -1,8 +1,9 @@
 import type { Reaction, ViewPoint } from "@/types/conversations.types";
 import ContentCard from "./ContentCard";
 import FactCard from "./FactCard";
-import TernaryReactions from "@/components/Conversation/Shared/Reactions";
+import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postReaction } from "@/lib/requests/viewpoints/postReaction";
+import AuthorProfile from "../Shared/AuthorProfile";
 
 type ViewpointCardProps = {
     viewpoint: ViewPoint;
@@ -12,7 +13,15 @@ export default function ViewpointCard({ viewpoint }: ViewpointCardProps) {
     return (
         <div className="flex">
             <div className="float-left w-9/12">
-                <ContentCard viewpoint={viewpoint} />
+                <AuthorProfile
+                    authorName={viewpoint.authorName}
+                    authorAvatar={viewpoint.authorAvatar}
+                    createdAt={viewpoint.createdAt}
+                />
+                <h1 className="text-lg font-semibold text-neutral-700">
+                    {viewpoint.title}
+                </h1>
+                <ContentCard content={viewpoint.content} />
                 <TernaryReactions
                     parentId={viewpoint.id}
                     initialReaction={viewpoint.userReaction.reaction}
