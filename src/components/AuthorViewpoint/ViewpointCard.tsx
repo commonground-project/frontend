@@ -9,16 +9,16 @@ type ViewpointCardProps = {
     issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
-    setViewpointContent: (value: string) => void;
-    publishViewpoint: () => void;
+    publishViewpoint: (content: string[]) => void;
+    pendingPublish: boolean;
 };
 
 export default function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,
-    setViewpointContent,
     publishViewpoint,
+    pendingPublish,
 }: ViewpointCardProps) {
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
@@ -40,9 +40,14 @@ export default function ViewpointCard({
             return;
         }
 
-        setViewpointContent(inputRef.current?.textContent ?? "");
+        const paragraphs = Array.from(inputRef.current?.childNodes ?? []).map(
+            (node) => node.textContent,
+        );
+        const content = paragraphs.filter(
+            (p) => p !== null && p !== "",
+        ) as string[];
 
-        publishViewpoint();
+        publishViewpoint(content);
     };
 
     return (
@@ -74,7 +79,7 @@ export default function ViewpointCard({
                     if (!contentEmpty || !inputRef?.current) return;
                     inputRef.current.innerHTML = "";
                 }}
-                onBlur={(e) => {
+                onBlur={() => {
                     if (inputRef?.current === null) return;
                     const isEmpty = Array.from(
                         inputRef.current.childNodes,
@@ -95,11 +100,6 @@ export default function ViewpointCard({
                         inputRef.current.appendChild(placeholderElement);
                         return;
                     }
-                    setViewpointContent(
-                        e.currentTarget?.textContent
-                            ? e.currentTarget?.textContent
-                            : "",
-                    );
                 }}
             />
             <div className="flex justify-end gap-3">
@@ -126,6 +126,7 @@ export default function ViewpointCard({
                         section: "mr-1",
                     }}
                     onClick={onPublish}
+                    loading={pendingPublish}
                 >
                     發表
                 </Button>

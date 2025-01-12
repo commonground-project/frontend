@@ -1,66 +1,84 @@
 "use client";
-import { Fact } from "@/types/conversations.types";
-import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Select, Button } from "@mantine/core";
+
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { allFacts } from "@/mock/conversationMock";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { Select, Button } from "@mantine/core";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+
+import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
+import EditableViewpointReference from "@/components/AuthorViewpoint/EditableViewpointReference";
+import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+
+import type { Fact } from "@/types/conversations.types";
 
 type FactListCardProps = {
+    issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
 };
 
 export default function FactListCard({
+    issueId,
     viewpointFactList,
     setViewpointFactList,
 }: FactListCardProps) {
-    const [searchData, setSearchData] = useState<Fact[]>(allFacts); // eslint-disable-line
-    const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
+    const [creationId, setCreationId] = useState<string | null>(null);
+    const [cookie] = useCookies(["auth_token"]);
+
+    const { data, error } = useInfiniteQuery({
+        queryKey: ["facts", issueId],
+        queryFn: ({ pageParam }) =>
+            getPaginatedIssueFactsBySize(
+                issueId,
+                pageParam,
+                cookie.auth_token,
+                200,
+            ),
+
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.page.number + 1 < lastPage.page.totalPage)
+                return lastPage.page.number + 1;
+        },
+    });
 
     useEffect(() => {
-        const selectedFact = searchData.find(
-            (fact) => String(fact.id) === selectedFactId,
-        );
-        if (selectedFact) {
-            //check if the selected fact exists in search data
-            const isFactExist = searchData.some(
-                (fact) => fact.id === selectedFact.id,
-            );
-            if (!isFactExist) {
-                console.error("Selected fact does not exist in search data");
-                return;
-            }
+        if (!error) return;
+        toast.error("無法獲取事實列表，請重新整理頁面");
+    }, [error]);
 
-            //check if the selected fact exists in viewpointFactList
-            const isFactExistInList = viewpointFactList.some(
-                (fact) => fact.id === selectedFact.id,
-            );
-            if (isFactExistInList) {
-                console.error(
-                    "Selected fact already exists in viewpointFactList",
-                );
-                return;
-            }
-
-            //add the selected fact to the viewpointFactList
-            setViewpointFactList((prev) => [...prev, selectedFact]);
-
-            setSelectedFactId("");
-        }
-    }, [
-        selectedFactId,
-        setSelectedFactId,
-        viewpointFactList,
-        setViewpointFactList,
-        searchData,
-    ]);
     //remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
         setViewpointFactList((prev) =>
             prev.filter((fact) => String(fact.id) !== factId),
         );
+    };
+
+    //add the selected fact to the viewpointFactList
+    const addFact = (factId: string) => {
+        // Check if the selected fact exists in viewpointFactList
+        const factInViewpointFactList = viewpointFactList.some(
+            (fact) => fact.id === factId,
+        );
+        if (factInViewpointFactList) {
+            throw new Error(
+                "Selected fact already exists in viewpointFactList",
+            );
+        }
+
+        const selectedFact = data?.pages
+            .flatMap((page) => page.content)
+            .flat()
+            .find((fact) => fact.id === factId);
+        if (!selectedFact) {
+            throw new Error("Cannot select the selected fact");
+        }
+
+        setViewpointFactList((prev) => [...prev, selectedFact]);
     };
 
     return (
@@ -75,62 +93,65 @@ export default function FactListCard({
                     searchable
                     value={searchValue}
                     onChange={(selectedFactId) => {
-                        setSelectedFactId(
-                            selectedFactId ? selectedFactId : null,
-                        );
+                        if (!selectedFactId) return;
+                        addFact(selectedFactId);
                     }}
-                    data={searchData
-                        .map((fact) =>
-                            //check if searchData already exists in viewpointFactList
-                            viewpointFactList.some(
-                                (viewpointFact) => viewpointFact.id === fact.id,
-                            )
-                                ? //if exists, return null. No need to show in the search result
-                                  null
-                                : {
-                                      value: String(fact.id),
-                                      label: fact.title,
-                                  },
-                        )
+                    data={data?.pages
+                        .flatMap((page) => page.content)
                         .filter(
-                            (item): item is { value: string; label: string } =>
-                                item !== null,
-                        )}
+                            (fact) =>
+                                !viewpointFactList.some(
+                                    (viewpointFact) =>
+                                        viewpointFact.id === fact.id,
+                                ),
+                        )
+                        .map((fact) => ({
+                            value: String(fact.id),
+                            label: fact.title,
+                        }))}
                     checkIconPosition="right"
                     radius={0}
-                    w="100%"
-                    limit={10}
                     classNames={{
                         input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
                     }}
                     placeholder="搜尋 CommonGround"
                     nothingFoundMessage={
                         <Button
+                            onClick={() => setCreationId(uuidv4())}
                             variant="transparent"
                             classNames={{
                                 root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
                                 inner: "flex justify-start",
                                 label: "whitespace-normal text-left",
                             }}
-                            //TODO: Add onClick event: Open a modal to add a new fact
                         >
                             找不到想引著的事實嗎？將其引入 CommonGround 吧!
                         </Button>
                     }
                 />
             </div>
+            <FactCreationModal
+                issueId={issueId}
+                creationID={creationId}
+                setCreationID={setCreationId}
+                factCreationCallback={(facts) =>
+                    facts.forEach((fact) => addFact(fact.id))
+                }
+            />
             <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
-                    {viewpointFactList.map((fact) => (
+                    {viewpointFactList.map((fact, index) => (
                         <EditableViewpointReference
                             key={fact.id}
                             fact={fact}
+                            index={index + 1}
                             removeFact={removeFact}
                         />
                     ))}
                     <Button
+                        onClick={() => setCreationId(uuidv4())}
                         variant="transparent"
                         leftSection={<PlusIcon className="h-6 w-6" />}
                         classNames={{

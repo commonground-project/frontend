@@ -104,6 +104,11 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
         );
     };
 
+    const parsedContent = viewpoint.content.replace(
+        /\[\s*\]\((\d+)\)/g,
+        (_, num) => ` [${num}]`,
+    );
+
     return (
         <div>
             <div className="mb-1 flex">
@@ -147,9 +152,9 @@ export default function ContentCard({ viewpoint }: ContentCardProps) {
                     ref={firstParagraphHeight}
                     className="text-base font-normal text-black"
                 >
-                    {viewpoint.content.split("\n")[0]}
+                    {parsedContent.split("\n")[0]}
                 </p>
-                {viewpoint.content
+                {parsedContent
                     .split("\n")
                     .slice(1)
                     .map((paragraph, index) => (

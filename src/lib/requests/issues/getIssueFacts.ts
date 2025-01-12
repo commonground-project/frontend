@@ -27,3 +27,21 @@ export const getPaginatedIssueFactsById = async (
     );
     return res.json();
 };
+
+export const getPaginatedIssueFactsBySize = async (
+    issueid: string,
+    pageParam: number,
+    userToken: string,
+    size: number = 10,
+): Promise<PaginatedIssueFactsByIdResponse> => {
+    return fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueid}/facts?page=${pageParam}&size=${size}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userToken}`,
+            },
+        },
+    ).then((res) => res.json());
+};
