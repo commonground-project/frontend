@@ -1,7 +1,7 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
     isServer,
     QueryClient,
@@ -12,7 +12,7 @@ import { CommonGroundMantineTheme } from "@/lib/configs/mantine";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { decodeToken } from "react-jwt";
-import { DecodedToken } from "@/types/users.types";
+import type { DecodedToken } from "@/types/users.types";
 
 function makeQueryClient() {
     return new QueryClient({

@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import { Button } from "@mantine/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
+import type { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
 import { toast } from "sonner";
 
 import { useParams, useRouter } from "next/navigation";

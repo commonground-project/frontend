@@ -1,4 +1,4 @@
-import { ViewPoint } from "@/types/conversations.types";
+import type { ViewPoint } from "@/types/conversations.types";
 
 type postViewpointParams = {
     issueId: string;

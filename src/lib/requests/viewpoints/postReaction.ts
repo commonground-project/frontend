@@ -1,4 +1,4 @@
-import { Reaction } from "@/types/conversations.types";
+import type { Reaction } from "@/types/conversations.types";
 
 type postReactionProps = {
     viewpointId: string;

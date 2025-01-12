@@ -1,4 +1,4 @@
-import { Issue } from "@/types/conversations.types";
+import type { Issue } from "@/types/conversations.types";
 
 export type getIssuesResponse = {
     content: Issue[];
