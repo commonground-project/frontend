@@ -25,7 +25,6 @@ export default function AuthorViewpoint() {
     const queryClient = useQueryClient();
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
-    const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const [cookie] = useCookies(["auth_token"]);
 
@@ -59,6 +58,7 @@ export default function AuthorViewpoint() {
                     pages: getIssueViewpointsResponse[];
                     pageParams: number[];
                 }) => {
+                    if (!olddata) return;
                     const updatedData = prependPaginatedQueryData(
                         data,
                         olddata.pages,
@@ -78,11 +78,32 @@ export default function AuthorViewpoint() {
 
             router.push(`/issues/${issueId}`);
         },
-        onError(error) {
-            console.error(`Error creating viewpoints: ${error}`);
+        onError(error: Record<string, Record<string, string>> | Error) {
+            console.log("Error!", error);
+            if (typeof error === "object" && "data" in error) {
+                if (error.data.type == "type:VALIDATION_ERROR") {
+                    toast.error("驗證錯誤", {
+                        description: "你有任何引註數字打錯嗎？",
+                    });
+                    return;
+                }
+            }
             toast.error("發表觀點時發生錯誤，請再試一次");
         },
     });
+
+    const publishViewpoint = (content: string[]) => {
+        const parsedContent = content.map((p) =>
+            p.replace(/(\s?)\[(\d+)\]/g, (_, space, num) =>
+                space ? `[ ](${num - 1})` : `[ ](${num - 1})`,
+            ),
+        );
+        postNewViewpoint.mutate({
+            title: viewpointTitle,
+            content: parsedContent.join("\n"),
+            facts: viewpointFactList.map((fact) => fact.id),
+        });
+    };
 
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
@@ -100,14 +121,7 @@ export default function AuthorViewpoint() {
                         issueId={issueId}
                         viewpointTitle={viewpointTitle}
                         setViewpointTitle={setViewpointTitle}
-                        setViewpointContent={setViewpointContent}
-                        publishViewpoint={() => {
-                            postNewViewpoint.mutate({
-                                title: viewpointTitle,
-                                content: viewpointContent,
-                                facts: viewpointFactList.map((fact) => fact.id),
-                            });
-                        }}
+                        publishViewpoint={publishViewpoint}
                         pendingPublish={postNewViewpoint.status === "pending"}
                     />
                 </div>

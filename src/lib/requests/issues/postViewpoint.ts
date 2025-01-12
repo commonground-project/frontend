@@ -30,10 +30,17 @@ export const postViewpoint = async ({
             }),
         },
     )
-        .then((res) => {
-            if (!res.ok)
-                throw new Error(`Error creating viewpoint: ${res.status}`);
-
+        .then(async (res) => {
+            if (!res.ok) {
+                let errorData: object | null = null;
+                try {
+                    errorData = await res.json();
+                } catch {}
+                throw {
+                    status: res.status,
+                    data: errorData,
+                };
+            }
             return res.json();
         })
         .then((res: ViewPoint) => {
