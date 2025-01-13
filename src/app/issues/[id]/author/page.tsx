@@ -17,7 +17,7 @@ import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListC
 
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
-import { PaginatedPage } from "@/types/requests.types";
+import type { PaginatedPage } from "@/types/requests.types";
 
 export default function AuthorViewpoint() {
     const params = useParams();

@@ -1,4 +1,4 @@
-import { Reaction, type ViewPoint } from "@/types/conversations.types";
+import { type ViewPoint } from "@/types/conversations.types";
 import Link from "next/link";
 import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "./ContentCard";

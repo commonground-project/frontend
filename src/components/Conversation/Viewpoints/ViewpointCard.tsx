@@ -1,6 +1,5 @@
 import type { Reaction, ViewPoint } from "@/types/conversations.types";
 import ContentCard from "./ContentCard";
-import FactCard from "./FactCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postReaction } from "@/lib/requests/viewpoints/postReaction";
 import AuthorProfile from "../Shared/AuthorProfile";

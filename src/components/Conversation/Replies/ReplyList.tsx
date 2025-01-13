@@ -1,6 +1,5 @@
 "use client";
 
-import { mockReply } from "@/mock/conversationMock";
 import ReplyCard from "./ReplyCard";
 import { Fragment, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -41,9 +40,7 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
     useEffect(() => {
         if (!inView || isPending || !hasNextPage) return;
         fetchNextPage();
-    }, [inView]);
-
-    console.log(inView, isPending, hasNextPage);
+    }, [inView, isPending, hasNextPage, fetchNextPage]);
 
     if (error) return null;
 

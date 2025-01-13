@@ -1,4 +1,4 @@
-import { ViewPoint } from "@/types/conversations.types";
+import type { ViewPoint } from "@/types/conversations.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 
 export const getViewpointByID = async (

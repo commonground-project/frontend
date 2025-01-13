@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import type { ViewPoint } from "@/types/conversations.types";
-import AuthorProfile from "@/components/Conversation/Shared/AuthorProfile";
 
 type ContentCardProps = {
     content: string;
