@@ -1,5 +1,5 @@
 import type { Issue } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 type getIssueParams = {
     issueId: string;

@@ -1,5 +1,5 @@
 import type { ViewPoint } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 type getIssueViewpointsParams = {
     issueId: string;

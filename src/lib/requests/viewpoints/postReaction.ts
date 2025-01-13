@@ -1,5 +1,5 @@
 import type { Reaction } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 type postReactionProps = {
     viewpointId: string;

@@ -1,4 +1,4 @@
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 export type RefreshJwtResponse = {
     accessToken: string;
