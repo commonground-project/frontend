@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
+import ReplySkeleton from "./ReplySkeleton";
 
 type ReplyListProps = {
     viewpointId: string;
@@ -67,6 +68,7 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
                             );
                         }),
                     )}
+                {isPending && <ReplySkeleton />}
                 {data && data.pages[0].content.length === 0 && (
                     <EmptyReplyCard />
                 )}
