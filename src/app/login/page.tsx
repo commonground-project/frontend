@@ -1,6 +1,8 @@
 "use client";
 
+import { useHeaderStore } from "@/lib/stores/headerStore";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -22,6 +24,14 @@ export default function LoginPage() {
         }
         router.push(redirectURL);
     };
+
+    const setHideLoginButton = useHeaderStore(
+        (state) => state.setHideLoginButton,
+    );
+
+    useEffect(() => {
+        setHideLoginButton(true);
+    }, [setHideLoginButton]);
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center">

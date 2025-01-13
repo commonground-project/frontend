@@ -47,8 +47,8 @@ export default function useAuth() {
     );
 
     const logout = useCallback(() => {
-        removeCookie("auth_token");
-        removeCookie("auth_refresh_token");
+        removeCookie("auth_token", { path: "/" });
+        removeCookie("auth_refresh_token", { path: "/" });
     }, [removeCookie]);
 
     const refreshTokenMutation = useMutation({

@@ -13,10 +13,11 @@ import { z } from "zod";
 import useAuth from "@/hooks/auth/useAuth";
 import { setupUserRequest } from "@/lib/requests/auth/setupUser";
 import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
+import type { KnownErrorResponse } from "@/types/requests.types";
 
 export default function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
-    const { login } = useAuth();
+    const { login, logout } = useAuth();
     const router = useRouter();
 
     const onboardingSchema = z.object({
@@ -49,17 +50,22 @@ export default function OnboardingPage() {
             return await refreshJwtRequest(cookies.auth_refresh_token ?? "");
         },
         onSuccess(data) {
+            console.log(data);
             if (!data) return router.push("/login");
             login(data.accessToken, data.refreshToken, data.expirationTime);
             router.push("/");
         },
-        onError(error) {
-            if (error.message.startsWith("Error setting up user")) {
+        onError(error: KnownErrorResponse | Error) {
+            if (
+                !(error instanceof Error) &&
+                error.instance == "/api/user/setup"
+            ) {
                 toast.error("設定使用者時發生錯誤，請再試一次", {
                     description: "若錯誤持續發生，請聯繫 commonground 團隊",
                 });
             } else {
-                toast.error("重新登入時發生問題，請手動登入");
+                toast.error("發生未知的錯誤，請嘗試重新登入");
+                logout();
                 router.push("/login");
             }
         },
