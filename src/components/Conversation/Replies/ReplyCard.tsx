@@ -3,12 +3,12 @@
 import { type Reply } from "@/types/conversations.types";
 import AuthorProfile from "../Shared/AuthorProfile";
 import TernaryReactions from "../Shared/TernaryReactions";
-import { mock } from "@/lib/requests/mock";
-import type { LegacyRef } from "react";
+import { postReplyReaction } from "@/lib/requests/replies/postReplyReaction";
+import type { Ref } from "react";
 
 type ReplyCardProps = {
     reply: Reply;
-    ref: LegacyRef<HTMLDivElement>;
+    ref: Ref<HTMLDivElement>;
 };
 
 export default function ReplyCard({ reply, ref }: ReplyCardProps) {
@@ -32,7 +32,9 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
                     reasonable: reply.reasonableCount,
                     dislike: reply.dislikeCount,
                 }}
-                mutationFn={mock}
+                mutationFn={(reaction, auth_token) =>
+                    postReplyReaction(reply.id, reaction, auth_token)
+                }
             />
         </div>
     );

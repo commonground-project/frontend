@@ -1,7 +1,7 @@
 import type { Reaction, ViewPoint } from "@/types/conversations.types";
 import ContentCard from "./ContentCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
-import { postReaction } from "@/lib/requests/viewpoints/postReaction";
+import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 import AuthorProfile from "../Shared/AuthorProfile";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -38,7 +38,7 @@ export default function ViewpointCard({
                         dislike: viewpoint.dislikeCount,
                     }}
                     mutationFn={(reaction: Reaction, auth_token: string) =>
-                        postReaction({
+                        postViewpointReaction({
                             viewpointId: viewpoint.id,
                             reaction,
                             auth_token,

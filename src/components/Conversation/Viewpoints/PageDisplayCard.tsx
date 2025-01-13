@@ -1,9 +1,11 @@
+"use client";
+
 import { type ViewPoint } from "@/types/conversations.types";
 import Link from "next/link";
 import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "./ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
-import { mock } from "@/lib/requests/mock";
+import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 
 type PageDisplayCardProps = {
     issueId: string;
@@ -40,7 +42,13 @@ export default function PageDisplayCard({
                     reasonable: viewpoint.reasonableCount,
                     dislike: viewpoint.dislikeCount,
                 }}
-                mutationFn={mock}
+                mutationFn={(reaction, auth_token) =>
+                    postViewpointReaction({
+                        viewpointId: viewpoint.id,
+                        auth_token,
+                        reaction,
+                    })
+                }
             />
         </div>
     );
