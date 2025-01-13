@@ -1,6 +1,6 @@
-import AddCommentBar from "@/components/Conversation/ViewpointPage/AddCommentBar";
-import FullViewpointCard from "@/components/Conversation/ViewpointPage/FullViewpointCard";
-import CommentList from "@/components/Conversation/ViewpointPage/CommentList";
+import AddCommentBar from "@/components/Conversation/Comments/AddCommentBar";
+import FullViewpointCard from "@/components/Conversation/Comments/FullViewpointCard";
+import CommentList from "@/components/Conversation/Comments/CommentList";
 import {
     mockEmptyIssue,
     mockIssue,

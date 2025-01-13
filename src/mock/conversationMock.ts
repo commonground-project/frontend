@@ -3,6 +3,7 @@ import type {
     Issue,
     ViewPoint,
     FactReference,
+    Comment,
 } from "@/types/conversations.types";
 import { Reaction } from "@/types/conversations.types";
 import type { User } from "@/types/users.types";
@@ -112,4 +113,115 @@ export const mockViewPoint: ViewPoint = {
     facts: [mockFact],
 };
 
-export const mockViewPointList: ViewPoint[] = [mockViewPoint, mockViewPoint];
+export const mockViewPoint1: ViewPoint = {
+    id: "00000000-0000-0000-0000-000000000007",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example ViewPoint 1",
+    content: "This is an example viewpoint content.",
+    authorId: "00000000-0000-0000-0000-000000000007",
+    authorName: "Alice Smith",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 10,
+    reasonableCount: 5,
+    dislikeCount: 2,
+    facts: [mockFact],
+};
+
+export const mockViewPoint2: ViewPoint = {
+    id: "00000000-0000-0000-0000-000000000009",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example ViewPoint 2",
+    content: "This is an example viewpoint content 2.",
+    authorId: "00000000-0000-0000-0000-000000000007",
+    authorName: "Alice Smith",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 10,
+    reasonableCount: 5,
+    dislikeCount: 2,
+    facts: [mockFact],
+};
+
+export const mockViewPoint3: ViewPoint = {
+    id: "00000000-0000-0000-0000-000000000012",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "Example ViewPoint 3",
+    content: "This is an example viewpoint content 3.",
+    authorId: "00000000-0000-0000-0000-000000000007",
+    authorName: "Alice Smith",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 10,
+    reasonableCount: 5,
+    dislikeCount: 2,
+    facts: [mockFact],
+};
+
+export const mockViewPointList: ViewPoint[] = [mockViewPoint, mockViewPoint1];
+
+export const mockComment1: Comment = {
+    id: "00000000-0000-0000-0000-000000000008",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "I agree",
+    content: "This is an example comment 1.",
+    authorId: "00000000-0000-0000-0000-000000000009",
+    authorName: "Bob Johnson",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 0,
+    reasonableCount: 0,
+    dislikeCount: 0,
+};
+
+export const mockComment2: Comment = {
+    id: "00000000-0000-0000-0000-000000000009",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "I agree",
+    content: "I don't agree",
+    authorId: "00000000-0000-0000-0000-000000000009",
+    authorName: "Bob Johnson",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 0,
+    reasonableCount: 0,
+    dislikeCount: 0,
+};
+
+export const mockComment3: Comment = {
+    id: "00000000-0000-0000-0000-000000000012",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: "I agree",
+    content: "I don't know",
+    authorId: "00000000-0000-0000-0000-000000000009",
+    authorName: "Bob Johnson",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 0,
+    reasonableCount: 0,
+    dislikeCount: 100,
+};
+
+export const mockCommentList: Comment[] = [
+    mockComment1,
+    mockComment2,
+    mockComment3,
+];

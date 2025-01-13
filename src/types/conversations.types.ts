@@ -56,11 +56,18 @@ export interface ViewPoint {
 }
 
 export interface Comment {
-    id: number;
-    user: UserProfile;
-    created: Date;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
     content: string;
-    like: number;
-    reasonable: number;
-    dislike: number;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string;
+    userReaction: {
+        reaction: Reaction;
+    };
+    likeCount: number;
+    reasonableCount: number;
+    dislikeCount: number;
 }
