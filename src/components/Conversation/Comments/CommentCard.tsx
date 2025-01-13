@@ -1,32 +1,93 @@
 "use client";
 import { useState } from "react";
-import { Comment } from "@/types/conversations.types";
+import { Comment, Reaction } from "@/types/conversations.types";
 import {
     HandThumbUpIcon,
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Avatar } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
 
 type CommentCardProps = {
     comment: Comment;
 };
 
-enum ReactionStatus {
-    like = "like",
-    dislike = "dislike",
-    reasonable = "reasonable",
-    null = "null",
-}
-
 export default function CommentCard({ comment }: CommentCardProps) {
-    const [reactionStatus, setReactionStatus] = useState<ReactionStatus>(
-        ReactionStatus.null,
+    const [reactionStatus, setReactionStatus] = useState<Reaction>(
+        comment.userReaction.reaction,
     );
+    const [countMap, setCountMap] = useState({
+        [Reaction.LIKE]: comment.likeCount,
+        [Reaction.REASONABLE]: comment.reasonableCount,
+        [Reaction.DISLIKE]: comment.dislikeCount,
+    });
 
-    const handleReaction = (reaction: ReactionStatus) => {
-        setReactionStatus((prev) =>
-            prev === reaction ? ReactionStatus.null : reaction,
+    const updateReaction = useMutation({
+        mutationKey: ["updateReaction", comment.id],
+        mutationFn: (reaction: Reaction) =>
+            new Promise<{ reaction: Reaction }>((resolve) => {
+                setTimeout(() => {
+                    resolve({ reaction });
+                }, 1000);
+            }),
+
+        onMutate(reaction: Reaction) {
+            const prevCount = { ...countMap };
+            const prevReaction = reactionStatus;
+
+            //optimistic update
+            setCountMap((countMap) => {
+                const newCount = { ...countMap };
+
+                if (
+                    // cancle reaction
+                    reaction === Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                } else if (
+                    // add reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction === Reaction.NONE
+                ) {
+                    newCount[reaction] += 1;
+                } else if (
+                    // change reaction
+                    reaction !== Reaction.NONE &&
+                    prevReaction !== Reaction.NONE
+                ) {
+                    newCount[prevReaction] -= 1;
+                    newCount[reaction] += 1;
+                }
+
+                return newCount;
+            });
+
+            setReactionStatus((prev) => {
+                return prev === reaction ? Reaction.NONE : reaction;
+            });
+
+            return { prevCount, prevReaction };
+        },
+
+        onSuccess(data) {
+            setReactionStatus(data.reaction);
+            //TODO: update count from server
+        },
+
+        onError(__error, __variables, context) {
+            if (!context) return;
+            setCountMap(context.prevCount);
+            setReactionStatus(context.prevReaction);
+        },
+    });
+
+    const handleReaction = (
+        reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
+    ) => {
+        updateReaction.mutate(
+            reaction === reactionStatus ? Reaction.NONE : reaction,
         );
     };
 
@@ -34,16 +95,16 @@ export default function CommentCard({ comment }: CommentCardProps) {
         <div>
             <div className="mb-1 flex">
                 <Avatar
-                    name={comment.user.nickname}
-                    src={comment.user.avatar}
+                    name={comment.authorName}
+                    src={comment.authorAvatar}
                     alt=""
                     size="1rem"
                 />
                 <h1 className="ml-1.5 inline-block text-xs font-normal text-neutral-600">
-                    {comment.user.nickname}
+                    {comment.authorName}
                 </h1>
                 <h1 className="ml-3 inline-block text-xs font-normal text-neutral-600">
-                    {comment.created.toLocaleDateString()}
+                    {comment.createdAt.toLocaleDateString()}
                 </h1>
             </div>
             {comment.content.split("\n").map((paragraph, index) => (
@@ -53,36 +114,31 @@ export default function CommentCard({ comment }: CommentCardProps) {
             ))}
             <div className="flex pt-2">
                 {/* like */}
-                <button onClick={() => handleReaction(ReactionStatus.like)}>
+                <button onClick={() => handleReaction(Reaction.LIKE)}>
                     <HandThumbUpIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.like ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {comment.like +
-                        (reactionStatus === ReactionStatus.like ? 1 : 0)}
+                    {countMap[Reaction.LIKE]}
                 </h1>
                 {/* reasonable */}
-                <button
-                    onClick={() => handleReaction(ReactionStatus.reasonable)}
-                >
+                <button onClick={() => handleReaction(Reaction.REASONABLE)}>
                     <ArrowUpCircleIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.reasonable ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {comment.reasonable +
-                        (reactionStatus === ReactionStatus.reasonable ? 1 : 0)}
+                    {countMap[Reaction.REASONABLE]}
                 </h1>
                 {/* dislike */}
-                <button onClick={() => handleReaction(ReactionStatus.dislike)}>
+                <button onClick={() => handleReaction(Reaction.DISLIKE)}>
                     <HandThumbDownIcon
-                        className={`size-6 fill-none ${reactionStatus === ReactionStatus.dislike ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                        className={`size-6 fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
                 <h1 className="w-11 px-1 text-neutral-600">
-                    {comment.dislike +
-                        (reactionStatus === ReactionStatus.dislike ? 1 : 0)}
+                    {countMap[Reaction.DISLIKE]}
                 </h1>
             </div>
         </div>
