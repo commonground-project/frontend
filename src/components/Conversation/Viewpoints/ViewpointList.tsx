@@ -6,7 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { getIssueViewpoints } from "@/lib/requests/issues/getIssueViewpoints";
+import { getIssueViewpoints } from "@/lib/requests/viewpoints/getIssueViewpoints";
 import ViewpointSkeleton from "./ViewpointSkeleton";
 
 type ViewPointListProps = {
@@ -65,7 +65,10 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
                                 key={viewpoint.id}
                                 ref={index === array.length - 1 ? ref : null}
                             >
-                                <ViewpointCard viewpoint={viewpoint} />
+                                <ViewpointCard
+                                    issueId={issueId}
+                                    viewpoint={viewpoint}
+                                />
                                 {index !== array.length - 1 && (
                                     <hr className="my-4 w-full border-neutral-500" />
                                 )}
