@@ -1,5 +1,5 @@
 import type { Fact } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 export type PaginatedIssueFactsByIdResponse = {
     content: Fact[];

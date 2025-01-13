@@ -1,5 +1,5 @@
 import type { UserRoles } from "@/types/users.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 export type SetupUserRequestedFields = {
     username: string;

@@ -1,21 +1,21 @@
 import type { Reaction } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
-type postReactionProps = {
+type postViewpointReactionParams = {
     viewpointId: string;
     reaction: Reaction;
     auth_token: string;
 };
 
-type postReactionResponse = {
+type postViewpointReactionResponse = {
     reaction: Reaction;
 };
 
-export const postReaction = async ({
+export const postViewpointReaction = async ({
     viewpointId,
     reaction,
     auth_token,
-}: postReactionProps): Promise<postReactionResponse> => {
+}: postViewpointReactionParams): Promise<postViewpointReactionResponse> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpointId}/reaction/me`,
         {

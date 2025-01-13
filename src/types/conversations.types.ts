@@ -54,3 +54,32 @@ export interface ViewPoint {
     dislikeCount: number;
     facts: Fact[];
 }
+
+export interface Quote {
+    replyId: string;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string;
+    content: string;
+    start: number;
+    end: number;
+}
+
+export interface Reply {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    content: string;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string;
+    userReaction: {
+        reaction: Reaction;
+    };
+    likeCount: number;
+    reasonableCount: number;
+    dislikeCount: number;
+    quotes: Quote[];
+    facts: Fact[];
+}

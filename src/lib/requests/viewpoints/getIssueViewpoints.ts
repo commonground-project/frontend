@@ -1,5 +1,6 @@
 import type { ViewPoint } from "@/types/conversations.types";
-import { parseJsonWhileHandlingErrors } from "../middlewares";
+import { parseJsonWhileHandlingErrors } from "../transformers";
+import type { PaginatedPage } from "@/types/requests.types";
 
 type getIssueViewpointsParams = {
     issueId: string;
@@ -7,21 +8,11 @@ type getIssueViewpointsParams = {
     auth_token: string;
 };
 
-export type getIssueViewpointsResponse = {
-    content: ViewPoint[];
-    page: {
-        size: number;
-        totalElement: number;
-        totalPage: number;
-        number: number;
-    };
-};
-
 export const getIssueViewpoints = async ({
     issueId,
     pageParam,
     auth_token,
-}: getIssueViewpointsParams): Promise<getIssueViewpointsResponse> => {
+}: getIssueViewpointsParams): Promise<PaginatedPage<ViewPoint>> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/viewpoints?size=10&page=${pageParam}`,
         {
@@ -33,12 +24,13 @@ export const getIssueViewpoints = async ({
         },
     )
         .then(parseJsonWhileHandlingErrors)
-        .then((res: getIssueViewpointsResponse) => {
+        .then((res: PaginatedPage<ViewPoint>) => {
             return {
                 ...res,
                 content: res.content.map((viewpoint) => ({
                     ...viewpoint,
                     createdAt: new Date(viewpoint.createdAt),
+                    updatedAt: new Date(viewpoint.updatedAt),
                 })),
             };
         });

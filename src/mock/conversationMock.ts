@@ -3,6 +3,7 @@ import type {
     Issue,
     ViewPoint,
     FactReference,
+    Reply,
 } from "@/types/conversations.types";
 import { Reaction } from "@/types/conversations.types";
 import type { User } from "@/types/users.types";
@@ -113,3 +114,22 @@ export const mockViewPoint: ViewPoint = {
 };
 
 export const mockViewPointList: ViewPoint[] = [mockViewPoint, mockViewPoint];
+
+export const mockReply: Reply = {
+    id: "00000000-0000-0000-0000-000000000008",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    content: "This is an example reply content.",
+    authorId: "00000000-0000-0000-0000-000000000009",
+    authorName: "Bob Johnson",
+    authorAvatar: "https://example.com/avatar.png",
+    userReaction: {
+        reaction: Reaction.LIKE,
+    },
+    likeCount: 5,
+    reasonableCount: 2,
+    dislikeCount: 1,
+    facts: [],
+    quotes: [],
+    title: "Example Reply",
+};
