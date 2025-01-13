@@ -19,7 +19,11 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
                 authorAvatar={reply.authorAvatar}
                 createdAt={reply.createdAt}
             />
-            <p className="my-2">{reply.content}</p>
+            <div className="my-2 flex flex-col gap-2">
+                {reply.content.split("\n").map((line, index) => (
+                    <p key={index}>{line}</p>
+                ))}
+            </div>
             <TernaryReactions
                 parentId={reply.id}
                 initialReaction={reply.userReaction.reaction}
