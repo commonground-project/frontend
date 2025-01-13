@@ -17,7 +17,7 @@ type ReplyListProps = {
 export default function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
 
-    const { data, error, isPending, fetchNextPage, hasNextPage } =
+    const { data, error, isFetching, fetchNextPage, hasNextPage } =
         useInfiniteQuery({
             queryKey: ["replies", viewpointId],
             queryFn: ({ pageParam }) =>
@@ -39,9 +39,9 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
     }, [error]);
 
     useEffect(() => {
-        if (!inView || isPending || !hasNextPage) return;
+        if (!inView || isFetching || !hasNextPage) return;
         fetchNextPage();
-    }, [inView, isPending, hasNextPage, fetchNextPage]);
+    }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
     if (error) return null;
 
@@ -61,14 +61,14 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
                                         ref={isLastReply ? ref : null}
                                         reply={reply}
                                     />
-                                    {!isLastReply && (
+                                    {(!isLastReply || isFetching) && (
                                         <hr className="w-full border-t border-neutral-700" />
                                     )}
                                 </Fragment>
                             );
                         }),
                     )}
-                {isPending && <ReplySkeleton />}
+                {isFetching && <ReplySkeleton />}
                 {data && data.pages[0].content.length === 0 && (
                     <EmptyReplyCard />
                 )}
