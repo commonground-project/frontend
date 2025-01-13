@@ -109,7 +109,12 @@ export default function TernaryReactions({
     return (
         <div className="flex">
             {/* like */}
-            <button onClick={() => handleReaction(Reaction.LIKE)}>
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleReaction(Reaction.LIKE);
+                }}
+            >
                 <HandThumbUpIcon
                     style={{
                         width: size ? size * 4 : 24,
@@ -122,7 +127,12 @@ export default function TernaryReactions({
                 {countMap[Reaction.LIKE]}
             </h1>
             {/* reasonable */}
-            <button onClick={() => handleReaction(Reaction.REASONABLE)}>
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleReaction(Reaction.REASONABLE);
+                }}
+            >
                 <ArrowUpCircleIcon
                     style={{
                         width: size ? size * 4 : 24,
@@ -135,7 +145,12 @@ export default function TernaryReactions({
                 {countMap[Reaction.REASONABLE]}
             </h1>
             {/* dislike */}
-            <button onClick={() => handleReaction(Reaction.DISLIKE)}>
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleReaction(Reaction.DISLIKE);
+                }}
+            >
                 <HandThumbDownIcon
                     style={{
                         width: size ? size * 4 : 24,
