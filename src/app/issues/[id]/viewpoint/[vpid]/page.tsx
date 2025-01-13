@@ -1,27 +1,56 @@
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { getIssueByID } from "@/lib/requests/issues/getIssueById";
+import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AddReplyBar from "@/components/Conversation/Replies/AddReplyBar";
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
-import { mockIssue, mockViewPoint } from "@/mock/conversationMock";
-import { notFound } from "next/navigation";
+import type { Issue, ViewPoint } from "@/types/conversations.types";
 
-export async function generateMetadata() {
-    const viewpoint = mockViewPoint;
+type ViewpointPageProps = {
+    params: Promise<{ id: string; vpid: string }>;
+};
+
+export async function generateMetadata({ params }: ViewpointPageProps) {
+    const pageParams = await params;
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token");
+
+    const viewpoint = await getViewpointByID(
+        pageParams.vpid,
+        auth_token?.value ?? "",
+    );
     return {
         title: `CommonGround - ${viewpoint.title}`,
         description: viewpoint.content,
     };
 }
 
-type ViewpointPageProps = {
-    params: Promise<{ id: string; vpid: string }>;
-};
-
 export default async function ViewpointPage({ params }: ViewpointPageProps) {
+    const cookieStore = await cookies();
+    const auth_token = cookieStore.get("auth_token");
+    if (!auth_token) return redirect("/login");
+
     const pageParams = await params;
     if (!pageParams.id || !pageParams.vpid) return notFound();
 
-    const issue = mockIssue;
-    const viewpoint = mockViewPoint;
+    let issue: Issue | null = null;
+
+    try {
+        issue = await getIssueByID(pageParams.id, auth_token.value);
+    } catch (error: any) {
+        if (error.status === 404) return notFound();
+        throw error;
+    }
+
+    let viewpoint: ViewPoint | null = null;
+
+    try {
+        viewpoint = await getViewpointByID(pageParams.vpid, auth_token.value);
+    } catch (error: any) {
+        if (error.status === 404) return notFound();
+        throw error;
+    }
 
     return (
         <div>
