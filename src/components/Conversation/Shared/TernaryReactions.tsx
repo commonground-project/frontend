@@ -26,6 +26,7 @@ type TernaryReactionsProps = {
         reaction: Reaction,
         auth_token: string,
     ) => Promise<UpdateTernaryActionResponse>;
+    size?: number;
 };
 
 export default function TernaryReactions({
@@ -33,6 +34,7 @@ export default function TernaryReactions({
     initialReaction,
     initialCounts,
     mutationFn,
+    size,
 }: TernaryReactionsProps) {
     const [reactionStatus, setReactionStatus] =
         useState<Reaction>(initialReaction);
@@ -105,11 +107,15 @@ export default function TernaryReactions({
     };
 
     return (
-        <div className="flex pt-2">
+        <div className="flex">
             {/* like */}
             <button onClick={() => handleReaction(Reaction.LIKE)}>
                 <HandThumbUpIcon
-                    className={`size-6 fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    style={{
+                        width: size ? size * 4 : 24,
+                        height: size ? size * 4 : 24,
+                    }}
+                    className={`fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
@@ -118,7 +124,11 @@ export default function TernaryReactions({
             {/* reasonable */}
             <button onClick={() => handleReaction(Reaction.REASONABLE)}>
                 <ArrowUpCircleIcon
-                    className={`size-6 fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    style={{
+                        width: size ? size * 4 : 24,
+                        height: size ? size * 4 : 24,
+                    }}
+                    className={`fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
@@ -127,7 +137,11 @@ export default function TernaryReactions({
             {/* dislike */}
             <button onClick={() => handleReaction(Reaction.DISLIKE)}>
                 <HandThumbDownIcon
-                    className={`size-6 fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    style={{
+                        width: size ? size * 4 : 24,
+                        height: size ? size * 4 : 24,
+                    }}
+                    className={`fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
