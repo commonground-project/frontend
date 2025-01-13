@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getIssueByID } from "@/lib/requests/issues/getIssueById";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
-import AddReplyBar from "@/components/Conversation/Replies/AddReplyBar";
+import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
 import type { Issue, ViewPoint } from "@/types/conversations.types";
@@ -63,7 +63,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <hr className="h-8" />
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
-            <AddReplyBar id={viewpoint.id} />
+            <AuthorReplyBar id={viewpoint.id} />
         </div>
     );
 }
