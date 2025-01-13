@@ -8,6 +8,8 @@ import {
 import { ViewPoint, Reaction } from "@/types/conversations.types";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
+import { mockFact, mockFact1 } from "@/mock/conversationMock";
+import FactlistSideBar from "@/components/Conversation/Viewpoints/FactlistSideBar";
 
 type IssueCardProps = {
     issueTitle: string;
@@ -137,19 +139,24 @@ export default function FullViewpointCard({
                 </p>
             ))}
             {paragraphPositions.length > 0 &&
-                paragraphPositions.map(
-                    (position, index) => (
-                        console.log(position),
-                        (
-                            <h1
-                                key={index}
-                                className={`absolute text-red-500 top-[${position}px] right-0`}
-                            >
-                                {index}th paragraph here
-                            </h1>
-                        )
-                    ),
-                )}
+                paragraphPositions.map((position, index) => (
+                    // <h1
+                    //     key={index}
+                    //     className={`absolute text-red-500 top-[${position}px] right-[-226px]`}
+                    // >
+                    //     {index}th paragraph here
+                    // </h1>
+                    <div
+                        className={`absolute top-[${position}px] right-[-226px]`}
+                        key={index}
+                    >
+                        <FactlistSideBar
+                            facts={[mockFact, mockFact1]}
+                            factIndexes={[1, 2]}
+                            maxHeight={500}
+                        />
+                    </div>
+                ))}
             <div className="flex pt-2">
                 {/* like */}
                 <button onClick={() => handleReaction(Reaction.LIKE)}>
