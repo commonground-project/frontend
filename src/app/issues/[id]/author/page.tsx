@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { getIssueViewpointsResponse } from "@/lib/requests/issues/getIssueViewpoints";
 import { toast } from "sonner";
 
 import { useParams, useRouter } from "next/navigation";
@@ -16,8 +15,9 @@ import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
 
-import type { Fact } from "@/types/conversations.types";
+import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
+import { PaginatedPage } from "@/types/requests.types";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -55,7 +55,7 @@ export default function AuthorViewpoint() {
             queryClient.setQueryData(
                 ["viewpoints", issueId],
                 (olddata: {
-                    pages: getIssueViewpointsResponse[];
+                    pages: PaginatedPage<ViewPoint>[];
                     pageParams: number[];
                 }) => {
                     if (!olddata) return;

@@ -1,12 +1,4 @@
-type PaginatedPage<T> = {
-    content: T[];
-    page: {
-        size: number;
-        totalElement: number;
-        totalPage: number;
-        number: number;
-    };
-};
+import type { PaginatedPage } from "@/types/requests.types";
 
 export function prependPaginatedQueryData<T>(
     data: T,
