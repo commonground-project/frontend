@@ -29,7 +29,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
             new Promise<{ reaction: Reaction }>((resolve) => {
                 setTimeout(() => {
                     resolve({ reaction });
-                }, 1000);
+                }, 100);
             }),
 
         onMutate(reaction: Reaction) {

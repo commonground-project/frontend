@@ -179,7 +179,7 @@ export const mockComment1: Comment = {
     authorName: "Bob Johnson",
     authorAvatar: "https://example.com/avatar.png",
     userReaction: {
-        reaction: Reaction.LIKE,
+        reaction: Reaction.NONE,
     },
     likeCount: 0,
     reasonableCount: 0,
@@ -196,7 +196,7 @@ export const mockComment2: Comment = {
     authorName: "Bob Johnson",
     authorAvatar: "https://example.com/avatar.png",
     userReaction: {
-        reaction: Reaction.LIKE,
+        reaction: Reaction.NONE,
     },
     likeCount: 0,
     reasonableCount: 0,
@@ -213,7 +213,7 @@ export const mockComment3: Comment = {
     authorName: "Bob Johnson",
     authorAvatar: "https://example.com/avatar.png",
     userReaction: {
-        reaction: Reaction.LIKE,
+        reaction: Reaction.NONE,
     },
     likeCount: 0,
     reasonableCount: 0,
