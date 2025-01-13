@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { ViewPoint, Reaction } from "@/types/conversations.types";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type IssueCardProps = {
     issueTitle: string;
@@ -26,6 +26,19 @@ export default function FullViewpointCard({
         [Reaction.REASONABLE]: viewpoint.reasonableCount,
         [Reaction.DISLIKE]: viewpoint.dislikeCount,
     });
+
+    const paragraphRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+    const [paragraphPositions, setParagraphPositions] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (paragraphRefs.current.length > 0) {
+            const positions = paragraphRefs.current.map(
+                (el) => el?.offsetTop ?? 0,
+            );
+            setParagraphPositions(positions);
+            console.log("paragraph positions", positions);
+        }
+    }, [paragraphRefs.current]);
 
     const updateReaction = useMutation({
         mutationKey: ["updateReaction", viewpoint.id],
@@ -96,7 +109,7 @@ export default function FullViewpointCard({
     };
 
     return (
-        <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
+        <div className="relative mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h2 className="text-lg text-neutral-600">觀點・{issueTitle}</h2>
             <h1 className="mt-1 py-1 font-sans text-2xl font-bold">
                 {viewpoint.title}
@@ -109,14 +122,34 @@ export default function FullViewpointCard({
                     size="1.5rem"
                 />
                 <h1 className="inline-block text-base font-normal text-neutral-600">
-                    {viewpoint.authorAvatar}
+                    {viewpoint.authorName}
                 </h1>
             </div>
             {viewpoint.content.split("\n").map((paragraph, index) => (
-                <p key={index} className="mt-3 text-lg font-normal">
+                <p
+                    key={index}
+                    className="mt-3 text-lg font-normal"
+                    ref={(el) => {
+                        paragraphRefs.current[index] = el;
+                    }}
+                >
                     {paragraph}
                 </p>
             ))}
+            {paragraphPositions.length > 0 &&
+                paragraphPositions.map(
+                    (position, index) => (
+                        console.log(position),
+                        (
+                            <h1
+                                key={index}
+                                className={`absolute text-red-500 top-[${position}px] right-0`}
+                            >
+                                {index}th paragraph here
+                            </h1>
+                        )
+                    ),
+                )}
             <div className="flex pt-2">
                 {/* like */}
                 <button onClick={() => handleReaction(Reaction.LIKE)}>

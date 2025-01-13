@@ -118,7 +118,8 @@ export const mockViewPoint1: ViewPoint = {
     createdAt: new Date(),
     updatedAt: new Date(),
     title: "Example ViewPoint 1",
-    content: "This is an example viewpoint content.",
+    content:
+        "This is an [c i t e](0) example viewpoint content. [cite](1) And this is the first paragraph. lorem ipsum dolor sit amet.\nThis is the second paragraph. [CITE](2) lorem ipsum dolor sit amet.",
     authorId: "00000000-0000-0000-0000-000000000007",
     authorName: "Alice Smith",
     authorAvatar: "https://example.com/avatar.png",
