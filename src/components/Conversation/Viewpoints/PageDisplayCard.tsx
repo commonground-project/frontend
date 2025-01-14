@@ -32,7 +32,10 @@ export default function PageDisplayCard({
                 />
             </div>
             <div className="my-3 flex flex-col gap-3 text-lg">
-                <ContentCardWithSidebar content={viewpoint.content} />
+                <ContentCardWithSidebar
+                    facts={viewpoint.facts}
+                    content={viewpoint.content}
+                />
             </div>
             <TernaryReactions
                 parentId={viewpoint.id}

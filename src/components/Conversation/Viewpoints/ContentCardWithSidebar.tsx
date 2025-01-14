@@ -1,12 +1,16 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { type Fact } from "@/types/conversations.types";
+import FactlistSideBar from "../Facts/FactlistSidebar";
 
 type ContentCardWithSidebarProps = {
+    facts: Fact[];
     content: string;
 };
 
 export default function ContentCardWithSidebar({
+    facts,
     content,
 }: ContentCardWithSidebarProps) {
     const paragraphRefs = useRef<(HTMLParagraphElement | null)[]>([]);
@@ -44,27 +48,21 @@ export default function ContentCardWithSidebar({
             ))}
             {paragraphPositions.length > 0 &&
                 paragraphPositions.map((position, index) => (
-                    <h1
-                        key={index}
+                    <div
                         style={{
                             position: "absolute",
-                            right: "-226px",
+                            right: "-254px",
                             top: `${position}px`,
                             color: "red",
                         }}
+                        key={index}
                     >
-                        {index}th paragraph here
-                    </h1>
-                    // <div
-                    //     className={`absolute top-[${position}px] right-[-226px]`}
-                    //     key={index}
-                    // >
-                    //     <FactlistSideBar
-                    //         facts={[mockFact, mockFact1]}
-                    //         factIndexes={[1, 2]}
-                    //         maxHeight={500}
-                    //     />
-                    // </div>
+                        <FactlistSideBar
+                            facts={facts}
+                            factIndexes={[1, 2]}
+                            maxHeight={500}
+                        />
+                    </div>
                 ))}
         </div>
     );
