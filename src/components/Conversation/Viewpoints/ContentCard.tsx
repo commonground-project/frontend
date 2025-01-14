@@ -9,8 +9,8 @@ type ContentCardProps = {
 export default function ContentCard({ content }: ContentCardProps) {
     const viewpointContent = useMemo(() => {
         const parsedReferences = content.replace(
-            /\[\s*\]\((\d+)\)/g,
-            (_, num) => ` [${parseInt(num) + 1}]`,
+            /\[([^\]]+)]\((\d+)\)/g,
+            (_, content, index) => `${content} [${Number(index) + 1}]`,
         );
         return parsedReferences.split("\n");
     }, [content]);
