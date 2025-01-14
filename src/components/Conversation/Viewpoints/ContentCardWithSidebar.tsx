@@ -59,7 +59,7 @@ export default function ContentCardWithSidebar({
                     >
                         <FactlistSideBar
                             facts={facts}
-                            factIndexes={[1, 2]}
+                            factIndexes={[0, 1]}
                             maxHeight={500}
                         />
                     </div>
