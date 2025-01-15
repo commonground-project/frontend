@@ -7,11 +7,14 @@ import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { ActionIcon, Avatar, Button, Menu } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import SettingModal from "./SettingModal";
 
 export default function Header() {
     const { user, logout } = useAuth();
     const headerStore = useHeaderStore();
     const router = useRouter();
+    const [isModalOpened, setIsModalOpened] = useState(false);
 
     return (
         <div className="fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
@@ -34,6 +37,7 @@ export default function Header() {
                     <Menu.Dropdown>
                         <Menu.Item
                             leftSection={<Cog8ToothIcon className="w-3" />}
+                            onClick={() => setIsModalOpened(true)}
                         >
                             設定
                         </Menu.Item>
@@ -57,6 +61,11 @@ export default function Header() {
                     <Button>登入</Button>
                 </Link>
             )}
+            <SettingModal
+                opened={isModalOpened}
+                setopened={setIsModalOpened}
+                settingModalCallback={() => console.log("Modal closed")}
+            />
         </div>
     );
 }
