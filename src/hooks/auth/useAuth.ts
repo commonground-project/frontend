@@ -4,6 +4,8 @@ import { useCookies } from "react-cookie";
 import { decodeToken, useJwt } from "react-jwt";
 import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
 import type { DecodedToken, User } from "@/types/users.types";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function useAuth() {
     const [cookies, setCookie, removeCookie] = useCookies([
@@ -15,6 +17,7 @@ export default function useAuth() {
         cookies.auth_token,
     );
     const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
 
     const login = useCallback(
         (
@@ -42,19 +45,33 @@ export default function useAuth() {
                 httpOnly: false,
                 path: "/",
             });
+            reEvaluateToken(token);
         },
+        // Disabling the eslint rule because reEvaluateToken is a function that
+        // always updates upon calling, no matter the token changes or not
+        // Thus, including reEvaluateToken causes an infinite loop
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [setCookie],
     );
 
-    const logout = useCallback(() => {
-        removeCookie("auth_token", { path: "/" });
-        removeCookie("auth_refresh_token", { path: "/" });
-    }, [removeCookie]);
+    const logout = useCallback(
+        (redirect?: string) => {
+            removeCookie("auth_token", { path: "/" });
+            removeCookie("auth_refresh_token", { path: "/" });
+            if (redirect) router.push(redirect);
+        },
+        [removeCookie, router],
+    );
 
     const refreshTokenMutation = useMutation({
         mutationFn: (refresh_token: string) => refreshJwtRequest(refresh_token),
         onSuccess(data) {
             login(data.accessToken, data.refreshToken, data.expirationTime);
+        },
+        onError(e) {
+            console.log(e);
+            toast.error("發生未知的錯誤，請重新登入");
+            logout("/login");
         },
     });
 
