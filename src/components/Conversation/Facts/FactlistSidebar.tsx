@@ -15,9 +15,6 @@ export default function FactlistSideBar({
 }: FactlistSideBarProps) {
     const [expended, setExpended] = useState(false);
 
-    console.log("factIndexes", factIndexes);
-    console.log("facts", facts);
-
     if (facts.length === 0 || factIndexes.length === 0) {
         return <></>; // Return nothing if there are no facts
     }

@@ -21,23 +21,27 @@ export default function ContentCardWithSidebar({
 
     const viewpointContent = useMemo(() => {
         const parsedReferences = content.replace(
-            /\[([^\]]+)]\((\d+)\)/g,
-            (_, content, index) =>
-                `<span style="color: #15803D">${content} [${Number(index) + 1}]</span>`,
+            /\[([^\]]+)\]\(([^\)]+)\)/g,
+            (_, content: string, indexes: string) => {
+                return `<span style="color: #15803D">${content} ${indexes
+                    .split(",")
+                    .map((num) => Number(num) + 1)
+                    .map((num) => `[${num}]`)
+                    .join("")}</span>`;
+            },
         );
 
         content.split("\n").forEach((paragraph) => {
             const references: number[] = [];
-            const regex = /\[[^\]]+]\((\d+)\)/g;
+            const regex = /\[([^\]]+)\]\(([^\)]+)\)/g;
             let match;
 
             while ((match = regex.exec(paragraph)) !== null) {
-                references.push(Number(match[1])); // Extract the number and convert to a number type
+                match[2].split(",").map((num) => references.push(Number(num)));
             }
             setParagraphReferences((prev) => [...prev, references]);
         });
 
-        console.log("paragraphReferences", paragraphReferences);
         return parsedReferences.split("\n");
     }, []);
 
