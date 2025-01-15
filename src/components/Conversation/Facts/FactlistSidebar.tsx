@@ -15,27 +15,34 @@ export default function FactlistSideBar({
 }: FactlistSideBarProps) {
     const [expended, setExpended] = useState(false);
 
+    console.log("factIndexes", factIndexes);
+    console.log("facts", facts);
+
+    if (facts.length === 0 || factIndexes.length === 0) {
+        return <></>; // Return nothing if there are no facts
+    }
+
     return (
         <div
-            className={`h-auto w-[208px] bg-neutral-100 max-h-[${maxHeight}px] flex flex-col gap-1 rounded-md p-3`}
+            className={`flex h-auto w-[208px] flex-col gap-1 overflow-auto rounded-md bg-neutral-100 p-3`}
+            style={{ maxHeight: `${maxHeight}px` }}
             onClick={() => setExpended((prev) => !prev)}
         >
-            {facts.map((fact, index) =>
-                !expended ? (
-                    <h2
-                        className="text-xs text-emerald-700"
-                        key={factIndexes[index]}
-                    >
-                        {`[${factIndexes[index] + 1}] ${fact.title}`}
+            {factIndexes.map((factIndex) => {
+                const fact = facts[factIndex];
+
+                return !expended ? (
+                    <h2 className="text-xs text-emerald-700" key={factIndex}>
+                        {`[${factIndex + 1}] ${fact.title}`}
                     </h2>
                 ) : (
                     <FactCard
                         fact={fact}
-                        factIndex={factIndexes[index]}
-                        key={factIndexes[index]}
+                        factIndex={factIndex}
+                        key={factIndex}
                     />
-                ),
-            )}
+                );
+            })}
         </div>
     );
 }
