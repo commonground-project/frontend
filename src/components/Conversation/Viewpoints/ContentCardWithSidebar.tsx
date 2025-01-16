@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useRef, useEffect } from "react";
 import { type Fact } from "@/types/conversations.types";
-import FactlistSideBar from "../Facts/FactlistSidebar";
+import FactListSideBar from "../Facts/FactListSidebar";
 
 type ContentCardWithSidebarProps = {
     facts: Fact[];
@@ -75,7 +75,7 @@ export default function ContentCardWithSidebar({
                         }}
                         key={index}
                     >
-                        <FactlistSideBar
+                        <FactListSideBar
                             facts={facts}
                             factIndexes={paragraphReferences[index]}
                             maxHeight={

@@ -2,17 +2,17 @@ import { useState } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactCard from "../Viewpoints/FactCard";
 
-type FactlistSideBarProps = {
+type FactListSideBarProps = {
     facts: Fact[];
     factIndexes: number[];
     maxHeight: number;
 };
 
-export default function FactlistSideBar({
+export default function FactListSideBar({
     facts,
     factIndexes,
     maxHeight,
-}: FactlistSideBarProps) {
+}: FactListSideBarProps) {
     const [expended, setExpended] = useState(false);
 
     if (facts.length === 0 || factIndexes.length === 0) {
