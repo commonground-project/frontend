@@ -6,6 +6,7 @@ import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "./ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
+import FactCard from "./FactCard";
 
 type PageDisplayCardProps = {
     issueId: string;
@@ -50,6 +51,9 @@ export default function PageDisplayCard({
                     })
                 }
             />
+            {viewpoint.facts.map((fact, index) => (
+                <FactCard key={fact.id} fact={fact} factIndex={index} />
+            ))}
         </div>
     );
 }
