@@ -3,7 +3,7 @@ import { Modal, Button, Checkbox } from "@mantine/core";
 type SettingModalProps = {
     opened: boolean;
     setopened: (newState: boolean) => void;
-    settingModalCallback: () => void;
+    settingModalCallback?: () => void;
 };
 
 export default function SettingModal({
@@ -23,7 +23,7 @@ export default function SettingModal({
             <div className="flex justify-end">
                 <Button
                     onClick={() => {
-                        settingModalCallback();
+                        if (settingModalCallback) settingModalCallback();
                         setopened(false);
                     }}
                 >
