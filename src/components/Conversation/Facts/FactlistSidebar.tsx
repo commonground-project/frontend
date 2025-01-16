@@ -30,7 +30,10 @@ export default function FactListSideBar({
                 const fact = facts[factIndex];
 
                 return !expanded ? (
-                    <h2 className="text-xs text-emerald-700" key={factIndex}>
+                    <h2
+                        className="truncate text-xs text-emerald-700"
+                        key={factIndex}
+                    >
                         {`[${factIndex + 1}] ${fact.title}`}
                     </h2>
                 ) : (
