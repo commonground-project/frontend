@@ -8,7 +8,7 @@ import { ActionIcon, Avatar, Button, Menu } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import SettingModal from "./SettingModal";
+import SettingsModal from "./SettingsModal";
 
 export default function Header() {
     const { user, logout } = useAuth();
@@ -61,7 +61,7 @@ export default function Header() {
                     <Button>登入</Button>
                 </Link>
             )}
-            <SettingModal
+            <SettingsModal
                 opened={isSettingsModalOpened}
                 setopened={setIsSettingsModalOpened}
                 settingModalCallback={() => console.log("Modal closed")}
