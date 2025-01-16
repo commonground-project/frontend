@@ -24,6 +24,7 @@ export default function FactListSideBar({
             className={`flex h-auto w-[208px] flex-col gap-1 overflow-auto rounded-md bg-neutral-100 p-3`}
             style={{ maxHeight: `${maxHeight}px` }}
             onClick={() => setExpanded((prev) => !prev)}
+            onBlur={() => setExpanded(false)}
         >
             {factIndexes.map((factIndex) => {
                 const fact = facts[factIndex];
