@@ -13,7 +13,7 @@ export default function FactListSideBar({
     factIndexes,
     maxHeight,
 }: FactListSideBarProps) {
-    const [expended, setExpended] = useState(false);
+    const [expanded, setExpanded] = useState(false);
 
     if (facts.length === 0 || factIndexes.length === 0) {
         return <></>; // Return nothing if there are no facts
@@ -23,12 +23,12 @@ export default function FactListSideBar({
         <div
             className={`flex h-auto w-[208px] flex-col gap-1 overflow-auto rounded-md bg-neutral-100 p-3`}
             style={{ maxHeight: `${maxHeight}px` }}
-            onClick={() => setExpended((prev) => !prev)}
+            onClick={() => setExpanded((prev) => !prev)}
         >
             {factIndexes.map((factIndex) => {
                 const fact = facts[factIndex];
 
-                return !expended ? (
+                return !expanded ? (
                     <h2 className="text-xs text-emerald-700" key={factIndex}>
                         {`[${factIndex + 1}] ${fact.title}`}
                     </h2>
