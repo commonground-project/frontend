@@ -20,30 +20,67 @@ export default function ContentCardWithSidebar({
     );
 
     const viewpointContent = useMemo(() => {
-        const parsedReferences = content.replace(
-            /\[([^\]]+)\]\(([^\)]+)\)/g,
-            (_, content: string, indexes: string) => {
-                return `<span style="color: #15803D">${content} ${indexes
-                    .split(",")
-                    .map((num) => Number(num) + 1)
-                    .map((num) => `[${num}]`)
-                    .join("")}</span>`;
-            },
-        );
+        console.log("original content", content);
 
-        content.split("\n").forEach((paragraph) => {
-            const references: number[] = [];
-            const regex = /\[([^\]]+)\]\(([^\)]+)\)/g;
+        const regex = /\[([^\]]+)\]\(([^\)]+)\)/g;
+        const parsedContents: {
+            type: "content" | "reference";
+            text: string;
+        }[][] = [];
+        const allReferences: number[][] = [];
+
+        content.split("\n").map((paragraph) => {
+            let lastIndex = 0;
             let match;
+            const result: { type: "content" | "reference"; text: string }[] =
+                [];
+            const references: number[] = [];
 
             while ((match = regex.exec(paragraph)) !== null) {
-                match[2].split(",").map((num) => references.push(Number(num)));
+                // Push normal text before the reference
+                if (lastIndex < match.index) {
+                    result.push({
+                        type: "content",
+                        text: paragraph.slice(lastIndex, match.index),
+                    });
+                }
+                // Push the reference text and record the reference
+                let referenceText = match[1];
+                match[2].split(",").map((num) => {
+                    referenceText = referenceText + `[${Number(num) + 1}]`;
+                    if (
+                        references.find((ref) => ref === Number(num)) ===
+                        undefined
+                    )
+                        references.push(Number(num));
+                });
+                result.push({ type: "reference", text: referenceText });
+
+                // Update the lastIndex to the end of the current match
+                lastIndex = regex.lastIndex;
             }
-            setParagraphReferences((prev) => [...prev, references]);
+            console.log("references: ", references);
+            allReferences.push(references);
+
+            // Push remaining text after the last reference
+            if (lastIndex < paragraph.length) {
+                result.push({
+                    type: "content",
+                    text: paragraph.slice(lastIndex),
+                });
+            }
+            parsedContents.push(result);
         });
 
-        return parsedReferences.split("\n");
-    }, []);
+        console.log("parsedContents", parsedContents);
+        console.log("allReferences", allReferences);
+
+        return { parsedContents, allReferences };
+    }, [content]);
+
+    useEffect(() => {
+        setParagraphReferences(viewpointContent.allReferences);
+    }, [viewpointContent.allReferences]);
 
     useEffect(() => {
         if (paragraphRefs.current.length > 0) {
@@ -56,14 +93,23 @@ export default function ContentCardWithSidebar({
 
     return (
         <div className="relative">
-            {viewpointContent.map((paragraph, index) => (
+            {viewpointContent.parsedContents.map((paragraph, index) => (
                 <p
                     key={index}
                     ref={(el) => {
                         paragraphRefs.current[index] = el;
                     }}
-                    dangerouslySetInnerHTML={{ __html: paragraph }}
-                />
+                >
+                    {paragraph.map((part, index) =>
+                        part.type === "content" ? (
+                            <span key={index}>{part.text}</span>
+                        ) : (
+                            <span key={index} style={{ color: "#15803D" }}>
+                                {part.text}
+                            </span>
+                        ),
+                    )}
+                </p>
             ))}
             {paragraphPositions.length > 0 &&
                 paragraphPositions.map((position, index) => (
