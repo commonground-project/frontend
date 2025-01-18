@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactCard from "../Viewpoints/FactCard";
 
