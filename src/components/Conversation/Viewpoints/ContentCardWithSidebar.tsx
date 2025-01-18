@@ -109,62 +109,34 @@ export default function ContentCardWithSidebar({
                 </p>
             ))}
             {paragraphPositions.length > 0 &&
-                (expandedSidebarIndex === null
-                    ? //no sidebar is expanded, render all sidebars
-                      (console.log("no expanded sidebar"),
-                      paragraphPositions.map((position, index) => (
-                          <div
-                              style={{
-                                  position: "absolute",
-                                  right: "-226px",
-                                  //226 px = 208px width + 18px margin left
-                                  top: `${position}px`,
-                              }}
-                              key={index}
-                          >
-                              <FactListSideBar
-                                  sidebarIndex={index}
-                                  setExpandedSidebarIndex={
-                                      setExpandedSidebarIndex
-                                  }
-                                  initialExpanded={false}
-                                  facts={facts}
-                                  factIndexes={paragraphReferences[index]}
-                                  maxHeight={
-                                      paragraphRefs.current[index]
-                                          ?.offsetHeight ?? 0
-                                  }
-                              />
-                          </div>
-                      )))
-                    : //only one sidebar is expanded, render only that sidebar
-                      (console.log("expanded sidebar"),
-                      (
-                          <div
-                              style={{
-                                  position: "absolute",
-                                  right: "-226px",
-                                  //226 px = 208px width + 18px margin left
-                                  top: `${paragraphPositions[expandedSidebarIndex ?? 0]}px`,
-                              }}
-                              key={expandedSidebarIndex ?? 0}
-                          >
-                              <FactListSideBar
-                                  sidebarIndex={expandedSidebarIndex ?? 0}
-                                  setExpandedSidebarIndex={
-                                      setExpandedSidebarIndex
-                                  }
-                                  initialExpanded={true}
-                                  facts={facts}
-                                  factIndexes={
-                                      paragraphReferences[
-                                          expandedSidebarIndex ?? 0
-                                      ]
-                                  }
-                                  maxHeight={1000}
-                              />
-                          </div>
-                      )))}
+                paragraphPositions.map((position, index) => (
+                    <div
+                        style={{
+                            display: `${expandedSidebarIndex === null || expandedSidebarIndex === index ? "" : "none"}`,
+                            position: "absolute",
+                            right: "-226px",
+                            //226 px = 208px width + 18px margin left
+                            top: `${position}px`,
+                        }}
+                        key={index}
+                    >
+                        <FactListSideBar
+                            sidebarIndex={index}
+                            setExpandedSidebarIndex={setExpandedSidebarIndex}
+                            curExpanded={
+                                expandedSidebarIndex === index ? true : false
+                            }
+                            facts={facts}
+                            factIndexes={paragraphReferences[index]}
+                            maxHeight={
+                                expandedSidebarIndex === index
+                                    ? 1000
+                                    : (paragraphRefs.current[index]
+                                          ?.offsetHeight ?? 0)
+                            }
+                        />
+                    </div>
+                ))}
         </>
     );
 }
