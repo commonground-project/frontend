@@ -92,7 +92,7 @@ export default function ContentCardWithSidebar({
     }, []);
 
     return (
-        <div className="relative">
+        <>
             {viewpointContent.parsedContents.map((paragraph, index) => (
                 <p
                     key={index}
@@ -116,7 +116,8 @@ export default function ContentCardWithSidebar({
                     <div
                         style={{
                             position: "absolute",
-                            right: "-254px",
+                            right: "-226px",
+                            //226 px = 208px width + 18px margin left
                             top: `${position}px`,
                         }}
                         key={index}
@@ -130,6 +131,6 @@ export default function ContentCardWithSidebar({
                         />
                     </div>
                 ))}
-        </div>
+        </>
     );
 }
