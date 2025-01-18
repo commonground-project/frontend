@@ -18,10 +18,11 @@ export default function ContentCardWithSidebar({
     const [paragraphReferences, setParagraphReferences] = useState<number[][]>(
         [],
     );
+    const [expandedSidebarIndex, setExpandedSidebarIndex] = useState<
+        number | null
+    >(null);
 
     const viewpointContent = useMemo(() => {
-        console.log("original content", content);
-
         const regex = /\[([^\]]+)\]\(([^\)]+)\)/g;
         const parsedContents: {
             type: "content" | "reference";
@@ -59,7 +60,6 @@ export default function ContentCardWithSidebar({
                 // Update the lastIndex to the end of the current match
                 lastIndex = regex.lastIndex;
             }
-            console.log("references: ", references);
             allReferences.push(references);
 
             // Push remaining text after the last reference
@@ -71,9 +71,6 @@ export default function ContentCardWithSidebar({
             }
             parsedContents.push(result);
         });
-
-        console.log("parsedContents", parsedContents);
-        console.log("allReferences", allReferences);
 
         return { parsedContents, allReferences };
     }, [content]);
@@ -112,25 +109,62 @@ export default function ContentCardWithSidebar({
                 </p>
             ))}
             {paragraphPositions.length > 0 &&
-                paragraphPositions.map((position, index) => (
-                    <div
-                        style={{
-                            position: "absolute",
-                            right: "-226px",
-                            //226 px = 208px width + 18px margin left
-                            top: `${position}px`,
-                        }}
-                        key={index}
-                    >
-                        <FactListSideBar
-                            facts={facts}
-                            factIndexes={paragraphReferences[index]}
-                            maxHeight={
-                                paragraphRefs.current[index]?.offsetHeight ?? 0
-                            }
-                        />
-                    </div>
-                ))}
+                (expandedSidebarIndex === null
+                    ? //no sidebar is expanded, render all sidebars
+                      (console.log("no expanded sidebar"),
+                      paragraphPositions.map((position, index) => (
+                          <div
+                              style={{
+                                  position: "absolute",
+                                  right: "-226px",
+                                  //226 px = 208px width + 18px margin left
+                                  top: `${position}px`,
+                              }}
+                              key={index}
+                          >
+                              <FactListSideBar
+                                  sidebarIndex={index}
+                                  setExpandedSidebarIndex={
+                                      setExpandedSidebarIndex
+                                  }
+                                  initialExpanded={false}
+                                  facts={facts}
+                                  factIndexes={paragraphReferences[index]}
+                                  maxHeight={
+                                      paragraphRefs.current[index]
+                                          ?.offsetHeight ?? 0
+                                  }
+                              />
+                          </div>
+                      )))
+                    : //only one sidebar is expanded, render only that sidebar
+                      (console.log("expanded sidebar"),
+                      (
+                          <div
+                              style={{
+                                  position: "absolute",
+                                  right: "-226px",
+                                  //226 px = 208px width + 18px margin left
+                                  top: `${paragraphPositions[expandedSidebarIndex ?? 0]}px`,
+                              }}
+                              key={expandedSidebarIndex ?? 0}
+                          >
+                              <FactListSideBar
+                                  sidebarIndex={expandedSidebarIndex ?? 0}
+                                  setExpandedSidebarIndex={
+                                      setExpandedSidebarIndex
+                                  }
+                                  initialExpanded={true}
+                                  facts={facts}
+                                  factIndexes={
+                                      paragraphReferences[
+                                          expandedSidebarIndex ?? 0
+                                      ]
+                                  }
+                                  maxHeight={1000}
+                              />
+                          </div>
+                      )))}
         </>
     );
 }

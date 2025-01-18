@@ -1,19 +1,29 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactCard from "../Viewpoints/FactCard";
 
 type FactListSideBarProps = {
+    sidebarIndex: number;
+    setExpandedSidebarIndex: Dispatch<SetStateAction<number | null>>;
+    initialExpanded: boolean;
     facts: Fact[];
     factIndexes: number[];
     maxHeight: number;
 };
 
 export default function FactListSideBar({
+    sidebarIndex,
+    setExpandedSidebarIndex,
+    initialExpanded,
     facts,
     factIndexes,
     maxHeight,
 }: FactListSideBarProps) {
-    const [expanded, setExpanded] = useState(false);
+    // console.log("idx : ", sidebarIndex);
+    // console.log("factIndexes : ", factIndexes);
+    // console.log("facts : ", facts);
+
+    const [expanded, setExpanded] = useState(initialExpanded);
 
     if (facts.length === 0 || factIndexes.length === 0) {
         return <></>; // Return nothing if there are no facts
@@ -23,7 +33,12 @@ export default function FactListSideBar({
         <div
             className={`flex h-auto w-[208px] flex-col gap-1 overflow-auto rounded-md bg-neutral-100 p-3`}
             style={{ maxHeight: `${maxHeight}px` }}
-            onClick={() => setExpanded((prev) => !prev)}
+            onClick={() => {
+                setExpanded((prev) => !prev);
+                setExpandedSidebarIndex((prev) =>
+                    prev === sidebarIndex ? null : sidebarIndex,
+                );
+            }}
             onBlur={() => setExpanded(false)}
         >
             {factIndexes.map((factIndex) => {
