@@ -3,6 +3,8 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import { type Fact } from "@/types/conversations.types";
 import FactListSideBar from "../Facts/FactListSidebar";
+import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
+import { getParagraphReferences } from "@/lib/utils/getParagraphReferences";
 
 type ContentCardWithSidebarProps = {
     facts: Fact[];
@@ -23,56 +25,8 @@ export default function ContentCardWithSidebar({
     >(null);
 
     const viewpointContent = useMemo(() => {
-        const regex = /\[([^\]]+)\]\(([^\)]+)\)/g;
-        const parsedContents: {
-            type: "content" | "reference";
-            text: string;
-        }[][] = [];
-        const allReferences: number[][] = [];
-
-        content.split("\n").map((paragraph) => {
-            let lastIndex = 0;
-            let match;
-            const result: { type: "content" | "reference"; text: string }[] =
-                [];
-            const references: number[] = [];
-
-            while ((match = regex.exec(paragraph)) !== null) {
-                // Push normal text before the reference
-                if (lastIndex < match.index) {
-                    result.push({
-                        type: "content",
-                        text: paragraph.slice(lastIndex, match.index),
-                    });
-                }
-                let referenceText = match[1];
-                match[2].split(",").map((num) => {
-                    // Push the reference text
-                    referenceText = referenceText + `[${Number(num) + 1}]`;
-                    // record the reference
-                    if (
-                        references.find((ref) => ref === Number(num)) ===
-                        undefined
-                    )
-                        references.push(Number(num));
-                });
-                result.push({ type: "reference", text: referenceText });
-
-                // Update the lastIndex to the end of the current match
-                lastIndex = regex.lastIndex;
-            }
-            allReferences.push(references);
-
-            // Push remaining text after the last reference
-            if (lastIndex < paragraph.length) {
-                result.push({
-                    type: "content",
-                    text: paragraph.slice(lastIndex),
-                });
-            }
-            parsedContents.push(result);
-        });
-
+        const parsedContents = preprocessReferenceContent({ content });
+        const allReferences = getParagraphReferences({ content });
         return { parsedContents, allReferences };
     }, [content]);
 

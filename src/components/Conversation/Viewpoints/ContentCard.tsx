@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 
 type ContentCardProps = {
     content: string;
@@ -8,23 +9,23 @@ type ContentCardProps = {
 
 export default function ContentCard({ content }: ContentCardProps) {
     const viewpointContent = useMemo(() => {
-        const parsedReferences = content.replace(
-            /\[([^\]]+)\]\(([^\)]+)\)/g,
-            (_, content: string, indexes: string) => {
-                return `${content} ${indexes
-                    .split(",")
-                    .map((num) => Number(num) + 1)
-                    .map((num) => `[${num}]`)
-                    .join("")}`;
-            },
-        );
-        return parsedReferences.split("\n");
+        return preprocessReferenceContent({ content });
     }, [content]);
 
     return (
         <>
             {viewpointContent.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
+                <p key={index}>
+                    {paragraph.map((part, index) =>
+                        part.type === "content" ? (
+                            <span key={index}>{part.text}</span>
+                        ) : (
+                            <span key={index} style={{ color: "#15803D" }}>
+                                {part.text}
+                            </span>
+                        ),
+                    )}
+                </p>
             ))}
         </>
     );
