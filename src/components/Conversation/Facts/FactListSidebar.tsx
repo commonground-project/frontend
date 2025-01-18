@@ -25,11 +25,18 @@ export default function FactListSideBar({
 
     return (
         <div
+            tabIndex={0}
             className={`flex h-auto w-[208px] flex-col gap-1 overflow-auto rounded-md bg-neutral-100 p-3 transition-[height]`}
             style={{ maxHeight: `${maxHeight}px` }}
             onClick={() => {
                 setExpandedSidebarIndex((prev) =>
                     prev === sidebarIndex ? null : sidebarIndex,
+                );
+            }}
+            onBlur={() => {
+                console.log("blur");
+                setExpandedSidebarIndex((prev) =>
+                    prev === sidebarIndex ? null : prev,
                 );
             }}
         >

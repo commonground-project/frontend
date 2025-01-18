@@ -45,10 +45,11 @@ export default function ContentCardWithSidebar({
                         text: paragraph.slice(lastIndex, match.index),
                     });
                 }
-                // Push the reference text and record the reference
                 let referenceText = match[1];
                 match[2].split(",").map((num) => {
+                    // Push the reference text
                     referenceText = referenceText + `[${Number(num) + 1}]`;
+                    // record the reference
                     if (
                         references.find((ref) => ref === Number(num)) ===
                         undefined
@@ -130,7 +131,7 @@ export default function ContentCardWithSidebar({
                             factIndexes={paragraphReferences[index]}
                             maxHeight={
                                 expandedSidebarIndex === index
-                                    ? 1000
+                                    ? 1000 // arbitrary large number
                                     : (paragraphRefs.current[index]
                                           ?.offsetHeight ?? 0)
                             }
