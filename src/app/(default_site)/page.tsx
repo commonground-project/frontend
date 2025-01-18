@@ -1,5 +1,5 @@
 import { mockEmptyIssue, mockIssue, mockUser } from "@/mock/conversationMock";
-import HomePageCard from "../components/HomePage/HomePageCard";
+import HomePageCard from "../../components/HomePage/HomePageCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
