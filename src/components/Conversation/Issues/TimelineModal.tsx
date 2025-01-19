@@ -26,15 +26,18 @@ export default function TimeLineModal({
             <Timeline color="black" lineWidth={2} bulletSize={9} active={3}>
                 <Timeline.Item
                     bullet={
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="8"
-                            height="8"
-                            viewBox="0 0 8 8"
-                            fill="none"
-                        >
-                            <circle cx="4" cy="4" r="4" fill="#262626" />
-                        </svg>
+                        <div className="relative flex items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="8"
+                                height="8"
+                                viewBox="0 0 8 8"
+                                fill="none"
+                            >
+                                <circle cx="4" cy="4" r="4" fill="#262626" />
+                            </svg>
+                            <hr className="absolute right-[-16px] h-[1px] w-[16px] border-black"></hr>
+                        </div>
                     }
                     title="first event"
                 >
