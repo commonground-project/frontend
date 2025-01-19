@@ -4,6 +4,10 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import type { Issue } from "@/types/conversations.types";
 import { getIssue } from "@/lib/requests/issues/getIssue";
+import {
+    getIssueTimeline,
+    type getIssueTimelineResponse,
+} from "@/lib/requests/timeline/getIssueTimeline";
 import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
 
 type IssueViewProps = {
@@ -36,11 +40,15 @@ export default async function IssueView({ params }: IssueViewProps) {
     const auth_token = cookieStore.get("auth_token")?.value || "";
 
     const issue: Issue = await getIssue({ issueId, auth_token });
+    const timeline: getIssueTimelineResponse = await getIssueTimeline({
+        issueId,
+        user_token: auth_token,
+    });
 
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                <IssueCard issue={issue} />
+                <IssueCard issue={issue} timeline={timeline.content} />
                 <ViewpointList issueId={issueId} />
             </main>
             <AddViewpointBar id={issueId} />
