@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
-import {
-    LinkIcon,
-    PlusIcon,
-    XMarkIcon,
-    ArrowLongRightIcon,
-} from "@heroicons/react/24/outline";
+import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
 import ReferenceBar from "./ReferenceBar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -113,95 +108,87 @@ export default function FactCreationModal({
         <Modal
             opened={creationID !== null}
             onClose={() => setCreationID(null)}
-            size="70rem"
+            size="620px"
             centered
             title={<h2 className="font-bold text-black">引入新的事實</h2>}
         >
-            {/* Modal Content */}
-            <div className="flex h-[80vh] max-h-[600px] font-sans">
-                <div className="w-2/3">
-                    <TextInput
-                        value={title}
-                        onChange={(e) => setTitle(e.currentTarget.value)}
-                        variant="unstyled"
-                        placeholder="簡述這個事實"
-                        classNames={{
-                            input: "text-2xl placeholder:text-neutral-500 text-neutral-800 font-bold",
-                        }}
-                        className="pb-2"
-                    />
-                    <div className="flex w-full items-center py-0.5">
-                        <LinkIcon className="mr-2 h-4 w-4 text-black" />
-                        <input
-                            type="url"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            className="flex-1 border-none bg-transparent outline-none placeholder:text-gray-500"
-                            placeholder="新增引註資料"
-                        />
-                        <button
-                            className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
-                            onClick={addReference}
-                        >
-                            <span>新增至引註資料</span>
-                            <ArrowLongRightIcon className="h-4 w-4" />
-                        </button>
-                    </div>
-                </div>
+            {/* fact title */}
+            <TextInput
+                value={title}
+                onChange={(e) => setTitle(e.currentTarget.value)}
+                variant="unstyled"
+                placeholder="簡述這個事實"
+                classNames={{
+                    input: "text-2xl placeholder:text-neutral-500 text-neutral-800 font-bold",
+                }}
+                className="pb-2"
+            />
 
-                {/* Right Side - References */}
-                <div className="flex h-full w-1/3 flex-col justify-between p-2">
-                    <div>
-                        <h2 className="mb-2 text-lg font-bold">引註資料</h2>
-                        <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
-                            {references.map((reference) => (
-                                <div
-                                    key={reference.id}
-                                    className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
-                                >
-                                    <ActionIcon
-                                        variant="transparent"
-                                        onClick={() =>
-                                            setReferences((prev) =>
-                                                prev.filter(
-                                                    (ref) =>
-                                                        ref.id !== reference.id,
-                                                ),
-                                            )
-                                        }
-                                        className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
-                                    >
-                                        <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                                    </ActionIcon>
-                                    <ReferenceBar reference={reference} />
-                                    <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
-                                        {reference.title}
-                                    </div>
-                                </div>
-                            ))}
+            {/* reference display */}
+            <div>
+                <h2 className="mb-2 text-sm font-bold">引註資料</h2>
+                <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
+                    {references.map((reference) => (
+                        <div
+                            key={reference.id}
+                            className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
+                        >
+                            <ActionIcon
+                                variant="transparent"
+                                onClick={() =>
+                                    setReferences((prev) =>
+                                        prev.filter(
+                                            (ref) => ref.id !== reference.id,
+                                        ),
+                                    )
+                                }
+                                className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                            >
+                                <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                            </ActionIcon>
+                            <ReferenceBar reference={reference} />
+                            <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
+                                {reference.title}
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="mt-2 flex justify-end">
-                        <Button
-                            onClick={() => {
-                                createFactMutation.mutate({
-                                    title,
-                                    references,
-                                });
-                            }}
-                            loading={createFactMutation.isPending}
-                            className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800 disabled:opacity-50"
-                            disabled={
-                                title.length < 5 || references.length === 0
-                            }
-                        >
-                            <PlusIcon className="mr-1 h-4 w-4" />
-                            建立
-                        </Button>
-                    </div>
+                    ))}
                 </div>
+            </div>
+
+            {/* fact URL input */}
+            <div className="flex w-full items-center py-0.5">
+                <LinkIcon className="mr-2 size-5 text-neutral-500" />
+                <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
+                    placeholder="新增引註資料"
+                />
+                <button
+                    className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
+                    onClick={addReference}
+                >
+                    <PlusIcon className="size-6 text-neutral-600" />
+                </button>
+            </div>
+
+            {/* Submit Button */}
+            <div className="mt-2 flex justify-end">
+                <Button
+                    onClick={() => {
+                        createFactMutation.mutate({
+                            title,
+                            references,
+                        });
+                    }}
+                    loading={createFactMutation.isPending}
+                    className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800 disabled:opacity-50"
+                    disabled={title.length < 5 || references.length === 0}
+                >
+                    <PlusIcon className="mr-1 h-4 w-4" />
+                    建立
+                </Button>
             </div>
         </Modal>
     );
