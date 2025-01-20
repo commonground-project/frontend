@@ -83,3 +83,12 @@ export interface Reply {
     quotes: Quote[];
     facts: Fact[];
 }
+
+export interface TimelineNode {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    date: Date;
+}

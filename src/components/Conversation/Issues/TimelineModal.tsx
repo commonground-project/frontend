@@ -3,6 +3,7 @@
 import { Modal, Timeline } from "@mantine/core";
 import type { Dispatch, SetStateAction } from "react";
 import type { TimelineNode } from "@/lib/requests/timeline/getIssueTimeline";
+import { mockTimeline } from "@/mock/conversationMock";
 
 type TimeLineModalProps = {
     isOpen: boolean;
@@ -17,26 +18,28 @@ export default function TimeLineModal({
     issueTitle,
     timeline,
 }: TimeLineModalProps) {
+    const sortedTimeline = mockTimeline.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+
     return (
         <Modal
             opened={isOpen}
             onClose={() => setIsOpen(false)}
             title={<h1 className="font-bold">{`《${issueTitle}》的演進`}</h1>}
-            classNames={{
-                content: "w-[620px]",
-            }}
+            size="620px"
         >
             <Timeline
                 color="black"
                 lineWidth={2}
                 bulletSize={8}
-                active={3}
+                active={sortedTimeline.length}
                 classNames={{
                     root: "pl-[32px]",
                     itemBody: "ml-[16px]",
                 }}
             >
-                {timeline.map((node) => (
+                {sortedTimeline.map((node) => (
                     <Timeline.Item
                         key={node.id}
                         bullet={
@@ -58,7 +61,7 @@ export default function TimeLineModal({
                                 <hr className="absolute right-[-16px] h-[1px] w-[16px] border-black"></hr>
                             </div>
                         }
-                        title={node.title}
+                        title={`${node.date.toLocaleDateString()} ${node.title}`}
                     >
                         {node.description}
                     </Timeline.Item>
