@@ -112,83 +112,91 @@ export default function FactCreationModal({
             centered
             title={<h2 className="font-bold text-black">引入新的事實</h2>}
         >
-            {/* fact title */}
-            <TextInput
-                value={title}
-                onChange={(e) => setTitle(e.currentTarget.value)}
-                variant="unstyled"
-                placeholder="簡述這個事實"
-                classNames={{
-                    input: "text-2xl placeholder:text-neutral-500 text-neutral-800 font-bold",
-                }}
-                className="pb-2"
-            />
+            <div className="flex min-h-[250px] flex-col justify-between">
+                <div>
+                    {/* fact title */}
+                    <TextInput
+                        value={title}
+                        onChange={(e) => setTitle(e.currentTarget.value)}
+                        variant="unstyled"
+                        placeholder="簡述這個事實"
+                        classNames={{
+                            input: "border-none text-xl placeholder:text-neutral-500 text-neutral-800 font-bold",
+                        }}
+                        className="pb-2"
+                    />
 
-            {/* reference display */}
-            <div>
-                <h2 className="mb-2 text-sm font-bold">引註資料</h2>
-                <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
-                    {references.map((reference) => (
-                        <div
-                            key={reference.id}
-                            className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
-                        >
-                            <ActionIcon
-                                variant="transparent"
-                                onClick={() =>
-                                    setReferences((prev) =>
-                                        prev.filter(
-                                            (ref) => ref.id !== reference.id,
-                                        ),
-                                    )
-                                }
-                                className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                                <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                            </ActionIcon>
-                            <ReferenceBar reference={reference} />
-                            <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
-                                {reference.title}
-                            </div>
+                    {/* reference display */}
+                    <div>
+                        <h2 className="mb-2 text-sm font-bold">引註資料</h2>
+                        <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
+                            {references.map((reference) => (
+                                <div
+                                    key={reference.id}
+                                    className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
+                                >
+                                    <ActionIcon
+                                        variant="transparent"
+                                        onClick={() =>
+                                            setReferences((prev) =>
+                                                prev.filter(
+                                                    (ref) =>
+                                                        ref.id !== reference.id,
+                                                ),
+                                            )
+                                        }
+                                        className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                                    >
+                                        <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                                    </ActionIcon>
+                                    <ReferenceBar reference={reference} />
+                                    <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
+                                        {reference.title}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
-            </div>
 
-            {/* fact URL input */}
-            <div className="flex w-full items-center py-0.5">
-                <LinkIcon className="mr-2 size-5 text-neutral-500" />
-                <input
-                    type="url"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
-                    placeholder="新增引註資料"
-                />
-                <button
-                    className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
-                    onClick={addReference}
-                >
-                    <PlusIcon className="size-6 text-neutral-600" />
-                </button>
-            </div>
+                <div>
+                    {/* fact URL input */}
+                    <div className="flex w-full items-center py-0.5">
+                        <LinkIcon className="mr-2 size-5 text-neutral-500" />
+                        <input
+                            type="url"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
+                            placeholder="新增引註資料"
+                        />
+                        <button
+                            className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
+                            onClick={addReference}
+                        >
+                            <PlusIcon className="size-6 text-neutral-600" />
+                        </button>
+                    </div>
 
-            {/* Submit Button */}
-            <div className="mt-2 flex justify-end">
-                <Button
-                    onClick={() => {
-                        createFactMutation.mutate({
-                            title,
-                            references,
-                        });
-                    }}
-                    loading={createFactMutation.isPending}
-                    className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800 disabled:opacity-50"
-                    disabled={title.length < 5 || references.length === 0}
-                >
-                    <PlusIcon className="mr-1 h-4 w-4" />
-                    建立
-                </Button>
+                    {/* Submit Button */}
+                    <div className="mt-2 flex justify-end">
+                        <Button
+                            onClick={() => {
+                                createFactMutation.mutate({
+                                    title,
+                                    references,
+                                });
+                            }}
+                            loading={createFactMutation.isPending}
+                            className="flex items-center rounded-[4px] bg-blue-600 px-4 py-[6px] text-white hover:bg-blue-800 disabled:opacity-50"
+                            disabled={
+                                title.length < 5 || references.length === 0
+                            }
+                        >
+                            建立
+                        </Button>
+                    </div>
+                </div>
             </div>
         </Modal>
     );
