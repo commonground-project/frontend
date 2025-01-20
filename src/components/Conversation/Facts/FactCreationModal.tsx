@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -9,6 +9,7 @@ import ReferenceBar from "./ReferenceBar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getIssueFacts";
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
+import { getWebsiteTitle } from "@/lib/utils/getWebsiteTitle";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
@@ -29,7 +30,6 @@ export default function FactCreationModal({
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
     const [references, setReferences] = useState<FactReference[]>([]);
-    const iframeRef = useRef<HTMLIFrameElement>(null);
     const queryClient = useQueryClient();
     const [cookies] = useCookies(["auth_token"]);
 
@@ -38,7 +38,16 @@ export default function FactCreationModal({
         setReferences([]);
     }, [creationID]);
 
-    const addReference = () => {
+    const addReference = async () => {
+        let referenceTitle: string;
+        try {
+            referenceTitle = await getWebsiteTitle(url);
+        } catch (err) {
+            console.error(err);
+            toast.error("抓取網頁發生問題，請確認網址是否正確");
+            return;
+        }
+
         setReferences((prev) => [
             ...prev,
             {
@@ -46,9 +55,7 @@ export default function FactCreationModal({
                 url: url,
                 createdAt: new Date(),
                 icon: "/favicon.ico",
-                title:
-                    iframeRef.current?.contentDocument?.title ??
-                    "無法取得網頁標題",
+                title: referenceTitle,
             },
         ]);
     };
@@ -110,7 +117,10 @@ export default function FactCreationModal({
             onClose={() => setCreationID(null)}
             size="620px"
             centered
-            title={<h2 className="font-bold text-black">引入新的事實</h2>}
+            classNames={{
+                title: "font-bold text-black",
+            }}
+            title="引入新的事實"
         >
             <div className="flex min-h-[250px] flex-col justify-between">
                 <div>
