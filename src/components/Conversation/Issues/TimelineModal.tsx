@@ -3,6 +3,7 @@
 import { Modal, Timeline } from "@mantine/core";
 import type { Dispatch, SetStateAction } from "react";
 import type { TimelineNode } from "@/lib/requests/timeline/getIssueTimeline";
+import { ArrowDownIcon } from "@heroicons/react/16/solid";
 import { mockTimeline } from "@/mock/conversationMock";
 
 type TimeLineModalProps = {
@@ -26,7 +27,7 @@ export default function TimeLineModal({
         <Modal
             opened={isOpen}
             onClose={() => setIsOpen(false)}
-            title={<h1 className="font-bold">{`《${issueTitle}》的演進`}</h1>}
+            title={<h2 className="font-bold">{`《${issueTitle}》的演進`}</h2>}
             size="620px"
         >
             <Timeline
@@ -44,20 +45,6 @@ export default function TimeLineModal({
                         key={node.id}
                         bullet={
                             <div className="relative flex items-center">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="8"
-                                    height="8"
-                                    viewBox="0 0 8 8"
-                                    fill="none"
-                                >
-                                    <circle
-                                        cx="4"
-                                        cy="4"
-                                        r="4"
-                                        fill="#262626"
-                                    />
-                                </svg>
                                 <hr className="absolute right-[-16px] h-[1px] w-[16px] border-black"></hr>
                             </div>
                         }
@@ -66,6 +53,14 @@ export default function TimeLineModal({
                         {node.description}
                     </Timeline.Item>
                 ))}
+                <Timeline.Item
+                    bullet={
+                        <div className="relative">
+                            <div className="absolute -left-1 -top-1 h-2 w-2 bg-white" />
+                            <ArrowDownIcon className="absolute -left-2 -top-2 h-4 w-4 text-black" />
+                        </div>
+                    }
+                />
             </Timeline>
         </Modal>
     );
