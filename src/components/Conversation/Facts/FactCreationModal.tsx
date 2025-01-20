@@ -7,7 +7,6 @@ import {
     LinkIcon,
     PlusIcon,
     XMarkIcon,
-    ArrowLongLeftIcon,
     ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
@@ -33,7 +32,7 @@ export default function FactCreationModal({
     factCreationCallback,
 }: FactModelProps) {
     const [title, setTitle] = useState("");
-    const [url, setUrl] = useState("https://you.com");
+    const [url, setUrl] = useState("");
     const [references, setReferences] = useState<FactReference[]>([]);
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const queryClient = useQueryClient();
@@ -41,7 +40,6 @@ export default function FactCreationModal({
 
     useEffect(() => {
         setTitle("");
-        setUrl("https://you.com");
         setReferences([]);
     }, [creationID]);
 
@@ -117,37 +115,29 @@ export default function FactCreationModal({
             onClose={() => setCreationID(null)}
             size="70rem"
             centered
-            withCloseButton={false}
+            title={<h2 className="font-bold text-black">引入新的事實</h2>}
         >
-            <Button
-                variant="transparent"
-                color="black"
-                leftSection={<ArrowLongLeftIcon className="mr-1 h-5 w-5" />}
-                onClick={() => setCreationID(null)}
-                className="text-lg font-semibold text-neutral-500 transition-colors duration-200 hover:text-neutral-700"
-            >
-                返回所有事實
-            </Button>
             {/* Modal Content */}
             <div className="flex h-[80vh] max-h-[600px] font-sans">
-                <div className="w-2/3 p-2">
+                <div className="w-2/3">
                     <TextInput
                         value={title}
                         onChange={(e) => setTitle(e.currentTarget.value)}
                         variant="unstyled"
-                        placeholder="用一句話簡述這個事實"
+                        placeholder="簡述這個事實"
                         classNames={{
                             input: "text-2xl placeholder:text-neutral-500 text-neutral-800 font-bold",
                         }}
                         className="pb-2"
                     />
-                    <div className="flex w-full items-center rounded-full border border-gray-200 px-3 py-0.5 shadow-sm">
+                    <div className="flex w-full items-center py-0.5">
                         <LinkIcon className="mr-2 h-4 w-4 text-black" />
                         <input
                             type="url"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             className="flex-1 border-none bg-transparent outline-none placeholder:text-gray-500"
+                            placeholder="新增引註資料"
                         />
                         <button
                             className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
@@ -156,15 +146,6 @@ export default function FactCreationModal({
                             <span>新增至引註資料</span>
                             <ArrowLongRightIcon className="h-4 w-4" />
                         </button>
-                    </div>
-                    {/* Preview */}
-                    <div className="mt-2 flex h-[calc(60vh-75px)] overflow-hidden rounded-lg border border-gray-200">
-                        <iframe
-                            src={url}
-                            className="h-full w-full"
-                            title="網頁預覽"
-                            ref={iframeRef}
-                        />
                     </div>
                 </div>
 
