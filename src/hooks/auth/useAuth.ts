@@ -36,7 +36,12 @@ export default function useAuth() {
             }
 
             setCookie("auth_token", token, {
-                expires: new Date(newToken.exp * 1000),
+                // The following expiration time is intentionally set to the refresh
+                // token expiration time and not the token expiration time.
+                // This is preferred since we assume the token refresh will always succeed
+                // And thus upon user login, we would prefer to show old data as a placeholder
+                // while the new JWT is being fetched rather than showing the user as logged out
+                expires: new Date(refresh_token_expiration),
                 httpOnly: false,
                 path: "/",
             });
@@ -69,7 +74,7 @@ export default function useAuth() {
             login(data.accessToken, data.refreshToken, data.expirationTime);
         },
         onError(e) {
-            console.log(e);
+            console.error(e);
             toast.error("發生未知的錯誤，請重新登入");
             logout("/login");
         },
@@ -88,25 +93,21 @@ export default function useAuth() {
         if (!cookies.auth_refresh_token) logout();
     }, [logout, cookies.auth_refresh_token]);
 
-    // If the token is expired and there is a refresh token, refresh the token
-    useEffect(() => {
-        if (
-            isExpired &&
-            cookies.auth_refresh_token &&
-            !refreshTokenMutation.isPending
-        ) {
-            refreshTokenMutation.mutate(cookies.auth_refresh_token);
-        }
-    }, [isExpired, cookies.auth_refresh_token, refreshTokenMutation]);
-
     // Set a timeout to refresh the token before it expires
+    // This also triggers if somehow an expired token makes it pass the middleware
+    // since setTimeout triggers immidiately if the time is negative
     useEffect(() => {
-        if (!decodedToken || isExpired) return;
+        if (!decodedToken) return;
 
         const timeout = setTimeout(
             () => {
-                if (!cookies.auth_refresh_token) return;
+                if (
+                    !cookies.auth_refresh_token &&
+                    refreshTokenMutation.isPending
+                )
+                    return;
                 refreshTokenMutation.mutate(cookies.auth_refresh_token);
+                console.log("Refreshing token", decodedToken.exp);
             },
             decodedToken.exp * 1000 - Date.now() - 30000,
         );

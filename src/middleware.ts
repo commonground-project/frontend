@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import type { RefreshJwtResponse } from "./lib/requests/auth/refreshJwt";
 import { refreshJwtRequest } from "./lib/requests/auth/refreshJwt";
-import { decodeToken } from "react-jwt";
+import { decodeToken, isExpired } from "react-jwt";
 import type { DecodedToken } from "./types/users.types";
 
 const protectedPaths = ["/", "/onboarding"];
@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     const userRefreshToken = request.cookies.get("auth_refresh_token");
     const requestUrl = new URL(request.url);
 
-    if (!userToken && userRefreshToken) {
+    if ((!userToken || isExpired(userToken.value)) && userRefreshToken) {
         let apiResponse: RefreshJwtResponse | null = null;
 
         try {
@@ -47,7 +47,9 @@ export async function middleware(request: NextRequest) {
                     : NextResponse.next();
 
             mdwResponse.cookies.set("auth_token", apiResponse.accessToken, {
-                expires: new Date(newToken.exp * 1000),
+                // The following expiration time is intentionally set to the refresh token expiration time
+                // For reasons mentioned in the login function in the useAuth hook
+                expires: new Date(apiResponse.expirationTime),
                 path: "/",
             });
             mdwResponse.cookies.set(
