@@ -1,23 +1,35 @@
-import type { Fact } from "@/types/conversations.types";
-import { Button } from "@mantine/core";
+import { Fact } from "@/types/conversations.types";
+import { Button, Checkbox } from "@mantine/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
 
 type FactCardProps = {
     fact: Fact;
-    index: number;
     removeFact: (id: string) => void;
+    inSelectionMode: boolean;
+    isSelected: boolean;
+    setIsSelected: (isSelected: boolean) => void;
 };
 
 export default function EditableViewpointReference({
     fact,
-    index,
     removeFact,
+    inSelectionMode,
+    isSelected,
+    setIsSelected,
 }: FactCardProps) {
     return (
-        <div className="flex gap-2 overflow-hidden">
-            <p>[{index}]</p>
-            <div className="min-w-0 flex-1">
+        <div className="flex w-full gap-2.5">
+            {inSelectionMode && (
+                <div className="pt-1">
+                    <Checkbox
+                        radius={"xl"}
+                        checked={isSelected}
+                        onChange={(e) => setIsSelected(e.currentTarget.checked)}
+                    />
+                </div>
+            )}
+            <div>
                 <div className="group flex justify-between">
                     <h1 className="float-left text-lg font-normal text-black">
                         {fact.title}

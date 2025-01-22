@@ -164,7 +164,6 @@ export default function FactListCard({
                         <EditableViewpointReference
                             key={fact.id}
                             fact={fact}
-                            index={index + 1}
                             removeFact={removeFact}
                             inSelectionMode={inSelectionMode}
                             isSelected={
