@@ -42,7 +42,7 @@ export default function FactListCard({
     console.log("current reference marker id: ", curReferenceMarkerId);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
-    const [selectedFactId, setSelectedFactId] = useState<string | null>(null);
+    const [selectedFactId, setSelectedFactId] = useState<string | null>(null); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
@@ -204,21 +204,15 @@ export default function FactListCard({
                                         }
                                         return newMap;
                                     });
-                                    console.log(
-                                        "current map: ",
-                                        selectedFacts.entries(),
-                                    );
                                 } else {
                                     setSelectedFacts((prev) => {
                                         const newMap = new Map(prev);
-                                        if (curReferenceMarkerId)
+                                        if (curReferenceMarkerId !== null)
                                             newMap.set(curReferenceMarkerId, [
                                                 ...(newMap
                                                     .get(curReferenceMarkerId)
                                                     ?.filter(
-                                                        (id) =>
-                                                            id ===
-                                                            curReferenceMarkerId,
+                                                        (id) => id !== index,
                                                     ) ?? []),
                                             ]);
                                         return newMap;
