@@ -100,20 +100,21 @@ export default function AuthorViewpoint() {
         },
     });
 
-    const publishViewpoint = (content: string[]) => {
-        const parsedContent = content.map((p) =>
-            p.replace(/(\s?)\[(\d+)\]/g, (_, space, num) =>
-                space ? `[ ](${num - 1})` : `[ ](${num - 1})`,
-            ),
-        );
+    const publishViewpoint = (content: string) => {
+        // const parsedContent = content.map((p) =>
+        //     p.replace(/(\s?)\[(\d+)\]/g, (_, space, num) =>
+        //         space ? `[ ](${num - 1})` : `[ ](${num - 1})`,
+        //     ),
+        // );
+        console.log("content : ", content);
+
+        return;
         postNewViewpoint.mutate({
             title: viewpointTitle,
-            content: parsedContent.join("\n"),
+            content: content,
             facts: viewpointFactList.map((fact) => fact.id),
         });
     };
-
-    // console.log(inSelectionMode);
 
     return (
         <main className="mx-auto my-8 w-full max-w-7xl">
