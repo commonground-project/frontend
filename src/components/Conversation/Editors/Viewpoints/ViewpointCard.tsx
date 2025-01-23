@@ -11,6 +11,11 @@ import {
 } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
+import {
+    encapsuleReferenceMarker,
+    decapsuleReferenceMarker,
+    updateReferenceCounter,
+} from "@/lib/utils/referenceMarker/referenceMarkerEditors";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -150,81 +155,6 @@ export default function ViewpointCard({
         );
     };
 
-    const decapsuleReferenceMarker = (referenceId: string) => {
-        //find every reference marker and reference counter with the same id
-        const referenceMarkers = document.querySelectorAll(
-            `#\\3${referenceId}.reference-marker`,
-        );
-        const referenceCounters = document.querySelectorAll(
-            `#\\3${referenceId}.reference-counter`,
-        );
-        referenceMarkers.forEach((marker) => marker.remove());
-        referenceCounters.forEach((counter) => counter.remove());
-    };
-
-    const encapsuleReferenceMarker = (
-        range: Range,
-        facts: number[],
-        id: number,
-    ) => {
-        // Create the element to insert at the start of the range
-        const startElement = document.createElement("span");
-        startElement.id = String(id);
-        startElement.className = "reference-marker start";
-        startElement.textContent = "[Start]";
-        startElement.style.color = "blue";
-
-        // Create the element to insert at the end of the range
-        const endElement = document.createElement("span");
-        endElement.id = String(id);
-        endElement.className = "reference-marker end";
-        endElement.textContent = "[End]";
-        endElement.style.color = "green";
-
-        // Insert the start element
-        range.insertNode(startElement);
-
-        // Adjust the range to account for the new element at the start
-        range.setStartAfter(startElement);
-
-        // Insert the end element (must be after adjusting the range)
-        range.collapse(false); // Collapse to the end of the range
-        range.insertNode(endElement);
-
-        updateReferenceCounter(String(id), facts);
-    };
-
-    const updateReferenceCounter = (referenceId: string, facts: number[]) => {
-        console.log("updateReferenceCounter", referenceId);
-        const referenceCounter = document.querySelector(
-            `#\\3${referenceId}.reference-counter`,
-        );
-        if (referenceCounter) {
-            (referenceCounter as HTMLElement).innerText =
-                " " + facts.map((fact) => `[${fact + 1}]`).join("");
-            return;
-        }
-        // Reference marker not found, create a new one
-        // Find the end reference marker in the document
-        const referenceMarkerEnd = document.querySelector(
-            `#\\3${referenceId}.reference-marker.end`,
-        );
-        if (!referenceMarkerEnd) {
-            console.error("end reference marker not found");
-            return;
-        }
-        const newReferenceCounter = document.createElement("span");
-        newReferenceCounter.className = "reference-counter text-green-500";
-        newReferenceCounter.id = referenceId;
-        newReferenceCounter.innerText =
-            " " + facts.map((fact) => `[${fact + 1}]`).join("");
-
-        referenceMarkerEnd.parentNode?.insertBefore(
-            newReferenceCounter,
-            referenceMarkerEnd,
-        );
-    };
-
     useEffect(() => {
         if (inputRef?.current === null) return;
         const selection = window.getSelection();
@@ -257,11 +187,16 @@ export default function ViewpointCard({
             }
             if (facts.length === 0) {
                 // if no fact is selected, remove the marker
-                decapsuleReferenceMarker(selectedMarker.id);
+                decapsuleReferenceMarker({
+                    referenceMarkerId: selectedMarker.id,
+                });
                 return;
             }
             // update the reference counter
-            updateReferenceCounter(selectedMarker.id, facts);
+            updateReferenceCounter({
+                referenceMarkerId: selectedMarker.id,
+                referencedIndexes: facts,
+            });
         } else {
             // selected a new range, create a new marker
             if (curReferenceMarkerId === null) {
@@ -271,7 +206,11 @@ export default function ViewpointCard({
                     return;
                 }
                 if (facts.length === 0) return;
-                encapsuleReferenceMarker(range, facts, avaliableMarkerId);
+                encapsuleReferenceMarker({
+                    range,
+                    referenceMarkerId: String(avaliableMarkerId),
+                    referencedIndexes: facts,
+                });
                 setAvaliableMarkerId((prev) => prev + 1);
             }
         }
