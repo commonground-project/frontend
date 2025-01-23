@@ -150,22 +150,16 @@ export default function ViewpointCard({
         );
     };
 
-    const decapsuleReferenceMarker = (node: Element) => {
-        const parent = node.parentNode;
-        if (!parent) return;
-
-        // remove the reference counter
-        for (const child of node.children) {
-            if (child.classList.contains("reference-counter")) {
-                node.removeChild(child);
-            }
-        }
-
-        // move the children of the span to the parent
-        while (node.firstChild) {
-            parent.insertBefore(node.firstChild, node);
-        }
-        parent.removeChild(node);
+    const decapsuleReferenceMarker = (referenceId: string) => {
+        //find every reference marker and reference counter with the same id
+        const referenceMarkers = document.querySelectorAll(
+            `#\\3${referenceId}.reference-marker`,
+        );
+        const referenceCounters = document.querySelectorAll(
+            `#\\3${referenceId}.reference-counter`,
+        );
+        referenceMarkers.forEach((marker) => marker.remove());
+        referenceCounters.forEach((counter) => counter.remove());
     };
 
     const encapsuleReferenceMarker = (
@@ -173,31 +167,62 @@ export default function ViewpointCard({
         facts: number[],
         id: number,
     ) => {
-        const referenceMarker = document.createElement("span");
-        referenceMarker.className = "text-green-500 reference-marker";
-        referenceMarker.id = String(id);
+        // Create the element to insert at the start of the range
+        const startElement = document.createElement("span");
+        startElement.id = String(id);
+        startElement.className = "reference-marker start";
+        startElement.textContent = "[Start]";
+        startElement.style.color = "blue";
 
-        range.surroundContents(referenceMarker);
-        updateReferenceCounter(referenceMarker, facts);
+        // Create the element to insert at the end of the range
+        const endElement = document.createElement("span");
+        endElement.id = String(id);
+        endElement.className = "reference-marker end";
+        endElement.textContent = "[End]";
+        endElement.style.color = "green";
+
+        // Insert the start element
+        range.insertNode(startElement);
+
+        // Adjust the range to account for the new element at the start
+        range.setStartAfter(startElement);
+
+        // Insert the end element (must be after adjusting the range)
+        range.collapse(false); // Collapse to the end of the range
+        range.insertNode(endElement);
+
+        updateReferenceCounter(String(id), facts);
     };
 
-    const updateReferenceCounter = (
-        referenceMarker: Element,
-        facts: number[],
-    ) => {
-        const referenceCounter =
-            referenceMarker.querySelector(".reference-counter");
+    const updateReferenceCounter = (referenceId: string, facts: number[]) => {
+        console.log("updateReferenceCounter", referenceId);
+        const referenceCounter = document.querySelector(
+            `#\\3${referenceId}.reference-counter`,
+        );
         if (referenceCounter) {
             (referenceCounter as HTMLElement).innerText =
                 " " + facts.map((fact) => `[${fact + 1}]`).join("");
             return;
         }
+        // Reference marker not found, create a new one
+        // Find the end reference marker in the document
+        const referenceMarkerEnd = document.querySelector(
+            `#\\3${referenceId}.reference-marker.end`,
+        );
+        if (!referenceMarkerEnd) {
+            console.error("end reference marker not found");
+            return;
+        }
         const newReferenceCounter = document.createElement("span");
         newReferenceCounter.classList.add("reference-counter");
+        newReferenceCounter.id = referenceId;
         newReferenceCounter.innerText =
             " " + facts.map((fact) => `[${fact + 1}]`).join("");
 
-        referenceMarker.appendChild(newReferenceCounter);
+        referenceMarkerEnd.parentNode?.insertBefore(
+            newReferenceCounter,
+            referenceMarkerEnd,
+        );
     };
 
     useEffect(() => {
@@ -232,11 +257,11 @@ export default function ViewpointCard({
             }
             if (facts.length === 0) {
                 // if no fact is selected, remove the marker
-                decapsuleReferenceMarker(selectedMarker);
+                decapsuleReferenceMarker(selectedMarker.id);
                 return;
             }
             // update the reference counter
-            updateReferenceCounter(selectedMarker, facts);
+            updateReferenceCounter(selectedMarker.id, facts);
         } else {
             // selected a new range, create a new marker
             if (curReferenceMarkerId === null) {

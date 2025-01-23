@@ -12,7 +12,6 @@ import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
-import { set } from "zod";
 
 import type { Fact } from "@/types/conversations.types";
 
