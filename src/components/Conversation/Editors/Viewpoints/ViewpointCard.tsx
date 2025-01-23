@@ -214,7 +214,7 @@ export default function ViewpointCard({
             return;
         }
         const newReferenceCounter = document.createElement("span");
-        newReferenceCounter.classList.add("reference-counter");
+        newReferenceCounter.className = "reference-counter text-green-500";
         newReferenceCounter.id = referenceId;
         newReferenceCounter.innerText =
             " " + facts.map((fact) => `[${fact + 1}]`).join("");
