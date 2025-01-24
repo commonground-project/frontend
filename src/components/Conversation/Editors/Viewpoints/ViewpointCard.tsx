@@ -6,8 +6,8 @@ import {
     useRef,
     useEffect,
     useCallback,
-    Dispatch,
-    SetStateAction,
+    type Dispatch,
+    type SetStateAction,
 } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
