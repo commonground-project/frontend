@@ -13,6 +13,7 @@ import { postReference } from "@/lib/requests/references/postReference";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
+import { add } from "lodash";
 
 type FactModelProps = {
     issueId: string;
@@ -38,14 +39,25 @@ export default function FactCreationModal({
         setReferences([]);
     }, [creationID]);
 
-    const addReference = async () => {
-        const newReference = await postReference({
-            url,
-            auth_token: cookies.auth_token as string,
-        });
-
-        setReferences((prev) => [...prev, newReference]);
-    };
+    const addReferenceMutation = useMutation({
+        mutationKey: ["addReference"],
+        mutationFn: async (url: string) => {
+            return postReference({
+                url,
+                auth_token: cookies.auth_token as string,
+            });
+        },
+        onSuccess(data) {
+            setReferences((prev) => [...prev, data]);
+            setUrl("");
+        },
+        onError() {
+            toast.error("建立引註資料時發生錯誤", {
+                description:
+                    "建立引註資料時發生錯誤，請再試一次或是檢查引註資料連結",
+            });
+        },
+    });
 
     const createFactMutation = useMutation({
         mutationKey: ["createFact", creationID],
@@ -169,7 +181,7 @@ export default function FactCreationModal({
                         />
                         <button
                             className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
-                            onClick={addReference}
+                            onClick={() => addReferenceMutation.mutate(url)}
                         >
                             <PlusIcon className="size-6 text-neutral-600" />
                         </button>
