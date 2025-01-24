@@ -65,12 +65,6 @@ export default function ViewpointCard({
             return;
         }
 
-        // const paragraphs = Array.from(inputRef.current?.childNodes ?? []).map(
-        //     (node) => node.textContent,
-        // );
-        // const content = paragraphs.filter(
-        //     (p) => p !== null && p !== "",
-        // ) as string[];
         if (inputRef.current === null) return;
         const content = phraseReferencedContent(inputRef.current);
 
