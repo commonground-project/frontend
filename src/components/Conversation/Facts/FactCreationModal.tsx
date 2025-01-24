@@ -179,12 +179,14 @@ export default function FactCreationModal({
                             className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
                             placeholder="新增引註資料"
                         />
-                        <button
+                        <Button
+                            variant="unstyled"
                             className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
                             onClick={() => addReferenceMutation.mutate(url)}
+                            loading={addReferenceMutation.isPending}
                         >
                             <PlusIcon className="size-6 text-neutral-600" />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Submit Button */}
