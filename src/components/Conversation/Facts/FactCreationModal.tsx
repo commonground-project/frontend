@@ -9,7 +9,7 @@ import ReferenceBar from "./ReferenceBar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getIssueFacts";
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
-import { getWebsiteTitle } from "@/lib/utils/getWebsiteTitle";
+import { postReference } from "@/lib/requests/references/postReference";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
@@ -39,25 +39,12 @@ export default function FactCreationModal({
     }, [creationID]);
 
     const addReference = async () => {
-        let referenceTitle: string;
-        try {
-            referenceTitle = await getWebsiteTitle(url);
-        } catch (err) {
-            console.error(err);
-            toast.error("抓取網頁發生問題，請確認網址是否正確");
-            return;
-        }
+        const newReference = await postReference({
+            url,
+            auth_token: cookies.auth_token as string,
+        });
 
-        setReferences((prev) => [
-            ...prev,
-            {
-                id: uuidv4(),
-                url: url,
-                createdAt: new Date(),
-                icon: "/favicon.ico",
-                title: referenceTitle,
-            },
-        ]);
+        setReferences((prev) => [...prev, newReference]);
     };
 
     const createFactMutation = useMutation({
