@@ -1,3 +1,60 @@
+function highlightTextInRange(range: Range) {
+    const walker = document.createTreeWalker(
+        range.commonAncestorContainer,
+        NodeFilter.SHOW_ALL,
+        {
+            acceptNode: (node) =>
+                range.intersectsNode(node)
+                    ? NodeFilter.FILTER_ACCEPT
+                    : NodeFilter.FILTER_REJECT,
+        },
+    );
+    // Create the highlight wrapper
+    const highlightWrapper = document.createElement("span");
+    highlightWrapper.className = "highlight-wrapper";
+    highlightWrapper.style.color = "#10B981";
+    // Wrap the text nodes in the range with the highlight wrapper
+    while (walker.nextNode()) {
+        // console.log("node");
+        if (walker.currentNode.nodeType === Node.TEXT_NODE) {
+            // console.log("textNode", walker.currentNode);
+            const currentNode = walker.currentNode;
+            const wrapperClone = highlightWrapper.cloneNode(
+                true,
+            ) as HTMLElement;
+            currentNode.parentNode?.replaceChild(wrapperClone, currentNode);
+            wrapperClone.appendChild(currentNode);
+        }
+    }
+}
+
+function dehighlightTextInRange(range: Range) {
+    const walker = document.createTreeWalker(
+        range.commonAncestorContainer,
+        NodeFilter.SHOW_ALL,
+        {
+            acceptNode: (node) =>
+                range.intersectsNode(node)
+                    ? NodeFilter.FILTER_ACCEPT
+                    : NodeFilter.FILTER_REJECT,
+        },
+    );
+    // Move the text nodes out of the highlight wrapper
+    while (walker.nextNode()) {
+        console.log("node");
+        if (
+            walker.currentNode.parentNode?.nodeName !== "DIV" &&
+            walker.currentNode.nodeType === Node.TEXT_NODE
+        ) {
+            console.log("textNode", walker.currentNode);
+            const parent = walker.currentNode.parentNode;
+            if (parent) {
+                parent.parentNode?.replaceChild(walker.currentNode, parent);
+            }
+        }
+    }
+}
+
 type encapsuleReferenceMarkerParams = {
     range: Range;
     referencedIndexes: number[];
@@ -35,6 +92,13 @@ export function encapsuleReferenceMarker({
     range.collapse(false); // Collapse to the end of the range
     range.insertNode(endElement);
 
+    // Highlight the text in the range
+    const referenceMarkerRange = new Range();
+    referenceMarkerRange.setStartAfter(startElement);
+    referenceMarkerRange.setEndBefore(endElement);
+    highlightTextInRange(referenceMarkerRange);
+
+    // Create the reference counter
     updateReferenceCounter({ referenceMarkerId, referencedIndexes });
 }
 
@@ -86,13 +150,27 @@ type decapsuleReferenceMarkerParams = {
 export function decapsuleReferenceMarker({
     referenceMarkerId,
 }: decapsuleReferenceMarkerParams) {
-    //find every reference marker and reference counter with the same id
+    console.log("decapsuleReferenceMarker", referenceMarkerId);
+
+    // Find every reference marker
     const referenceMarkers = document.querySelectorAll(
         `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker`,
     );
-    const referenceCounters = document.querySelectorAll(
+
+    // Find reference counter
+    const referenceCounter = document.querySelectorAll(
         `#\\3${referenceMarkerId.split("").join(" ")}.reference-counter`,
     );
+
+    // Dehighlight the text between the reference markers
+    const highlightedRange = new Range();
+    highlightedRange.setStartAfter(referenceMarkers[0]); // Start after the start marker
+    highlightedRange.setEndBefore(referenceCounter[0]); // End before the reference counter
+    dehighlightTextInRange(highlightedRange);
+
+    // Delete every reference marker
     referenceMarkers.forEach((marker) => marker.remove());
-    referenceCounters.forEach((counter) => counter.remove());
+
+    // Delete every reference marker and reference counter
+    referenceCounter.forEach((counter) => counter.remove());
 }
