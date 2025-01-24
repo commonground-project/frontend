@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
-import { v4 as uuidv4 } from "uuid";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
 import ReferenceBar from "./ReferenceBar";
@@ -13,7 +12,6 @@ import { postReference } from "@/lib/requests/references/postReference";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
-import { add } from "lodash";
 
 type FactModelProps = {
     issueId: string;
