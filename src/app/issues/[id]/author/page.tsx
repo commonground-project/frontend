@@ -101,14 +101,8 @@ export default function AuthorViewpoint() {
     });
 
     const publishViewpoint = (content: string) => {
-        // const parsedContent = content.map((p) =>
-        //     p.replace(/(\s?)\[(\d+)\]/g, (_, space, num) =>
-        //         space ? `[ ](${num - 1})` : `[ ](${num - 1})`,
-        //     ),
-        // );
         console.log("content : ", content);
 
-        return;
         postNewViewpoint.mutate({
             title: viewpointTitle,
             content: content,

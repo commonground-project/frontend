@@ -2,7 +2,7 @@
 function extractReferenceCounter(referenceCounter: string): number[] {
     const referenceIndexes = Array.from(
         referenceCounter.matchAll(/\[(\d+)\]/g),
-        (match) => parseInt(match[1]),
+        (match) => parseInt(match[1]) - 1,
     );
     return referenceIndexes;
 }
