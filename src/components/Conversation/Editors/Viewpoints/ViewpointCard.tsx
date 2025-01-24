@@ -90,20 +90,9 @@ export default function ViewpointCard({
 
         // Check if the selection overlaps with an existing reference marker
         // If it does, we assume the user wants to update that marker
-        const existingMarkers =
-            document.getElementsByClassName("reference-marker");
-
-        let selectedMarker: Element | null = null;
-        if (existingMarkers.length > 0) {
-            for (const marker of existingMarkers) {
-                if (rangeOverlaps(range, marker)) {
-                    selectedMarker = marker;
-                    break;
-                }
-            }
-        }
+        const selectedMarkerId = getSelectedReferenceMarker(range);
         setCurReferenceMarkerId(
-            selectedMarker?.id ? parseInt(selectedMarker.id) : null,
+            selectedMarkerId ? Number(selectedMarkerId) : null,
         );
 
         // Create tooltip element
@@ -143,13 +132,42 @@ export default function ViewpointCard({
         };
     }, [handleSelection]);
 
-    const rangeOverlaps = (range: Range, node: Node) => {
-        const nodeRange = document.createRange();
-        nodeRange.selectNode(node);
+    const rangeOverlaps = (
+        range: Range,
+        startMarker: Node,
+        endMarker: Node,
+    ) => {
+        const referenceMarkerRange = document.createRange();
+        referenceMarkerRange.setStart(startMarker, 0);
+        referenceMarkerRange.setEnd(endMarker, endMarker.childNodes.length);
         return (
-            range.compareBoundaryPoints(Range.END_TO_START, nodeRange) < 0 &&
-            range.compareBoundaryPoints(Range.START_TO_END, nodeRange) > 0
+            range.compareBoundaryPoints(
+                Range.END_TO_START,
+                referenceMarkerRange,
+            ) < 0 &&
+            range.compareBoundaryPoints(
+                Range.START_TO_END,
+                referenceMarkerRange,
+            ) > 0
         );
+    };
+
+    const getSelectedReferenceMarker = (range: Range) => {
+        const startMarkers = document.querySelectorAll(
+            ".reference-marker.start",
+        );
+        const endMarkers = document.querySelectorAll(".reference-marker.end");
+
+        let selectedMarkerId: string | null = null;
+        if (startMarkers.length > 0) {
+            for (let i = 0; i < startMarkers.length; i++) {
+                if (rangeOverlaps(range, startMarkers[i], endMarkers[i])) {
+                    selectedMarkerId = startMarkers[i].id;
+                    break;
+                }
+            }
+        }
+        return selectedMarkerId;
     };
 
     useEffect(() => {
@@ -162,36 +180,25 @@ export default function ViewpointCard({
 
         // Check if the selection overlaps with an existing reference marker
         // If it does, we assume the user wants to update that marker
-        const existingMarkers =
-            document.getElementsByClassName("reference-marker");
+        const selectedMarkerId = getSelectedReferenceMarker(range);
 
-        let selectedMarker: Element | null = null;
-        if (existingMarkers.length > 0) {
-            for (const marker of existingMarkers) {
-                if (rangeOverlaps(range, marker)) {
-                    selectedMarker = marker;
-                    break;
-                }
-            }
-        }
-
-        if (selectedMarker) {
+        if (selectedMarkerId) {
             // selected a existing marker, update the facts
-            const facts = selectedFacts.get(Number(selectedMarker.id));
+            const facts = selectedFacts.get(Number(selectedMarkerId));
             if (!facts) {
-                console.error("marker id not setup: ", selectedMarker.id);
+                console.error("marker id not setup: ", selectedMarkerId);
                 return;
             }
             if (facts.length === 0) {
                 // if no fact is selected, remove the marker
                 decapsuleReferenceMarker({
-                    referenceMarkerId: selectedMarker.id,
+                    referenceMarkerId: selectedMarkerId,
                 });
                 return;
             }
             // update the reference counter
             updateReferenceCounter({
-                referenceMarkerId: selectedMarker.id,
+                referenceMarkerId: selectedMarkerId,
                 referencedIndexes: facts,
             });
         } else {
