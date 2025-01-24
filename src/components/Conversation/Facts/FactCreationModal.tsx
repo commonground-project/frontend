@@ -48,6 +48,14 @@ export default function FactCreationModal({
             });
         },
         onSuccess(data) {
+            if (
+                references.find(
+                    (ref) => ref.id === data.id || ref.url === data.url,
+                )
+            ) {
+                toast.info("引註資料已存在");
+                return;
+            }
             setReferences((prev) => [...prev, data]);
             setUrl("");
         },
@@ -180,7 +188,7 @@ export default function FactCreationModal({
                             placeholder="新增引註資料"
                         />
                         <Button
-                            variant="unstyled"
+                            variant="transparent"
                             className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
                             onClick={() => addReferenceMutation.mutate(url)}
                             loading={addReferenceMutation.isPending}
