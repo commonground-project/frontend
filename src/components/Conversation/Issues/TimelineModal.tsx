@@ -19,7 +19,7 @@ export default function TimeLineModal({
     issueTitle,
     timeline,
 }: TimeLineModalProps) {
-    const sortedTimeline = mockTimeline.sort(
+    const sortedTimeline = timeline.sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
