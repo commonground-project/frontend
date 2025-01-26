@@ -70,17 +70,15 @@ export function encapsuleReferenceMarker({
     const startElement = document.createElement("span");
     startElement.id = referenceMarkerId;
     startElement.className = "reference-marker start";
-    startElement.textContent = "[Start]";
+    // startElement.textContent = "[Start]";
     startElement.contentEditable = "false";
-    startElement.style.color = "blue";
 
     // Create the element to insert at the end of the range
     const endElement = document.createElement("span");
     endElement.id = referenceMarkerId;
     endElement.className = "reference-marker end";
-    endElement.textContent = "[End]";
+    // endElement.textContent = "[End]";
     endElement.contentEditable = "false";
-    endElement.style.color = "green";
 
     // Insert the start element
     range.insertNode(startElement);
