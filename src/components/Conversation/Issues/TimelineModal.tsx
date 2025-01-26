@@ -4,7 +4,6 @@ import { Modal, Timeline } from "@mantine/core";
 import type { Dispatch, SetStateAction } from "react";
 import type { TimelineNode } from "@/lib/requests/timeline/getIssueTimeline";
 import { ArrowDownIcon } from "@heroicons/react/16/solid";
-import { mockTimeline } from "@/mock/conversationMock";
 
 type TimeLineModalProps = {
     isOpen: boolean;
@@ -27,7 +26,7 @@ export default function TimeLineModal({
         <Modal
             opened={isOpen}
             onClose={() => setIsOpen(false)}
-            title={<h2 className="font-bold">{`《${issueTitle}》的演進`}</h2>}
+            title={<h3 className="font-bold">{`《${issueTitle}》的演進`}</h3>}
             size="620px"
         >
             <Timeline
