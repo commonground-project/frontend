@@ -4,7 +4,6 @@ import { useMemo, useState, useRef, useEffect } from "react";
 import { type Fact } from "@/types/conversations.types";
 import FactListSideBar from "../Facts/FactListSidebar";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
-import { getParagraphReferences } from "@/lib/utils/getParagraphReferences";
 
 type ContentCardWithSidebarProps = {
     facts: Fact[];
@@ -26,7 +25,22 @@ export default function ContentCardWithSidebar({
 
     const viewpointContent = useMemo(() => {
         const parsedContents = preprocessReferenceContent({ content });
-        const allReferences = getParagraphReferences({ content });
+        const allReferences = parsedContents.map((paragraph) => {
+            const references: number[] = [];
+            paragraph.map((fragment) => {
+                if (
+                    fragment.type === "reference" &&
+                    fragment.references !== null
+                ) {
+                    // Add the reference to the list if it's not already there
+                    fragment.references.map((ref) => {
+                        if (references.find((r) => r === ref) === undefined)
+                            references.push(ref);
+                    });
+                }
+            });
+            return references;
+        });
         return { parsedContents, allReferences };
     }, [content]);
 
