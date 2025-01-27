@@ -70,6 +70,7 @@ export function encapsuleReferenceMarker({
     const startElement = document.createElement("span");
     startElement.id = referenceMarkerId;
     startElement.className = "reference-marker start";
+    startElement.style.display = "none";
     // startElement.textContent = "[Start]";
     startElement.contentEditable = "false";
 
@@ -77,6 +78,7 @@ export function encapsuleReferenceMarker({
     const endElement = document.createElement("span");
     endElement.id = referenceMarkerId;
     endElement.className = "reference-marker end";
+    endElement.style.display = "none";
     // endElement.textContent = "[End]";
     endElement.contentEditable = "false";
 
