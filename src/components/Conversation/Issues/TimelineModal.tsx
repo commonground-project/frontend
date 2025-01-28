@@ -26,8 +26,11 @@ export default function TimeLineModal({
         <Modal
             opened={isOpen}
             onClose={() => setIsOpen(false)}
-            title={<h3 className="font-bold">{`《${issueTitle}》的演進`}</h3>}
+            title={`《${issueTitle}》的演進`}
             size="620px"
+            classNames={{
+                title: "font-bold",
+            }}
         >
             <Timeline
                 color="black"
