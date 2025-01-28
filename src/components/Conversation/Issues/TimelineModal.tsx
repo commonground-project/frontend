@@ -2,7 +2,7 @@
 
 import { Modal, Timeline } from "@mantine/core";
 import type { Dispatch, SetStateAction } from "react";
-import type { TimelineNode } from "@/lib/requests/timeline/getIssueTimeline";
+import type { TimelineNode } from "@/types/conversations.types";
 import { ArrowDownIcon } from "@heroicons/react/16/solid";
 
 type TimeLineModalProps = {

@@ -1,13 +1,5 @@
 import { parseJsonWhileHandlingErrors } from "../transformers";
-
-export type TimelineNode = {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    title: string;
-    description: string;
-    date: Date;
-};
+import { TimelineNode } from "@/types/conversations.types";
 
 export type getIssueTimelineResponse = {
     content: TimelineNode[];

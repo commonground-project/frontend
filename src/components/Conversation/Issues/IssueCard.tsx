@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import type { Issue } from "@/types/conversations.types";
-import type { TimelineNode } from "@/lib/requests/timeline/getIssueTimeline";
+import type { TimelineNode } from "@/types/conversations.types";
 import { Tooltip, Button } from "@mantine/core";
 import { useState } from "react";
 import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
