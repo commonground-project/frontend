@@ -6,8 +6,9 @@ import { ArrowDownIcon } from "@heroicons/react/16/solid";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
-import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
 import { toast } from "sonner";
+import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
+import EmptyTimeline from "@/components/Conversation/Issues/EmptyTimeline";
 
 type TimeLineModalProps = {
     isOpen: boolean;
@@ -55,7 +56,7 @@ export default function TimeLineModal({
             {isPending ? (
                 <TimelineSkeleton />
             ) : sortedTimeline.length === 0 ? (
-                <div>目前議題的資料還不足以產生時間軸，稍後再回來看看吧!</div>
+                <EmptyTimeline />
             ) : (
                 <Timeline
                     color="black"
