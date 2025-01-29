@@ -24,7 +24,6 @@ export default function AuthorViewpoint() {
     const router = useRouter();
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
-    const [viewpointContent, setViewpointContent] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
@@ -145,7 +144,6 @@ export default function AuthorViewpoint() {
                         selectedFacts={selectedFacts}
                         setSelectedFacts={setSelectedFacts}
                         curReferenceMarkerId={curReferenceMarkerId}
-                        setCurReferenceMarkerId={setCurReferenceMarkerId}
                         avaliableMarkerId={avaliableMarkerId}
                     />
                 </div>

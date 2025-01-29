@@ -24,7 +24,6 @@ type FactListCardProps = {
     selectedFacts: Map<number, number[]>;
     setSelectedFacts: Dispatch<SetStateAction<Map<number, number[]>>>;
     curReferenceMarkerId: number | null;
-    setCurReferenceMarkerId: (value: number | null) => void;
     avaliableMarkerId: number;
 };
 
@@ -36,13 +35,11 @@ export default function FactListCard({
     selectedFacts,
     setSelectedFacts,
     curReferenceMarkerId,
-    setCurReferenceMarkerId,
     avaliableMarkerId,
 }: FactListCardProps) {
     console.log("current reference marker id: ", curReferenceMarkerId);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
-    const [selectedFactId, setSelectedFactId] = useState<string | null>(null); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
