@@ -41,12 +41,10 @@ function dehighlightTextInRange(range: Range) {
     );
     // Move the text nodes out of the highlight wrapper
     while (walker.nextNode()) {
-        console.log("node");
         if (
             walker.currentNode.parentNode?.nodeName !== "DIV" &&
             walker.currentNode.nodeType === Node.TEXT_NODE
         ) {
-            console.log("textNode", walker.currentNode);
             const parent = walker.currentNode.parentNode;
             if (parent) {
                 parent.parentNode?.replaceChild(walker.currentNode, parent);
@@ -112,6 +110,12 @@ export function updateReferenceCounter({
     referencedIndexes,
 }: updateReferenceMarkerParams) {
     console.log("updateReferenceCounter", referenceMarkerId);
+    // No fact is referencing this marker, remove the reference marker
+    if (referencedIndexes.length === 0) {
+        decapsuleReferenceMarker({ referenceMarkerId });
+        return;
+    }
+
     const referenceCounter = document.querySelector(
         `#\\3${referenceMarkerId.split("").join(" ")}.reference-counter`,
     );
@@ -156,11 +160,21 @@ export function decapsuleReferenceMarker({
     const referenceMarkers = document.querySelectorAll(
         `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker`,
     );
+    if (referenceMarkers.length === 0) {
+        console.error(
+            `start or end reference marker of id ${referenceMarkerId} not found`,
+        );
+        return;
+    }
 
     // Find reference counter
     const referenceCounter = document.querySelectorAll(
         `#\\3${referenceMarkerId.split("").join(" ")}.reference-counter`,
     );
+    if (referenceCounter.length === 0) {
+        console.error(`reference counter of id ${referenceMarkerId}not found`);
+        return;
+    }
 
     // Dehighlight the text between the reference markers
     const highlightedRange = new Range();

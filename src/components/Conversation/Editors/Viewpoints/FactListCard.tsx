@@ -10,6 +10,7 @@ import { Select, Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
+import { updateReferenceCounter } from "@/lib/utils/referenceMarker/referenceMarkerEditors";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
@@ -68,11 +69,59 @@ export default function FactListCard({
         toast.error("無法獲取事實列表，請重新整理頁面");
     }, [error]);
 
-    //remove the fact from the viewpointFactList
+    // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
+        // Find the array index of the fact to be removed
+        const factIndex = viewpointFactList.findIndex(
+            (fact) => String(fact.id) === factId,
+        );
+        if (factIndex === -1) {
+            throw new Error("Cannot find the selected fact in the list");
+        }
+
+        // Remove the fact from the FactList array
         setViewpointFactList((prev) =>
             prev.filter((fact) => String(fact.id) !== factId),
         );
+
+        // Get current displayed reference markers id
+        const displayedReferenceMarkersId = Array.from(
+            document.querySelectorAll(".reference-marker.start"),
+        ).map((marker) => Number(marker.id));
+
+        // Remove the fact from the selectedFacts map
+        setSelectedFacts((prev) => {
+            const newMap = new Map(prev);
+            for (const [key, value] of newMap.entries()) {
+                if (value.length === 0) continue;
+                console.log("key: ", key);
+                newMap.set(
+                    key,
+                    value
+                        .filter((idx) => idx !== factIndex)
+                        .map((idx) => (idx > factIndex ? idx - 1 : idx)),
+                );
+            }
+            return newMap;
+        });
+
+        // Update the reference counters
+        const newMap = new Map(selectedFacts);
+        for (const [key, value] of newMap.entries()) {
+            if (value.length === 0) continue;
+            newMap.set(
+                key,
+                value
+                    .filter((idx) => idx !== factIndex)
+                    .map((idx) => (idx > factIndex ? idx - 1 : idx)),
+            );
+        }
+        displayedReferenceMarkersId.forEach((id) => {
+            updateReferenceCounter({
+                referenceMarkerId: String(id),
+                referencedIndexes: newMap.get(id) ?? [],
+            });
+        });
     };
 
     //add the selected fact to the viewpointFactList
