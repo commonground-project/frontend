@@ -8,17 +8,15 @@ import {
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import type { Issue } from "@/types/conversations.types";
-import type { TimelineNode } from "@/types/conversations.types";
 import { Tooltip, Button } from "@mantine/core";
 import { useState } from "react";
 import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
 
 type IssueCardProps = {
     issue: Issue;
-    timeline: TimelineNode[];
 };
 
-export default function IssueCard({ issue, timeline }: IssueCardProps) {
+export default function IssueCard({ issue }: IssueCardProps) {
     const [isTimelimeModalOpen, setIsTimelimeModalOpen] = useState(false);
 
     return (
@@ -65,8 +63,8 @@ export default function IssueCard({ issue, timeline }: IssueCardProps) {
                     <TimelineModal
                         isOpen={isTimelimeModalOpen}
                         setIsOpen={setIsTimelimeModalOpen}
+                        issueId={issue.id}
                         issueTitle={issue.title}
-                        timeline={timeline}
                     />
                 </div>
             ) : (
