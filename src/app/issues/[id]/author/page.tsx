@@ -22,11 +22,20 @@ import type { PaginatedPage } from "@/types/requests.types";
 export default function AuthorViewpoint() {
     const params = useParams();
     const router = useRouter();
-    const queryClient = useQueryClient();
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
+    const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
+    const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
+        new Map().set(0, []),
+    );
+    const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
+        number | null
+    >(null);
+    const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
+
     const [cookie] = useCookies(["auth_token"]);
+    const queryClient = useQueryClient();
 
     const issueId = params.id as string;
 
@@ -50,8 +59,6 @@ export default function AuthorViewpoint() {
             }),
 
         onSuccess(data) {
-            toast.success("觀點發表成功");
-
             queryClient.setQueryData(
                 ["viewpoints", issueId],
                 (olddata: {
@@ -76,6 +83,7 @@ export default function AuthorViewpoint() {
                 queryKey: ["viewpoints", issueId],
             });
 
+            toast.success("觀點發表成功");
             router.push(`/issues/${issueId}`);
         },
         onError(error: Record<string, Record<string, string>> | Error) {
@@ -91,15 +99,12 @@ export default function AuthorViewpoint() {
         },
     });
 
-    const publishViewpoint = (content: string[]) => {
-        const parsedContent = content.map((p) =>
-            p.replace(/(\s?)\[(\d+)\]/g, (_, space, num) =>
-                space ? `[ ](${num - 1})` : `[ ](${num - 1})`,
-            ),
-        );
+    const publishViewpoint = (content: string) => {
+        console.log("content : ", content);
+
         postNewViewpoint.mutate({
             title: viewpointTitle,
-            content: parsedContent.join("\n"),
+            content: content,
             facts: viewpointFactList.map((fact) => fact.id),
         });
     };
@@ -122,6 +127,12 @@ export default function AuthorViewpoint() {
                         setViewpointTitle={setViewpointTitle}
                         publishViewpoint={publishViewpoint}
                         pendingPublish={postNewViewpoint.status === "pending"}
+                        setInSelectionMode={setInSelectionMode}
+                        selectedFacts={selectedFacts}
+                        curReferenceMarkerId={curReferenceMarkerId}
+                        setCurReferenceMarkerId={setCurReferenceMarkerId}
+                        avaliableMarkerId={avaliableMarkerId}
+                        setAvaliableMarkerId={setAvaliableMarkerId}
                     />
                 </div>
                 <div className="w-1/3">
@@ -129,6 +140,11 @@ export default function AuthorViewpoint() {
                         issueId={issueId}
                         viewpointFactList={viewpointFactList}
                         setViewpointFactList={setViewpointFactList}
+                        inSelectionMode={inSelectionMode}
+                        selectedFacts={selectedFacts}
+                        setSelectedFacts={setSelectedFacts}
+                        curReferenceMarkerId={curReferenceMarkerId}
+                        avaliableMarkerId={avaliableMarkerId}
                     />
                 </div>
             </div>
