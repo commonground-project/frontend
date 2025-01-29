@@ -6,6 +6,8 @@ import { ArrowDownIcon } from "@heroicons/react/16/solid";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
+import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
+import { toast } from "sonner";
 
 type TimeLineModalProps = {
     isOpen: boolean;
@@ -35,6 +37,11 @@ export default function TimeLineModal({
         );
     }, [data]);
 
+    if (error) {
+        toast.error("載入事件時間軸時發生問題，請再試一次");
+        return null;
+    }
+
     return (
         <Modal
             opened={isOpen}
@@ -46,9 +53,7 @@ export default function TimeLineModal({
             }}
         >
             {isPending ? (
-                <div>載入中...</div>
-            ) : error ? (
-                <div>載入失敗</div>
+                <TimelineSkeleton />
             ) : sortedTimeline.length === 0 ? (
                 <div>目前議題的資料還不足以產生時間軸，稍後再回來看看吧!</div>
             ) : (
