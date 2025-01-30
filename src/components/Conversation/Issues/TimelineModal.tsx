@@ -8,7 +8,6 @@ import { useCookies } from "react-cookie";
 import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
 import { toast } from "sonner";
 import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
-import EmptyTimeline from "@/components/Conversation/Issues/EmptyTimeline";
 
 type TimeLineModalProps = {
     isOpen: boolean;
@@ -56,7 +55,9 @@ export default function TimeLineModal({
             {isPending ? (
                 <TimelineSkeleton />
             ) : sortedTimeline.length === 0 ? (
-                <EmptyTimeline />
+                <h1 className="text-center font-black">
+                    目前議題的資料還不足以產生時間軸，稍後再回來看看吧!
+                </h1>
             ) : (
                 <Timeline
                     color="black"
