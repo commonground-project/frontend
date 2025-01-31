@@ -24,3 +24,11 @@ export interface UserProfile {
     nickname: string;
     avatar: string;
 }
+
+export interface WebPushSubscription {
+    endpoint: string;
+    keys: {
+        p256dh: string;
+        auth: string;
+    };
+}
