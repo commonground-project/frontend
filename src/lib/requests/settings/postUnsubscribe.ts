@@ -5,7 +5,7 @@ type postSubscribeParams = {
     auth_token: string;
 };
 
-export const postSubscribe = async ({
+export const postUnsubscribe = async ({
     endpoint,
     auth_token,
 }: postSubscribeParams): Promise<void> => {
