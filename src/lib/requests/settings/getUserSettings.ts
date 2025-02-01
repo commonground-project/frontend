@@ -1,4 +1,4 @@
-import { UserSettings } from "@/types/users.types";
+import type { UserSettings } from "@/types/users.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 
 export const getUserSettings = async ({
