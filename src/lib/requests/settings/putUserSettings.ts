@@ -8,7 +8,7 @@ export const putUserSettings = async ({
     settings: UserSettings;
     auth_token: string;
 }): Promise<void> => {
-    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/setting`, {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/settings`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",

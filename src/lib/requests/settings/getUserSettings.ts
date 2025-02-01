@@ -7,7 +7,7 @@ export const getUserSettings = async ({
     auth_token: string;
 }): Promise<UserSettings> => {
     return await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/setting`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/settings`,
         {
             method: "GET",
             headers: {
