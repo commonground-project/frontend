@@ -32,3 +32,10 @@ export interface WebPushSubscription {
         auth: string;
     };
 }
+
+export interface UserSettings {
+    notification: {
+        newReplyInMyViewpoint: boolean;
+        newReferenceToMyReply: boolean;
+    };
+}

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Modal, Button, Checkbox } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
 import { postSubscribe } from "@/lib/requests/settings/postSubscribe";
 import type { WebPushSubscription } from "@/types/users.types";
+import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
 
 type SettingModalProps = {
     opened: boolean;
@@ -18,9 +20,23 @@ export default function SettingsModal({
     setopened,
     settingModalCallback,
 }: SettingModalProps) {
+    const [cookie] = useCookies(["auth_token"]);
+
+    const { data } = useQuery({
+        queryKey: ["getUserSettings"],
+        queryFn: () => getUserSettings({ auth_token: cookie.auth_token }),
+    });
+
     const [newReplyInMyViewpoint, setNewReplyInMyViewpoint] = useState(false);
     const [newReferenceToMyReply, setNewReferenceToMyReply] = useState(false);
-    const [cookie] = useCookies(["auth_token"]);
+
+    useEffect(() => {
+        if (data) {
+            console.log("user settings: ", data);
+            setNewReplyInMyViewpoint(data.notification.newReplyInMyViewpoint);
+            setNewReferenceToMyReply(data.notification.newReferenceToMyReply);
+        }
+    }, [data]);
 
     const arrayBufferToBase64 = (buffer: ArrayBuffer | null): string => {
         if (!buffer) return "";
@@ -63,11 +79,34 @@ export default function SettingsModal({
         },
     });
 
+    const putUserSettingsMutation = useMutation({
+        mutationKey: ["putUserSettings"],
+        mutationFn: async () =>
+            putUserSettings({
+                settings: {
+                    notification: {
+                        newReplyInMyViewpoint,
+                        newReferenceToMyReply,
+                    },
+                },
+                auth_token: cookie.auth_token,
+            }),
+        onSuccess() {
+            console.log("Successfully updated user settings");
+        },
+        onError() {
+            console.error("Failed to update user settings");
+        },
+    });
+
     return (
         <Modal
             opened={opened}
             onClose={() => setopened(false)}
-            title={<h1 className="text-xl font-bold">設定</h1>}
+            title="設定"
+            classNames={{
+                title: "text-xl font-bold",
+            }}
         >
             <h2 className="text-base font-medium">通知</h2>
             <Checkbox
@@ -92,6 +131,7 @@ export default function SettingsModal({
                         if (settingModalCallback) settingModalCallback();
                         setopened(false);
                     }}
+                    loading={putUserSettingsMutation.isPending}
                 >
                     儲存
                 </Button>
