@@ -56,7 +56,7 @@ export default function TimeLineModal({
                 <TimelineSkeleton />
             ) : sortedTimeline.length === 0 ? (
                 <h1 className="text-center font-black">
-                    目前議題的資料還不足以產生時間軸，稍後再回來看看吧!
+                    目前議題的資料還不足以產生時間軸，稍後再回來看看吧！
                 </h1>
             ) : (
                 <Timeline
@@ -92,6 +92,7 @@ export default function TimeLineModal({
                     />
                 </Timeline>
             )}
+            <div className="h-3" />
         </Modal>
     );
 }
