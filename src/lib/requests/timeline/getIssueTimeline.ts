@@ -10,7 +10,7 @@ type getIssueTimelineParams = {
     user_token: string;
 };
 
-export function getIssueTimeline({
+export async function getIssueTimeline({
     issueId,
     user_token,
 }: getIssueTimelineParams): Promise<getIssueTimelineResponse> {
