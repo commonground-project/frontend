@@ -36,6 +36,7 @@ export default function CallbackPage() {
             return router.push("/login");
         }
 
+        //TODO: subscribe web push notification
         router.push(redirectTo ? decodeURI(redirectTo) : "/");
     }, [login, router]);
 
