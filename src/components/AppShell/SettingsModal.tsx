@@ -11,13 +11,13 @@ import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
 
 type SettingModalProps = {
     opened: boolean;
-    setopened: (newState: boolean) => void;
+    setOpened: (newState: boolean) => void;
     settingModalCallback?: () => void;
 };
 
 export default function SettingsModal({
     opened,
-    setopened,
+    setOpened,
     settingModalCallback,
 }: SettingModalProps) {
     const [cookie] = useCookies(["auth_token"]);
@@ -102,7 +102,7 @@ export default function SettingsModal({
     return (
         <Modal
             opened={opened}
-            onClose={() => setopened(false)}
+            onClose={() => setOpened(false)}
             title="設定"
             classNames={{
                 title: "text-xl font-bold",
@@ -129,7 +129,7 @@ export default function SettingsModal({
                 <Button
                     onClick={() => {
                         if (settingModalCallback) settingModalCallback();
-                        setopened(false);
+                        setOpened(false);
                     }}
                     loading={putUserSettingsMutation.isPending}
                 >
