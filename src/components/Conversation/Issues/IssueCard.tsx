@@ -1,17 +1,24 @@
 "use client";
 
-import { RectangleStackIcon } from "@heroicons/react/24/outline";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import {
+    RectangleStackIcon,
+    InformationCircleIcon,
+    FilmIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import type { Issue } from "@/types/conversations.types";
-import { Tooltip } from "@mantine/core";
+import { Tooltip, Button } from "@mantine/core";
+import { useState } from "react";
+import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
 
 type IssueCardProps = {
     issue: Issue;
 };
 
 export default function IssueCard({ issue }: IssueCardProps) {
+    const [isTimelimeModalOpen, setIsTimelimeModalOpen] = useState(false);
+
     return (
         <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
@@ -34,12 +41,31 @@ export default function IssueCard({ issue }: IssueCardProps) {
                     <div className="mt-3">
                         <Link
                             href={`/issues/${issue.id}/facts`}
-                            className="text-lg font-semibold transition-colors duration-300 hover:text-emerald-500"
+                            className="mt-3 text-lg font-semibold transition-colors duration-300 hover:text-emerald-500"
                         >
                             查看所有事實
                             <RectangleStackIcon className="ml-1 inline-block h-6 w-6" />
                         </Link>
                     </div>
+                    <div className="mt-2">
+                        <Button
+                            variant="transparent"
+                            className="p-0 text-lg font-semibold text-black transition-colors duration-300 hover:text-emerald-500"
+                            onClick={() => {
+                                setIsTimelimeModalOpen(true);
+                                console.log("查看事件演進");
+                            }}
+                        >
+                            查看事件演進
+                            <FilmIcon className="ml-1 inline-block h-6 w-6" />
+                        </Button>
+                    </div>
+                    <TimelineModal
+                        isOpen={isTimelimeModalOpen}
+                        setIsOpen={setIsTimelimeModalOpen}
+                        issueId={issue.id}
+                        issueTitle={issue.title}
+                    />
                 </div>
             ) : (
                 <EmptyIssueCard issueId={issue.id} />
