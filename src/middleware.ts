@@ -98,7 +98,7 @@ export const config = {
          * - favicon.ico, sitemap.xml, robots.txt (metadata files)
          */
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             missing: [
                 { type: "header", key: "next-router-prefetch" },
                 { type: "header", key: "purpose", value: "prefetch" },
@@ -106,7 +106,7 @@ export const config = {
         },
 
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             has: [
                 { type: "header", key: "next-router-prefetch" },
                 { type: "header", key: "purpose", value: "prefetch" },
@@ -114,7 +114,7 @@ export const config = {
         },
 
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             has: [{ type: "header", key: "x-present" }],
             missing: [{ type: "header", key: "x-missing", value: "prefetch" }],
         },

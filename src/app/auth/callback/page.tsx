@@ -3,33 +3,14 @@
 import useAuth from "@/hooks/auth/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import {
-    postSubscribe,
-    generateSubscriptionObject,
-} from "@/lib/requests/settings/postSubscribe";
+import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
+import { decodeToken } from "react-jwt";
+import type { DecodedToken } from "@/types/users.types";
 
 export default function CallbackPage() {
     const router = useRouter();
     const { login } = useAuth();
-    const [cookie] = useCookies(["auth_token"]);
-
-    const postSubscribeMutation = useMutation({
-        mutationKey: ["postSubscribe"],
-        mutationFn: async () =>
-            postSubscribe({
-                subscription: await generateSubscriptionObject(),
-                auth_token: cookie.auth_token,
-            }),
-        onSuccess() {
-            console.log("Successfully subscribed");
-        },
-        onError() {
-            console.error("Failed to subscribe");
-        },
-    });
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -58,7 +39,12 @@ export default function CallbackPage() {
             return router.push("/login");
         }
 
-        postSubscribeMutation.mutate();
+        const decodedToken = decodeToken<DecodedToken>(auth_token ?? "");
+
+        // Don't subscribe when the user is not fully set up
+        if (decodedToken?.role !== "ROLE_NOT_SETUP")
+            subscribeWebPush({ auth_token });
+
         router.push(redirectTo ? decodeURI(redirectTo) : "/");
     }, [login, router]);
 
