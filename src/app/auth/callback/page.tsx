@@ -3,11 +3,33 @@
 import useAuth from "@/hooks/auth/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import {
+    postSubscribe,
+    generateSubscriptionObject,
+} from "@/lib/requests/settings/postSubscribe";
 
 export default function CallbackPage() {
     const router = useRouter();
     const { login } = useAuth();
+    const [cookie] = useCookies(["auth_token"]);
+
+    const postSubscribeMutation = useMutation({
+        mutationKey: ["postSubscribe"],
+        mutationFn: async () =>
+            postSubscribe({
+                subscription: await generateSubscriptionObject(),
+                auth_token: cookie.auth_token,
+            }),
+        onSuccess() {
+            console.log("Successfully subscribed");
+        },
+        onError() {
+            console.error("Failed to subscribe");
+        },
+    });
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +58,7 @@ export default function CallbackPage() {
             return router.push("/login");
         }
 
-        //TODO: subscribe web push notification
+        postSubscribeMutation.mutate();
         router.push(redirectTo ? decodeURI(redirectTo) : "/");
     }, [login, router]);
 

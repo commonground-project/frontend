@@ -5,8 +5,6 @@ import { useCookies } from "react-cookie";
 import { Modal, Button, Checkbox } from "@mantine/core";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
-import { postSubscribe } from "@/lib/requests/settings/postSubscribe";
-import { generateSubscriptionObject } from "@/lib/requests/settings/postSubscribe";
 import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
 
 type SettingModalProps = {
@@ -37,21 +35,6 @@ export default function SettingsModal({
             setNewReferenceToMyReply(data.notification.newReferenceToMyReply);
         }
     }, [data]);
-
-    const postSubscribeMutation = useMutation({
-        mutationKey: ["postSubscribe"],
-        mutationFn: async () =>
-            postSubscribe({
-                subscription: await generateSubscriptionObject(),
-                auth_token: cookie.auth_token,
-            }),
-        onSuccess() {
-            console.log("Successfully subscribed");
-        },
-        onError() {
-            console.error("Failed to subscribe");
-        },
-    });
 
     const putUserSettingsMutation = useMutation({
         mutationKey: ["putUserSettings"],
