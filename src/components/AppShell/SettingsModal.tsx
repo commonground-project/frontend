@@ -36,7 +36,7 @@ export default function SettingsModal({
         }
     }, [data]);
 
-    const putUserSettingsMutation = useMutation({
+    const updateUserSettingsMutation = useMutation({
         mutationKey: ["putUserSettings"],
         mutationFn: async () =>
             putUserSettings({
@@ -86,9 +86,10 @@ export default function SettingsModal({
                 <Button
                     onClick={() => {
                         if (settingModalCallback) settingModalCallback();
+                        updateUserSettingsMutation.mutate();
                         setOpened(false);
                     }}
-                    loading={putUserSettingsMutation.isPending}
+                    loading={updateUserSettingsMutation.isPending}
                 >
                     儲存
                 </Button>
