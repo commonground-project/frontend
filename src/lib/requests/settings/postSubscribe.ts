@@ -22,3 +22,26 @@ export const postSubscribe = async ({
         },
     ).then(parseJsonWhileHandlingErrors);
 };
+
+const arrayBufferToBase64 = (buffer: ArrayBuffer | null): string => {
+    if (!buffer) return "";
+    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+};
+
+export const generateSubscriptionObject =
+    async (): Promise<WebPushSubscription> => {
+        // Get a PushSubscription object
+        const serviceWorker = new ServiceWorkerRegistration();
+        const pushSubscription = await serviceWorker.pushManager.subscribe();
+
+        // Create an object containing the information needed by the app server
+        const subscriptionObject = {
+            endpoint: pushSubscription.endpoint,
+            keys: {
+                p256dh: arrayBufferToBase64(pushSubscription.getKey("p256dh")),
+                auth: arrayBufferToBase64(pushSubscription.getKey("auth")),
+            },
+        };
+
+        return subscriptionObject;
+    };
