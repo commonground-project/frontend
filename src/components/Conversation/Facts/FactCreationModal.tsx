@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
 import ReferenceBar from "./ReferenceBar";
@@ -9,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getIssueFacts";
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
 import { postReference } from "@/lib/requests/references/postReference";
+import { websiteCheck } from "@/lib/requests/references/websiteCheck";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
@@ -28,14 +30,50 @@ export default function FactCreationModal({
 }: FactModelProps) {
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
+    const [debouncedUrl] = useDebouncedValue(url, 300);
+    const [isUrlValid, setIsUrlValid] = useState(false);
     const [references, setReferences] = useState<FactReference[]>([]);
     const queryClient = useQueryClient();
     const [cookies] = useCookies(["auth_token"]);
 
+    // Reset state when open a new modal
     useEffect(() => {
         setTitle("");
+        setUrl("");
+        setIsUrlValid(false);
         setReferences([]);
     }, [creationID]);
+
+    useEffect(() => {
+        if (debouncedUrl) {
+            console.log("checking url: ", debouncedUrl);
+            websiteCheckMutation.mutate(debouncedUrl);
+        }
+    }, [debouncedUrl]);
+
+    const websiteCheckMutation = useMutation({
+        mutationKey: ["websiteCheck"],
+        mutationFn: async (url: string) => {
+            return websiteCheck({
+                url: url,
+                auth_token: cookies.auth_token as string,
+            });
+        },
+        onSuccess() {
+            console.log("Website check success");
+            setIsUrlValid((prev) => {
+                if (prev) return prev;
+                return true;
+            });
+        },
+        onError() {
+            console.log("Website check error");
+            setIsUrlValid((prev) => {
+                if (!prev) return prev;
+                return false;
+            });
+        },
+    });
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],
@@ -190,6 +228,7 @@ export default function FactCreationModal({
                             className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
                             onClick={() => addReferenceMutation.mutate(url)}
                             loading={addReferenceMutation.isPending}
+                            disabled={!isUrlValid}
                         >
                             <PlusIcon className="size-6 text-neutral-600" />
                         </Button>
