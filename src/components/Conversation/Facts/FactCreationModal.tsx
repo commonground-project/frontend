@@ -44,13 +44,6 @@ export default function FactCreationModal({
         setReferences([]);
     }, [creationID]);
 
-    useEffect(() => {
-        if (debouncedUrl) {
-            console.log("checking url: ", debouncedUrl);
-            websiteCheckMutation.mutate(debouncedUrl);
-        }
-    }, [debouncedUrl]);
-
     const websiteCheckMutation = useMutation({
         mutationKey: ["websiteCheck"],
         mutationFn: async (url: string) => {
@@ -74,6 +67,13 @@ export default function FactCreationModal({
             });
         },
     });
+
+    useEffect(() => {
+        if (debouncedUrl) {
+            console.log("checking url: ", debouncedUrl);
+            websiteCheckMutation.mutate(debouncedUrl);
+        }
+    }, [debouncedUrl, websiteCheckMutation]);
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],

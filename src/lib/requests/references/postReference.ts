@@ -1,5 +1,5 @@
 import { parseJsonWhileHandlingErrors } from "../transformers";
-import { FactReference } from "@/types/conversations.types";
+import { type FactReference } from "@/types/conversations.types";
 
 export async function postReference({
     url,
