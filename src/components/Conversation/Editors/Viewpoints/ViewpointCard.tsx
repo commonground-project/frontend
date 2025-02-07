@@ -284,7 +284,7 @@ export default function ViewpointCard({
             subtree: true,
         });
         return () => observer.disconnect();
-    }, [inputRef]);
+    }, [inputRef, observer]);
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
