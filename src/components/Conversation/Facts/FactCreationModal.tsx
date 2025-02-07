@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
+import { Modal, Button, ActionIcon, TextInput, Loader } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
@@ -14,12 +14,17 @@ import { websiteCheck } from "@/lib/requests/references/websiteCheck";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 type FactModelProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
     factCreationCallback?: (createdFacts: Fact[]) => void;
+};
+
+type FactReferenceWithStatus = FactReference & {
+    status: "loading" | "success" | "error";
 };
 
 export default function FactCreationModal({
@@ -32,7 +37,7 @@ export default function FactCreationModal({
     const [url, setUrl] = useState("");
     const [debouncedUrl] = useDebouncedValue(url, 300);
     const [isUrlValid, setIsUrlValid] = useState(false);
-    const [references, setReferences] = useState<FactReference[]>([]);
+    const [references, setReferences] = useState<FactReferenceWithStatus[]>([]);
     const queryClient = useQueryClient();
     const [cookies] = useCookies(["auth_token"]);
 
@@ -51,6 +56,10 @@ export default function FactCreationModal({
                 url: url,
                 auth_token: cookies.auth_token as string,
             });
+        },
+        onMutate() {
+            // Invalidate last mutation
+            websiteCheckMutation.reset();
         },
         onSuccess() {
             console.log("Website check success");
@@ -73,33 +82,67 @@ export default function FactCreationModal({
             console.log("checking url: ", debouncedUrl);
             websiteCheckMutation.mutate(debouncedUrl);
         }
-    }, [debouncedUrl, websiteCheckMutation]);
+    }, [debouncedUrl]);
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],
-        mutationFn: async (url: string) => {
+        mutationFn: async ({
+            url,
+            requestId,
+        }: {
+            url: string;
+            requestId: string;
+        }) => {
             return postReference({
                 url,
                 auth_token: cookies.auth_token as string,
             });
         },
-        onSuccess(data) {
-            if (
-                references.find(
-                    (ref) => ref.id === data.id || ref.url === data.url,
-                )
-            ) {
+        onMutate(variables) {
+            // Add a new reference to the list with pending status
+            // Optimistic update
+            setReferences((prev) => [
+                ...prev,
+                {
+                    id: variables.requestId,
+                    createdAt: new Date(),
+                    url: url,
+                    icon: "",
+                    title: url,
+                    status: "loading",
+                },
+            ]);
+        },
+        onSuccess(data, variables) {
+            if (references.find((ref) => ref.id === data.id) !== undefined) {
+                console.log("references", references);
                 toast.info("引註資料已存在");
+                // Remove the preadded reference if it already exists
+                setReferences((prev) =>
+                    prev.filter((ref) => ref.id !== variables.requestId),
+                );
                 return;
             }
-            setReferences((prev) => [...prev, data]);
+            // Update the reference with the actual data
+            setReferences((prev) =>
+                prev.map((ref) =>
+                    ref.id === variables.requestId
+                        ? { ...data, status: "success" }
+                        : ref,
+                ),
+            );
             setUrl("");
         },
-        onError() {
+        onError(err, variables) {
+            // Remove the reference if the request failed
+            setReferences((prev) =>
+                prev.filter((ref) => ref.id !== variables.requestId),
+            );
             toast.error("建立引註資料時發生錯誤", {
                 description:
                     "建立引註資料時發生錯誤，請再試一次或是檢查引註資料連結",
             });
+            console.log("error creating reference: ", err);
         },
     });
 
@@ -199,12 +242,19 @@ export default function FactCreationModal({
                                             )
                                         }
                                         className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                                        disabled={
+                                            reference.status === "loading"
+                                        }
                                     >
                                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     </ActionIcon>
                                     <ReferenceBar reference={reference} />
                                     <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
-                                        {reference.title}
+                                        {reference.status == "loading" ? (
+                                            <Loader size="xs" />
+                                        ) : (
+                                            reference.title
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -225,12 +275,17 @@ export default function FactCreationModal({
                         />
                         <Button
                             variant="transparent"
-                            className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
-                            onClick={() => addReferenceMutation.mutate(url)}
-                            loading={addReferenceMutation.isPending}
+                            className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-600 transition-colors hover:text-gray-800 disabled:bg-inherit disabled:text-gray-400"
+                            onClick={() => {
+                                setIsUrlValid(false);
+                                addReferenceMutation.mutate({
+                                    url,
+                                    requestId: uuidv4(),
+                                });
+                            }}
                             disabled={!isUrlValid}
                         >
-                            <PlusIcon className="size-6 text-neutral-600" />
+                            <PlusIcon className="size-6" />
                         </Button>
                     </div>
 
