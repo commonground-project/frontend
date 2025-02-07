@@ -186,6 +186,7 @@ export default function FactCreationModal({
             );
 
             queryClient.invalidateQueries({ queryKey: ["facts", issueId] });
+            toast.success("事實建立成功");
             setCreationID(null);
             if (factCreationCallback) factCreationCallback(data.facts);
         },
