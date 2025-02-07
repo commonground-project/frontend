@@ -48,8 +48,8 @@ export default function ViewpointCard({
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
 
+    //manage the placeholder in the content area
     useEffect(() => {
-        //manage the placeholder in the content area
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
             return;
         const placeholderElement = document.createElement("p");
@@ -223,6 +223,68 @@ export default function ViewpointCard({
         selection.removeAllRanges();
         selection.addRange(range);
     }, [selectedFacts]);
+
+    // Mutation observer to detect when a <span> is deleted
+    const observer = new MutationObserver((mutations) => {
+        // Get the current selection (cursor position)
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return;
+        const range = selection.getRangeAt(0);
+
+        // Set a countmap, if both start and end markers are removed,
+        // then the reference is fully removed, no need to reinsert
+        const countMap = new Map<string, Node[]>(); // id -> [start, counter, end]
+
+        mutations.forEach((mutation) => {
+            // Handle only the removal of nodes
+            if (mutation.removedNodes.length === 0) return;
+
+            // Detect the manual removal of a reference marker or reference counter
+            mutation.removedNodes.forEach((node) => {
+                if (
+                    node.nodeName === "SPAN" &&
+                    ((node as HTMLElement).classList.contains(
+                        "reference-marker",
+                    ) ||
+                        (node as HTMLElement).classList.contains(
+                            "reference-counter",
+                        ))
+                ) {
+                    const id = (node as HTMLElement).id;
+
+                    if (!countMap.has(id)) countMap.set(id, []);
+                    const cloneNode = node.cloneNode(true);
+                    countMap.get(id)?.push(cloneNode);
+                }
+            });
+        });
+
+        console.log(countMap);
+        countMap.forEach((nodes) => {
+            // If both start and end markers are removed, then the reference is fully removed
+            if (nodes.length === 3) return;
+            // If not all of the markers is removed, reinsert the whole reference
+            nodes.forEach((node) => {
+                const newSpan = node.cloneNode(true);
+                range.insertNode(newSpan);
+                range.setStartAfter(newSpan);
+                range.setEndAfter(newSpan);
+            });
+        });
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+    });
+
+    // Observe the input area
+    useEffect(() => {
+        if (inputRef?.current === null) return;
+        observer.observe(inputRef.current, {
+            childList: true,
+            subtree: true,
+        });
+        return () => observer.disconnect();
+    }, [inputRef]);
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
