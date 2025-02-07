@@ -59,26 +59,38 @@ type encapsuleReferenceMarkerParams = {
     referenceMarkerId: string;
 };
 
+function generateReferenceMarker({
+    id,
+    type,
+}: {
+    id: string;
+    type: "start" | "end";
+}) {
+    const ReferenceMarkerElement = document.createElement("span");
+    ReferenceMarkerElement.id = id;
+    ReferenceMarkerElement.className = `reference-marker ${type}`;
+    ReferenceMarkerElement.style.display = "none";
+    ReferenceMarkerElement.contentEditable = "false";
+
+    return ReferenceMarkerElement;
+}
+
 export function encapsuleReferenceMarker({
     range,
     referencedIndexes,
     referenceMarkerId,
 }: encapsuleReferenceMarkerParams) {
     // Create the element to insert at the start of the range
-    const startElement = document.createElement("span");
-    startElement.id = referenceMarkerId;
-    startElement.className = "reference-marker start";
-    startElement.style.display = "none";
-    // startElement.textContent = "[Start]";
-    startElement.contentEditable = "false";
+    const startElement = generateReferenceMarker({
+        id: referenceMarkerId,
+        type: "start",
+    });
 
     // Create the element to insert at the end of the range
-    const endElement = document.createElement("span");
-    endElement.id = referenceMarkerId;
-    endElement.className = "reference-marker end";
-    endElement.style.display = "none";
-    // endElement.textContent = "[End]";
-    endElement.contentEditable = "false";
+    const endElement = generateReferenceMarker({
+        id: referenceMarkerId,
+        type: "end",
+    });
 
     // Insert the start element
     range.insertNode(startElement);
