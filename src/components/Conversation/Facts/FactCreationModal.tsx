@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal, Button, ActionIcon, TextInput, Loader } from "@mantine/core";
+import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
@@ -108,7 +108,7 @@ export default function FactCreationModal({
                     createdAt: new Date(),
                     url: variables.url,
                     icon: "",
-                    title: variables.url,
+                    title: "",
                     status: "loading",
                 },
             ]);
@@ -249,13 +249,14 @@ export default function FactCreationModal({
                                     >
                                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     </ActionIcon>
-                                    <ReferenceBar reference={reference} />
+                                    <ReferenceBar
+                                        reference={reference}
+                                        isLoading={
+                                            reference.status === "loading"
+                                        }
+                                    />
                                     <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
-                                        {reference.status == "loading" ? (
-                                            <Loader size="xs" />
-                                        ) : (
-                                            reference.title
-                                        )}
+                                        {reference.title}
                                     </div>
                                 </div>
                             ))}
