@@ -106,9 +106,9 @@ export default function FactCreationModal({
                 {
                     id: variables.requestId,
                     createdAt: new Date(),
-                    url: url,
+                    url: variables.url,
                     icon: "",
-                    title: url,
+                    title: variables.url,
                     status: "loading",
                 },
             ]);
@@ -282,6 +282,7 @@ export default function FactCreationModal({
                                     url,
                                     requestId: uuidv4(),
                                 });
+                                setUrl("");
                             }}
                             disabled={!isUrlValid}
                         >
