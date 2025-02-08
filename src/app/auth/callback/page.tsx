@@ -4,6 +4,9 @@ import useAuth from "@/hooks/auth/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
+import { decodeToken } from "react-jwt";
+import type { DecodedToken } from "@/types/users.types";
 
 export default function CallbackPage() {
     const router = useRouter();
@@ -35,6 +38,12 @@ export default function CallbackPage() {
             console.error("Error logging in", error);
             return router.push("/login");
         }
+
+        const decodedToken = decodeToken<DecodedToken>(auth_token ?? "");
+
+        // Don't subscribe when the user is not fully set up
+        if (decodedToken?.role !== "ROLE_NOT_SETUP")
+            subscribeWebPush({ auth_token });
 
         router.push(redirectTo ? decodeURI(redirectTo) : "/");
     }, [login, router]);

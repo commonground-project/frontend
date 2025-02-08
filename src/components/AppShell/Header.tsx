@@ -63,7 +63,7 @@ export default function Header() {
             )}
             <SettingsModal
                 opened={isSettingsModalOpened}
-                setopened={setIsSettingsModalOpened}
+                setOpened={setIsSettingsModalOpened}
                 settingModalCallback={() => console.log("Modal closed")}
             />
         </div>
