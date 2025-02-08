@@ -13,6 +13,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { decodeToken } from "react-jwt";
 import type { DecodedToken } from "@/types/users.types";
+import AuthProvider from "@/components/Auth/AuthProvider";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -64,13 +65,15 @@ export default function Providers({ children }: ProviderProps) {
     const queryClient = getQueryClient();
 
     return (
-        <PostHogProvider client={posthog}>
-            <QueryClientProvider client={queryClient}>
-                <MantineProvider theme={CommonGroundMantineTheme}>
-                    {children}
-                </MantineProvider>
-                <Toaster richColors />
-            </QueryClientProvider>
-        </PostHogProvider>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <PostHogProvider client={posthog}>
+                    <MantineProvider theme={CommonGroundMantineTheme}>
+                        {children}
+                    </MantineProvider>
+                    <Toaster richColors />
+                </PostHogProvider>
+            </AuthProvider>
+        </QueryClientProvider>
     );
 }
