@@ -1,29 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
-import { v4 as uuidv4 } from "uuid";
-import {
-    LinkIcon,
-    PlusIcon,
-    XMarkIcon,
-    ArrowLongLeftIcon,
-    ArrowLongRightIcon,
-} from "@heroicons/react/24/outline";
+import { useDebouncedValue } from "@mantine/hooks";
+import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
 import ReferenceBar from "./ReferenceBar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getIssueFacts";
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
+import { postReference } from "@/lib/requests/references/postReference";
+import { websiteCheck } from "@/lib/requests/references/websiteCheck";
 import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 type FactModelProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
     factCreationCallback?: (createdFacts: Fact[]) => void;
+};
+
+type FactReferenceWithStatus = FactReference & {
+    status: "loading" | "success" | "error";
 };
 
 export default function FactCreationModal({
@@ -33,32 +34,117 @@ export default function FactCreationModal({
     factCreationCallback,
 }: FactModelProps) {
     const [title, setTitle] = useState("");
-    const [url, setUrl] = useState("https://you.com");
-    const [references, setReferences] = useState<FactReference[]>([]);
-    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [url, setUrl] = useState("");
+    const [debouncedUrl] = useDebouncedValue(url, 300);
+    const [isUrlValid, setIsUrlValid] = useState(false);
+    const [references, setReferences] = useState<FactReferenceWithStatus[]>([]);
     const queryClient = useQueryClient();
     const [cookies] = useCookies(["auth_token"]);
 
+    // Reset state when open a new modal
     useEffect(() => {
         setTitle("");
-        setUrl("https://you.com");
+        setUrl("");
+        setIsUrlValid(false);
         setReferences([]);
     }, [creationID]);
 
-    const addReference = () => {
-        setReferences((prev) => [
-            ...prev,
-            {
-                id: uuidv4(),
+    const websiteCheckMutation = useMutation({
+        mutationKey: ["websiteCheck"],
+        mutationFn: async (url: string) => {
+            return websiteCheck({
                 url: url,
-                createdAt: new Date(),
-                icon: "/favicon.ico",
-                title:
-                    iframeRef.current?.contentDocument?.title ??
-                    "無法取得網頁標題",
-            },
-        ]);
-    };
+                auth_token: cookies.auth_token as string,
+            });
+        },
+        onMutate() {
+            // Invalidate last mutation
+            websiteCheckMutation.reset();
+        },
+        onSuccess() {
+            console.log("Website check success");
+            setIsUrlValid((prev) => {
+                if (prev) return prev;
+                return true;
+            });
+        },
+        onError() {
+            console.log("Website check error");
+            setIsUrlValid((prev) => {
+                if (!prev) return prev;
+                return false;
+            });
+        },
+    });
+
+    useEffect(() => {
+        if (debouncedUrl) {
+            console.log("checking url: ", debouncedUrl);
+            websiteCheckMutation.mutate(debouncedUrl);
+        }
+    }, [debouncedUrl]);
+
+    const addReferenceMutation = useMutation({
+        mutationKey: ["addReference"],
+        mutationFn: async ({
+            url,
+            requestId,
+        }: {
+            url: string;
+            requestId: string;
+        }) => {
+            return postReference({
+                url,
+                auth_token: cookies.auth_token as string,
+            });
+        },
+        onMutate(variables) {
+            // Add a new reference to the list with pending status
+            // Optimistic update
+            setReferences((prev) => [
+                ...prev,
+                {
+                    id: variables.requestId,
+                    createdAt: new Date(),
+                    url: variables.url,
+                    icon: "",
+                    title: "",
+                    status: "loading",
+                },
+            ]);
+        },
+        onSuccess(data, variables) {
+            if (references.find((ref) => ref.id === data.id) !== undefined) {
+                console.log("references", references);
+                toast.info("引註資料已存在");
+                // Remove the preadded reference if it already exists
+                setReferences((prev) =>
+                    prev.filter((ref) => ref.id !== variables.requestId),
+                );
+                return;
+            }
+            // Update the reference with the actual data
+            setReferences((prev) =>
+                prev.map((ref) =>
+                    ref.id === variables.requestId
+                        ? { ...data, status: "success" }
+                        : ref,
+                ),
+            );
+            setUrl("");
+        },
+        onError(err, variables) {
+            // Remove the reference if the request failed
+            setReferences((prev) =>
+                prev.filter((ref) => ref.id !== variables.requestId),
+            );
+            toast.error("建立引註資料時發生錯誤", {
+                description:
+                    "建立引註資料時發生錯誤，請再試一次或是檢查引註資料連結",
+            });
+            console.log("error creating reference: ", err);
+        },
+    });
 
     const createFactMutation = useMutation({
         mutationKey: ["createFact", creationID],
@@ -100,6 +186,7 @@ export default function FactCreationModal({
             );
 
             queryClient.invalidateQueries({ queryKey: ["facts", issueId] });
+            toast.success("事實建立成功");
             setCreationID(null);
             if (factCreationCallback) factCreationCallback(data.facts);
         },
@@ -115,63 +202,30 @@ export default function FactCreationModal({
         <Modal
             opened={creationID !== null}
             onClose={() => setCreationID(null)}
-            size="70rem"
+            size="620px"
             centered
-            withCloseButton={false}
+            classNames={{
+                title: "font-bold text-black",
+            }}
+            title="引入新的事實"
         >
-            <Button
-                variant="transparent"
-                color="black"
-                leftSection={<ArrowLongLeftIcon className="mr-1 h-5 w-5" />}
-                onClick={() => setCreationID(null)}
-                className="text-lg font-semibold text-neutral-500 transition-colors duration-200 hover:text-neutral-700"
-            >
-                返回所有事實
-            </Button>
-            {/* Modal Content */}
-            <div className="flex h-[80vh] max-h-[600px] font-sans">
-                <div className="w-2/3 p-2">
+            <div className="flex min-h-[250px] flex-col justify-between">
+                <div>
+                    {/* fact title */}
                     <TextInput
                         value={title}
                         onChange={(e) => setTitle(e.currentTarget.value)}
                         variant="unstyled"
-                        placeholder="用一句話簡述這個事實"
+                        placeholder="簡述這個事實"
                         classNames={{
-                            input: "text-2xl placeholder:text-neutral-500 text-neutral-800 font-bold",
+                            input: "border-none text-xl placeholder:text-neutral-500 text-neutral-800 font-bold",
                         }}
                         className="pb-2"
                     />
-                    <div className="flex w-full items-center rounded-full border border-gray-200 px-3 py-0.5 shadow-sm">
-                        <LinkIcon className="mr-2 h-4 w-4 text-black" />
-                        <input
-                            type="url"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            className="flex-1 border-none bg-transparent outline-none placeholder:text-gray-500"
-                        />
-                        <button
-                            className="flex items-center gap-1 rounded-full px-2 py-1 text-sm text-gray-500 transition-colors hover:text-gray-800"
-                            onClick={addReference}
-                        >
-                            <span>新增至引註資料</span>
-                            <ArrowLongRightIcon className="h-4 w-4" />
-                        </button>
-                    </div>
-                    {/* Preview */}
-                    <div className="mt-2 flex h-[calc(60vh-75px)] overflow-hidden rounded-lg border border-gray-200">
-                        <iframe
-                            src={url}
-                            className="h-full w-full"
-                            title="網頁預覽"
-                            ref={iframeRef}
-                        />
-                    </div>
-                </div>
 
-                {/* Right Side - References */}
-                <div className="flex h-full w-1/3 flex-col justify-between p-2">
+                    {/* reference display */}
                     <div>
-                        <h2 className="mb-2 text-lg font-bold">引註資料</h2>
+                        <h2 className="mb-2 text-sm font-bold">引註資料</h2>
                         <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
                             {references.map((reference) => (
                                 <div
@@ -189,16 +243,53 @@ export default function FactCreationModal({
                                             )
                                         }
                                         className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                                        disabled={
+                                            reference.status === "loading"
+                                        }
                                     >
                                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     </ActionIcon>
-                                    <ReferenceBar reference={reference} />
+                                    <ReferenceBar
+                                        reference={reference}
+                                        isLoading={
+                                            reference.status === "loading"
+                                        }
+                                    />
                                     <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
                                         {reference.title}
                                     </div>
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </div>
+
+                <div>
+                    {/* fact URL input */}
+                    <div className="flex w-full items-center py-0.5">
+                        <LinkIcon className="mr-2 size-5 text-neutral-500" />
+                        <input
+                            type="url"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
+                            placeholder="新增引註資料"
+                        />
+                        <Button
+                            variant="transparent"
+                            className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-600 transition-colors hover:text-gray-800 disabled:bg-inherit disabled:text-gray-400"
+                            onClick={() => {
+                                setIsUrlValid(false);
+                                addReferenceMutation.mutate({
+                                    url,
+                                    requestId: uuidv4(),
+                                });
+                                setUrl("");
+                            }}
+                            disabled={!isUrlValid}
+                        >
+                            <PlusIcon className="size-6" />
+                        </Button>
                     </div>
 
                     {/* Submit Button */}
@@ -211,12 +302,11 @@ export default function FactCreationModal({
                                 });
                             }}
                             loading={createFactMutation.isPending}
-                            className="flex items-center rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-800 disabled:opacity-50"
+                            className="flex items-center rounded-[4px] bg-blue-600 px-4 py-[6px] text-white hover:bg-blue-800 disabled:opacity-50"
                             disabled={
                                 title.length < 5 || references.length === 0
                             }
                         >
-                            <PlusIcon className="mr-1 h-4 w-4" />
                             建立
                         </Button>
                     </div>

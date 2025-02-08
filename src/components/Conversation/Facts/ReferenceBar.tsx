@@ -1,15 +1,18 @@
 import type { FactReference } from "@/types/conversations.types";
 import { GlobeAltIcon } from "@heroicons/react/16/solid";
+import { Loader } from "@mantine/core";
 import Link from "next/link";
 
 type FactBarProps = {
     reference: FactReference;
     showSrcTitle?: boolean;
+    isLoading?: boolean;
 };
 
 export default function ReferenceBar({
     reference,
     showSrcTitle,
+    isLoading,
 }: FactBarProps) {
     const pageURL = new URL(decodeURIComponent(reference.url));
 
@@ -21,7 +24,9 @@ export default function ReferenceBar({
             rel="noopener noreferrer"
             className="flex min-w-0 items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
         >
-            {reference.icon.length ? (
+            {isLoading ? (
+                <Loader size="xs" />
+            ) : reference.icon.length ? (
                 <img
                     className="h-4 w-4 rounded-full"
                     src={reference.icon}
