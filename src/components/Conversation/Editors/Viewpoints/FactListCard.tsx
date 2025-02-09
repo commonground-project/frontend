@@ -188,7 +188,7 @@ export default function FactListCard({
                                 label: "whitespace-normal text-left",
                             }}
                         >
-                            找不到想引註的事實嗎？將其引入 CommonGround 吧!
+                            找不到想引注的事實嗎？將其引入 CommonGround 吧!
                         </Button>
                     }
                 />
