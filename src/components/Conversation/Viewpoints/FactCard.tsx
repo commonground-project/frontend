@@ -13,7 +13,9 @@ export default function FactCard({ fact, factIndex }: FactCardProps) {
                 [{factIndex + 1}]
             </h1>
             <div className="inline-block px-1">
-                <h1 className="text-xs font-normal text-black">{fact.title}</h1>
+                <h1 className="break-all text-xs font-normal text-black">
+                    {fact.title}
+                </h1>
                 {fact.references.map((reference) => (
                     <ViewpointFactReference
                         reference={reference}
