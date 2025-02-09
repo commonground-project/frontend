@@ -66,15 +66,19 @@ export default function ContentCardWithSidebar({
                         paragraphRefs.current[index] = el;
                     }}
                 >
-                    {paragraph.map((part, index) =>
-                        part.type === "content" ? (
-                            <span key={index}>{part.text}</span>
-                        ) : (
-                            <span key={index} style={{ color: "#15803D" }}>
-                                {part.text}
-                            </span>
-                        ),
-                    )}
+                    {paragraph.map((part, index) => (
+                        <span
+                            key={index}
+                            className="break-all"
+                            style={
+                                part.type === "content"
+                                    ? undefined
+                                    : { color: "#15803D" }
+                            }
+                        >
+                            {part.text}
+                        </span>
+                    ))}
                 </p>
             ))}
             {paragraphPositions.length > 0 &&
