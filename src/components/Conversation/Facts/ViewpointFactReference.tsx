@@ -19,6 +19,12 @@ export default function ViewpointFactReference({
             rel="noopener noreferrer"
             key={reference.id}
             className="flex items-center"
+            // Prevents the click trigger the blur event of the parent before open the link
+            onMouseDown={(e) => {
+                console.log("click link");
+                e.preventDefault();
+            }}
+            onClick={(e) => e.stopPropagation()}
         >
             {reference.icon.length ? (
                 <img
