@@ -102,7 +102,7 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
         const placeholderElement = document.createElement("p");
         placeholderElement.className = "text-neutral-500";
         placeholderElement.textContent =
-            "開始打字，或選取一段文字來新增引注資料";
+            "開始打字，或選取一段文字來新增引註資料";
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
