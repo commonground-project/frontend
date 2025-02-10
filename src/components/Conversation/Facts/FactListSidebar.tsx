@@ -3,7 +3,6 @@ import { type Dispatch, type SetStateAction, useRef, useEffect } from "react";
 import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
 import type { Fact } from "@/types/conversations.types";
 import FactCard from "../Viewpoints/FactCard";
-import { ActionIcon } from "@mantine/core";
 
 type FactListSideBarProps = {
     sidebarIndex: number;
