@@ -36,65 +36,52 @@ export default function TernaryReactions({
     mutationFn,
     size,
 }: TernaryReactionsProps) {
-    const [reactionStatus, setReactionStatus] =
+    const [currentReaction, setCurrentReaction] =
         useState<Reaction>(initialReaction);
-    const [countMap, setCountMap] = useState({
-        [Reaction.LIKE]: initialCounts.like,
-        [Reaction.REASONABLE]: initialCounts.reasonable,
-        [Reaction.DISLIKE]: initialCounts.dislike,
-    });
+    const [previousReaction, setPreviousReaction] = useState<Reaction | null>(
+        null,
+    );
+    const [pendingReaction, setPendingReaction] = useState<Reaction | null>(
+        null,
+    );
 
     const [cookie] = useCookies(["auth_token"]);
+    const baseReactionCount = {
+        like: initialCounts.like - (initialReaction === Reaction.LIKE ? 1 : 0),
+        reasonable:
+            initialCounts.reasonable -
+            (initialReaction === Reaction.REASONABLE ? 1 : 0),
+        dislike:
+            initialCounts.dislike -
+            (initialReaction === Reaction.DISLIKE ? 1 : 0),
+    };
 
     const updateReaction = useMutation({
         mutationKey: ["updateReaction", parentId],
         mutationFn: (reaction: Reaction) =>
             mutationFn(reaction, cookie.auth_token),
-        onMutate(reaction: Reaction) {
-            const prevCount = { ...countMap };
-            const prevReaction = reactionStatus;
+        onMutate: async (newReaction) => {
+            // Save the previous reaction before making changes
+            setPreviousReaction(currentReaction);
+            setPendingReaction(newReaction);
 
-            //optimistic update
-            setCountMap((countMap) => {
-                const newCount = { ...countMap };
-
-                if (
-                    // cancel reaction
-                    reaction === Reaction.NONE &&
-                    prevReaction !== Reaction.NONE
-                ) {
-                    newCount[prevReaction] -= 1;
-                } else if (
-                    // add reaction
-                    reaction !== Reaction.NONE &&
-                    prevReaction === Reaction.NONE
-                ) {
-                    newCount[reaction] += 1;
-                } else if (
-                    // change reaction
-                    reaction !== Reaction.NONE &&
-                    prevReaction !== Reaction.NONE
-                ) {
-                    newCount[prevReaction] -= 1;
-                    newCount[reaction] += 1;
-                }
-
-                return newCount;
-            });
-
-            setReactionStatus((prev) => {
-                return prev === reaction ? Reaction.NONE : reaction;
-            });
-
-            return { prevCount, prevReaction };
+            // Optimistically update UI
+            setCurrentReaction(newReaction);
         },
-        onSuccess(data) {
-            setReactionStatus(data.reaction);
+        onSuccess: (data) => {
+            if (pendingReaction === data.reaction) {
+                setCurrentReaction(data.reaction);
+                setPendingReaction(null);
+                setPreviousReaction(null); // Clear the previous reaction after success
+            }
         },
-        onError(__error, __variables, context) {
-            if (!context) return;
-            setCountMap(context.prevCount);
-            setReactionStatus(context.prevReaction);
+        onError: () => {
+            // Revert to previous reaction on failure
+            // Rollback to the previous state
+            if (previousReaction !== null) {
+                setCurrentReaction(previousReaction);
+            }
+            setPendingReaction(null);
         },
     });
 
@@ -102,7 +89,7 @@ export default function TernaryReactions({
         reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
     ) => {
         updateReaction.mutate(
-            reaction === reactionStatus ? Reaction.NONE : reaction,
+            reaction === currentReaction ? Reaction.NONE : reaction,
         );
     };
 
@@ -120,11 +107,12 @@ export default function TernaryReactions({
                         width: size ? size * 4 : 24,
                         height: size ? size * 4 : 24,
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    className={`fill-none ${currentReaction === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.LIKE]}
+                {baseReactionCount.like +
+                    (currentReaction === Reaction.LIKE ? 1 : 0)}
             </h1>
             {/* reasonable */}
             <button
@@ -138,11 +126,12 @@ export default function TernaryReactions({
                         width: size ? size * 4 : 24,
                         height: size ? size * 4 : 24,
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    className={`fill-none ${currentReaction === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.REASONABLE]}
+                {baseReactionCount.reasonable +
+                    (currentReaction === Reaction.REASONABLE ? 1 : 0)}
             </h1>
             {/* dislike */}
             <button
@@ -156,11 +145,12 @@ export default function TernaryReactions({
                         width: size ? size * 4 : 24,
                         height: size ? size * 4 : 24,
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    className={`fill-none ${currentReaction === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                 />
             </button>
             <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.DISLIKE]}
+                {baseReactionCount.dislike +
+                    (currentReaction === Reaction.DISLIKE ? 1 : 0)}
             </h1>
         </div>
     );
