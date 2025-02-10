@@ -23,10 +23,6 @@ export default function FactListSideBar({
 }: FactListSideBarProps) {
     const cardRef = useRef<HTMLDivElement>(null);
 
-    if (facts.length === 0 || factIndexes.length === 0) {
-        return <></>; // Return nothing if there are no facts
-    }
-
     // Self-hoisting useEffect to handle click outside (onBlur)
     // to prevent the sidebar from closing when clicking on the urls inside the sidebar
     useEffect(() => {
@@ -51,7 +47,11 @@ export default function FactListSideBar({
         }
 
         return () => document.removeEventListener("click", handleClickOutside);
-    }, [curExpanded, cardRef]);
+    }, [curExpanded, cardRef, sidebarIndex, setExpandedSidebarIndex]);
+
+    if (facts.length === 0 || factIndexes.length === 0) {
+        return <></>; // Return nothing if there are no facts
+    }
 
     return (
         <div
