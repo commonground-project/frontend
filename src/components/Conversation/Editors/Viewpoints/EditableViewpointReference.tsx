@@ -29,9 +29,10 @@ export default function EditableViewpointReference({
                     />
                 </div>
             )}
-            <div>
-                <div className="group flex justify-between">
-                    <h1 className="float-left text-lg font-normal text-black">
+            <div className="w-full">
+                <div className="group flex w-full justify-between">
+                    <h1 className="float-left max-w-[calc(100%-30px)] text-lg font-normal text-black">
+                        {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
                     </h1>
                     <Button
