@@ -8,11 +8,12 @@ type FactCardProps = {
 
 export default function FactCard({ fact, factIndex }: FactCardProps) {
     return (
-        <div className="flex">
-            <h1 className="inline-block text-xs font-normal text-black">
+        <div className="flex gap-1">
+            <h1 className="text-xs font-normal text-black">
                 [{factIndex + 1}]
             </h1>
-            <div className="inline-block px-1">
+            <div className="w-[calc(100%-14px)]">
+                {/* 100% - 14px, 14px for fact index text*/}
                 <h1 className="text-xs font-normal text-black">{fact.title}</h1>
                 {fact.references.map((reference) => (
                     <ViewpointFactReference
