@@ -10,7 +10,6 @@ export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
     const pageURL = new URL(decodeURIComponent(reference.url));
-    const iconURL = pageURL.protocol + "//" + pageURL.hostname + reference.icon;
 
     return (
         <Link
@@ -24,7 +23,7 @@ export default function ViewpointFactReference({
             {reference.icon.length ? (
                 <img
                     className="inline-block h-3 w-3 rounded-full"
-                    src={iconURL}
+                    src={reference.icon}
                     alt="favicon"
                 />
             ) : (
