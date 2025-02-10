@@ -1,20 +1,16 @@
 import { Skeleton } from "@mantine/core";
 
-export default function ViewpointSkeleton() {
+export default function ReplySkeleton() {
     return (
         <div className="w-full">
-            <Skeleton height={20} circle mb={12} />
-            <div className="flex gap-4">
-                <div className="w-[75%] justify-start">
-                    <Skeleton height={10} radius="xl" mb={6} />
-                    <Skeleton height={10} radius="xl" mb={6} />
-                    <Skeleton height={10} radius="xl" mb={6} />
-                </div>
-                <div className="w-[20%] justify-end">
-                    <Skeleton height={10} radius="xl" mb={6} />
-                    <Skeleton height={10} radius="xl" mb={6} />
-                    <Skeleton height={10} radius="xl" mb={6} />
-                </div>
+            <div className="mb-3 flex items-center gap-2">
+                <Skeleton height={20} circle />
+                <Skeleton className="w-20" height={16} radius="xl" />
+            </div>
+            <div>
+                <Skeleton height={16} radius="xl" mb={6} />
+                <Skeleton height={16} radius="xl" mb={6} />
+                <Skeleton height={16} radius="xl" mb={6} />
             </div>
         </div>
     );
