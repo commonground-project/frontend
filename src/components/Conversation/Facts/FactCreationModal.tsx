@@ -116,7 +116,7 @@ export default function FactCreationModal({
         onSuccess(data, variables) {
             if (references.find((ref) => ref.id === data.id) !== undefined) {
                 console.log("references", references);
-                toast.info("引注資料已存在");
+                toast.info("引註資料已存在");
                 // Remove the preadded reference if it already exists
                 setReferences((prev) =>
                     prev.filter((ref) => ref.id !== variables.requestId),
@@ -138,9 +138,9 @@ export default function FactCreationModal({
             setReferences((prev) =>
                 prev.filter((ref) => ref.id !== variables.requestId),
             );
-            toast.error("建立引注資料時發生錯誤", {
+            toast.error("建立引註資料時發生錯誤", {
                 description:
-                    "建立引注資料時發生錯誤，請再試一次或是檢查引注資料連結",
+                    "建立引註資料時發生錯誤，請再試一次或是檢查引註資料連結",
             });
             console.log("error creating reference: ", err);
         },
@@ -225,7 +225,7 @@ export default function FactCreationModal({
 
                     {/* reference display */}
                     <div>
-                        <h2 className="mb-2 text-sm font-bold">引注資料</h2>
+                        <h2 className="mb-2 text-sm font-bold">引註資料</h2>
                         <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
                             {references.map((reference) => (
                                 <div
@@ -273,7 +273,7 @@ export default function FactCreationModal({
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
-                            placeholder="新增引注資料"
+                            placeholder="新增引註資料"
                         />
                         <Button
                             variant="transparent"

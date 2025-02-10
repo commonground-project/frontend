@@ -90,7 +90,7 @@ export default function AuthorViewpoint() {
             if (typeof error === "object" && "data" in error) {
                 if (error.data.type == "type:VALIDATION_ERROR") {
                     toast.error("驗證錯誤", {
-                        description: "你有任何引注數字打錯嗎？",
+                        description: "你有任何引註數字打錯嗎？",
                     });
                     return;
                 }

@@ -55,7 +55,7 @@ export default function ViewpointCard({
         const placeholderElement = document.createElement("p");
         placeholderElement.className = "text-neutral-500";
         placeholderElement.textContent =
-            "開始打字，或選取一段文字來新增引注資料";
+            "開始打字，或選取一段文字來新增引註資料";
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
@@ -101,7 +101,7 @@ export default function ViewpointCard({
         tooltip.className =
             "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
         tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = "從右側選取引注事實";
+        tooltip.textContent = "從右側選取引註事實";
         document.body.appendChild(tooltip);
 
         // Calculate the middlepoint of the selection
@@ -333,7 +333,7 @@ export default function ViewpointCard({
                         const placeholderElement = document.createElement("p");
                         placeholderElement.className = "text-neutral-500";
                         placeholderElement.textContent =
-                            "開始打字，或選取一段文字來新增引注資料";
+                            "開始打字，或選取一段文字來新增引註資料";
                         inputRef.current.appendChild(placeholderElement);
                         return;
                     }
