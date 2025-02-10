@@ -19,7 +19,7 @@ export default function EditableViewpointReference({
     setIsSelected,
 }: FactCardProps) {
     return (
-        <div className="flex w-full gap-2.5">
+        <div className="flex w-full gap-2.5 hover:bg-gray-50">
             {inSelectionMode && (
                 <div className="pt-1">
                     <Checkbox
