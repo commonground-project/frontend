@@ -1,8 +1,9 @@
 "use client";
 import { type Dispatch, type SetStateAction, useRef, useEffect } from "react";
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
 import type { Fact } from "@/types/conversations.types";
 import FactCard from "../Viewpoints/FactCard";
+import { ActionIcon } from "@mantine/core";
 
 type FactListSideBarProps = {
     sidebarIndex: number;
@@ -67,19 +68,26 @@ export default function FactListSideBar({
             }}
         >
             {!curExpanded ? (
-                <div className="flex flex-col gap-1 overflow-hidden">
-                    {factIndexes.map((factIndex) => {
-                        const fact = facts[factIndex];
-                        return (
-                            <h2
-                                className="truncate text-xs text-emerald-700"
-                                key={factIndex}
-                            >
-                                {`[${factIndex + 1}] ${fact.title}`}
-                            </h2>
-                        );
-                    })}
-                </div>
+                maxHeight === 28 ? (
+                    <div className="flex justify-center gap-2 text-emerald-700">
+                        <h2 className="text-xs">展開所有引註</h2>
+                        <ChevronUpDownIcon className="h-4 w-4" />
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                        {factIndexes.map((factIndex) => {
+                            const fact = facts[factIndex];
+                            return (
+                                <h2
+                                    className="truncate text-xs text-emerald-700"
+                                    key={factIndex}
+                                >
+                                    {`[${factIndex + 1}] ${fact.title}`}
+                                </h2>
+                            );
+                        })}
+                    </div>
+                )
             ) : (
                 factIndexes.map((factIndex) => {
                     const fact = facts[factIndex];
@@ -92,11 +100,6 @@ export default function FactListSideBar({
                     );
                 })
             )}
-            {!curExpanded ? (
-                <div className="flex justify-center">
-                    <EllipsisHorizontalIcon className="size-4 text-emerald-700" />
-                </div>
-            ) : null}
         </div>
     );
 }
