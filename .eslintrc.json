@@ -1,3 +1,21 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript", "prettier"]
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "prettier"
+  ],
+  "rules": {
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false,
+        "varsIgnorePattern": "^__"
+      }
+    ],
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/no-explicit-any": "off"
+  }
 }
