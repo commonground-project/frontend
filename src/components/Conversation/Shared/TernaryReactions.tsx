@@ -9,12 +9,14 @@ import {
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
+import { toast } from "sonner";
 
 type UpdateTernaryActionResponse = {
     reaction: Reaction;
 };
 
 type TernaryReactionsProps = {
+    parentTitle: string;
     parentId: string;
     initialReaction: Reaction;
     initialCounts: {
@@ -30,6 +32,7 @@ type TernaryReactionsProps = {
 };
 
 export default function TernaryReactions({
+    parentTitle,
     parentId,
     initialReaction,
     initialCounts,
@@ -78,6 +81,9 @@ export default function TernaryReactions({
                 setCurrentReaction(context);
             }
             pendingReaction.current = null;
+            toast.error(
+                `回覆貼文「${parentTitle.slice(0, 10)}...」時發生錯誤，請再試一次`,
+            );
         },
     });
 
