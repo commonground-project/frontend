@@ -30,6 +30,7 @@ export default function ViewpointCard({
             </div>
             <div className="flex justify-between align-bottom">
                 <TernaryReactions
+                    parentTitle={viewpoint.title}
                     parentId={viewpoint.id}
                     initialReaction={viewpoint.userReaction.reaction}
                     initialCounts={{
