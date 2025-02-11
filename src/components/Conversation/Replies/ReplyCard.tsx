@@ -25,7 +25,7 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
                 ))}
             </div>
             <TernaryReactions
-                parentTitle={reply.content.slice(0, 10)}
+                parentTitle={reply.content}
                 parentId={reply.id}
                 initialReaction={reply.userReaction.reaction}
                 initialCounts={{
