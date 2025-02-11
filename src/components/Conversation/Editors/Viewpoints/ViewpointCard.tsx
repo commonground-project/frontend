@@ -226,6 +226,15 @@ export default function ViewpointCard({
 
     // Mutation observer to detect when a <span> is deleted
     const observer = new MutationObserver((mutations) => {
+        // Dismiss the manipulation of placeholder
+        if (
+            mutations.length === 1 &&
+            ((mutations[0].addedNodes[0] as HTMLElement)?.id ===
+                "placeholder" ||
+                (mutations[0].removedNodes[0] as HTMLElement)?.id ===
+                    "placeholder")
+        )
+            return;
         // Get the current selection (cursor position)
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
@@ -331,6 +340,7 @@ export default function ViewpointCard({
                     if (isEmpty) {
                         inputRef.current.innerHTML = "";
                         const placeholderElement = document.createElement("p");
+                        placeholderElement.id = "placeholder";
                         placeholderElement.className = "text-neutral-500";
                         placeholderElement.textContent =
                             "開始打字，或選取一段文字來新增引註資料";

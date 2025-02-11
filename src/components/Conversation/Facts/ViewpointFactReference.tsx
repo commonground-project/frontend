@@ -10,7 +10,6 @@ export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
     const pageURL = new URL(decodeURIComponent(reference.url));
-    const iconURL = pageURL.protocol + "//" + pageURL.hostname + reference.icon;
 
     return (
         <Link
@@ -20,11 +19,17 @@ export default function ViewpointFactReference({
             rel="noopener noreferrer"
             key={reference.id}
             className="flex items-center"
+            // Prevents the click trigger the blur event of the parent before open the link
+            onMouseDown={(e) => {
+                console.log("click link");
+                e.preventDefault();
+            }}
+            onClick={(e) => e.stopPropagation()}
         >
             {reference.icon.length ? (
                 <img
                     className="inline-block h-3 w-3 rounded-full"
-                    src={iconURL}
+                    src={reference.icon}
                     alt="favicon"
                 />
             ) : (

@@ -30,7 +30,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
                         </h1>
                         <Tooltip
                             position="right-start"
-                            label="事件簡述由 AI 根據此議題內的事實與其引注資料產生，有可能包含錯誤的內容"
+                            label="事件簡述由 AI 根據此議題內的事實與其引註資料產生，有可能包含錯誤的內容"
                             events={{ hover: true, focus: true, touch: false }}
                             offset={{ mainAxis: 5, crossAxis: -10 }}
                         >

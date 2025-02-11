@@ -69,7 +69,7 @@ export function preprocessReferenceContent({
                 parsedContents[parsedContents.length - 1].push({
                     type: contentObject.type,
                     text,
-                    references: contentObject.references,
+                    references: index == 0 ? contentObject.references : null,
                 });
                 if (index !== splitText.length - 1) {
                     parsedContents.push([]);

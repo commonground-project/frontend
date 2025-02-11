@@ -19,7 +19,7 @@ export default function EditableViewpointReference({
     setIsSelected,
 }: FactCardProps) {
     return (
-        <div className="flex w-full gap-2.5">
+        <div className="flex w-full gap-2.5 rounded-lg p-2 hover:bg-[#f0f0f0]">
             {inSelectionMode && (
                 <div className="pt-1">
                     <Checkbox
@@ -29,19 +29,20 @@ export default function EditableViewpointReference({
                     />
                 </div>
             )}
-            <div>
-                <div className="group flex justify-between">
-                    <h1 className="float-left text-lg font-normal text-black">
+            <div className="w-full">
+                <div className="group flex w-full justify-between">
+                    <h1 className="float-left max-w-[calc(100%-30px)] text-lg font-normal text-black">
+                        {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
                     </h1>
                     <Button
                         variant="transparent"
                         classNames={{
-                            root: "float-right pr-1 pl-0 flex invisible group-hover:visible",
+                            root: "float-right pr-0 pl-0 flex opacity-0 transition-opacity group-hover:opacity-100",
                         }}
                         onClick={() => removeFact(String(fact.id))}
                     >
-                        <XMarkIcon className="size-6 stroke-black hover:stroke-red-600" />
+                        <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                     </Button>
                 </div>
                 {fact.references.map((reference) => (
