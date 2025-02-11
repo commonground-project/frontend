@@ -38,6 +38,7 @@ export default function PageDisplayCard({
                 />
             </div>
             <TernaryReactions
+                parentTitle={viewpoint.title}
                 parentId={viewpoint.id}
                 initialReaction={viewpoint.userReaction.reaction}
                 initialCounts={{
