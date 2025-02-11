@@ -81,9 +81,13 @@ export default function TernaryReactions({
                 setCurrentReaction(context);
             }
             pendingReaction.current = null;
-            toast.error(
-                `回覆貼文「${parentTitle.slice(0, 10)}...」時發生錯誤，請再試一次`,
-            );
+
+            // Toast if request fails
+            const truncatedTitle =
+                parentTitle.length > 10
+                    ? `${parentTitle.slice(0, 10)}...`
+                    : parentTitle;
+            toast.error(`回覆貼文「${truncatedTitle}」時發生錯誤，請再試一次`);
         },
     });
 
