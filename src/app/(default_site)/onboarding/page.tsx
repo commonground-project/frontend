@@ -9,11 +9,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
+import { decodeToken } from "react-jwt";
 
 import useAuth from "@/hooks/auth/useAuth";
 import { setupUserRequest } from "@/lib/requests/auth/setupUser";
 import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
 import type { KnownErrorResponse } from "@/types/requests.types";
+import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
+import type { DecodedToken } from "@/types/users.types";
 
 export default function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
@@ -53,6 +56,13 @@ export default function OnboardingPage() {
             console.log(data);
             if (!data) return router.push("/login");
             login(data.accessToken, data.refreshToken, data.expirationTime);
+
+            // Try to subscribe to web push notifications
+            // Don't subscribe when the user is not fully set up
+            const decodedToken = decodeToken<DecodedToken>(data.accessToken);
+            if (decodedToken?.role !== "ROLE_NOT_SETUP")
+                subscribeWebPush({ auth_token: data.accessToken });
+
             router.push("/");
         },
         onError(error: KnownErrorResponse | Error) {
