@@ -57,12 +57,13 @@ export default function TernaryReactions({
             mutationFn(reaction, cookie.auth_token),
         onMutate: async (newReaction) => {
             pendingReaction.current = newReaction;
+            const previousReaction = currentReaction;
 
             // Optimistically update UI
             setCurrentReaction(newReaction);
 
             // Save the previous reaction before making changes
-            return currentReaction;
+            return previousReaction;
         },
         onSuccess: (data) => {
             if (pendingReaction.current === data.reaction) {
