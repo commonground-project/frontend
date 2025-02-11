@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Reaction } from "@/types/conversations.types";
 import { useCookies } from "react-cookie";
 import { useMutation } from "@tanstack/react-query";
@@ -38,12 +38,7 @@ export default function TernaryReactions({
 }: TernaryReactionsProps) {
     const [currentReaction, setCurrentReaction] =
         useState<Reaction>(initialReaction);
-    const [previousReaction, setPreviousReaction] = useState<Reaction | null>(
-        null,
-    );
-    const [pendingReaction, setPendingReaction] = useState<Reaction | null>(
-        null,
-    );
+    const pendingReaction = useRef<Reaction | null>(null);
 
     const [cookie] = useCookies(["auth_token"]);
     const baseReactionCount = {
@@ -61,27 +56,27 @@ export default function TernaryReactions({
         mutationFn: (reaction: Reaction) =>
             mutationFn(reaction, cookie.auth_token),
         onMutate: async (newReaction) => {
-            // Save the previous reaction before making changes
-            setPreviousReaction(currentReaction);
-            setPendingReaction(newReaction);
+            pendingReaction.current = newReaction;
 
             // Optimistically update UI
             setCurrentReaction(newReaction);
+
+            // Save the previous reaction before making changes
+            return currentReaction;
         },
         onSuccess: (data) => {
-            if (pendingReaction === data.reaction) {
+            if (pendingReaction.current === data.reaction) {
                 setCurrentReaction(data.reaction);
-                setPendingReaction(null);
-                setPreviousReaction(null); // Clear the previous reaction after success
+                pendingReaction.current = null;
             }
         },
-        onError: () => {
+        onError: (__err, __variables, context) => {
             // Revert to previous reaction on failure
             // Rollback to the previous state
-            if (previousReaction !== null) {
-                setCurrentReaction(previousReaction);
+            if (context !== undefined) {
+                setCurrentReaction(context);
             }
-            setPendingReaction(null);
+            pendingReaction.current = null;
         },
     });
 
