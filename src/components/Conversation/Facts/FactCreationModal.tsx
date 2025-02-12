@@ -286,7 +286,7 @@ export default function FactCreationModal({
                                 });
                                 setUrl("");
                             }}
-                            disabled={!isUrlValid}
+                            // disabled={!isUrlValid}
                         >
                             <PlusIcon className="size-6" />
                         </Button>
