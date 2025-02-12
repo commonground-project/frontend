@@ -60,13 +60,21 @@ export default function OnboardingPage() {
             // Try to subscribe to web push notifications
             // Don't subscribe when the user is not fully set up
             const decodedToken = decodeToken<DecodedToken>(data.accessToken);
-            if (decodedToken?.role !== "ROLE_NOT_SETUP")
-                subscribeWebPush({ auth_token: data.accessToken });
-
-            // TODO: Fix race condition
-            setTimeout(() => {
-                router.push("/");
-            }, 1000);
+            if (decodedToken?.role !== "ROLE_NOT_SETUP") {
+                subscribeWebPush({ auth_token: data.accessToken })
+                    .then(() => {
+                        console.log(
+                            "Web push subscription completed, now navigating",
+                        );
+                        router.push("/");
+                    })
+                    .catch((err) => {
+                        console.error("Web push subscription failed:", err);
+                        router.push("/"); // Ensure navigation still happens
+                    });
+            } else {
+                router.push("/"); // Navigate immediately if not subscribing
+            }
         },
         onError(error: KnownErrorResponse | Error) {
             if (
