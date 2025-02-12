@@ -63,7 +63,10 @@ export default function OnboardingPage() {
             if (decodedToken?.role !== "ROLE_NOT_SETUP")
                 subscribeWebPush({ auth_token: data.accessToken });
 
-            router.push("/");
+            // TODO: Fix race condition
+            setTimeout(() => {
+                router.push("/");
+            }, 1000);
         },
         onError(error: KnownErrorResponse | Error) {
             if (
