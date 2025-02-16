@@ -15,8 +15,8 @@ import {
     encapsuleReferenceMarker,
     decapsuleReferenceMarker,
     updateReferenceCounter,
-} from "@/lib/utils/referenceMarker/referenceMarkerEditors";
-import { phraseReferencedContent } from "@/lib/utils/referenceMarker/phraseReferencedContent";
+} from "@/lib/referenceMarker/referenceMarkerEditors";
+import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 
 type ViewpointCardProps = {
     issueId: string;

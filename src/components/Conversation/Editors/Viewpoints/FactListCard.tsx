@@ -10,7 +10,7 @@ import { Select, Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
-import { updateReferenceCounter } from "@/lib/utils/referenceMarker/referenceMarkerEditors";
+import { updateReferenceCounter } from "@/lib/referenceMarker/referenceMarkerEditors";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
