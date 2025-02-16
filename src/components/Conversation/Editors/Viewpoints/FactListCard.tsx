@@ -21,18 +21,12 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
-    // inSelectionMode: boolean;
-    // curReferenceMarkerId: number | null;
-    // avaliableMarkerId: number;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
-    // inSelectionMode,
-    // curReferenceMarkerId,
-    // avaliableMarkerId,
 }: FactListCardProps) {
     const {
         selectedFacts,

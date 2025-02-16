@@ -26,11 +26,6 @@ export default function AuthorViewpoint() {
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
-    // const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
-    // const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
-    //     number | null
-    // >(null);
-    // const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
 
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
@@ -128,11 +123,6 @@ export default function AuthorViewpoint() {
                             pendingPublish={
                                 postNewViewpoint.status === "pending"
                             }
-                            // setInSelectionMode={setInSelectionMode}
-                            // curReferenceMarkerId={curReferenceMarkerId}
-                            // setCurReferenceMarkerId={setCurReferenceMarkerId}
-                            // avaliableMarkerId={avaliableMarkerId}
-                            // setAvaliableMarkerId={setAvaliableMarkerId}
                         />
                     </div>
                     <div className="w-1/3">
@@ -140,9 +130,6 @@ export default function AuthorViewpoint() {
                             issueId={issueId}
                             viewpointFactList={viewpointFactList}
                             setViewpointFactList={setViewpointFactList}
-                            // inSelectionMode={inSelectionMode}
-                            // curReferenceMarkerId={curReferenceMarkerId}
-                            // avaliableMarkerId={avaliableMarkerId}
                         />
                     </div>
                 </ReferenceMarkerProvider>
