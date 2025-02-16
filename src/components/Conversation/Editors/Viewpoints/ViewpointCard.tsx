@@ -1,7 +1,7 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import {
@@ -29,9 +29,7 @@ export default function ViewpointCard({
 }: ViewpointCardProps) {
     const {
         selectedFacts,
-        setInSelectionMode,
         curReferenceMarkerId,
-        setCurReferenceMarkerId,
         avaliableMarkerId,
         setAvaliableMarkerId,
         inputRef,
@@ -61,67 +59,6 @@ export default function ViewpointCard({
 
         publishViewpoint(content);
     };
-
-    const handleSelection = useCallback(() => {
-        // Reset selection mode and tooltip no matter what
-        // Since they will eventually be added back if a selection is made, it is safe to remove them here first
-        // And since React will batch the state updates, calling setInSelectionMode(false) here will not cause the tooltip to flash
-        setInSelectionMode(false);
-        document.getElementById("fact-hint-tooltip")?.remove();
-
-        // If the current active element is not the content editable div, stop the tooltip from showing
-        if (document.activeElement?.id !== "viewpoint-input") return;
-
-        const selection = window.getSelection();
-        if (!selection) return;
-        const range = selection.getRangeAt(0);
-        if (range.collapsed) return;
-
-        setInSelectionMode(true);
-
-        // Check if the selection overlaps with an existing reference marker
-        // If it does, we assume the user wants to update that marker
-        const selectedMarkerId = getSelectedReferenceMarker(range);
-        setCurReferenceMarkerId(
-            selectedMarkerId ? Number(selectedMarkerId) : null,
-        );
-
-        // Create tooltip element
-        const rangeRect = range.getBoundingClientRect();
-        const tooltip = document.createElement("div");
-        tooltip.className =
-            "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
-        tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = "從右側選取引註事實";
-        document.body.appendChild(tooltip);
-
-        // Calculate the middlepoint of the selection
-        const mid =
-            Math.min(rangeRect.left, rangeRect.right) +
-            Math.abs(rangeRect.left - rangeRect.right) / 2;
-        // Ensure the tooltip is within the viewport
-        const leftX = Math.max(
-            0,
-            Math.min(
-                mid - tooltip.offsetWidth / 2,
-                window.innerWidth - tooltip.offsetWidth,
-            ),
-        );
-
-        tooltip.style.top = `${rangeRect.top - 30}px`;
-        tooltip.style.left = `${leftX}px`;
-        tooltip.classList.remove("opacity-0");
-    }, [setInSelectionMode]);
-
-    useEffect(() => {
-        document.addEventListener("selectionchange", handleSelection);
-        // Since resizing the window can change the position of the tooltip, we need to reposition it
-        window.addEventListener("resize", handleSelection);
-        return () => {
-            document.removeEventListener("selectionchange", handleSelection);
-            window.removeEventListener("resize", handleSelection);
-        };
-    }, [handleSelection]);
 
     const rangeOverlaps = (
         range: Range,

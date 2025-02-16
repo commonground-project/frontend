@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useState, useRef, useEffect } from "react";
+import { createContext, useState, useRef, useEffect, useCallback } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 export const ReferenceMarkerContext = createContext<{
@@ -109,6 +109,110 @@ export default function ReferenceMarkerProvider({
         });
         return () => observer.disconnect();
     }, [inputRef]);
+
+    // Handle selection change and areas
+    // Check whether the selection overlaps with an existing reference marker
+    const rangeOverlaps = (
+        range: Range,
+        startMarker: Node,
+        endMarker: Node,
+    ) => {
+        const referenceMarkerRange = document.createRange();
+        referenceMarkerRange.setStart(startMarker, 0);
+        referenceMarkerRange.setEnd(endMarker, endMarker.childNodes.length);
+        return (
+            range.compareBoundaryPoints(
+                Range.END_TO_START,
+                referenceMarkerRange,
+            ) < 0 &&
+            range.compareBoundaryPoints(
+                Range.START_TO_END,
+                referenceMarkerRange,
+            ) > 0
+        );
+    };
+
+    // Get the selected reference marker, which the user wants to update
+    const getSelectedReferenceMarker = (range: Range) => {
+        const startMarkers = document.querySelectorAll(
+            ".reference-marker.start",
+        );
+        const endMarkers = document.querySelectorAll(".reference-marker.end");
+
+        let selectedMarkerId: string | null = null;
+        if (startMarkers.length > 0) {
+            for (let i = 0; i < startMarkers.length; i++) {
+                if (rangeOverlaps(range, startMarkers[i], endMarkers[i])) {
+                    selectedMarkerId = startMarkers[i].id;
+                    break;
+                }
+            }
+        }
+        return selectedMarkerId;
+    };
+
+    // Handle selection change and add tooltip
+    const handleSelection = useCallback(() => {
+        // Reset selection mode and tooltip no matter what
+        // Since they will eventually be added back if a selection is made, it is safe to remove them here first
+        // And since React will batch the state updates, calling setInSelectionMode(false) here will not cause the tooltip to flash
+        setInSelectionMode(false);
+        document.getElementById("fact-hint-tooltip")?.remove();
+
+        // If the current active element is not the content editable div, stop the tooltip from showing
+        if (document.activeElement !== inputRef.current) return;
+
+        const selection = window.getSelection();
+        if (!selection) return;
+        const range = selection.getRangeAt(0);
+        if (range.collapsed) return;
+
+        setInSelectionMode(true);
+
+        // Check if the selection overlaps with an existing reference marker
+        // If it does, we assume the user wants to update that marker
+        const selectedMarkerId = getSelectedReferenceMarker(range);
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
+
+        // Create tooltip element
+        const rangeRect = range.getBoundingClientRect();
+        const tooltip = document.createElement("div");
+        tooltip.className =
+            "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
+        tooltip.id = "fact-hint-tooltip";
+        tooltip.textContent = "從右側選取引註事實";
+        document.body.appendChild(tooltip);
+
+        // Calculate the middlepoint of the selection
+        const mid =
+            Math.min(rangeRect.left, rangeRect.right) +
+            Math.abs(rangeRect.left - rangeRect.right) / 2;
+        // Ensure the tooltip is within the viewport
+        const leftX = Math.max(
+            0,
+            Math.min(
+                mid - tooltip.offsetWidth / 2,
+                window.innerWidth - tooltip.offsetWidth,
+            ),
+        );
+
+        tooltip.style.top = `${rangeRect.top - 30}px`;
+        tooltip.style.left = `${leftX}px`;
+        tooltip.classList.remove("opacity-0");
+    }, [setInSelectionMode]);
+
+    // Add event listeners for selection change and window resize
+    useEffect(() => {
+        document.addEventListener("selectionchange", handleSelection);
+        // Since resizing the window can change the position of the tooltip, we need to reposition it
+        window.addEventListener("resize", handleSelection);
+        return () => {
+            document.removeEventListener("selectionchange", handleSelection);
+            window.removeEventListener("resize", handleSelection);
+        };
+    }, [handleSelection]);
 
     return (
         <ReferenceMarkerContext.Provider
