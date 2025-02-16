@@ -11,6 +11,26 @@ export default function AuthorProfile({
     authorAvatar,
     createdAt,
 }: AuthorProfileProps) {
+    const formatTimeAgo = (date: Date) => {
+        const now = new Date(); // Get current local time
+        console.log("now", now);
+        console.log("date", date);
+        const diffInSeconds = Math.floor(
+            (now.getTime() - date.getTime()) / 1000,
+        );
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        const diffInDays = Math.floor(diffInHours / 24);
+
+        if (diffInSeconds < 60) return "剛剛";
+        if (diffInMinutes < 60) return `${diffInMinutes}分鐘前`;
+        if (diffInHours < 24) return `${diffInHours}小時前`;
+        if (diffInDays < 7) return `${diffInDays}天前`;
+
+        // Show absolute date if older than a week
+        return date.toLocaleDateString();
+    };
+
     return (
         <div className="mb-1 flex">
             <Avatar name={authorName} src={authorAvatar} alt="" size="1rem" />
@@ -19,7 +39,7 @@ export default function AuthorProfile({
             </p>
             {createdAt && (
                 <p className="ml-3 inline-block text-xs font-normal text-neutral-600">
-                    {createdAt.toLocaleDateString()}
+                    {formatTimeAgo(createdAt)}
                 </p>
             )}
         </div>
