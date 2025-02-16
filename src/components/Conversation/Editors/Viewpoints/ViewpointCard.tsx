@@ -26,11 +26,11 @@ type ViewpointCardProps = {
     setViewpointTitle: (value: string) => void;
     publishViewpoint: (content: string) => void;
     pendingPublish: boolean;
-    setInSelectionMode: (value: boolean) => void;
-    curReferenceMarkerId: number | null;
-    setCurReferenceMarkerId: (value: number | null) => void;
-    avaliableMarkerId: number;
-    setAvaliableMarkerId: Dispatch<SetStateAction<number>>;
+    // setInSelectionMode: (value: boolean) => void;
+    // curReferenceMarkerId: number | null;
+    // setCurReferenceMarkerId: (value: number | null) => void;
+    // avaliableMarkerId: number;
+    // setAvaliableMarkerId: Dispatch<SetStateAction<number>>;
 };
 
 export default function ViewpointCard({
@@ -39,13 +39,21 @@ export default function ViewpointCard({
     setViewpointTitle,
     publishViewpoint,
     pendingPublish,
-    setInSelectionMode,
-    curReferenceMarkerId,
-    setCurReferenceMarkerId,
-    avaliableMarkerId,
-    setAvaliableMarkerId,
+    // setInSelectionMode,
+    // curReferenceMarkerId,
+    // setCurReferenceMarkerId,
+    // avaliableMarkerId,
+    // setAvaliableMarkerId,
 }: ViewpointCardProps) {
-    const { selectedFacts } = useContext(ReferenceMarkerContext);
+    const {
+        selectedFacts,
+        setInSelectionMode,
+        curReferenceMarkerId,
+        setCurReferenceMarkerId,
+        avaliableMarkerId,
+        setAvaliableMarkerId,
+    } = useContext(ReferenceMarkerContext);
+
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
 

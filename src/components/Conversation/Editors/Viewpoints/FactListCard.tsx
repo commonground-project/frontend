@@ -21,24 +21,27 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
-    inSelectionMode: boolean;
-    curReferenceMarkerId: number | null;
-    avaliableMarkerId: number;
+    // inSelectionMode: boolean;
+    // curReferenceMarkerId: number | null;
+    // avaliableMarkerId: number;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
-    inSelectionMode,
-    curReferenceMarkerId,
-    avaliableMarkerId,
+    // inSelectionMode,
+    // curReferenceMarkerId,
+    // avaliableMarkerId,
 }: FactListCardProps) {
-    console.log("current reference marker id: ", curReferenceMarkerId);
+    const {
+        selectedFacts,
+        setSelectedFacts,
+        inSelectionMode,
+        curReferenceMarkerId,
+        avaliableMarkerId,
+    } = useContext(ReferenceMarkerContext);
 
-    const { selectedFacts, setSelectedFacts } = useContext(
-        ReferenceMarkerContext,
-    );
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
