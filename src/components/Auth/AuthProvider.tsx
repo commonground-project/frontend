@@ -39,7 +39,7 @@ export default function AuthProvider({
 
             const current_time = new Date().getTime();
             const tokenAge = current_time - newToken.iat * 1000;
-            if (tokenAge > 30000) {
+            if (tokenAge > 60000) {
                 throw new Error("Token is too old, please re-login");
             }
 
