@@ -1,8 +1,8 @@
 "use client";
 
-import useAuth from "@/hooks/auth/useAuth";
+import { AuthContext } from "@/lib/auth/authContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { toast } from "sonner";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 import { decodeToken } from "react-jwt";
@@ -10,7 +10,7 @@ import type { DecodedToken } from "@/types/users.types";
 
 export default function CallbackPage() {
     const router = useRouter();
-    const { login } = useAuth();
+    const { login } = useContext(AuthContext);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
