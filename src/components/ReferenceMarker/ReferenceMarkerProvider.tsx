@@ -13,6 +13,8 @@ export const ReferenceMarkerContext = createContext<{
     avaliableMarkerId: number;
     setAvaliableMarkerId: Dispatch<SetStateAction<number>>;
     inputRef: React.RefObject<HTMLDivElement | null>;
+    addFactToReferenceMarker: (factIndex: number) => void;
+    removeFactFromReferenceMarker: (factIndex: number) => void;
 }>({
     selectedFacts: new Map().set(0, []),
     setSelectedFacts: () => {},
@@ -23,6 +25,8 @@ export const ReferenceMarkerContext = createContext<{
     avaliableMarkerId: 0,
     setAvaliableMarkerId: () => {},
     inputRef: { current: null },
+    addFactToReferenceMarker: () => {},
+    removeFactFromReferenceMarker: () => {},
 });
 
 export default function ReferenceMarkerProvider({
@@ -214,6 +218,39 @@ export default function ReferenceMarkerProvider({
         };
     }, [handleSelection]);
 
+    const addFactToReferenceMarker = (factIndex: number) => {
+        setSelectedFacts((prev) => {
+            const newMap = new Map(prev);
+            if (curReferenceMarkerId !== null) {
+                console.log("has marker id");
+                return newMap.set(curReferenceMarkerId, [
+                    ...(newMap.get(curReferenceMarkerId) ?? []),
+                    factIndex,
+                ]);
+            } else {
+                newMap.set(avaliableMarkerId, [
+                    ...(newMap.get(avaliableMarkerId) ?? []),
+                    factIndex,
+                ]);
+                console.log("no marker id, new id = ", avaliableMarkerId);
+            }
+            return newMap;
+        });
+    };
+
+    const removeFactFromReferenceMarker = (factIndex: number) => {
+        setSelectedFacts((prev) => {
+            const newMap = new Map(prev);
+            if (curReferenceMarkerId !== null)
+                newMap.set(curReferenceMarkerId, [
+                    ...(newMap
+                        .get(curReferenceMarkerId)
+                        ?.filter((id) => id !== factIndex) ?? []),
+                ]);
+            return newMap;
+        });
+    };
+
     return (
         <ReferenceMarkerContext.Provider
             value={{
@@ -226,6 +263,8 @@ export default function ReferenceMarkerProvider({
                 avaliableMarkerId,
                 setAvaliableMarkerId,
                 inputRef,
+                addFactToReferenceMarker,
+                removeFactFromReferenceMarker,
             }}
         >
             {children}

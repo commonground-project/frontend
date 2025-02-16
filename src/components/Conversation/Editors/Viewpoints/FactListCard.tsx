@@ -34,6 +34,8 @@ export default function FactListCard({
         inSelectionMode,
         curReferenceMarkerId,
         avaliableMarkerId,
+        addFactToReferenceMarker,
+        removeFactFromReferenceMarker,
     } = useContext(ReferenceMarkerContext);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
@@ -219,46 +221,9 @@ export default function FactListCard({
                             }
                             setIsSelected={(isSelected) => {
                                 if (isSelected) {
-                                    setSelectedFacts((prev) => {
-                                        const newMap = new Map(prev);
-                                        if (curReferenceMarkerId !== null) {
-                                            console.log("has marker id");
-                                            return newMap.set(
-                                                curReferenceMarkerId,
-                                                [
-                                                    ...(newMap.get(
-                                                        curReferenceMarkerId,
-                                                    ) ?? []),
-                                                    index,
-                                                ],
-                                            );
-                                        } else {
-                                            newMap.set(avaliableMarkerId, [
-                                                ...(newMap.get(
-                                                    avaliableMarkerId,
-                                                ) ?? []),
-                                                index,
-                                            ]);
-                                            console.log(
-                                                "no marker id, new id = ",
-                                                avaliableMarkerId,
-                                            );
-                                        }
-                                        return newMap;
-                                    });
+                                    addFactToReferenceMarker(index);
                                 } else {
-                                    setSelectedFacts((prev) => {
-                                        const newMap = new Map(prev);
-                                        if (curReferenceMarkerId !== null)
-                                            newMap.set(curReferenceMarkerId, [
-                                                ...(newMap
-                                                    .get(curReferenceMarkerId)
-                                                    ?.filter(
-                                                        (id) => id !== index,
-                                                    ) ?? []),
-                                            ]);
-                                        return newMap;
-                                    });
+                                    removeFactFromReferenceMarker(index);
                                 }
                             }}
                         />
