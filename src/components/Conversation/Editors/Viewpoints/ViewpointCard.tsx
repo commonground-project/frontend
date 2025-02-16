@@ -6,6 +6,7 @@ import {
     useRef,
     useEffect,
     useCallback,
+    useContext,
     type Dispatch,
     type SetStateAction,
 } from "react";
@@ -17,6 +18,7 @@ import {
     updateReferenceCounter,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
+import { ReferenceMarkerContext } from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -25,7 +27,6 @@ type ViewpointCardProps = {
     publishViewpoint: (content: string) => void;
     pendingPublish: boolean;
     setInSelectionMode: (value: boolean) => void;
-    selectedFacts: Map<number, number[]>;
     curReferenceMarkerId: number | null;
     setCurReferenceMarkerId: (value: number | null) => void;
     avaliableMarkerId: number;
@@ -39,12 +40,12 @@ export default function ViewpointCard({
     publishViewpoint,
     pendingPublish,
     setInSelectionMode,
-    selectedFacts,
     curReferenceMarkerId,
     setCurReferenceMarkerId,
     avaliableMarkerId,
     setAvaliableMarkerId,
 }: ViewpointCardProps) {
+    const { selectedFacts } = useContext(ReferenceMarkerContext);
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const inputRef = useRef<HTMLDivElement>(null);
 

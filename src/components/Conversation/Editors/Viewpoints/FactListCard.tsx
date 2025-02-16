@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -13,6 +13,7 @@ import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFact
 import { updateReferenceCounter } from "@/lib/referenceMarker/referenceMarkerEditors";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+import { ReferenceMarkerContext } from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 
 import type { Fact } from "@/types/conversations.types";
 
@@ -21,8 +22,6 @@ type FactListCardProps = {
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
     inSelectionMode: boolean;
-    selectedFacts: Map<number, number[]>;
-    setSelectedFacts: Dispatch<SetStateAction<Map<number, number[]>>>;
     curReferenceMarkerId: number | null;
     avaliableMarkerId: number;
 };
@@ -32,13 +31,14 @@ export default function FactListCard({
     viewpointFactList,
     setViewpointFactList,
     inSelectionMode,
-    selectedFacts,
-    setSelectedFacts,
     curReferenceMarkerId,
     avaliableMarkerId,
 }: FactListCardProps) {
     console.log("current reference marker id: ", curReferenceMarkerId);
 
+    const { selectedFacts, setSelectedFacts } = useContext(
+        ReferenceMarkerContext,
+    );
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
@@ -88,7 +88,7 @@ export default function FactListCard({
 
         // Remove the fact from the selectedFacts map
         setSelectedFacts((prev) => {
-            const newMap = new Map(prev);
+            const newMap = new Map<number, number[]>(prev);
             for (const [key, value] of newMap.entries()) {
                 if (value.length === 0) continue;
                 console.log("key: ", key);
