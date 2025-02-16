@@ -218,6 +218,7 @@ export default function ReferenceMarkerProvider({
         };
     }, [handleSelection]);
 
+    // Add a fact to the current reference marker
     const addFactToReferenceMarker = (factIndex: number) => {
         setSelectedFacts((prev) => {
             const newMap = new Map(prev);
@@ -238,6 +239,7 @@ export default function ReferenceMarkerProvider({
         });
     };
 
+    // Remove a fact from the current reference marker
     const removeFactFromReferenceMarker = (factIndex: number) => {
         setSelectedFacts((prev) => {
             const newMap = new Map(prev);
