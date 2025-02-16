@@ -1,7 +1,7 @@
 "use client";
 
 import { Modal, Timeline } from "@mantine/core";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { type Dispatch, type SetStateAction, useMemo } from "react";
 import { ArrowDownIcon } from "@heroicons/react/16/solid";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";

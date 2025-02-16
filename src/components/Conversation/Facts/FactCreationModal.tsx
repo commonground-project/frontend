@@ -36,7 +36,7 @@ export default function FactCreationModal({
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
     const [debouncedUrl] = useDebouncedValue(url, 300);
-    const [isUrlValid, setIsUrlValid] = useState(false);
+    const [__isUrlValid, setIsUrlValid] = useState(false);
     const [references, setReferences] = useState<FactReferenceWithStatus[]>([]);
     const queryClient = useQueryClient();
     const [cookies] = useCookies(["auth_token"]);
