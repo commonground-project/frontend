@@ -134,7 +134,6 @@ export default function FactListCard({
 
         const selectedFact = data?.pages
             .flatMap((page) => page.content)
-            .flat()
             .find((fact) => fact.id === factId);
         if (!selectedFact) {
             throw new Error("Cannot select the selected fact");

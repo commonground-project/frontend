@@ -142,7 +142,7 @@ export default function ReferenceMarkerProvider({
     };
 
     // Get the selected reference marker, which the user wants to update
-    const getSelectedReferenceMarker = (range: Range) => {
+    const getSelectedReferenceMarker = useCallback((range: Range) => {
         const startMarkers = document.querySelectorAll(
             ".reference-marker.start",
         );
@@ -158,7 +158,7 @@ export default function ReferenceMarkerProvider({
             }
         }
         return selectedMarkerId;
-    };
+    }, []);
 
     // Handle selection change and add tooltip
     const handleSelection = useCallback(() => {
