@@ -70,7 +70,6 @@ export default function ReferenceMarkerProvider({
                 });
             });
 
-            console.log(countMap);
             countMap.forEach((nodes) => {
                 // If both start and end markers are removed, then the reference is fully removed
                 if (nodes.length === 3) return;
@@ -258,17 +257,17 @@ export default function ReferenceMarkerProvider({
         setSelectedFacts((prev) => {
             const newMap = new Map(prev);
             if (curReferenceMarkerId !== null) {
-                console.log("has marker id");
-                return newMap.set(curReferenceMarkerId, [
+                // Has marker id
+                newMap.set(curReferenceMarkerId, [
                     ...(newMap.get(curReferenceMarkerId) ?? []),
                     factIndex,
                 ]);
             } else {
+                // No marker id, new id = ", avaliableMarkerId
                 newMap.set(avaliableMarkerId, [
                     ...(newMap.get(avaliableMarkerId) ?? []),
                     factIndex,
                 ]);
-                console.log("no marker id, new id = ", avaliableMarkerId);
             }
             return newMap;
         });
@@ -301,7 +300,6 @@ export default function ReferenceMarkerProvider({
             const newMap = new Map<number, number[]>(prev);
             for (const [key, value] of newMap.entries()) {
                 if (value.length === 0) continue;
-                console.log("key: ", key);
                 newMap.set(
                     key,
                     value
