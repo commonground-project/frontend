@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useState, useRef, useEffect, useCallback } from "react";
-import type { Dispatch, SetStateAction } from "react";
 import {
     encapsuleReferenceMarker,
     decapsuleReferenceMarker,
@@ -10,26 +9,18 @@ import {
 
 export const ReferenceMarkerContext = createContext<{
     selectedFacts: Map<number, number[]>;
-    setSelectedFacts: Dispatch<SetStateAction<Map<number, number[]>>>;
     inSelectionMode: boolean;
-    setInSelectionMode: Dispatch<SetStateAction<boolean>>;
     curReferenceMarkerId: number | null;
-    setCurReferenceMarkerId: Dispatch<SetStateAction<number | null>>;
     avaliableMarkerId: number;
-    setAvaliableMarkerId: Dispatch<SetStateAction<number>>;
     inputRef: React.RefObject<HTMLDivElement | null>;
     addFactToReferenceMarker: (factIndex: number) => void;
     removeFactFromReferenceMarker: (factIndex: number) => void;
     removeFactFromAllReferenceMarker: (factIndex: number) => void;
 }>({
     selectedFacts: new Map().set(0, []),
-    setSelectedFacts: () => {},
     inSelectionMode: false,
-    setInSelectionMode: () => {},
     curReferenceMarkerId: null,
-    setCurReferenceMarkerId: () => {},
     avaliableMarkerId: 0,
-    setAvaliableMarkerId: () => {},
     inputRef: { current: null },
     addFactToReferenceMarker: () => {},
     removeFactFromReferenceMarker: () => {},
@@ -362,18 +353,14 @@ export default function ReferenceMarkerProvider({
     return (
         <ReferenceMarkerContext.Provider
             value={{
-                selectedFacts,
-                setSelectedFacts,
-                inSelectionMode,
-                setInSelectionMode,
-                curReferenceMarkerId,
-                setCurReferenceMarkerId,
-                avaliableMarkerId,
-                setAvaliableMarkerId,
-                inputRef,
-                addFactToReferenceMarker,
-                removeFactFromReferenceMarker,
-                removeFactFromAllReferenceMarker,
+                selectedFacts, //
+                inSelectionMode, //
+                curReferenceMarkerId, //
+                avaliableMarkerId, //
+                inputRef, //
+                addFactToReferenceMarker, //
+                removeFactFromReferenceMarker, //
+                removeFactFromAllReferenceMarker, //
             }}
         >
             {children}
