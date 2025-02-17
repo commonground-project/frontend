@@ -30,12 +30,12 @@ export default function FactListCard({
 }: FactListCardProps) {
     const {
         selectedFacts,
-        setSelectedFacts,
         inSelectionMode,
         curReferenceMarkerId,
         avaliableMarkerId,
         addFactToReferenceMarker,
         removeFactFromReferenceMarker,
+        removeFactFromAllReferenceMarker,
     } = useContext(ReferenceMarkerContext);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
@@ -80,44 +80,7 @@ export default function FactListCard({
             prev.filter((fact) => String(fact.id) !== factId),
         );
 
-        // Get current displayed reference markers id
-        const displayedReferenceMarkersId = Array.from(
-            document.querySelectorAll(".reference-marker.start"),
-        ).map((marker) => Number(marker.id));
-
-        // Remove the fact from the selectedFacts map
-        setSelectedFacts((prev) => {
-            const newMap = new Map<number, number[]>(prev);
-            for (const [key, value] of newMap.entries()) {
-                if (value.length === 0) continue;
-                console.log("key: ", key);
-                newMap.set(
-                    key,
-                    value
-                        .filter((idx) => idx !== factIndex)
-                        .map((idx) => (idx > factIndex ? idx - 1 : idx)),
-                );
-            }
-            return newMap;
-        });
-
-        // Update the reference counters
-        const newMap = new Map(selectedFacts);
-        for (const [key, value] of newMap.entries()) {
-            if (value.length === 0) continue;
-            newMap.set(
-                key,
-                value
-                    .filter((idx) => idx !== factIndex)
-                    .map((idx) => (idx > factIndex ? idx - 1 : idx)),
-            );
-        }
-        displayedReferenceMarkersId.forEach((id) => {
-            updateReferenceCounter({
-                referenceMarkerId: String(id),
-                referencedIndexes: newMap.get(id) ?? [],
-            });
-        });
+        removeFactFromAllReferenceMarker(factIndex);
     };
 
     //add the selected fact to the viewpointFactList

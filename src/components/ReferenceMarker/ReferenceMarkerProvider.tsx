@@ -20,6 +20,7 @@ export const ReferenceMarkerContext = createContext<{
     inputRef: React.RefObject<HTMLDivElement | null>;
     addFactToReferenceMarker: (factIndex: number) => void;
     removeFactFromReferenceMarker: (factIndex: number) => void;
+    removeFactFromAllReferenceMarker: (factIndex: number) => void;
 }>({
     selectedFacts: new Map().set(0, []),
     setSelectedFacts: () => {},
@@ -32,6 +33,7 @@ export const ReferenceMarkerContext = createContext<{
     inputRef: { current: null },
     addFactToReferenceMarker: () => {},
     removeFactFromReferenceMarker: () => {},
+    removeFactFromAllReferenceMarker: () => {},
 });
 
 export default function ReferenceMarkerProvider({
@@ -314,6 +316,49 @@ export default function ReferenceMarkerProvider({
         });
     };
 
+    // Remove the fact from the imported FactList
+    // and update all the reference markers
+    const removeFactFromAllReferenceMarker = (factIndex: number) => {
+        // Get current displayed reference markers id
+        const displayedReferenceMarkersId = Array.from(
+            document.querySelectorAll(".reference-marker.start"),
+        ).map((marker) => Number(marker.id));
+
+        // Remove the fact from the selectedFacts map
+        setSelectedFacts((prev) => {
+            const newMap = new Map<number, number[]>(prev);
+            for (const [key, value] of newMap.entries()) {
+                if (value.length === 0) continue;
+                console.log("key: ", key);
+                newMap.set(
+                    key,
+                    value
+                        .filter((idx) => idx !== factIndex)
+                        .map((idx) => (idx > factIndex ? idx - 1 : idx)),
+                );
+            }
+            return newMap;
+        });
+
+        // Update the reference counters
+        const newMap = new Map(selectedFacts);
+        for (const [key, value] of newMap.entries()) {
+            if (value.length === 0) continue;
+            newMap.set(
+                key,
+                value
+                    .filter((idx) => idx !== factIndex)
+                    .map((idx) => (idx > factIndex ? idx - 1 : idx)),
+            );
+        }
+        displayedReferenceMarkersId.forEach((id) => {
+            updateReferenceCounter({
+                referenceMarkerId: String(id),
+                referencedIndexes: newMap.get(id) ?? [],
+            });
+        });
+    };
+
     return (
         <ReferenceMarkerContext.Provider
             value={{
@@ -328,6 +373,7 @@ export default function ReferenceMarkerProvider({
                 inputRef,
                 addFactToReferenceMarker,
                 removeFactFromReferenceMarker,
+                removeFactFromAllReferenceMarker,
             }}
         >
             {children}
