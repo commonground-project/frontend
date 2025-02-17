@@ -1,27 +1,12 @@
 "use client";
 
-import { createContext, useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
     encapsuleReferenceMarker,
     decapsuleReferenceMarker,
     updateReferenceCounter,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
-
-export const ReferenceMarkerContext = createContext<{
-    inSelectionMode: boolean;
-    inputRef: React.RefObject<HTMLDivElement | null>;
-    addFactToReferenceMarker: (factIndex: number) => void;
-    removeFactFromReferenceMarker: (factIndex: number) => void;
-    removeFactFromAllReferenceMarker: (factIndex: number) => void;
-    getCurSelectedFacts: () => number[];
-}>({
-    inSelectionMode: false,
-    inputRef: { current: null },
-    addFactToReferenceMarker: () => {},
-    removeFactFromReferenceMarker: () => {},
-    removeFactFromAllReferenceMarker: () => {},
-    getCurSelectedFacts: () => [],
-});
+import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
 export default function ReferenceMarkerProvider({
     children,

@@ -5,7 +5,7 @@ import { useState, useEffect, useContext } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
-import { ReferenceMarkerContext } from "@/components/ReferenceMarker/ReferenceMarkerProvider";
+import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
 type ViewpointCardProps = {
     issueId: string;
