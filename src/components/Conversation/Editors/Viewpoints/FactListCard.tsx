@@ -28,13 +28,11 @@ export default function FactListCard({
     setViewpointFactList,
 }: FactListCardProps) {
     const {
-        selectedFacts,
         inSelectionMode,
-        curReferenceMarkerId,
-        avaliableMarkerId,
         addFactToReferenceMarker,
         removeFactFromReferenceMarker,
         removeFactFromAllReferenceMarker,
+        getCurSelectedFacts,
     } = useContext(ReferenceMarkerContext);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
@@ -79,6 +77,7 @@ export default function FactListCard({
             prev.filter((fact) => String(fact.id) !== factId),
         );
 
+        // Update Reference Markers
         removeFactFromAllReferenceMarker(factIndex);
     };
 
@@ -171,15 +170,7 @@ export default function FactListCard({
                             fact={fact}
                             removeFact={removeFact}
                             inSelectionMode={inSelectionMode}
-                            isSelected={
-                                curReferenceMarkerId === null
-                                    ? (selectedFacts
-                                          .get(avaliableMarkerId)
-                                          ?.includes(index) ?? false)
-                                    : (selectedFacts
-                                          .get(curReferenceMarkerId)
-                                          ?.includes(index) ?? false)
-                            }
+                            isSelected={getCurSelectedFacts().includes(index)}
                             setIsSelected={(isSelected) => {
                                 if (isSelected) {
                                     addFactToReferenceMarker(index);

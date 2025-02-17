@@ -8,23 +8,19 @@ import {
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 
 export const ReferenceMarkerContext = createContext<{
-    selectedFacts: Map<number, number[]>;
     inSelectionMode: boolean;
-    curReferenceMarkerId: number | null;
-    avaliableMarkerId: number;
     inputRef: React.RefObject<HTMLDivElement | null>;
     addFactToReferenceMarker: (factIndex: number) => void;
     removeFactFromReferenceMarker: (factIndex: number) => void;
     removeFactFromAllReferenceMarker: (factIndex: number) => void;
+    getCurSelectedFacts: () => number[];
 }>({
-    selectedFacts: new Map().set(0, []),
     inSelectionMode: false,
-    curReferenceMarkerId: null,
-    avaliableMarkerId: 0,
     inputRef: { current: null },
     addFactToReferenceMarker: () => {},
     removeFactFromReferenceMarker: () => {},
     removeFactFromAllReferenceMarker: () => {},
+    getCurSelectedFacts: () => [],
 });
 
 export default function ReferenceMarkerProvider({
@@ -350,17 +346,24 @@ export default function ReferenceMarkerProvider({
         });
     };
 
+    // Get the selected facts for current selected reference marker as array
+    const getCurSelectedFacts = () => {
+        // If curReferenceMarkerId is null, use the avaliableMarkerId
+        // Which means a new reference marker is being created
+        return curReferenceMarkerId === null
+            ? (selectedFacts.get(avaliableMarkerId) ?? [])
+            : (selectedFacts.get(curReferenceMarkerId) ?? []);
+    };
+
     return (
         <ReferenceMarkerContext.Provider
             value={{
-                selectedFacts, //
-                inSelectionMode, //
-                curReferenceMarkerId, //
-                avaliableMarkerId, //
-                inputRef, //
-                addFactToReferenceMarker, //
-                removeFactFromReferenceMarker, //
-                removeFactFromAllReferenceMarker, //
+                inSelectionMode,
+                inputRef,
+                addFactToReferenceMarker,
+                removeFactFromReferenceMarker,
+                removeFactFromAllReferenceMarker,
+                getCurSelectedFacts,
             }}
         >
             {children}
