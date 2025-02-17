@@ -98,60 +98,6 @@ export default function ViewpointCard({
         return selectedMarkerId;
     };
 
-    useEffect(() => {
-        if (inputRef?.current === null) return;
-        const selection = window.getSelection();
-        // If there is no selection or the selection is collapsed, stop processing
-        if (!selection || selection.isCollapsed) return;
-
-        const range = selection.getRangeAt(0);
-
-        // Check if the selection overlaps with an existing reference marker
-        // If it does, we assume the user wants to update that marker
-        const selectedMarkerId = getSelectedReferenceMarker(range);
-
-        if (selectedMarkerId) {
-            // selected a existing marker, update the facts
-            const facts = selectedFacts.get(Number(selectedMarkerId));
-            if (!facts) {
-                console.error("marker id not setup: ", selectedMarkerId);
-                return;
-            }
-            if (facts.length === 0) {
-                // if no fact is selected, remove the marker
-                decapsuleReferenceMarker({
-                    referenceMarkerId: selectedMarkerId,
-                });
-                return;
-            }
-            // update the reference counter
-            updateReferenceCounter({
-                referenceMarkerId: selectedMarkerId,
-                referencedIndexes: facts,
-            });
-        } else {
-            // selected a new range, create a new marker
-            if (curReferenceMarkerId === null) {
-                const facts = selectedFacts.get(avaliableMarkerId);
-                if (!facts) {
-                    console.error("marker id not setup: ", avaliableMarkerId);
-                    return;
-                }
-                if (facts.length === 0) return;
-                encapsuleReferenceMarker({
-                    range,
-                    referenceMarkerId: String(avaliableMarkerId),
-                    referencedIndexes: facts,
-                });
-                setAvaliableMarkerId((prev) => prev + 1);
-            }
-        }
-
-        // Preserve the selection
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }, [selectedFacts]);
-
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <Toaster />
