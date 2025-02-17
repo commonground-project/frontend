@@ -4,11 +4,6 @@ import { Button, TextInput } from "@mantine/core";
 import { useState, useEffect, useContext } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
-import {
-    encapsuleReferenceMarker,
-    decapsuleReferenceMarker,
-    updateReferenceCounter,
-} from "@/lib/referenceMarker/referenceMarkerEditors";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 import { ReferenceMarkerContext } from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 
@@ -27,13 +22,7 @@ export default function ViewpointCard({
     publishViewpoint,
     pendingPublish,
 }: ViewpointCardProps) {
-    const {
-        selectedFacts,
-        curReferenceMarkerId,
-        avaliableMarkerId,
-        setAvaliableMarkerId,
-        inputRef,
-    } = useContext(ReferenceMarkerContext);
+    const { inputRef } = useContext(ReferenceMarkerContext);
 
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
 
@@ -58,44 +47,6 @@ export default function ViewpointCard({
         const content = phraseReferencedContent(inputRef.current);
 
         publishViewpoint(content);
-    };
-
-    const rangeOverlaps = (
-        range: Range,
-        startMarker: Node,
-        endMarker: Node,
-    ) => {
-        const referenceMarkerRange = document.createRange();
-        referenceMarkerRange.setStart(startMarker, 0);
-        referenceMarkerRange.setEnd(endMarker, endMarker.childNodes.length);
-        return (
-            range.compareBoundaryPoints(
-                Range.END_TO_START,
-                referenceMarkerRange,
-            ) < 0 &&
-            range.compareBoundaryPoints(
-                Range.START_TO_END,
-                referenceMarkerRange,
-            ) > 0
-        );
-    };
-
-    const getSelectedReferenceMarker = (range: Range) => {
-        const startMarkers = document.querySelectorAll(
-            ".reference-marker.start",
-        );
-        const endMarkers = document.querySelectorAll(".reference-marker.end");
-
-        let selectedMarkerId: string | null = null;
-        if (startMarkers.length > 0) {
-            for (let i = 0; i < startMarkers.length; i++) {
-                if (rangeOverlaps(range, startMarkers[i], endMarkers[i])) {
-                    selectedMarkerId = startMarkers[i].id;
-                    break;
-                }
-            }
-        }
-        return selectedMarkerId;
     };
 
     return (
