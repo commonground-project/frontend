@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -10,9 +10,9 @@ import { Select, Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
-import { updateReferenceCounter } from "@/lib/utils/referenceMarker/referenceMarkerEditors";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
 import type { Fact } from "@/types/conversations.types";
 
@@ -20,24 +20,20 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
-    inSelectionMode: boolean;
-    selectedFacts: Map<number, number[]>;
-    setSelectedFacts: Dispatch<SetStateAction<Map<number, number[]>>>;
-    curReferenceMarkerId: number | null;
-    avaliableMarkerId: number;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
-    inSelectionMode,
-    selectedFacts,
-    setSelectedFacts,
-    curReferenceMarkerId,
-    avaliableMarkerId,
 }: FactListCardProps) {
-    console.log("current reference marker id: ", curReferenceMarkerId);
+    const {
+        inSelectionMode,
+        addFactToReferenceMarker,
+        removeFactFromReferenceMarker,
+        removeFactFromAllReferenceMarker,
+        getCurSelectedFacts,
+    } = useContext(ReferenceMarkerContext);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
@@ -81,44 +77,8 @@ export default function FactListCard({
             prev.filter((fact) => String(fact.id) !== factId),
         );
 
-        // Get current displayed reference markers id
-        const displayedReferenceMarkersId = Array.from(
-            document.querySelectorAll(".reference-marker.start"),
-        ).map((marker) => Number(marker.id));
-
-        // Remove the fact from the selectedFacts map
-        setSelectedFacts((prev) => {
-            const newMap = new Map(prev);
-            for (const [key, value] of newMap.entries()) {
-                if (value.length === 0) continue;
-                console.log("key: ", key);
-                newMap.set(
-                    key,
-                    value
-                        .filter((idx) => idx !== factIndex)
-                        .map((idx) => (idx > factIndex ? idx - 1 : idx)),
-                );
-            }
-            return newMap;
-        });
-
-        // Update the reference counters
-        const newMap = new Map(selectedFacts);
-        for (const [key, value] of newMap.entries()) {
-            if (value.length === 0) continue;
-            newMap.set(
-                key,
-                value
-                    .filter((idx) => idx !== factIndex)
-                    .map((idx) => (idx > factIndex ? idx - 1 : idx)),
-            );
-        }
-        displayedReferenceMarkersId.forEach((id) => {
-            updateReferenceCounter({
-                referenceMarkerId: String(id),
-                referencedIndexes: newMap.get(id) ?? [],
-            });
-        });
+        // Update Reference Markers
+        removeFactFromAllReferenceMarker(factIndex);
     };
 
     //add the selected fact to the viewpointFactList
@@ -135,7 +95,6 @@ export default function FactListCard({
 
         const selectedFact = data?.pages
             .flatMap((page) => page.content)
-            .flat()
             .find((fact) => fact.id === factId);
         if (!selectedFact) {
             throw new Error("Cannot select the selected fact");
@@ -211,57 +170,12 @@ export default function FactListCard({
                             fact={fact}
                             removeFact={removeFact}
                             inSelectionMode={inSelectionMode}
-                            isSelected={
-                                curReferenceMarkerId === null
-                                    ? (selectedFacts
-                                          .get(avaliableMarkerId)
-                                          ?.includes(index) ?? false)
-                                    : (selectedFacts
-                                          .get(curReferenceMarkerId)
-                                          ?.includes(index) ?? false)
-                            }
+                            isSelected={getCurSelectedFacts().includes(index)}
                             setIsSelected={(isSelected) => {
                                 if (isSelected) {
-                                    setSelectedFacts((prev) => {
-                                        const newMap = new Map(prev);
-                                        if (curReferenceMarkerId !== null) {
-                                            console.log("has marker id");
-                                            return newMap.set(
-                                                curReferenceMarkerId,
-                                                [
-                                                    ...(newMap.get(
-                                                        curReferenceMarkerId,
-                                                    ) ?? []),
-                                                    index,
-                                                ],
-                                            );
-                                        } else {
-                                            newMap.set(avaliableMarkerId, [
-                                                ...(newMap.get(
-                                                    avaliableMarkerId,
-                                                ) ?? []),
-                                                index,
-                                            ]);
-                                            console.log(
-                                                "no marker id, new id = ",
-                                                avaliableMarkerId,
-                                            );
-                                        }
-                                        return newMap;
-                                    });
+                                    addFactToReferenceMarker(index);
                                 } else {
-                                    setSelectedFacts((prev) => {
-                                        const newMap = new Map(prev);
-                                        if (curReferenceMarkerId !== null)
-                                            newMap.set(curReferenceMarkerId, [
-                                                ...(newMap
-                                                    .get(curReferenceMarkerId)
-                                                    ?.filter(
-                                                        (id) => id !== index,
-                                                    ) ?? []),
-                                            ]);
-                                        return newMap;
-                                    });
+                                    removeFactFromReferenceMarker(index);
                                 }
                             }}
                         />

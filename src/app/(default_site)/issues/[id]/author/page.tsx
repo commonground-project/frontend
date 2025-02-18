@@ -14,6 +14,7 @@ import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
+import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
@@ -25,14 +26,6 @@ export default function AuthorViewpoint() {
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
-    const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
-    const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
-        new Map().set(0, []),
-    );
-    const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
-        number | null
-    >(null);
-    const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
 
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
@@ -120,33 +113,26 @@ export default function AuthorViewpoint() {
             </Link>
             <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
-                <div className="w-2/3">
-                    <ViewpointCard
-                        issueId={issueId}
-                        viewpointTitle={viewpointTitle}
-                        setViewpointTitle={setViewpointTitle}
-                        publishViewpoint={publishViewpoint}
-                        pendingPublish={postNewViewpoint.status === "pending"}
-                        setInSelectionMode={setInSelectionMode}
-                        selectedFacts={selectedFacts}
-                        curReferenceMarkerId={curReferenceMarkerId}
-                        setCurReferenceMarkerId={setCurReferenceMarkerId}
-                        avaliableMarkerId={avaliableMarkerId}
-                        setAvaliableMarkerId={setAvaliableMarkerId}
-                    />
-                </div>
-                <div className="w-1/3">
-                    <FactListCard
-                        issueId={issueId}
-                        viewpointFactList={viewpointFactList}
-                        setViewpointFactList={setViewpointFactList}
-                        inSelectionMode={inSelectionMode}
-                        selectedFacts={selectedFacts}
-                        setSelectedFacts={setSelectedFacts}
-                        curReferenceMarkerId={curReferenceMarkerId}
-                        avaliableMarkerId={avaliableMarkerId}
-                    />
-                </div>
+                <ReferenceMarkerProvider>
+                    <div className="w-2/3">
+                        <ViewpointCard
+                            issueId={issueId}
+                            viewpointTitle={viewpointTitle}
+                            setViewpointTitle={setViewpointTitle}
+                            publishViewpoint={publishViewpoint}
+                            pendingPublish={
+                                postNewViewpoint.status === "pending"
+                            }
+                        />
+                    </div>
+                    <div className="w-1/3">
+                        <FactListCard
+                            issueId={issueId}
+                            viewpointFactList={viewpointFactList}
+                            setViewpointFactList={setViewpointFactList}
+                        />
+                    </div>
+                </ReferenceMarkerProvider>
             </div>
         </main>
     );
