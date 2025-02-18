@@ -87,6 +87,17 @@ export function encapsuleReferenceMarker({
     referencedIndexes,
     referenceMarkerId,
 }: encapsuleReferenceMarkerParams) {
+    // Check if the reference marker already exists
+    const referenceMarkers = document.querySelectorAll(
+        `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker`,
+    );
+    if (referenceMarkers.length > 0) {
+        console.error(
+            `reference marker of id=${referenceMarkerId} already exists`,
+        );
+        return;
+    }
+
     // Create the element to insert at the start of the range
     const startElement = generateReferenceMarker({
         id: referenceMarkerId,
