@@ -217,14 +217,6 @@ export default function ReferenceMarkerProvider({
                 console.error("marker id not setup: ", selectedMarkerId);
                 return;
             }
-            if (facts.length === 0) {
-                // if no fact is selected, remove the marker
-                decapsuleReferenceMarker({
-                    referenceMarkerId: selectedMarkerId,
-                });
-                return;
-            }
-            // update the reference counter
             updateReferenceCounter({
                 referenceMarkerId: selectedMarkerId,
                 referencedIndexes: facts,
