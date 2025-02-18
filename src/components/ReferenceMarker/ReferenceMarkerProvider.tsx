@@ -196,114 +196,81 @@ export default function ReferenceMarkerProvider({
         };
     }, [handleSelection]);
 
-    // Update the current selected reference marker according to the selection
-    // every time the selectedFacts changes
-    useEffect(() => {
-        if (inputRef?.current === null) return;
-        const selection = window.getSelection();
-        // If there is no selection or the selection is collapsed, stop processing
-        if (!selection || selection.isCollapsed) return;
-
-        const range = selection.getRangeAt(0);
-
-        // Check if the selection overlaps with an existing reference marker
-        // If it does, we assume the user wants to update that marker
-        const selectedMarkerId = getSelectedReferenceMarker(range);
-
-        if (selectedMarkerId) {
-            // selected a existing marker, update the facts
-            const facts = selectedFacts.get(Number(selectedMarkerId));
-            if (!facts) {
-                console.error("marker id not setup: ", selectedMarkerId);
-                return;
-            }
-            updateReferenceCounter({
-                referenceMarkerId: selectedMarkerId,
-                referencedIndexes: facts,
-            });
-        } else {
-            // selected a new range, create a new marker
-            if (curReferenceMarkerId === null) {
-                const facts = selectedFacts.get(avaliableMarkerId);
-                if (!facts) {
-                    console.error("marker id not setup: ", avaliableMarkerId);
-                    return;
-                }
-                if (facts.length === 0) return;
-                encapsuleReferenceMarker({
-                    range,
-                    referenceMarkerId: String(avaliableMarkerId),
-                    referencedIndexes: facts,
-                });
-                setAvaliableMarkerId((prev) => prev + 1);
-            }
-        }
-
-        // Preserve the selection
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }, [selectedFacts]);
-
     // Add a fact to the current reference marker
     const addFactToReferenceMarker = (factIndex: number) => {
-        setSelectedFacts((prev) => {
-            const newMap = new Map(prev);
-            if (curReferenceMarkerId !== null) {
-                // Has marker id
-                newMap.set(curReferenceMarkerId, [
-                    ...(newMap.get(curReferenceMarkerId) ?? []),
-                    factIndex,
-                ]);
-            } else {
-                // No marker id, new id = ", avaliableMarkerId
-                newMap.set(avaliableMarkerId, [
-                    ...(newMap.get(avaliableMarkerId) ?? []),
-                    factIndex,
-                ]);
+        const newMap = new Map(selectedFacts);
+
+        // Has marker id
+        if (curReferenceMarkerId !== null) {
+            // Add the fact to the selectedFacts map
+            const existingFacts = newMap.get(curReferenceMarkerId) ?? [];
+            if (!existingFacts.includes(factIndex)) {
+                newMap.set(curReferenceMarkerId, [...existingFacts, factIndex]);
             }
-            return newMap;
-        });
+
+            // Update the selected reference counter
+            updateReferenceCounter({
+                referenceMarkerId: String(curReferenceMarkerId),
+                referencedIndexes: newMap.get(curReferenceMarkerId) ?? [],
+            });
+        }
+
+        // No marker id, new id = avaliableMarkerId
+        else {
+            // Add the fact to the selectedFacts map
+            const existingFacts = newMap.get(avaliableMarkerId) ?? [];
+            if (!existingFacts.includes(factIndex)) {
+                newMap.set(avaliableMarkerId, [...existingFacts, factIndex]);
+            }
+
+            // Update the selected area with the new reference marker
+            const selection = window.getSelection();
+            if (!selection) return;
+            const range = selection.getRangeAt(0);
+            encapsuleReferenceMarker({
+                range,
+                referenceMarkerId: String(avaliableMarkerId),
+                referencedIndexes: newMap.get(avaliableMarkerId) ?? [],
+            });
+            setAvaliableMarkerId((prev) => prev + 1);
+        }
+
+        // Update the selected facts state
+        setSelectedFacts(newMap);
     };
 
     // Remove a fact from the current reference marker
     const removeFactFromReferenceMarker = (factIndex: number) => {
-        setSelectedFacts((prev) => {
-            const newMap = new Map(prev);
-            if (curReferenceMarkerId !== null)
-                newMap.set(curReferenceMarkerId, [
-                    ...(newMap
-                        .get(curReferenceMarkerId)
-                        ?.filter((id) => id !== factIndex) ?? []),
-                ]);
-            return newMap;
+        // If curReferenceMarkerId is null, return. There is no reference marker to remove the fact from
+        if (curReferenceMarkerId === null) {
+            console.error("No reference marker to remove the fact from");
+            return;
+        }
+
+        // Remove the fact from the selectedFacts map
+        const newMap = new Map(selectedFacts);
+        if (curReferenceMarkerId !== null)
+            newMap.set(curReferenceMarkerId, [
+                ...(newMap
+                    .get(curReferenceMarkerId)
+                    ?.filter((id) => id !== factIndex) ?? []),
+            ]);
+
+        // Update the selected reference counter
+        updateReferenceCounter({
+            referenceMarkerId: String(curReferenceMarkerId),
+            referencedIndexes: newMap.get(curReferenceMarkerId) ?? [],
         });
+
+        // Update the selected facts state
+        setSelectedFacts(newMap);
     };
 
     // Remove the fact from the imported FactList
     // and update all the reference markers
     const removeFactFromAllReferenceMarker = (factIndex: number) => {
-        // Get current displayed reference markers id
-        const displayedReferenceMarkersId = Array.from(
-            document.querySelectorAll(".reference-marker.start"),
-        ).map((marker) => Number(marker.id));
-
         // Remove the fact from the selectedFacts map
-        setSelectedFacts((prev) => {
-            const newMap = new Map<number, number[]>(prev);
-            for (const [key, value] of newMap.entries()) {
-                if (value.length === 0) continue;
-                newMap.set(
-                    key,
-                    value
-                        .filter((idx) => idx !== factIndex)
-                        .map((idx) => (idx > factIndex ? idx - 1 : idx)),
-                );
-            }
-            return newMap;
-        });
-
-        // Update the reference counters
-        const newMap = new Map(selectedFacts);
+        const newMap = new Map<number, number[]>(selectedFacts);
         for (const [key, value] of newMap.entries()) {
             if (value.length === 0) continue;
             newMap.set(
@@ -313,12 +280,22 @@ export default function ReferenceMarkerProvider({
                     .map((idx) => (idx > factIndex ? idx - 1 : idx)),
             );
         }
+
+        // Get current displayed reference markers id
+        const displayedReferenceMarkersId = Array.from(
+            document.querySelectorAll(".reference-marker.start"),
+        ).map((marker) => Number(marker.id));
+
+        // Update the existing reference counters
         displayedReferenceMarkersId.forEach((id) => {
             updateReferenceCounter({
                 referenceMarkerId: String(id),
                 referencedIndexes: newMap.get(id) ?? [],
             });
         });
+
+        // Update the selected facts state
+        setSelectedFacts(newMap);
     };
 
     // Get the selected facts for current selected reference marker as array
