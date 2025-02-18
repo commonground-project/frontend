@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
     encapsuleReferenceMarker,
-    decapsuleReferenceMarker,
     updateReferenceCounter,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
