@@ -99,17 +99,16 @@ export default function AuthProvider({
     useEffect(() => {
         if (!decodedToken) return;
 
-        const timeout = setTimeout(
-            () => {
-                if (
-                    !cookies.auth_refresh_token ||
-                    refreshTokenMutation.isPending
-                )
-                    return;
-                refreshTokenMutation.mutate(cookies.auth_refresh_token);
-            },
+        const expirationTime = Math.min(
             decodedToken.exp * 1000 - Date.now() - 30000,
+            2147483647,
         );
+
+        const timeout = setTimeout(() => {
+            if (!cookies.auth_refresh_token || refreshTokenMutation.isPending)
+                return;
+            refreshTokenMutation.mutate(cookies.auth_refresh_token);
+        }, expirationTime);
         return () => clearTimeout(timeout);
     }, [cookies.auth_refresh_token, decodedToken, refreshTokenMutation]);
 
