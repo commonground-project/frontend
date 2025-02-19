@@ -107,8 +107,7 @@ export default function AuthProvider({
         const timeout = setTimeout(() => {
             if (!cookies.auth_refresh_token || refreshTokenMutation.isPending)
                 return;
-            expirationTime;
-        });
+        }, expirationTime);
         return () => clearTimeout(timeout);
     }, [cookies.auth_refresh_token, decodedToken, refreshTokenMutation]);
 
