@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getIssueByID } from "@/lib/requests/issues/getIssueById";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
