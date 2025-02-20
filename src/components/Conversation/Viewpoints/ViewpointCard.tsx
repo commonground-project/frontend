@@ -16,7 +16,10 @@ export default function ViewpointCard({
     viewpoint,
 }: ViewpointCardProps) {
     return (
-        <Link href={`/issues/${issueId}/viewpoints/${viewpoint.id}`}>
+        <Link
+            href={`/issues/${issueId}/viewpoints/${viewpoint.id}`}
+            id={viewpoint.id}
+        >
             <AuthorProfile
                 authorName={viewpoint.authorName}
                 authorAvatar={viewpoint.authorAvatar}

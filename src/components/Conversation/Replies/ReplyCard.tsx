@@ -13,7 +13,7 @@ type ReplyCardProps = {
 
 export default function ReplyCard({ reply, ref }: ReplyCardProps) {
     return (
-        <div ref={ref}>
+        <div ref={ref} id={reply.id}>
             <AuthorProfile
                 authorName={reply.authorName}
                 authorAvatar={reply.authorAvatar}
