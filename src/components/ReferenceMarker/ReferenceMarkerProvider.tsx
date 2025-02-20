@@ -60,7 +60,10 @@ export default function ReferenceMarkerProvider({
                                 "reference-counter",
                             ))
                     ) {
-                        const id = (node as HTMLElement).id;
+                        const id =
+                            (node as HTMLElement).getAttribute(
+                                "data-marker-id",
+                            ) ?? "";
 
                         if (!countMap.has(id)) countMap.set(id, []);
                         const cloneNode = node.cloneNode(true);
@@ -124,7 +127,8 @@ export default function ReferenceMarkerProvider({
         if (startMarkers.length > 0) {
             for (let i = 0; i < startMarkers.length; i++) {
                 if (rangeOverlaps(range, startMarkers[i], endMarkers[i])) {
-                    selectedMarkerId = startMarkers[i].id;
+                    selectedMarkerId =
+                        startMarkers[i].getAttribute("data-marker-id");
                     break;
                 }
             }
@@ -283,7 +287,7 @@ export default function ReferenceMarkerProvider({
         // Get current displayed reference markers id
         const displayedReferenceMarkersId = Array.from(
             document.querySelectorAll(".reference-marker.start"),
-        ).map((marker) => Number(marker.id));
+        ).map((marker) => Number(marker.getAttribute("data-marker-id")));
 
         // Update the existing reference counters
         displayedReferenceMarkersId.forEach((id) => {

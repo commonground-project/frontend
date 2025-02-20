@@ -73,7 +73,7 @@ function generateReferenceMarker({
     type: "start" | "end";
 }) {
     const ReferenceMarkerElement = document.createElement("span");
-    ReferenceMarkerElement.id = id;
+    ReferenceMarkerElement.dataset.markerId = id;
     ReferenceMarkerElement.className = `reference-marker ${type}`;
     ReferenceMarkerElement.style.display = "none";
     ReferenceMarkerElement.contentEditable = "false";
@@ -89,7 +89,7 @@ export function encapsuleReferenceMarker({
 }: encapsuleReferenceMarkerParams) {
     // Check if the reference marker already exists
     const referenceMarkers = document.querySelectorAll(
-        `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker`,
+        `[data-marker-id="${referenceMarkerId}"].reference-marker`,
     );
     if (referenceMarkers.length > 0) {
         console.error(
@@ -148,7 +148,7 @@ export function updateReferenceCounter({
     }
 
     const referenceCounter = document.querySelector(
-        `#\\3${referenceMarkerId.split("").join(" ")}.reference-counter`,
+        `[data-marker-id="${referenceMarkerId}"].reference-counter`,
     );
     if (referenceCounter) {
         (referenceCounter as HTMLElement).innerText =
@@ -158,7 +158,7 @@ export function updateReferenceCounter({
     // Reference marker not found, create a new one
     // Find the end reference marker in the document
     const referenceMarkerEnd = document.querySelector(
-        `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker.end`,
+        `[data-marker-id="${referenceMarkerId}"].reference-marker.end`,
     );
     if (!referenceMarkerEnd) {
         console.error("end reference marker not found");
@@ -168,7 +168,7 @@ export function updateReferenceCounter({
     newReferenceCounter.className = "reference-counter";
     newReferenceCounter.style.color = "#10B981";
     newReferenceCounter.contentEditable = "false";
-    newReferenceCounter.id = referenceMarkerId;
+    newReferenceCounter.dataset.markerId = referenceMarkerId;
     newReferenceCounter.innerText =
         " " + referencedIndexes.map((num) => `[${num + 1}]`).join("");
 
@@ -190,7 +190,7 @@ export function decapsuleReferenceMarker({
 
     // Find every reference marker
     const referenceMarkers = document.querySelectorAll(
-        `#\\3${referenceMarkerId.split("").join(" ")}.reference-marker`,
+        `[data-marker-id="${referenceMarkerId}"].reference-marker`,
     );
     if (referenceMarkers.length === 0) {
         console.error(
@@ -201,7 +201,7 @@ export function decapsuleReferenceMarker({
 
     // Find reference counter
     const referenceCounter = document.querySelectorAll(
-        `#\\3${referenceMarkerId.split("").join(" ")}.reference-counter`,
+        `[data-marker-id="${referenceMarkerId}"].reference-counter`,
     );
     if (referenceCounter.length === 0) {
         console.error(`reference counter of id ${referenceMarkerId}not found`);
