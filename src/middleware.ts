@@ -5,7 +5,7 @@ import { refreshJwtRequest } from "./lib/requests/auth/refreshJwt";
 import { decodeToken } from "react-jwt";
 import type { DecodedToken } from "./types/users.types";
 
-const protectedPaths = ["/", "/onboarding"];
+const protectedPaths = ["/onboarding"];
 
 export async function middleware(request: NextRequest) {
     const userToken = request.cookies.get("auth_token");
