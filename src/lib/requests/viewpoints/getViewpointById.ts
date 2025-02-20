@@ -4,7 +4,7 @@ import { generateRequestHeaders } from "../generateRequestHeaders";
 
 export const getViewpointByID = async (
     id: string,
-    auth_token: string,
+    auth_token?: string,
 ): Promise<ViewPoint> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${id}`,

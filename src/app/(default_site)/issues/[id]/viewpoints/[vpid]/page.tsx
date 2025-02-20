@@ -29,7 +29,6 @@ export async function generateMetadata({ params }: ViewpointPageProps) {
 export default async function ViewpointPage({ params }: ViewpointPageProps) {
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token");
-    if (!auth_token) return redirect("/login");
 
     const pageParams = await params;
     if (!pageParams.id || !pageParams.vpid) return notFound();
@@ -37,7 +36,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
     let issue: Issue | null = null;
 
     try {
-        issue = await getIssueByID(pageParams.id, auth_token.value);
+        issue = await getIssueByID(pageParams.id, auth_token?.value);
     } catch (error: any) {
         if (error.status === 404) return notFound();
         throw error;
@@ -46,7 +45,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
     let viewpoint: ViewPoint | null = null;
 
     try {
-        viewpoint = await getViewpointByID(pageParams.vpid, auth_token.value);
+        viewpoint = await getViewpointByID(pageParams.vpid, auth_token?.value);
     } catch (error: any) {
         if (error.status === 404) return notFound();
         throw error;
