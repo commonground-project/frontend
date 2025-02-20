@@ -23,9 +23,9 @@ export default function AuthorProfile({
         const diffInDays = Math.floor(diffInHours / 24);
 
         if (diffInSeconds < 60) return "剛剛";
-        if (diffInMinutes < 60) return `${diffInMinutes}分鐘前`;
-        if (diffInHours < 24) return `${diffInHours}小時前`;
-        if (diffInDays < 7) return `${diffInDays}天前`;
+        if (diffInMinutes < 60) return `${diffInMinutes} 分鐘前`;
+        if (diffInHours < 24) return `${diffInHours} 小時前`;
+        if (diffInDays < 7) return `${diffInDays} 天前`;
 
         // Show absolute date if older than a week
         return date.toLocaleDateString();
