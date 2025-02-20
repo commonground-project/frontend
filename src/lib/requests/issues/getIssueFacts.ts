@@ -15,13 +15,13 @@ export type PaginatedIssueFactsByIdResponse = {
 export const getPaginatedIssueFactsById = async (
     issueid: string,
     pageParam: number,
-    userToken?: string,
+    auth_token?: string,
 ): Promise<PaginatedIssueFactsByIdResponse> => {
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueid}/facts?page=${pageParam}&size=10`,
         {
             method: "GET",
-            headers: generateRequestHeaders(userToken),
+            headers: generateRequestHeaders(auth_token),
         },
     );
     return res.json();
@@ -30,14 +30,14 @@ export const getPaginatedIssueFactsById = async (
 export const getPaginatedIssueFactsBySize = async (
     issueid: string,
     pageParam: number,
-    userToken?: string,
+    auth_token?: string,
     size: number = 10,
 ): Promise<PaginatedIssueFactsByIdResponse> => {
     return fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueid}/facts?page=${pageParam}&size=${size}`,
         {
             method: "GET",
-            headers: generateRequestHeaders(userToken),
+            headers: generateRequestHeaders(auth_token),
         },
     ).then(parseJsonWhileHandlingErrors);
 };

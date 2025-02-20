@@ -6,7 +6,7 @@ import { generateRequestHeaders } from "../generateRequestHeaders";
 export const getViewpointReplies = async (
     viewpointId: string,
     page: number,
-    user_token?: string,
+    auth_token?: string,
     size: number = 10,
     sort: string = "createdAt;asc",
 ): Promise<PaginatedPage<Reply>> => {
@@ -14,7 +14,7 @@ export const getViewpointReplies = async (
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${viewpointId}/replies?page=${page}&size=${size}&sort=${sort}`,
         {
             method: "GET",
-            headers: generateRequestHeaders(user_token),
+            headers: generateRequestHeaders(auth_token),
         },
     )
         .then(parseJsonWhileHandlingErrors)

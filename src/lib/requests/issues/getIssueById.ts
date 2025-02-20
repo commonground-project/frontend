@@ -3,13 +3,13 @@ import { generateRequestHeaders } from "../generateRequestHeaders";
 
 export const getIssueByID = async (
     id: string,
-    token?: string,
+    auth_token?: string,
 ): Promise<Issue> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${id}`,
         {
             method: "GET",
-            headers: generateRequestHeaders(token),
+            headers: generateRequestHeaders(auth_token),
         },
     ).then(async (res) => {
         if (res.status === 404) {
