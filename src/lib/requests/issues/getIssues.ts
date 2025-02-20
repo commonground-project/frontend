@@ -1,5 +1,6 @@
 import type { Issue } from "@/types/conversations.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
+import { generateRequestHeaders } from "../generateRequestHeaders";
 
 export type getIssuesResponse = {
     content: Issue[];
@@ -13,16 +14,13 @@ export type getIssuesResponse = {
 
 export const getIssues = async (
     pageParams: number,
-    userToken: string,
+    userToken?: string,
 ): Promise<getIssuesResponse> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issues?page=${pageParams}&size=10`,
         {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${userToken}`,
-            },
+            headers: generateRequestHeaders(userToken),
         },
     ).then(parseJsonWhileHandlingErrors);
 };
