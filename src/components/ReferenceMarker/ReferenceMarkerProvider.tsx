@@ -94,7 +94,8 @@ export default function ReferenceMarkerProvider({
         return () => observer.disconnect();
     }, [inputRef]);
 
-    // Setup paste event listener on the input area
+    // Setup paste event listener on the input area.
+    // Prevent the ecitor from preserving text styles when pasting text from other styles.
     useEffect(() => {
         const handlePaste = (event: ClipboardEvent) => {
             event.preventDefault(); // Stop default paste behavior
