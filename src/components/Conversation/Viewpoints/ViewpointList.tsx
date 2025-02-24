@@ -1,7 +1,7 @@
 "use client";
 import EmptyViewpointCard from "@/components/Conversation/Viewpoints/EmptyViewpointSection";
 import ViewpointCard from "@/components/Conversation/Viewpoints/ViewpointCard";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
@@ -45,6 +45,23 @@ export default function ViewPointList({ issueId }: ViewPointListProps) {
             fetchNextPage();
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    // if the page is loaded with a hash, scroll to the element with that id
+    // after the page is loaded
+    useLayoutEffect(() => {
+        if (status === "success") {
+            requestAnimationFrame(() => {
+                const hash = window.location.hash.substring(1);
+                if (hash) {
+                    const targetElement = document.getElementById(hash);
+                    console.log("Found element:", targetElement);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: "smooth" });
+                    }
+                }
+            });
+        }
+    }, [status]);
 
     if (error) {
         toast.error("無法取得觀點資訊，請再試一次或是檢查網路連線");
