@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -43,6 +43,12 @@ export default function FactListCard({
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
 
+    const autoSave = useRef(
+        debounce(() => {
+            saveContextToLocal();
+        }, 2000),
+    );
+
     const { data, error } = useInfiniteQuery({
         queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
@@ -65,21 +71,13 @@ export default function FactListCard({
         toast.error("無法獲取事實列表，請重新整理頁面");
     }, [error]);
 
-    // Save the context to local storage
-    const autoSave = useMemo(
-        () =>
-            debounce(() => {
-                saveContextToLocal();
-            }, 2000),
-        [],
-    );
-
     // clean up the auto-save function when the component unmounts
     useEffect(() => {
+        const autoSaveFunc = autoSave.current;
         return () => {
-            autoSave.cancel();
+            autoSaveFunc.cancel();
         };
-    }, []);
+    }, [autoSave]);
 
     // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
@@ -100,7 +98,7 @@ export default function FactListCard({
         removeFactFromAllReferenceMarker(factIndex);
 
         // Save the context to local storage
-        autoSave();
+        autoSave.current();
     };
 
     //add the selected fact to the viewpointFactList
@@ -125,7 +123,7 @@ export default function FactListCard({
         setViewpointFactList((prev) => [...prev, selectedFact]);
 
         // Save the context to local storage
-        autoSave();
+        autoSave.current();
     };
 
     return (

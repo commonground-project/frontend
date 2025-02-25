@@ -1,7 +1,7 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
@@ -32,6 +32,20 @@ export default function ViewpointCard({
 
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
 
+    // auto-save the viewpoint content
+    const autoSave = useRef(
+        debounce((where: string) => {
+            console.log(`Auto-saving viewpoint content in ${where}`);
+
+            if (inputRef.current === null) return;
+
+            const content = phraseReferencedContent(inputRef.current);
+            phrasedContent.current = content;
+
+            saveContextToLocal();
+        }, 2000),
+    );
+
     //manage the placeholder in the content area
     useEffect(() => {
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
@@ -43,26 +57,11 @@ export default function ViewpointCard({
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
-    // auto-save the viewpoint content
-    const autoSave = useMemo(
-        () =>
-            debounce((where: string) => {
-                console.log(`Auto-saving viewpoint content in ${where}`);
-
-                if (inputRef.current === null) return;
-
-                const content = phraseReferencedContent(inputRef.current);
-                phrasedContent.current = content;
-
-                saveContextToLocal();
-            }, 2000),
-        [],
-    );
-
     // clean up the auto-save function when the component unmounts
     useEffect(() => {
+        const autoSaveFunc = autoSave.current;
         return () => {
-            autoSave.cancel();
+            autoSaveFunc.cancel();
         };
     }, [autoSave]);
 
@@ -72,7 +71,6 @@ export default function ViewpointCard({
         if (inputRef?.current === null) return;
 
         const observer = new MutationObserver((mutations) => {
-            console.log("mutations", mutations);
             // Dismiss the manipulation of placeholder
             if (
                 mutations.length === 1 &&
@@ -85,14 +83,18 @@ export default function ViewpointCard({
 
             // auto save when the content area changes (reference marker added/removed)
             mutations.forEach((mutation) => {
-                if (mutation.type === "childList")
-                    autoSave("mutation observer");
+                if (
+                    mutation.type === "childList" ||
+                    mutation.type === "characterData"
+                )
+                    autoSave.current("mutation observer");
             });
         });
 
         observer.observe(inputRef.current, {
             childList: true,
             subtree: true,
+            characterData: true,
         });
 
         return () => {
@@ -121,7 +123,7 @@ export default function ViewpointCard({
                 value={viewpointTitle}
                 onChange={(e) => {
                     setViewpointTitle(e.currentTarget.value);
-                    autoSave("title input");
+                    autoSave.current("title input");
                 }}
                 variant="unstyled"
                 radius={0}
