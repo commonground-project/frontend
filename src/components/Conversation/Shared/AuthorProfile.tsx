@@ -13,8 +13,6 @@ export default function AuthorProfile({
 }: AuthorProfileProps) {
     const formatTimeAgo = (date: Date) => {
         const now = new Date(); // Get current local time
-        console.log("now", now);
-        console.log("date", date);
         const diffInSeconds = Math.floor(
             (now.getTime() - date.getTime()) / 1000,
         );

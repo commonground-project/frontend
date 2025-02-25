@@ -1,7 +1,9 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback, use } from "react";
+import type { RefObject } from "react";
+import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
@@ -11,7 +13,9 @@ type ViewpointCardProps = {
     issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
-    publishViewpoint: (content: string) => void;
+    phrasedContent: RefObject<string>;
+    saveContextToLocal: () => void;
+    publishViewpoint: () => void;
     pendingPublish: boolean;
 };
 
@@ -19,6 +23,8 @@ export default function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,
+    phrasedContent,
+    saveContextToLocal,
     publishViewpoint,
     pendingPublish,
 }: ViewpointCardProps) {
@@ -37,6 +43,54 @@ export default function ViewpointCard({
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
+    const autoSave = useCallback(
+        debounce((where: string) => {
+            console.log(`Auto-saving viewpoint content in ${where}`);
+
+            if (inputRef.current === null) return;
+
+            const content = phraseReferencedContent(inputRef.current);
+            phrasedContent.current = content;
+
+            saveContextToLocal();
+        }, 2000),
+        [],
+    );
+
+    // mount a mutation observer to monitor the content area changes (reference marker added/removed)
+    // for auto-saving
+    useEffect(() => {
+        if (inputRef?.current === null) return;
+
+        const observer = new MutationObserver((mutations) => {
+            console.log("mutations", mutations);
+            // Dismiss the manipulation of placeholder
+            if (
+                mutations.length === 1 &&
+                ((mutations[0].addedNodes[0] as HTMLElement)?.id ===
+                    "placeholder" ||
+                    (mutations[0].removedNodes[0] as HTMLElement)?.id ===
+                        "placeholder")
+            )
+                return;
+
+            // auto save when the content area changes (reference marker added/removed)
+            mutations.forEach((mutation) => {
+                if (mutation.type === "childList")
+                    autoSave("mutation observer");
+            });
+        });
+
+        observer.observe(inputRef.current, {
+            childList: true,
+            subtree: true,
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [inputRef]);
+
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty) {
             toast.error("標題和內容不得為空");
@@ -45,8 +99,9 @@ export default function ViewpointCard({
 
         if (inputRef.current === null) return;
         const content = phraseReferencedContent(inputRef.current);
+        phrasedContent.current = content;
 
-        publishViewpoint(content);
+        publishViewpoint();
     };
 
     return (
@@ -55,7 +110,10 @@ export default function ViewpointCard({
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 value={viewpointTitle}
-                onChange={(e) => setViewpointTitle(e.currentTarget.value)}
+                onChange={(e) => {
+                    setViewpointTitle(e.currentTarget.value);
+                    autoSave("title input");
+                }}
                 variant="unstyled"
                 radius={0}
                 placeholder="用一句話簡述你的觀點"

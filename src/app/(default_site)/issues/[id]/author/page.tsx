@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useParams, useRouter } from "next/navigation";
@@ -25,12 +25,24 @@ export default function AuthorViewpoint() {
     const router = useRouter();
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
+    const viewpointTitleRef = useRef<string>("");
+    const phrasedViewpointContent = useRef<string>("");
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
+    const viewpointFactListRef = useRef<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
 
     const issueId = params.id as string;
+
+    // update the ref when the state changes
+    useEffect(() => {
+        viewpointTitleRef.current = viewpointTitle;
+    }, [viewpointTitle]);
+
+    useEffect(() => {
+        viewpointFactListRef.current = viewpointFactList;
+    }, [viewpointFactList]);
 
     const postNewViewpoint = useMutation({
         mutationKey: ["postNewViewpoint", issueId],
@@ -92,14 +104,28 @@ export default function AuthorViewpoint() {
         },
     });
 
-    const publishViewpoint = (content: string) => {
-        console.log("content : ", content);
+    const saveContextToLocal = () => {
+        localStorage.setItem(
+            window.location.pathname,
+            JSON.stringify({
+                title: viewpointTitleRef.current, // use ref to get the latest value
+                content: phrasedViewpointContent.current,
+                facts: viewpointFactListRef.current.map((fact) => fact.id),
+            }),
+        );
+    };
 
-        postNewViewpoint.mutate({
+    const publishViewpoint = () => {
+        console.log("viewpoint :", {
             title: viewpointTitle,
-            content: content,
+            content: phrasedViewpointContent.current,
             facts: viewpointFactList.map((fact) => fact.id),
         });
+        // postNewViewpoint.mutate({
+        //     title: viewpointTitle,
+        //     content: viewpointContent,
+        //     facts: viewpointFactList.map((fact) => fact.id),
+        // });
     };
 
     return (
@@ -119,6 +145,8 @@ export default function AuthorViewpoint() {
                             issueId={issueId}
                             viewpointTitle={viewpointTitle}
                             setViewpointTitle={setViewpointTitle}
+                            phrasedContent={phrasedViewpointContent}
+                            saveContextToLocal={saveContextToLocal}
                             publishViewpoint={publishViewpoint}
                             pendingPublish={
                                 postNewViewpoint.status === "pending"
@@ -130,6 +158,7 @@ export default function AuthorViewpoint() {
                             issueId={issueId}
                             viewpointFactList={viewpointFactList}
                             setViewpointFactList={setViewpointFactList}
+                            saveContextToLocal={saveContextToLocal}
                         />
                     </div>
                 </ReferenceMarkerProvider>
