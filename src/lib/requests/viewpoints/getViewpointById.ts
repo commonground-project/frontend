@@ -1,18 +1,16 @@
 import type { ViewPoint } from "@/types/conversations.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
+import { generateRequestHeaders } from "../generateRequestHeaders";
 
 export const getViewpointByID = async (
     id: string,
-    token: string,
+    auth_token?: string,
 ): Promise<ViewPoint> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/viewpoint/${id}`,
         {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
+            headers: generateRequestHeaders(auth_token),
         },
     )
         .then(parseJsonWhileHandlingErrors)

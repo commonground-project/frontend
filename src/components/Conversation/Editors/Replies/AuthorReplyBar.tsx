@@ -146,6 +146,10 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
         <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
             <div
                 onClick={() => {
+                    if (!cookie.auth_token) {
+                        toast.info("登入以發表回覆");
+                        return;
+                    }
                     setInFocusQueue(true);
                 }}
                 className="z-20 flex w-full max-w-3xl overflow-y-hidden border border-zinc-500 bg-neutral-50 transition-[border-radius,height] duration-200"

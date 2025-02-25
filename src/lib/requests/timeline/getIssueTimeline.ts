@@ -1,3 +1,4 @@
+import { generateRequestHeaders } from "../generateRequestHeaders";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 import type { TimelineNode } from "@/types/conversations.types";
 
@@ -7,21 +8,18 @@ export type getIssueTimelineResponse = {
 
 type getIssueTimelineParams = {
     issueId: string;
-    user_token: string;
+    auth_token?: string;
 };
 
 export async function getIssueTimeline({
     issueId,
-    user_token,
+    auth_token,
 }: getIssueTimelineParams): Promise<getIssueTimelineResponse> {
     return fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/timeline`,
         {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user_token}`,
-            },
+            headers: generateRequestHeaders(auth_token),
         },
     )
         .then(parseJsonWhileHandlingErrors)

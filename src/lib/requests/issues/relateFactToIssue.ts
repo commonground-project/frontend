@@ -8,7 +8,7 @@ export type relateFactToIssueResponse = {
 export const relateFactToIssue = async (
     factId: string,
     issueId: string,
-    userToken: string,
+    auth_token: string,
 ): Promise<relateFactToIssueResponse> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/facts`,
@@ -16,7 +16,7 @@ export const relateFactToIssue = async (
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${userToken}`,
+                Authorization: `Bearer ${auth_token}`,
             },
             body: JSON.stringify({ factIds: [factId] }),
         },

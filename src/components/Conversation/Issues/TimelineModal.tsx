@@ -27,7 +27,7 @@ export default function TimeLineModal({
     const { isPending, error, data } = useQuery({
         queryKey: ["issueTimeline", issueId],
         queryFn: () =>
-            getIssueTimeline({ issueId, user_token: cookie.auth_token }),
+            getIssueTimeline({ issueId, auth_token: cookie.auth_token }),
     });
 
     const sortedTimeline = useMemo(() => {
