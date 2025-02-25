@@ -1,7 +1,7 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext, useCallback, use } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
@@ -43,19 +43,28 @@ export default function ViewpointCard({
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
-    const autoSave = useCallback(
-        debounce((where: string) => {
-            console.log(`Auto-saving viewpoint content in ${where}`);
+    // auto-save the viewpoint content
+    const autoSave = useMemo(
+        () =>
+            debounce((where: string) => {
+                console.log(`Auto-saving viewpoint content in ${where}`);
 
-            if (inputRef.current === null) return;
+                if (inputRef.current === null) return;
 
-            const content = phraseReferencedContent(inputRef.current);
-            phrasedContent.current = content;
+                const content = phraseReferencedContent(inputRef.current);
+                phrasedContent.current = content;
 
-            saveContextToLocal();
-        }, 2000),
+                saveContextToLocal();
+            }, 2000),
         [],
     );
+
+    // clean up the auto-save function when the component unmounts
+    useEffect(() => {
+        return () => {
+            autoSave.cancel();
+        };
+    }, [autoSave]);
 
     // mount a mutation observer to monitor the content area changes (reference marker added/removed)
     // for auto-saving

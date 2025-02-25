@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -65,12 +65,21 @@ export default function FactListCard({
         toast.error("無法獲取事實列表，請重新整理頁面");
     }, [error]);
 
-    const autoSave = useCallback(
-        debounce(() => {
-            saveContextToLocal();
-        }, 2000),
+    // Save the context to local storage
+    const autoSave = useMemo(
+        () =>
+            debounce(() => {
+                saveContextToLocal();
+            }, 2000),
         [],
     );
+
+    // clean up the auto-save function when the component unmounts
+    useEffect(() => {
+        return () => {
+            autoSave.cancel();
+        };
+    }, []);
 
     // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {

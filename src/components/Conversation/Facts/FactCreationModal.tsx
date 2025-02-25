@@ -82,7 +82,7 @@ export default function FactCreationModal({
             console.log("checking url: ", debouncedUrl);
             websiteCheckMutation.mutate(debouncedUrl);
         }
-    }, [debouncedUrl]);
+    }, [debouncedUrl, websiteCheckMutation]);
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],
