@@ -1,6 +1,7 @@
 import type { FactReference } from "@/types/conversations.types";
 import { GlobeAltIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
+import { safeDecodeURI } from "@/lib/utils/safeDecodeURI";
 
 type ViewpointFactReferenceProps = {
     reference: FactReference;
@@ -9,7 +10,7 @@ type ViewpointFactReferenceProps = {
 export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
-    const pageURL = new URL(decodeURIComponent(reference.url));
+    const pageURL = new URL(safeDecodeURI(reference.url) ?? "example.com");
 
     return (
         <Link
