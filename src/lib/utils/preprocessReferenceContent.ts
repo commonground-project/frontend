@@ -3,13 +3,14 @@ export type preprocessReferenceContentParams = {
 };
 
 export type typedContentFragment = {
-    type: "content" | "reference";
+    type: "content" | "reference" | "referenceStart" | "referenceEnd";
     text: string;
     references: number[] | null;
 };
 
 export type preprocessedContentFragments = typedContentFragment[][]; // first index is paragraph, second index is the content/reference in the paragraph
 
+// turn the content in backend format (markdown like) to frontend format (with references markers)
 export function preprocessReferenceContent({
     content,
 }: preprocessReferenceContentParams): preprocessedContentFragments {
@@ -38,11 +39,25 @@ export function preprocessReferenceContent({
             if (references.find((ref) => ref === Number(num)) === undefined)
                 references.push(Number(num));
         });
-        result.push({
-            type: "reference",
-            text: referenceText,
-            references: references,
-        });
+
+        // Push the reference with start and end markers for further styling and hydration
+        result.push(
+            {
+                type: "referenceStart",
+                text: "",
+                references: null,
+            },
+            {
+                type: "reference",
+                text: referenceText,
+                references: references,
+            },
+            {
+                type: "referenceEnd",
+                text: "",
+                references: null,
+            },
+        );
 
         // Update the lastIndex to the end of the current match
         lastIndex = regex.lastIndex;
