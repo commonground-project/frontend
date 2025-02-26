@@ -32,8 +32,6 @@ export default function ViewpointCard({
 }: ViewpointCardProps) {
     const { inputRef } = useContext(ReferenceMarkerContext);
 
-    // const [contentEmpty, setContentEmpty] =
-    //     useState<boolean>(innitialContentEmpty);
     const contentEmpty = useRef<boolean>(innitialContentEmpty);
     const setContentEmpty = (value: boolean) => {
         contentEmpty.current = value;
