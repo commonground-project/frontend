@@ -15,6 +15,7 @@ type ViewpointCardProps = {
     setViewpointTitle: (value: string) => void;
     phrasedContent: RefObject<string>;
     saveContextToLocal: () => void;
+    deleteContextFromLocal: () => void;
     publishViewpoint: () => void;
     innitialContentEmpty: boolean;
     pendingPublish: boolean;
@@ -26,6 +27,7 @@ export default function ViewpointCard({
     setViewpointTitle,
     phrasedContent,
     saveContextToLocal,
+    deleteContextFromLocal,
     publishViewpoint,
     innitialContentEmpty,
     pendingPublish,
@@ -192,6 +194,7 @@ export default function ViewpointCard({
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
                         section: "mr-1",
                     }}
+                    onClick={deleteContextFromLocal}
                 >
                     刪除
                 </Button>

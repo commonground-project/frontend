@@ -20,6 +20,7 @@ import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarke
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 import type { PaginatedPage } from "@/types/requests.types";
+import { remove } from "lodash";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -91,6 +92,8 @@ export default function AuthorViewpoint() {
                 queryKey: ["viewpoints", issueId],
             });
 
+            deleteContextFromLocal();
+
             toast.success("觀點發表成功");
             router.push(`/issues/${issueId}`);
         },
@@ -132,7 +135,17 @@ export default function AuthorViewpoint() {
         [getFactById], // Only depend on `mutate`, not the entire `getFactById`
     );
 
+    // save the context to local storage
     const saveContextToLocal = () => {
+        // if the viewpoint is empty, do not save
+        if (
+            viewpointTitleRef.current === "" &&
+            phrasedViewpointContent.current === "" &&
+            viewpointFactListRef.current.length === 0
+        ) {
+            deleteContextFromLocal();
+            return;
+        }
         localStorage.setItem(
             window.location.pathname,
             JSON.stringify({
@@ -159,6 +172,11 @@ export default function AuthorViewpoint() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // delete the context from local storage
+    const deleteContextFromLocal = () => {
+        localStorage.removeItem(window.location.pathname);
+    };
 
     const publishViewpoint = () => {
         postNewViewpoint.mutate({
@@ -189,9 +207,12 @@ export default function AuthorViewpoint() {
                             setViewpointTitle={setViewpointTitle}
                             phrasedContent={phrasedViewpointContent}
                             saveContextToLocal={saveContextToLocal}
+                            deleteContextFromLocal={deleteContextFromLocal}
                             publishViewpoint={publishViewpoint}
                             innitialContentEmpty={innitialContentEmpty}
-                            pendingPublish={status === "pending"}
+                            pendingPublish={
+                                postNewViewpoint.status === "pending"
+                            }
                         />
                     </div>
                     <div className="w-1/3">
