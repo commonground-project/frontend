@@ -20,6 +20,7 @@ import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarke
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 import type { PaginatedPage } from "@/types/requests.types";
+import { decodeUserFromString } from "@/lib/auth/staticDecode";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -145,8 +146,9 @@ export default function AuthorViewpoint() {
             deleteContextFromLocal();
             return;
         }
+        const username = decodeUserFromString(cookie.auth_token)?.username;
         localStorage.setItem(
-            window.location.pathname,
+            window.location.pathname + `/${username}`,
             JSON.stringify({
                 title: viewpointTitleRef.current, // use ref to get the latest value
                 content: phrasedViewpointContent.current,
@@ -158,7 +160,10 @@ export default function AuthorViewpoint() {
     // restore the context from local storage
     useEffect(() => {
         console.log("restore context");
-        const savedContext = localStorage.getItem(window.location.pathname);
+        const username = decodeUserFromString(cookie.auth_token)?.username;
+        const savedContext = localStorage.getItem(
+            window.location.pathname + `/${username}`,
+        );
         if (savedContext) {
             const parsedContext = JSON.parse(savedContext);
             // restore the viewpoint title
@@ -174,7 +179,8 @@ export default function AuthorViewpoint() {
 
     // delete the context from local storage
     const deleteContextFromLocal = () => {
-        localStorage.removeItem(window.location.pathname);
+        const username = decodeUserFromString(cookie.auth_token)?.username;
+        localStorage.removeItem(window.location.pathname + `/${username}`);
     };
 
     const publishViewpoint = () => {
