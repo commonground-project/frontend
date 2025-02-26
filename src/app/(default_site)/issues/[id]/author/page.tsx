@@ -20,7 +20,6 @@ import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarke
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 import type { PaginatedPage } from "@/types/requests.types";
-import { remove } from "lodash";
 
 export default function AuthorViewpoint() {
     const params = useParams();
