@@ -1,7 +1,7 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext, useRef, useMemo } from "react";
+import { useEffect, useContext, useRef, useMemo } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
@@ -42,8 +42,6 @@ export default function ViewpointCard({
     useMemo(() => {
         setContentEmpty(innitialContentEmpty);
     }, [innitialContentEmpty]);
-
-    console.log("innitialContentEmpty ", innitialContentEmpty);
 
     // auto-save the viewpoint content
     const autoSave = useRef(
@@ -158,7 +156,6 @@ export default function ViewpointCard({
                     });
                 }}
                 onFocus={() => {
-                    console.log("focus, contentEmpty: ", contentEmpty.current);
                     if (!contentEmpty.current || !inputRef?.current) return;
                     inputRef.current.innerHTML = "";
                 }}

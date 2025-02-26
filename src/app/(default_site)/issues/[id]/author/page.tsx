@@ -20,7 +20,6 @@ import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarke
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 import type { PaginatedPage } from "@/types/requests.types";
-import { set } from "lodash";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -151,19 +150,14 @@ export default function AuthorViewpoint() {
                 getFactById.mutate(factId);
             });
         }
-    }, []);
+    }, [getFactById]);
 
     const publishViewpoint = () => {
-        console.log("viewpoint :", {
+        postNewViewpoint.mutate({
             title: viewpointTitle,
             content: phrasedViewpointContent.current,
             facts: viewpointFactList.map((fact) => fact.id),
         });
-        // postNewViewpoint.mutate({
-        //     title: viewpointTitle,
-        //     content: viewpointContent,
-        //     facts: viewpointFactList.map((fact) => fact.id),
-        // });
     };
 
     return (
