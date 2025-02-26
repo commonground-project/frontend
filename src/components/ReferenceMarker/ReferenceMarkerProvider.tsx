@@ -2,15 +2,20 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
+    generateReferenceMarker,
+    generateReferenceCounter,
     encapsuleReferenceMarker,
     updateReferenceCounter,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 
 export default function ReferenceMarkerProvider({
     children,
+    historyRecord,
 }: {
     children: React.ReactNode;
+    historyRecord?: string; // the content with reference in backend format
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
         new Map().set(0, []),
@@ -21,6 +26,66 @@ export default function ReferenceMarkerProvider({
     >(null);
     const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
+
+    // Resore the history record
+    useEffect(() => {
+        if (!historyRecord || historyRecord === "") return;
+        if (inputRef.current === null) return;
+
+        const content = preprocessReferenceContent({ content: historyRecord });
+
+        inputRef.current.innerHTML = "";
+        content.forEach((paragraph) => {
+            const p = document.createElement("div");
+
+            paragraph.forEach((part) => {
+                // plain text
+                if (part.type === "content") {
+                    const textNode = document.createTextNode(part.text);
+                    p.appendChild(textNode);
+                }
+                // insert reference marker start
+                else if (part.type === "referenceStart") {
+                    const startMarker = generateReferenceMarker({
+                        id: String(avaliableMarkerId),
+                        type: "start",
+                    });
+                    p.appendChild(startMarker);
+                }
+                // insert reference counter and update the selectedFacts map
+                else if (part.type === "referenceCounter") {
+                    const counter = generateReferenceCounter({
+                        id: String(avaliableMarkerId),
+                        referencedIndexes: part.references ?? [],
+                    });
+                    p.appendChild(counter);
+                    setSelectedFacts((prev) => {
+                        const newMap = new Map(prev);
+                        newMap.set(avaliableMarkerId, part.references ?? []);
+                        return newMap;
+                    });
+                }
+                // insert reference marker end
+                else if (part.type === "referenceEnd") {
+                    const endMarker = generateReferenceMarker({
+                        id: String(avaliableMarkerId),
+                        type: "end",
+                    });
+                    p.appendChild(endMarker);
+                    setAvaliableMarkerId((prev) => prev + 1);
+                }
+                // highlight reference text
+                else {
+                    const span = document.createElement("span");
+                    span.textContent = part.text;
+                    span.style.color = "#10B981";
+                    p.appendChild(span);
+                }
+            });
+
+            inputRef.current?.appendChild(p);
+        });
+    }, [inputRef, historyRecord]);
 
     // Setup observer on the input area
     useEffect(() => {

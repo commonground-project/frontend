@@ -3,7 +3,12 @@ export type preprocessReferenceContentParams = {
 };
 
 export type typedContentFragment = {
-    type: "content" | "reference" | "referenceStart" | "referenceEnd";
+    type:
+        | "content" // plain text
+        | "reference" // text of the reference, highlighted
+        | "referenceStart" // start of the reference, invisible
+        | "referenceEnd" // end of the reference, invisible
+        | "referenceCounter"; // counter of the reference, highlighted
     text: string;
     references: number[] | null;
 };
@@ -30,11 +35,12 @@ export function preprocessReferenceContent({
                 references: null,
             });
         }
-        let referenceText = match[1];
+        const referenceText = match[1];
+        let referenceCounter = "";
         const references: number[] = [];
         match[2].split(",").map((num) => {
             // Push the reference text
-            referenceText = referenceText + `[${Number(num) + 1}]`;
+            referenceCounter += `[${Number(num) + 1}]`;
             // record the reference
             if (references.find((ref) => ref === Number(num)) === undefined)
                 references.push(Number(num));
@@ -50,6 +56,11 @@ export function preprocessReferenceContent({
             {
                 type: "reference",
                 text: referenceText,
+                references: references,
+            },
+            {
+                type: "referenceCounter",
+                text: referenceCounter,
                 references: references,
             },
             {

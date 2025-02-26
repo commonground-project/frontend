@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
+import { getFact } from "@/lib/requests/facts/getFact";
 
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
@@ -19,6 +20,7 @@ import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarke
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
 import type { PaginatedPage } from "@/types/requests.types";
+import { set } from "lodash";
 
 export default function AuthorViewpoint() {
     const params = useParams();
@@ -27,6 +29,8 @@ export default function AuthorViewpoint() {
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const viewpointTitleRef = useRef<string>("");
     const phrasedViewpointContent = useRef<string>("");
+    const [innitialContentEmpty, setInnitialContentEmpty] =
+        useState<boolean>(true);
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const viewpointFactListRef = useRef<Fact[]>([]);
 
@@ -104,6 +108,23 @@ export default function AuthorViewpoint() {
         },
     });
 
+    const getFactById = useMutation({
+        mutationKey: ["getFactById"],
+        mutationFn: (factId: string) =>
+            getFact({
+                factId: factId,
+                auth_token: cookie.auth_token,
+            }),
+
+        onSuccess(data) {
+            setViewpointFactList((prev) => {
+                const isFactExist = prev.find((fact) => fact.id === data.id);
+                if (isFactExist) return prev;
+                return [...prev, data];
+            });
+        },
+    });
+
     const saveContextToLocal = () => {
         localStorage.setItem(
             window.location.pathname,
@@ -114,6 +135,23 @@ export default function AuthorViewpoint() {
             }),
         );
     };
+
+    // restore the context from local storage
+    useEffect(() => {
+        const savedContext = localStorage.getItem(window.location.pathname);
+        if (savedContext) {
+            const parsedContext = JSON.parse(savedContext);
+            // restore the viewpoint title
+            setViewpointTitle(parsedContext.title);
+            // restore the viewpoint content
+            phrasedViewpointContent.current = parsedContext.content;
+            setInnitialContentEmpty(parsedContext.content === "");
+            // restore the viewpoint facts
+            parsedContext.facts.forEach((factId: string) => {
+                getFactById.mutate(factId);
+            });
+        }
+    }, []);
 
     const publishViewpoint = () => {
         console.log("viewpoint :", {
@@ -139,7 +177,9 @@ export default function AuthorViewpoint() {
             </Link>
             <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
-                <ReferenceMarkerProvider>
+                <ReferenceMarkerProvider
+                    historyRecord={phrasedViewpointContent.current}
+                >
                     <div className="w-2/3">
                         <ViewpointCard
                             issueId={issueId}
@@ -148,6 +188,7 @@ export default function AuthorViewpoint() {
                             phrasedContent={phrasedViewpointContent}
                             saveContextToLocal={saveContextToLocal}
                             publishViewpoint={publishViewpoint}
+                            innitialContentEmpty={innitialContentEmpty}
                             pendingPublish={
                                 postNewViewpoint.status === "pending"
                             }

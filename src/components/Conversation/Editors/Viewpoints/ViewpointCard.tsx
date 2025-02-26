@@ -1,7 +1,7 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useMemo } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
@@ -16,6 +16,7 @@ type ViewpointCardProps = {
     phrasedContent: RefObject<string>;
     saveContextToLocal: () => void;
     publishViewpoint: () => void;
+    innitialContentEmpty: boolean;
     pendingPublish: boolean;
 };
 
@@ -26,11 +27,23 @@ export default function ViewpointCard({
     phrasedContent,
     saveContextToLocal,
     publishViewpoint,
+    innitialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
     const { inputRef } = useContext(ReferenceMarkerContext);
 
-    const [contentEmpty, setContentEmpty] = useState<boolean>(true);
+    // const [contentEmpty, setContentEmpty] =
+    //     useState<boolean>(innitialContentEmpty);
+    const contentEmpty = useRef<boolean>(innitialContentEmpty);
+    const setContentEmpty = (value: boolean) => {
+        contentEmpty.current = value;
+    };
+
+    useMemo(() => {
+        setContentEmpty(innitialContentEmpty);
+    }, [innitialContentEmpty]);
+
+    console.log("innitialContentEmpty ", innitialContentEmpty);
 
     // auto-save the viewpoint content
     const autoSave = useRef(
@@ -103,7 +116,7 @@ export default function ViewpointCard({
     }, [inputRef]);
 
     const onPublish = () => {
-        if (viewpointTitle == "" || contentEmpty) {
+        if (viewpointTitle == "" || contentEmpty.current) {
             toast.error("標題和內容不得為空");
             return;
         }
@@ -145,7 +158,8 @@ export default function ViewpointCard({
                     });
                 }}
                 onFocus={() => {
-                    if (!contentEmpty || !inputRef?.current) return;
+                    console.log("focus, contentEmpty: ", contentEmpty.current);
+                    if (!contentEmpty.current || !inputRef?.current) return;
                     inputRef.current.innerHTML = "";
                 }}
                 onBlur={() => {
@@ -190,7 +204,7 @@ export default function ViewpointCard({
                     variant="filled"
                     color="#2563eb"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    disabled={viewpointTitle == "" || contentEmpty}
+                    disabled={viewpointTitle == "" || contentEmpty.current}
                     classNames={{
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
                         section: "mr-1",
