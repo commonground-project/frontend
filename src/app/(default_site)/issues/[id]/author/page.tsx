@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 import { useParams, useRouter } from "next/navigation";
@@ -124,6 +124,14 @@ export default function AuthorViewpoint() {
         },
     });
 
+    // Wrap "getFactById.mutate" with useCallback
+    const restoreFacts = useCallback(
+        (factIds: string[]) => {
+            factIds.forEach((factId) => getFactById.mutate(factId));
+        },
+        [getFactById], // Only depend on `mutate`, not the entire `getFactById`
+    );
+
     const saveContextToLocal = () => {
         localStorage.setItem(
             window.location.pathname,
@@ -137,6 +145,7 @@ export default function AuthorViewpoint() {
 
     // restore the context from local storage
     useEffect(() => {
+        console.log("restore context");
         const savedContext = localStorage.getItem(window.location.pathname);
         if (savedContext) {
             const parsedContext = JSON.parse(savedContext);
@@ -146,11 +155,10 @@ export default function AuthorViewpoint() {
             phrasedViewpointContent.current = parsedContext.content;
             setInnitialContentEmpty(parsedContext.content === "");
             // restore the viewpoint facts
-            parsedContext.facts.forEach((factId: string) => {
-                getFactById.mutate(factId);
-            });
+            restoreFacts(parsedContext.facts);
         }
-    }, [getFactById]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const publishViewpoint = () => {
         postNewViewpoint.mutate({
@@ -183,9 +191,7 @@ export default function AuthorViewpoint() {
                             saveContextToLocal={saveContextToLocal}
                             publishViewpoint={publishViewpoint}
                             innitialContentEmpty={innitialContentEmpty}
-                            pendingPublish={
-                                postNewViewpoint.status === "pending"
-                            }
+                            pendingPublish={status === "pending"}
                         />
                     </div>
                     <div className="w-1/3">

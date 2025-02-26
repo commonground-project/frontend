@@ -88,15 +88,18 @@ export default function FactCreationModal({
         mutationKey: ["addReference"],
         mutationFn: async ({
             url,
-            requestId,
+            temporaryId, // A temporary id to identify the reference before the actual data is fetched
         }: {
             url: string;
-            requestId: string;
+            temporaryId: string;
         }) => {
-            return postReference({
-                url,
-                auth_token: cookies.auth_token as string,
-            });
+            return {
+                reference: await postReference({
+                    url,
+                    auth_token: cookies.auth_token as string,
+                }),
+                temporaryId,
+            };
         },
         onMutate(variables) {
             // Add a new reference to the list with pending status
@@ -104,7 +107,7 @@ export default function FactCreationModal({
             setReferences((prev) => [
                 ...prev,
                 {
-                    id: variables.requestId,
+                    id: variables.temporaryId,
                     createdAt: new Date(),
                     url: variables.url,
                     icon: "",
@@ -114,20 +117,23 @@ export default function FactCreationModal({
             ]);
         },
         onSuccess(data, variables) {
-            if (references.find((ref) => ref.id === data.id) !== undefined) {
+            if (
+                references.find((ref) => ref.id === data.reference.id) !==
+                undefined
+            ) {
                 console.log("references", references);
                 toast.info("引註資料已存在");
                 // Remove the preadded reference if it already exists
                 setReferences((prev) =>
-                    prev.filter((ref) => ref.id !== variables.requestId),
+                    prev.filter((ref) => ref.id !== variables.temporaryId),
                 );
                 return;
             }
             // Update the reference with the actual data
             setReferences((prev) =>
                 prev.map((ref) =>
-                    ref.id === variables.requestId
-                        ? { ...data, status: "success" }
+                    ref.id === variables.temporaryId
+                        ? { ...data.reference, status: "success" }
                         : ref,
                 ),
             );
@@ -136,7 +142,7 @@ export default function FactCreationModal({
         onError(err, variables) {
             // Remove the reference if the request failed
             setReferences((prev) =>
-                prev.filter((ref) => ref.id !== variables.requestId),
+                prev.filter((ref) => ref.id !== variables.temporaryId),
             );
             toast.error("建立引註資料時發生錯誤", {
                 description:
@@ -282,7 +288,7 @@ export default function FactCreationModal({
                                 setIsUrlValid(false);
                                 addReferenceMutation.mutate({
                                     url,
-                                    requestId: uuidv4(),
+                                    temporaryId: uuidv4(),
                                 });
                                 setUrl("");
                             }}

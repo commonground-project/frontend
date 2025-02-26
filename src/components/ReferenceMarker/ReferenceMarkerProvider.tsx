@@ -24,13 +24,15 @@ export default function ReferenceMarkerProvider({
     const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
         number | null
     >(null);
-    const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
+    const [isRecordRestored, setIsRecordRestored] = useState<boolean>(false);
+    const avaliableMarkerId = useRef<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
 
     // Resore the history record
     useEffect(() => {
-        if (!historyRecord || historyRecord === "") return;
-        if (inputRef.current === null) return;
+        if (!historyRecord || historyRecord === "" || isRecordRestored) return; // No history record to restore, or already restored
+        setIsRecordRestored(true);
+        if (inputRef.current === null) return; // The inputRef is not ready
 
         const content = preprocessReferenceContent({ content: historyRecord });
 
@@ -47,7 +49,7 @@ export default function ReferenceMarkerProvider({
                 // insert reference marker start
                 else if (part.type === "referenceStart") {
                     const startMarker = generateReferenceMarker({
-                        id: String(avaliableMarkerId),
+                        id: String(avaliableMarkerId.current),
                         type: "start",
                     });
                     p.appendChild(startMarker);
@@ -55,24 +57,27 @@ export default function ReferenceMarkerProvider({
                 // insert reference counter and update the selectedFacts map
                 else if (part.type === "referenceCounter") {
                     const counter = generateReferenceCounter({
-                        id: String(avaliableMarkerId),
+                        id: String(avaliableMarkerId.current),
                         referencedIndexes: part.references ?? [],
                     });
                     p.appendChild(counter);
                     setSelectedFacts((prev) => {
                         const newMap = new Map(prev);
-                        newMap.set(avaliableMarkerId, part.references ?? []);
+                        newMap.set(
+                            avaliableMarkerId.current,
+                            part.references ?? [],
+                        );
                         return newMap;
                     });
                 }
                 // insert reference marker end
                 else if (part.type === "referenceEnd") {
                     const endMarker = generateReferenceMarker({
-                        id: String(avaliableMarkerId),
+                        id: String(avaliableMarkerId.current),
                         type: "end",
                     });
                     p.appendChild(endMarker);
-                    setAvaliableMarkerId((prev) => prev + 1);
+                    avaliableMarkerId.current++;
                 }
                 // highlight reference text
                 else {
@@ -85,7 +90,7 @@ export default function ReferenceMarkerProvider({
 
             inputRef.current?.appendChild(p);
         });
-    }, [inputRef, historyRecord]);
+    }, [inputRef, historyRecord, isRecordRestored]);
 
     // Setup observer on the input area
     useEffect(() => {
@@ -221,10 +226,15 @@ export default function ReferenceMarkerProvider({
 
     // Get the selected reference marker, which the user wants to update
     const getSelectedReferenceMarker = useCallback((range: Range) => {
-        const startMarkers = document.querySelectorAll(
+        const startMarkers = inputRef.current?.querySelectorAll(
             ".reference-marker.start",
         );
-        const endMarkers = document.querySelectorAll(".reference-marker.end");
+        const endMarkers = inputRef.current?.querySelectorAll(
+            ".reference-marker.end",
+        );
+
+        // If there are no markers, return null
+        if (!startMarkers || !endMarkers) return null;
 
         let selectedMarkerId: string | null = null;
         if (startMarkers.length > 0) {
@@ -324,9 +334,12 @@ export default function ReferenceMarkerProvider({
         // No marker id, new id = avaliableMarkerId
         else {
             // Add the fact to the selectedFacts map
-            const existingFacts = newMap.get(avaliableMarkerId) ?? [];
+            const existingFacts = newMap.get(avaliableMarkerId.current) ?? [];
             if (!existingFacts.includes(factIndex)) {
-                newMap.set(avaliableMarkerId, [...existingFacts, factIndex]);
+                newMap.set(avaliableMarkerId.current, [
+                    ...existingFacts,
+                    factIndex,
+                ]);
             }
 
             // Update the selected area with the new reference marker
@@ -335,10 +348,10 @@ export default function ReferenceMarkerProvider({
             const range = selection.getRangeAt(0);
             encapsuleReferenceMarker({
                 range,
-                referenceMarkerId: String(avaliableMarkerId),
-                referencedIndexes: newMap.get(avaliableMarkerId) ?? [],
+                referenceMarkerId: String(avaliableMarkerId.current),
+                referencedIndexes: newMap.get(avaliableMarkerId.current) ?? [],
             });
-            setAvaliableMarkerId((prev) => prev + 1);
+            avaliableMarkerId.current++;
         }
 
         // Update the selected facts state
@@ -388,8 +401,10 @@ export default function ReferenceMarkerProvider({
         }
 
         // Get current displayed reference markers id
+        if (!inputRef.current) return;
+
         const displayedReferenceMarkersId = Array.from(
-            document.querySelectorAll(".reference-marker.start"),
+            inputRef.current.querySelectorAll(".reference-marker.start"),
         ).map((marker) => Number(marker.getAttribute("data-marker-id")));
 
         // Update the existing reference counters
@@ -409,7 +424,7 @@ export default function ReferenceMarkerProvider({
         // If curReferenceMarkerId is null, use the avaliableMarkerId
         // Which means a new reference marker is being created
         return curReferenceMarkerId === null
-            ? (selectedFacts.get(avaliableMarkerId) ?? [])
+            ? (selectedFacts.get(avaliableMarkerId.current) ?? [])
             : (selectedFacts.get(curReferenceMarkerId) ?? []);
     };
 
