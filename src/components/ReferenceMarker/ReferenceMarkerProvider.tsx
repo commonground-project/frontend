@@ -18,7 +18,7 @@ export default function ReferenceMarkerProvider({
     historyRecord?: string; // the content with reference in backend format
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
-        new Map().set(0, []),
+        new Map(),
     );
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
     const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
@@ -35,6 +35,7 @@ export default function ReferenceMarkerProvider({
         if (inputRef.current === null) return; // The inputRef is not ready
 
         const content = preprocessReferenceContent({ content: historyRecord });
+        const newSelectedFacts = new Map<number, number[]>();
 
         inputRef.current.innerHTML = "";
         content.forEach((paragraph) => {
@@ -61,14 +62,10 @@ export default function ReferenceMarkerProvider({
                         referencedIndexes: part.references ?? [],
                     });
                     p.appendChild(counter);
-                    setSelectedFacts((prev) => {
-                        const newMap = new Map(prev);
-                        newMap.set(
-                            avaliableMarkerId.current,
-                            part.references ?? [],
-                        );
-                        return newMap;
-                    });
+                    newSelectedFacts.set(
+                        avaliableMarkerId.current,
+                        part.references ?? [],
+                    );
                 }
                 // insert reference marker end
                 else if (part.type === "referenceEnd") {
@@ -90,6 +87,7 @@ export default function ReferenceMarkerProvider({
 
             inputRef.current?.appendChild(p);
         });
+        setSelectedFacts(newSelectedFacts);
     }, [inputRef, historyRecord, isRecordRestored]);
 
     // Setup observer on the input area
