@@ -319,7 +319,10 @@ export default function ReferenceMarkerProvider({
             // Add the fact to the selectedFacts map
             const existingFacts = newMap.get(curReferenceMarkerId) ?? [];
             if (!existingFacts.includes(factIndex)) {
-                newMap.set(curReferenceMarkerId, [...existingFacts, factIndex]);
+                newMap.set(
+                    curReferenceMarkerId,
+                    [...existingFacts, factIndex].sort(),
+                );
             }
 
             // Update the selected reference counter
@@ -334,10 +337,10 @@ export default function ReferenceMarkerProvider({
             // Add the fact to the selectedFacts map
             const existingFacts = newMap.get(avaliableMarkerId.current) ?? [];
             if (!existingFacts.includes(factIndex)) {
-                newMap.set(avaliableMarkerId.current, [
-                    ...existingFacts,
-                    factIndex,
-                ]);
+                newMap.set(
+                    avaliableMarkerId.current,
+                    [...existingFacts, factIndex].sort(),
+                );
             }
 
             // Update the selected area with the new reference marker
