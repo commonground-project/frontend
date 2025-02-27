@@ -421,11 +421,9 @@ export default function ReferenceMarkerProvider({
 
     // Get the selected facts for current selected reference marker as array
     const getCurSelectedFacts = () => {
-        // If curReferenceMarkerId is null, use the avaliableMarkerId
-        // Which means a new reference marker is being created
         return curReferenceMarkerId === null
-            ? (selectedFacts.get(avaliableMarkerId.current) ?? [])
-            : (selectedFacts.get(curReferenceMarkerId) ?? []);
+            ? [] // No reference marker selected
+            : (selectedFacts.get(curReferenceMarkerId) ?? []); // Existing reference marker selected
     };
 
     return (
