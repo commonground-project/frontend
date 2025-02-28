@@ -15,14 +15,22 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
         return node.textContent ?? "";
     } else if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as HTMLElement;
+
+        // Edge case: placeholder, ignore it
+        if (element.id === "placeholder") {
+            console.log("placeholder");
+            return "";
+        }
+
         // Edge case: reference marker start
-        if (
+        else if (
             element.classList.contains("reference-marker") &&
             element.classList.contains("start")
         ) {
             console.log("reference marker start");
             return "[";
         }
+
         // Edge case: reference counter
         else if (element.classList.contains("reference-counter")) {
             console.log("reference counter");
@@ -32,6 +40,7 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
             //end the reference here
             return `](${referenceIndexes.join(",")})`;
         }
+
         // Edge case: reference marker end
         else if (
             element.classList.contains("reference-marker") &&

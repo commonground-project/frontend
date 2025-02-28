@@ -65,7 +65,7 @@ type encapsuleReferenceMarkerParams = {
 };
 
 // Generate a reference marker element to mark the start or end of a reference
-function generateReferenceMarker({
+export function generateReferenceMarker({
     id,
     type,
 }: {
@@ -79,6 +79,24 @@ function generateReferenceMarker({
     ReferenceMarkerElement.contentEditable = "false";
 
     return ReferenceMarkerElement;
+}
+
+export function generateReferenceCounter({
+    id,
+    referencedIndexes,
+}: {
+    id: string;
+    referencedIndexes: number[];
+}) {
+    const referenceCounter = document.createElement("span");
+    referenceCounter.className = "reference-counter";
+    referenceCounter.style.color = "#10B981";
+    referenceCounter.contentEditable = "false";
+    referenceCounter.dataset.markerId = id;
+    referenceCounter.innerText =
+        " " + referencedIndexes.map((num) => `[${num + 1}]`).join("");
+
+    return referenceCounter;
 }
 
 // Encapsule (surround) a range of text with a reference marker
@@ -164,13 +182,10 @@ export function updateReferenceCounter({
         console.error("end reference marker not found");
         return;
     }
-    const newReferenceCounter = document.createElement("span");
-    newReferenceCounter.className = "reference-counter";
-    newReferenceCounter.style.color = "#10B981";
-    newReferenceCounter.contentEditable = "false";
-    newReferenceCounter.dataset.markerId = referenceMarkerId;
-    newReferenceCounter.innerText =
-        " " + referencedIndexes.map((num) => `[${num + 1}]`).join("");
+    const newReferenceCounter = generateReferenceCounter({
+        id: referenceMarkerId,
+        referencedIndexes,
+    });
 
     referenceMarkerEnd.parentNode?.insertBefore(
         newReferenceCounter,

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { debounce } from "lodash";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { Select, Button } from "@mantine/core";
@@ -20,12 +21,14 @@ type FactListCardProps = {
     issueId: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
+    saveContextToLocal: () => void;
 };
 
 export default function FactListCard({
     issueId,
     viewpointFactList,
     setViewpointFactList,
+    saveContextToLocal,
 }: FactListCardProps) {
     const {
         inSelectionMode,
@@ -39,6 +42,12 @@ export default function FactListCard({
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
+
+    const autoSave = useRef(
+        debounce(() => {
+            saveContextToLocal();
+        }, 2000),
+    );
 
     const { data, error } = useInfiniteQuery({
         queryKey: ["facts", issueId],
@@ -62,6 +71,14 @@ export default function FactListCard({
         toast.error("無法獲取事實列表，請重新整理頁面");
     }, [error]);
 
+    // clean up the auto-save function when the component unmounts
+    useEffect(() => {
+        const autoSaveFunc = autoSave.current;
+        return () => {
+            autoSaveFunc.cancel();
+        };
+    }, [autoSave]);
+
     // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
         // Find the array index of the fact to be removed
@@ -79,6 +96,9 @@ export default function FactListCard({
 
         // Update Reference Markers
         removeFactFromAllReferenceMarker(factIndex);
+
+        // Save the context to local storage
+        autoSave.current();
     };
 
     //add the selected fact to the viewpointFactList
@@ -101,6 +121,9 @@ export default function FactListCard({
         }
 
         setViewpointFactList((prev) => [...prev, selectedFact]);
+
+        // Save the context to local storage
+        autoSave.current();
     };
 
     return (

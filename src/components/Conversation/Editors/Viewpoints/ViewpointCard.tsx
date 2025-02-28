@@ -1,7 +1,9 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext, useRef, useMemo } from "react";
+import type { RefObject } from "react";
+import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
@@ -11,7 +13,11 @@ type ViewpointCardProps = {
     issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
-    publishViewpoint: (content: string) => void;
+    phrasedContent: RefObject<string>;
+    saveContextToLocal: () => void;
+    deleteContextFromLocal: () => void;
+    publishViewpoint: () => void;
+    innitialContentEmpty: boolean;
     pendingPublish: boolean;
 };
 
@@ -19,12 +25,54 @@ export default function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,
+    phrasedContent,
+    saveContextToLocal,
+    deleteContextFromLocal,
     publishViewpoint,
+    innitialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
     const { inputRef } = useContext(ReferenceMarkerContext);
 
-    const [contentEmpty, setContentEmpty] = useState<boolean>(true);
+    const contentEmpty = useRef<boolean>(innitialContentEmpty);
+    const setContentEmpty = (value: boolean) => {
+        contentEmpty.current = value;
+    };
+
+    useMemo(() => {
+        setContentEmpty(innitialContentEmpty);
+    }, [innitialContentEmpty]);
+
+    // auto-save the viewpoint content
+    const autoSave = useRef(
+        debounce((where: string) => {
+            console.log(`Auto-saving viewpoint content in ${where}`);
+
+            if (inputRef.current === null) return;
+
+            const content = phraseReferencedContent(inputRef.current);
+            phrasedContent.current = content;
+
+            saveContextToLocal();
+        }, 2000),
+    );
+
+    // add event handlers for ctrl+s and cmd+s for saving
+    useEffect(() => {
+        const handleSave = (e: KeyboardEvent) => {
+            if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                saveContextToLocal();
+                toast.success("儲存成功");
+            }
+        };
+
+        window.addEventListener("keydown", handleSave);
+
+        return () => {
+            window.removeEventListener("keydown", handleSave);
+        };
+    }, [saveContextToLocal]);
 
     //manage the placeholder in the content area
     useEffect(() => {
@@ -37,16 +85,62 @@ export default function ViewpointCard({
         inputRef.current.appendChild(placeholderElement);
     }, [inputRef]);
 
+    // clean up the auto-save function when the component unmounts
+    useEffect(() => {
+        const autoSaveFunc = autoSave.current;
+        return () => {
+            autoSaveFunc.cancel();
+        };
+    }, [autoSave]);
+
+    // mount a mutation observer to monitor the content area changes (reference marker added/removed)
+    // for auto-saving
+    useEffect(() => {
+        if (inputRef?.current === null) return;
+
+        const observer = new MutationObserver((mutations) => {
+            // Dismiss the manipulation of placeholder
+            if (
+                mutations.length === 1 &&
+                ((mutations[0].addedNodes[0] as HTMLElement)?.id ===
+                    "placeholder" ||
+                    (mutations[0].removedNodes[0] as HTMLElement)?.id ===
+                        "placeholder")
+            )
+                return;
+
+            // auto save when the content area changes (reference marker added/removed)
+            mutations.forEach((mutation) => {
+                if (
+                    mutation.type === "childList" ||
+                    mutation.type === "characterData"
+                )
+                    autoSave.current("mutation observer");
+            });
+        });
+
+        observer.observe(inputRef.current, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [inputRef]);
+
     const onPublish = () => {
-        if (viewpointTitle == "" || contentEmpty) {
+        if (viewpointTitle == "" || contentEmpty.current) {
             toast.error("標題和內容不得為空");
             return;
         }
 
         if (inputRef.current === null) return;
         const content = phraseReferencedContent(inputRef.current);
+        phrasedContent.current = content;
 
-        publishViewpoint(content);
+        publishViewpoint();
     };
 
     return (
@@ -55,7 +149,10 @@ export default function ViewpointCard({
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 value={viewpointTitle}
-                onChange={(e) => setViewpointTitle(e.currentTarget.value)}
+                onChange={(e) => {
+                    setViewpointTitle(e.currentTarget.value);
+                    autoSave.current("title input");
+                }}
                 variant="unstyled"
                 radius={0}
                 placeholder="用一句話簡述你的觀點"
@@ -76,7 +173,7 @@ export default function ViewpointCard({
                     });
                 }}
                 onFocus={() => {
-                    if (!contentEmpty || !inputRef?.current) return;
+                    if (!contentEmpty.current || !inputRef?.current) return;
                     inputRef.current.innerHTML = "";
                 }}
                 onBlur={() => {
@@ -114,6 +211,10 @@ export default function ViewpointCard({
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
                         section: "mr-1",
                     }}
+                    onClick={() => {
+                        if (confirm("確定要刪除此觀點嗎？"))
+                            deleteContextFromLocal();
+                    }}
                 >
                     刪除
                 </Button>
@@ -121,7 +222,7 @@ export default function ViewpointCard({
                     variant="filled"
                     color="#2563eb"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    disabled={viewpointTitle == "" || contentEmpty}
+                    disabled={viewpointTitle == "" || contentEmpty.current}
                     classNames={{
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
                         section: "mr-1",
