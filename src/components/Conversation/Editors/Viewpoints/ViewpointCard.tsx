@@ -57,6 +57,23 @@ export default function ViewpointCard({
         }, 2000),
     );
 
+    // add event handlers for ctrl+s and cmd+s for saving
+    useEffect(() => {
+        const handleSave = (e: KeyboardEvent) => {
+            if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                saveContextToLocal();
+                toast.success("儲存成功");
+            }
+        };
+
+        window.addEventListener("keydown", handleSave);
+
+        return () => {
+            window.removeEventListener("keydown", handleSave);
+        };
+    }, [saveContextToLocal]);
+
     //manage the placeholder in the content area
     useEffect(() => {
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
