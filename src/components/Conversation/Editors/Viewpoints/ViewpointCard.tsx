@@ -211,7 +211,10 @@ export default function ViewpointCard({
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
                         section: "mr-1",
                     }}
-                    onClick={deleteContextFromLocal}
+                    onClick={() => {
+                        if (confirm("確定要刪除此觀點嗎？"))
+                            deleteContextFromLocal();
+                    }}
                 >
                     刪除
                 </Button>
