@@ -11,7 +11,7 @@ type FactCardProps = {
     setIsSelected: (isSelected: boolean) => void;
 };
 
-export default function EditableViewpointReference({
+export default function EditableReference({
     fact,
     removeFact,
     inSelectionMode,

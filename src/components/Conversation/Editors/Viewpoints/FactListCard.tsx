@@ -10,7 +10,7 @@ import { Select, Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
-import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
+import EditableReference from "@/components/Conversation/Editors/Shared/EditableReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
@@ -165,7 +165,7 @@ export default function FactListCard({
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
                     {viewpointFactList.map((fact, index) => (
-                        <EditableViewpointReference
+                        <EditableReference
                             key={fact.id}
                             fact={fact}
                             removeFact={removeFact}
