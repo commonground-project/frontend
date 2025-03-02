@@ -92,7 +92,7 @@ export default function ReferenceMarkerProvider({
             subtree: true,
         });
         return () => observer.disconnect();
-    }, [inputRef]);
+    }, [inputRef.current]);
 
     // Setup paste event listener on the input area.
     // Prevent the ecitor from preserving text styles when pasting text from other styles.
@@ -278,6 +278,9 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        handleSelection();
     };
 
     // Remove a fact from the current reference marker
@@ -305,6 +308,9 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        handleSelection();
     };
 
     // Remove the fact from the imported FactList
@@ -337,6 +343,9 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        handleSelection();
     };
 
     // Get the selected facts for current selected reference marker as array
