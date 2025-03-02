@@ -26,14 +26,7 @@ type AuthorReplyBarProps = {
 };
 
 export default function AddReplyBar({ id }: AuthorReplyBarProps) {
-    const {
-        inputRef,
-        inSelectionMode,
-        addFactToReferenceMarker,
-        removeFactFromReferenceMarker,
-        removeFactFromAllReferenceMarker,
-        getCurSelectedFacts,
-    } = useContext(ReferenceMarkerContext);
+    const { inputRef, inSelectionMode } = useContext(ReferenceMarkerContext);
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
@@ -237,6 +230,7 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
                                     isModalOpen={isModalOpen}
                                     setIsModalOpen={setIsModalOpen}
                                     replyFactList={replyFactList}
+                                    setReplyFactList={setReplyFactList}
                                 />
                                 {/* TODO: Quotes, disabled as feature is not in this sprint */}
                                 <ActionIcon
