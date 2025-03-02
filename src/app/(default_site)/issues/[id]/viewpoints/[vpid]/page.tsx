@@ -5,6 +5,7 @@ import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
+import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 import type { Issue, ViewPoint } from "@/types/conversations.types";
 
 type ViewpointPageProps = {
@@ -62,7 +63,9 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <hr className="h-8" />
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
-            <AuthorReplyBar id={viewpoint.id} />
+            <ReferenceMarkerProvider>
+                <AuthorReplyBar id={viewpoint.id} />
+            </ReferenceMarkerProvider>
         </div>
     );
 }
