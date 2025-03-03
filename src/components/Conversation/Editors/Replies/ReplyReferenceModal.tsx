@@ -33,7 +33,7 @@ export default function ReplyReferenceModal({
         getCurSelectedFacts,
     } = useContext(ReferenceMarkerContext);
 
-    const [creationId, setCreationId] = useState<string | null>(null);
+    const [__creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
 
     const { data, error } = useInfiniteQuery({
