@@ -28,6 +28,7 @@ export default function ReferenceMarkerProvider({
     const [isRecordRestored, setIsRecordRestored] = useState<boolean>(false);
     const avaliableMarkerId = useRef<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
+    const lastSelectionRange = useRef<Range | null>(null);
 
     // Restore the history record
     useEffect(() => {
@@ -272,6 +273,7 @@ export default function ReferenceMarkerProvider({
         setCurReferenceMarkerId(
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
+        lastSelectionRange.current = range;
 
         // Create tooltip element
         const rangeRect = range.getBoundingClientRect();
@@ -345,9 +347,11 @@ export default function ReferenceMarkerProvider({
             }
 
             // Update the selected area with the new reference marker
-            const selection = window.getSelection();
-            if (!selection) return;
-            const range = selection.getRangeAt(0);
+            // const selection = window.getSelection();
+            // if (!selection) return;
+            // const range = selection.getRangeAt(0);
+            if (lastSelectionRange.current === null) return;
+            const range = lastSelectionRange.current;
             encapsuleReferenceMarker({
                 range,
                 referenceMarkerId: String(avaliableMarkerId.current),
@@ -360,7 +364,13 @@ export default function ReferenceMarkerProvider({
         setSelectedFacts(newMap);
 
         // Reestimate the selection area
-        handleSelection();
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Remove a fact from the current reference marker
@@ -390,7 +400,13 @@ export default function ReferenceMarkerProvider({
         setSelectedFacts(newMap);
 
         // Reestimate the selection area
-        handleSelection();
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Remove the fact from the imported FactList
@@ -427,7 +443,13 @@ export default function ReferenceMarkerProvider({
         setSelectedFacts(newMap);
 
         // Reestimate the selection area
-        handleSelection();
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Get the selected facts for current selected reference marker as array
