@@ -133,7 +133,7 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
     useEffect(() => {
         if (!inFocus || !inputRef.current) return;
         inputRef.current.focus();
-    }, [inFocus]);
+    }, [inFocus, inputRef]);
 
     const postViewpoint = () => {
         if (inputRef.current === null) return;
