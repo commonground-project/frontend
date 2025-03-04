@@ -1,5 +1,5 @@
 import type { Fact } from "@/types/conversations.types";
-import { Button, Checkbox } from "@mantine/core";
+import { ActionIcon, Checkbox } from "@mantine/core";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
 
@@ -11,7 +11,7 @@ type FactCardProps = {
     setIsSelected: (isSelected: boolean) => void;
 };
 
-export default function EditableReference({
+export default function EditableViewpointReference({
     fact,
     removeFact,
     inSelectionMode,
@@ -35,23 +35,24 @@ export default function EditableReference({
             )}
             <div className="w-full">
                 <div className="group flex w-full justify-between">
-                    <h1 className="float-left max-w-[calc(100%-30px)] text-lg font-normal text-black">
+                    <h1 className="text-lg font-normal text-black">
                         {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
                     </h1>
-                    <Button
+                    <ActionIcon
                         variant="transparent"
                         classNames={{
-                            root: "float-right pr-0 pl-0 flex opacity-0 transition-opacity group-hover:opacity-100",
+                            root: "opacity-0 transition-opacity group-hover:opacity-100",
                         }}
                         onClick={() => removeFact(String(fact.id))}
                     >
                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    </Button>
+                    </ActionIcon>
                 </div>
                 {fact.references.map((reference) => (
                     <div key={reference.id} className="mt-1">
                         <ReferenceBar
+                            key={reference.id}
                             reference={reference}
                             showSrcTitle={true}
                         />
