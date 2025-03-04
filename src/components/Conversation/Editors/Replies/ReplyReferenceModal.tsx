@@ -9,7 +9,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import { getPaginatedFacts } from "@/lib/requests/facts/getFacts";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
-import EditableReference from "@/components/Conversation/Editors/Shared/EditableReference";
+import EditableReplyReference from "@/components/Conversation/Editors/Replies/EditableReplyReference";
 
 import type { Fact } from "@/types/conversations.types";
 
@@ -145,22 +145,24 @@ export default function ReplyReferenceModal({
                     </Button>
                 }
             />
-            {replyFactList.map((fact, index) => (
-                <EditableReference
-                    key={fact.id}
-                    fact={fact}
-                    removeFact={removeFact}
-                    inSelectionMode={true}
-                    isSelected={getCurSelectedFacts().includes(index)}
-                    setIsSelected={(isSelected) => {
-                        if (isSelected) {
-                            addFactToReferenceMarker(index);
-                        } else {
-                            removeFactFromReferenceMarker(index);
-                        }
-                    }}
-                />
-            ))}
+            <div className="flex flex-col gap-2">
+                {replyFactList.map((fact, index) => (
+                    <EditableReplyReference
+                        key={fact.id}
+                        fact={fact}
+                        removeFact={removeFact}
+                        inSelectionMode={true}
+                        isSelected={getCurSelectedFacts().includes(index)}
+                        setIsSelected={(isSelected) => {
+                            if (isSelected) {
+                                addFactToReferenceMarker(index);
+                            } else {
+                                removeFactFromReferenceMarker(index);
+                            }
+                        }}
+                    />
+                ))}
+            </div>
         </Modal>
     );
 }
