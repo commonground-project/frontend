@@ -2,6 +2,7 @@
 
 import { AuthContext } from "@/lib/auth/authContext";
 import { useHeaderStore } from "@/lib/stores/headerStore";
+import { Noto_Serif_TC } from "next/font/google";
 import { Cog8ToothIcon } from "@heroicons/react/16/solid";
 import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { ActionIcon, Avatar, Button, Menu } from "@mantine/core";
@@ -9,6 +10,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import SettingsModal from "./SettingsModal";
+
+const notoSerifTC = Noto_Serif_TC({
+    subsets: ["latin"], // Use 'chinese-traditional' if available in future
+    weight: ["700"], // Available weights: 200, 300, 400, 500, 600, 700, 900
+    display: "swap",
+});
 
 export default function Header() {
     const { user, logout } = useContext(AuthContext);
@@ -20,7 +27,11 @@ export default function Header() {
         <div className="fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
             <div />
             <Link href="/">
-                <h1 className="text-2xl font-bold text-black">CommonGround</h1>
+                <h1
+                    className={`text-2xl font-bold text-black ${notoSerifTC.className}`}
+                >
+                    CommonGround
+                </h1>
             </Link>
             {user ? (
                 <Menu position="bottom-end">
