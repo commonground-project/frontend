@@ -21,7 +21,7 @@ export default function EditableViewpointReference({
     return (
         <div className="flex w-full gap-2.5 rounded-lg p-2 hover:bg-[#f0f0f0]">
             {inSelectionMode && (
-                <div className="pt-1">
+                <div className="flex-shrink-0 pt-1">
                     <Checkbox
                         radius={"xl"}
                         checked={isSelected}
@@ -29,7 +29,7 @@ export default function EditableViewpointReference({
                     />
                 </div>
             )}
-            <div className="w-full">
+            <div className="min-w-0 flex-1">
                 <div className="group flex w-full justify-between">
                     <h1 className="text-lg font-normal text-black">
                         {/* max width 100% - 30px, 30px for x mark icon*/}
@@ -46,7 +46,7 @@ export default function EditableViewpointReference({
                     </ActionIcon>
                 </div>
                 {fact.references.map((reference) => (
-                    <div key={reference.id} className="mt-1">
+                    <div key={reference.id} className="mt-1 flex min-w-0">
                         <ReferenceBar
                             key={reference.id}
                             reference={reference}
