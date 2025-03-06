@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState, useContext } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -10,10 +12,12 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { getPaginatedFacts } from "@/lib/requests/facts/getFacts";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import EditableReplyReference from "@/components/Conversation/Editors/Replies/EditableReplyReference";
+import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 import type { Fact } from "@/types/conversations.types";
 
 type ReplyReferenceModalProps = {
+    issueId: string;
     isModalOpen: boolean;
     setIsModalOpen: (value: boolean) => void;
     replyFactList: Fact[];
@@ -21,6 +25,7 @@ type ReplyReferenceModalProps = {
 };
 
 export default function ReplyReferenceModal({
+    issueId,
     isModalOpen,
     setIsModalOpen,
     replyFactList,
@@ -33,11 +38,11 @@ export default function ReplyReferenceModal({
         getCurSelectedFacts,
     } = useContext(ReferenceMarkerContext);
 
-    const [__creationId, setCreationId] = useState<string | null>(null);
+    const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
 
     const { data, error } = useInfiniteQuery({
-        queryKey: ["facts"],
+        queryKey: ["facts", issueId],
         queryFn: ({ pageParam }) =>
             getPaginatedFacts(pageParam, 200, cookie.auth_token),
 
@@ -143,6 +148,14 @@ export default function ReplyReferenceModal({
                     >
                         找不到想引註的事實嗎？將其引入 CommonGround 吧!
                     </Button>
+                }
+            />
+            <FactCreationModal
+                issueId={issueId}
+                creationID={creationId}
+                setCreationID={setCreationId}
+                factCreationCallback={(facts) =>
+                    facts.forEach((fact) => addFact(fact.id))
                 }
             />
             <div className="flex flex-col gap-2">
