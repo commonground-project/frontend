@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef, use } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -32,6 +32,7 @@ export default function AddReplyBar({
     viewpointId,
 }: AuthorReplyBarProps) {
     const { inputRef, inSelectionMode } = useContext(ReferenceMarkerContext);
+    const replyInputRef = useRef(null);
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
@@ -108,6 +109,11 @@ export default function AddReplyBar({
         },
     });
 
+    // useEffect(() => {
+    //     if (!replyInputRef.current) return;
+    //     inputRef.current = replyInputRef.current;
+    // }, [inFocus]);
+
     useEffect(() => {
         //manage the placeholder in the content area
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
@@ -145,7 +151,8 @@ export default function AddReplyBar({
     const postReplyFn = () => {
         if (inputRef.current === null) return;
         const content = phraseReferencedContent(inputRef.current);
-
+        console.log(content);
+        return;
         postReplyMutation.mutate({
             content,
             quotes: [],
