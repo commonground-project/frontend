@@ -145,7 +145,26 @@ export default function ReferenceMarkerProvider({
             countMap.forEach((nodes) => {
                 // If both start and end markers are removed, then the reference is fully removed
                 if (nodes.length === 3) return;
-                // If not all of the markers is removed, reinsert the whole reference
+
+                // If not all of the markers is removed, reinsert the deleted tags
+                // move the range to the end of the highlight wrapper and outside it
+                if (range.endContainer.TEXT_NODE) {
+                    if (
+                        range.endContainer.parentElement?.classList.contains(
+                            "highlight-wrapper",
+                        )
+                    ) {
+                        range.setStartAfter(range.endContainer.parentElement!);
+                        range.setEndAfter(range.endContainer.parentElement!);
+                    }
+                } else if (
+                    (range.endContainer as HTMLElement).classList.contains(
+                        "highlight-wrapper",
+                    )
+                ) {
+                    range.setStartAfter(range.endContainer);
+                    range.setEndAfter(range.endContainer);
+                }
                 nodes.forEach((node) => {
                     const newSpan = node.cloneNode(true);
                     range.insertNode(newSpan);
