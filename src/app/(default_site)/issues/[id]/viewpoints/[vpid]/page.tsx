@@ -64,7 +64,10 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
             <ReferenceMarkerProvider>
-                <AuthorReplyBar id={viewpoint.id} />
+                <AuthorReplyBar
+                    issueId={pageParams.id}
+                    viewpointId={viewpoint.id}
+                />
             </ReferenceMarkerProvider>
         </div>
     );

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 import {
     LinkIcon,
     PaperAirplaneIcon,
@@ -22,10 +23,14 @@ import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/Reply
 import type { Fact } from "@/types/conversations.types";
 
 type AuthorReplyBarProps = {
-    id: string;
+    issueId: string;
+    viewpointId: string;
 };
 
-export default function AddReplyBar({ id }: AuthorReplyBarProps) {
+export default function AddReplyBar({
+    issueId,
+    viewpointId,
+}: AuthorReplyBarProps) {
     const { inputRef, inSelectionMode } = useContext(ReferenceMarkerContext);
 
     const [inFocus, setInFocus] = useState(false);
@@ -40,12 +45,12 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
     const queryClient = useQueryClient();
 
     const postReplyMutation = useMutation({
-        mutationKey: ["postReply", id],
+        mutationKey: ["postReply", viewpointId],
         mutationFn: (payload: PostReplyParams) =>
-            postReply(payload, id, cookie.auth_token),
+            postReply(payload, viewpointId, cookie.auth_token),
         onSuccess(data) {
             queryClient.setQueryData(
-                ["replies", id],
+                ["replies", viewpointId],
                 (oldData?: {
                     pages: PaginatedPage<Reply>[];
                     pageParams: number[];
@@ -91,7 +96,9 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
                 },
             );
 
-            queryClient.invalidateQueries({ queryKey: ["replies", id] });
+            queryClient.invalidateQueries({
+                queryKey: ["replies", viewpointId],
+            });
             if (inputRef.current) inputRef.current.innerHTML = "";
             setInFocusQueue(false);
         },
@@ -135,12 +142,10 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
         inputRef.current.focus();
     }, [inFocus, inputRef]);
 
-    const postViewpoint = () => {
+    const postReplyFn = () => {
         if (inputRef.current === null) return;
-        const content = Array.from(inputRef.current.childNodes)
-            .map((node) => node.textContent?.trim())
-            .filter((text) => text !== "")
-            .join("\n");
+        const content = phraseReferencedContent(inputRef.current);
+
         postReplyMutation.mutate({
             content,
             quotes: [],
@@ -227,6 +232,7 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
                                     <LinkIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
                                 </ActionIcon>
                                 <ReplyReferenceModal
+                                    issueId={issueId}
                                     isModalOpen={isModalOpen}
                                     setIsModalOpen={setIsModalOpen}
                                     replyFactList={replyFactList}
@@ -247,7 +253,7 @@ export default function AddReplyBar({ id }: AuthorReplyBarProps) {
                                 disabled={
                                     contentEmpty || postReplyMutation.isPending
                                 }
-                                onClick={postViewpoint}
+                                onClick={postReplyFn}
                             >
                                 {postReplyMutation.isPending ? (
                                     <Loader
