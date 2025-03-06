@@ -16,6 +16,7 @@ export default function ReferenceMarkerProvider({
         new Map().set(0, []),
     );
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
+    const [isEditorReady, setIsEditorReady] = useState<boolean>(false);
     const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
         number | null
     >(null);
@@ -112,7 +113,7 @@ export default function ReferenceMarkerProvider({
             subtree: true,
         });
         return () => observer.disconnect();
-    }, [inputRef.current]);
+    }, [inputRef, isEditorReady]);
 
     // Setup paste event listener on the input area.
     // Prevent the ecitor from preserving text styles when pasting text from other styles.
@@ -402,6 +403,7 @@ export default function ReferenceMarkerProvider({
         <ReferenceMarkerContext.Provider
             value={{
                 inSelectionMode,
+                setIsEditorReady,
                 inputRef,
                 addFactToReferenceMarker,
                 removeFactFromReferenceMarker,
