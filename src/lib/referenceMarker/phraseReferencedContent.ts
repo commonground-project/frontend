@@ -58,6 +58,7 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
     return str; // return only the add on content
 }
 
+// This function is used to extract the referenced content from the editor to be sent to the backend in string format
 export function phraseReferencedContent(toplevelContainer: HTMLElement) {
     console.log("start processing");
     const resultContent = treeWalker(toplevelContainer, true);
