@@ -58,7 +58,7 @@ if (typeof window !== "undefined") {
     });
 }
 
-const notoSerifTC = Noto_Serif_TC({
+const __notoSerifTC = Noto_Serif_TC({
     subsets: ["latin"], // Use 'chinese-traditional' if available in future
     display: "swap",
 });
