@@ -11,7 +11,7 @@ type textSuggestion = {
     replacement: string;
 };
 
-type textSuggestionResponse = {
+export type textSuggestionResponse = {
     text: string;
     suggestions: textSuggestion[];
 };
@@ -36,21 +36,21 @@ export function textSuggestion({
         ];
 
         const suggestions: textSuggestion[] = [];
-        let modifiedText = text;
         let idx = 1;
 
         flaggedWords.forEach(({ word, feedback, replacement }) => {
             const regex = new RegExp(word, "g"); // Match exact phrase in Chinese
-            modifiedText = modifiedText.replace(regex, (match) => {
-                const tag = `<sug${idx}>${match}</sug${idx}>`;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                const tag = `<sug${idx}>${match[0]}</sug${idx}>`;
                 suggestions.push({
-                    message: modifiedText.replace(match, tag),
+                    message: text.replace(match[0], tag),
                     feedback,
                     replacement,
                 });
                 idx++;
                 return tag;
-            });
+            }
         });
 
         setTimeout(() => {

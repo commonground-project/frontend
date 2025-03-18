@@ -4,8 +4,21 @@ import { Button, TextInput } from "@mantine/core";
 import { useState, useEffect, useContext } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
+import { debounce } from "lodash";
+import {
+    textSuggestion,
+    type textSuggestionResponse,
+} from "@/lib/requests/suggestions/textSuggestion";
+import {
+    phraseReferencedContent,
+    extractPureText,
+} from "@/lib/referenceMarker/phraseReferencedContent";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import {
+    encapsuleSuggestionMarker,
+    setRangeByTextOffset,
+    removeAllSuggestionMarkers,
+} from "@/lib/textSuggestion/textSuggestionEditor";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -49,6 +62,48 @@ export default function ViewpointCard({
         publishViewpoint(content);
     };
 
+    const putSuggestions = (suggestions: textSuggestionResponse) => {
+        if (inputRef.current === null) return;
+
+        // remove all previous suggestion markers
+        removeAllSuggestionMarkers();
+
+        // Add suggestion markers to the text
+        const pureTextContent = extractPureText(inputRef.current);
+        suggestions.suggestions.forEach((sug, index) => {
+            // find the tag in the suggestion
+            const regex = /<sug(\d+)>(.*?)<\/sug\1>/g;
+            const match = regex.exec(sug.message);
+            if (match === null) return;
+
+            // match the suggestion text to the view point content to find the position
+            const suggestionStart = pureTextContent.indexOf(match[2]);
+            const suggestionEnd = suggestionStart + match[2].length;
+
+            // create a range to highlight the suggestion
+            const range = setRangeByTextOffset(
+                inputRef.current as Node,
+                suggestionStart,
+                suggestionEnd,
+            );
+            if (range === null) return;
+
+            // highlight the suggestion
+            encapsuleSuggestionMarker({
+                range,
+                suggestionId: index.toString(),
+            });
+        });
+    };
+    const getSuggestionDebounced = debounce(async () => {
+        if (inputRef.current === null) return;
+        const text = extractPureText(inputRef.current);
+        const suggestion = await textSuggestion({ text, auth_token: "" });
+        console.log("suggestion", suggestion);
+        putSuggestions(suggestion);
+    }, 500);
+
+    //TODO: add mutation observer to prevent the suggestion tag from being deleted
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <Toaster />
@@ -74,6 +129,7 @@ export default function ViewpointCard({
                         if (node.className.includes("pt-1.5")) return;
                         node.classList.add("pt-1.5");
                     });
+                    getSuggestionDebounced();
                 }}
                 onFocus={() => {
                     if (!contentEmpty || !inputRef?.current) return;
