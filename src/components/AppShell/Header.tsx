@@ -20,7 +20,9 @@ export default function Header() {
         <div className="fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
             <div />
             <Link href="/">
-                <h1 className="text-2xl font-bold text-black">CommonGround</h1>
+                <h1 className="font-serif text-2xl font-bold text-black">
+                    CommonGround
+                </h1>
             </Link>
             {user ? (
                 <Menu position="bottom-end">
