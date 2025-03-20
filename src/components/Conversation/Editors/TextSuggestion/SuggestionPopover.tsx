@@ -1,4 +1,4 @@
-import { TextSuggestion } from "@/lib/requests/suggestions/textSuggestion";
+import type { TextSuggestion } from "@/lib/requests/suggestions/textSuggestion";
 
 type SuggestionPopoverProps = {
     show: boolean;

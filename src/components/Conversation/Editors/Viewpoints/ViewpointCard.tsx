@@ -41,7 +41,6 @@ export default function ViewpointCard({
 
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
-    const [suggestionPos, setSuggestionPos] = useState({ x: 0, y: 0 });
     const [suggestionTarget, setSuggestionTarget] =
         useState<HTMLElement | null>(null);
     const curSuggestionMessage = useRef<TextSuggestion | null>(null);
