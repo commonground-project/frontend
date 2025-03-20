@@ -29,7 +29,7 @@ export default function AuthorViewpoint() {
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
     const viewpointTitleRef = useRef<string>("");
     const phrasedViewpointContent = useRef<string>("");
-    const [innitialContentEmpty, setInnitialContentEmpty] =
+    const [initialContentEmpty, setInitialContentEmpty] =
         useState<boolean>(true);
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
     const viewpointFactListRef = useRef<Fact[]>([]);
@@ -170,7 +170,7 @@ export default function AuthorViewpoint() {
             setViewpointTitle(parsedContext.title);
             // restore the viewpoint content
             phrasedViewpointContent.current = parsedContext.content;
-            setInnitialContentEmpty(parsedContext.content === "");
+            setInitialContentEmpty(parsedContext.content === "");
             // restore the viewpoint facts
             restoreFacts(parsedContext.facts);
         }
@@ -214,7 +214,7 @@ export default function AuthorViewpoint() {
                             saveContextToLocal={saveContextToLocal}
                             deleteContextFromLocal={deleteContextFromLocal}
                             publishViewpoint={publishViewpoint}
-                            innitialContentEmpty={innitialContentEmpty}
+                            initialContentEmpty={initialContentEmpty}
                             pendingPublish={
                                 postNewViewpoint.status === "pending"
                             }

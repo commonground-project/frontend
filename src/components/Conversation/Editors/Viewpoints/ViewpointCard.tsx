@@ -17,7 +17,7 @@ type ViewpointCardProps = {
     saveContextToLocal: () => void;
     deleteContextFromLocal: () => void;
     publishViewpoint: () => void;
-    innitialContentEmpty: boolean;
+    initialContentEmpty: boolean;
     pendingPublish: boolean;
 };
 
@@ -29,19 +29,19 @@ export default function ViewpointCard({
     saveContextToLocal,
     deleteContextFromLocal,
     publishViewpoint,
-    innitialContentEmpty,
+    initialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
     const { inputRef } = useContext(ReferenceMarkerContext);
 
-    const contentEmpty = useRef<boolean>(innitialContentEmpty);
+    const contentEmpty = useRef<boolean>(initialContentEmpty);
     const setContentEmpty = (value: boolean) => {
         contentEmpty.current = value;
     };
 
     useMemo(() => {
-        setContentEmpty(innitialContentEmpty);
-    }, [innitialContentEmpty]);
+        setContentEmpty(initialContentEmpty);
+    }, [initialContentEmpty]);
 
     // auto-save the viewpoint content
     const autoSave = useRef(
