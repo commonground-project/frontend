@@ -1,3 +1,9 @@
+import {
+    HandThumbUpIcon,
+    HandThumbDownIcon,
+    BellSlashIcon,
+} from "@heroicons/react/24/outline";
+import { ActionIcon } from "@mantine/core";
 import type { TextSuggestion } from "@/lib/requests/suggestions/textSuggestion";
 
 type SuggestionPopoverProps = {
@@ -17,7 +23,7 @@ export default function SuggestionPopover({
 
     return (
         <div
-            className={`absolute rounded-md bg-white p-3 ${show ? "opacity-100" : "opacity-0"} w-56 shadow-xl transition-opacity duration-500`}
+            className={`absolute rounded-md bg-white p-3 ${show ? "opacity-100" : "opacity-0"} flex w-56 flex-col gap-1 shadow-xl transition-opacity duration-500`}
             style={{ top: posY, left: posX }}
         >
             <div className="flex text-[10px] text-neutral-500">
@@ -33,6 +39,17 @@ export default function SuggestionPopover({
                 用詞提醒
             </div>
             <div className="text-xs">{suggestionMessage.feedback}</div>
+            <div className="flex gap-1">
+                <ActionIcon variant="transparent" size={18}>
+                    <HandThumbUpIcon className="text-neutral-500" />
+                </ActionIcon>
+                <ActionIcon variant="transparent" size={18}>
+                    <HandThumbDownIcon className="text-neutral-500" />
+                </ActionIcon>
+                <ActionIcon variant="transparent" size={18}>
+                    <BellSlashIcon className="text-neutral-500" />
+                </ActionIcon>
+            </div>
         </div>
     );
 }
