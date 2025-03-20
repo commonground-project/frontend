@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { debounce } from "lodash";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -48,44 +48,47 @@ export default function FactCreationModal({
         setReferences([]);
     }, [creationID]);
 
-    const websiteCheckMutation = useMutation({
-        mutationKey: ["websiteCheck"],
-        mutationFn: async (url: string) => {
-            return websiteCheck({
-                url: url,
-                auth_token: cookies.auth_token as string,
-            });
-        },
-        onMutate() {
-            // Invalidate last mutation
-            websiteCheckMutation.reset();
-        },
-        onSuccess() {
-            console.log("Website check success");
-            setIsUrlValid((prev) => {
-                if (prev) return prev;
-                return true;
-            });
-        },
-        onError() {
-            console.log("Website check error");
-            setIsUrlValid((prev) => {
-                if (!prev) return prev;
-                return false;
-            });
-        },
-    });
+    const { mutate: websiteCheckMutation, reset: resetWebsitecheck } =
+        useMutation({
+            mutationKey: ["websiteCheck"],
+            mutationFn: async (url: string) => {
+                return websiteCheck({
+                    url: url,
+                    auth_token: cookies.auth_token as string,
+                });
+            },
+            onMutate() {
+                // Invalidate last mutation
+                resetWebsitecheck();
+            },
+            onSuccess() {
+                console.log("Website check success");
+                setIsUrlValid((prev) => {
+                    if (prev) return prev;
+                    return true;
+                });
+            },
+            onError() {
+                console.log("Website check error");
+                setIsUrlValid((prev) => {
+                    if (!prev) return prev;
+                    return false;
+                });
+            },
+        });
 
-    const checkUrlValidity = useRef(
-        debounce((url: string) => {
-            console.log("checking url: ", url);
-            websiteCheckMutation.mutate(url);
-        }, 500),
+    const checkUrlValidity = useMemo(
+        () =>
+            debounce((url: string) => {
+                console.log("checking url: ", url);
+                websiteCheckMutation(url);
+            }, 500),
+        [websiteCheckMutation],
     );
 
     useEffect(() => {
-        checkUrlValidity.current(url);
-    }, [url]);
+        checkUrlValidity(url);
+    }, [url, checkUrlValidity]);
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],
