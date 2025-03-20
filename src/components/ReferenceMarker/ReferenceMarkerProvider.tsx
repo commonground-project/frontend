@@ -28,7 +28,7 @@ export default function ReferenceMarkerProvider({
     const avaliableMarkerId = useRef<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
 
-    // Resore the history record
+    // Restore the history record
     useEffect(() => {
         if (!historyRecord || historyRecord === "" || isRecordRestored) return; // No history record to restore, or already restored
         setIsRecordRestored(true);
