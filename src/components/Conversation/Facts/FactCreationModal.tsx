@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
+import { debounce } from "lodash";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
 import ReferenceBar from "./ReferenceBar";
@@ -35,7 +35,6 @@ export default function FactCreationModal({
 }: FactModelProps) {
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
-    const [debouncedUrl] = useDebouncedValue(url, 300);
     const [__isUrlValid, setIsUrlValid] = useState(false);
     const [references, setReferences] = useState<FactReferenceWithStatus[]>([]);
     const queryClient = useQueryClient();
@@ -77,12 +76,18 @@ export default function FactCreationModal({
         },
     });
 
+    const checkUrlValidity = useMemo(
+        () =>
+            debounce((url: string) => {
+                console.log("checking url: ", url);
+                websiteCheckMutation.mutate(url);
+            }, 500),
+        [],
+    );
+
     useEffect(() => {
-        if (debouncedUrl) {
-            console.log("checking url: ", debouncedUrl);
-            websiteCheckMutation.mutate(debouncedUrl);
-        }
-    }, [debouncedUrl, websiteCheckMutation]);
+        checkUrlValidity(url);
+    }, [url]);
 
     const addReferenceMutation = useMutation({
         mutationKey: ["addReference"],
