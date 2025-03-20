@@ -1,25 +1,25 @@
 import { parseJsonWhileHandlingErrors } from "../transformers";
 
-type textSuggestionParams = {
+type TextSuggestionParams = {
     text: string;
     auth_token: string;
 };
 
-type textSuggestion = {
+export type TextSuggestion = {
     message: string;
     feedback: string;
     replacement: string;
 };
 
-export type textSuggestionResponse = {
+export type TextSuggestionResponse = {
     text: string;
-    suggestions: textSuggestion[];
+    suggestions: TextSuggestion[];
 };
 
 export function textSuggestion({
     text,
     auth_token,
-}: textSuggestionParams): Promise<textSuggestionResponse> {
+}: TextSuggestionParams): Promise<TextSuggestionResponse> {
     // a place holder Promise that delays for 1 second
     return new Promise((resolve) => {
         const flaggedWords = [
@@ -35,7 +35,7 @@ export function textSuggestion({
             },
         ];
 
-        const suggestions: textSuggestion[] = [];
+        const suggestions: TextSuggestion[] = [];
         let idx = 1;
 
         flaggedWords.forEach(({ word, feedback, replacement }) => {

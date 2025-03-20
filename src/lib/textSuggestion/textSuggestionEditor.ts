@@ -2,7 +2,7 @@
 // to add, remove, and update suggestion markers, and highlights
 
 // Add highlight to a range of text
-function highlightTextInRange(range: Range) {
+function highlightTextInRange(range: Range, id: string) {
     const walker = document.createTreeWalker(
         range.commonAncestorContainer,
         NodeFilter.SHOW_ALL,
@@ -16,8 +16,11 @@ function highlightTextInRange(range: Range) {
     // Create the highlight wrapper
     const highlightWrapper = document.createElement("span");
     highlightWrapper.className = "sug-highlight-wrapper";
+    highlightWrapper.style.backgroundColor = "#fef3c7";
     highlightWrapper.style.textDecoration = "underline";
-    highlightWrapper.style.textDecorationColor = "#FF0000";
+    highlightWrapper.style.textDecorationColor = "#f59e0b";
+    highlightWrapper.style.textDecorationThickness = "2px";
+    highlightWrapper.dataset.markerId = id;
     // Wrap the text nodes in the range with the highlight wrapper
     while (walker.nextNode()) {
         // console.log("node");
@@ -121,7 +124,7 @@ export function encapsuleSuggestionMarker({
     const suggestionMarkerRange = new Range();
     suggestionMarkerRange.setStartAfter(startElement);
     suggestionMarkerRange.setEndBefore(endElement);
-    highlightTextInRange(suggestionMarkerRange);
+    highlightTextInRange(suggestionMarkerRange, suggestionId);
 }
 
 // Decapsule (remove) a suggestion marker from the text

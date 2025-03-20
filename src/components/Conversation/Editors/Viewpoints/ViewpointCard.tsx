@@ -1,13 +1,14 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput } from "@mantine/core";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import { debounce } from "lodash";
 import {
     textSuggestion,
-    type textSuggestionResponse,
+    type TextSuggestion,
+    type TextSuggestionResponse,
 } from "@/lib/requests/suggestions/textSuggestion";
 import {
     phraseReferencedContent,
@@ -19,6 +20,7 @@ import {
     setRangeByTextOffset,
     removeAllSuggestionMarkers,
 } from "@/lib/textSuggestion/textSuggestionEditor";
+import SuggestionPopover from "@/components/Conversation/Editors/TextSuggestion/SuggestionPopover";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -38,6 +40,12 @@ export default function ViewpointCard({
     const { inputRef } = useContext(ReferenceMarkerContext);
 
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
+    const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
+    const [suggestionPos, setSuggestionPos] = useState({ x: 0, y: 0 });
+    const [suggestionTarget, setSuggestionTarget] =
+        useState<HTMLElement | null>(null);
+    const curSuggestionMessage = useRef<TextSuggestion | null>(null);
+    const suggestionMessages = useRef<TextSuggestion[]>([]);
 
     //manage the placeholder in the content area
     useEffect(() => {
@@ -62,7 +70,7 @@ export default function ViewpointCard({
         publishViewpoint(content);
     };
 
-    const putSuggestions = (suggestions: textSuggestionResponse) => {
+    const putSuggestions = (suggestions: TextSuggestionResponse) => {
         if (inputRef.current === null) return;
 
         // remove all previous suggestion markers
@@ -94,9 +102,14 @@ export default function ViewpointCard({
                 suggestionId: index.toString(),
             });
         });
+
+        // set the suggestion messages
+        suggestionMessages.current = suggestions.suggestions;
     };
+
     const getSuggestionDebounced = debounce(async () => {
         if (inputRef.current === null) return;
+
         const text = extractPureText(inputRef.current);
         const suggestion = await textSuggestion({ text, auth_token: "" });
         console.log("suggestion", suggestion);
@@ -172,6 +185,32 @@ export default function ViewpointCard({
         return () => observer.disconnect();
     }, [inputRef]);
 
+    // add click event listener to open the suggestion dropdown
+    useEffect(() => {
+        if (inputRef?.current === null) return;
+        const handleClick = (e: MouseEvent) => {
+            if (
+                (e.target as HTMLElement).classList.contains(
+                    "sug-highlight-wrapper",
+                )
+            ) {
+                setSuggestionTarget(e.target as HTMLElement);
+                setIsSuggestionOpen(true);
+                curSuggestionMessage.current =
+                    suggestionMessages.current[
+                        Number((e.target as HTMLElement).dataset.markerId) ?? 0
+                    ];
+            } else {
+                setIsSuggestionOpen(false);
+                setSuggestionTarget(null);
+                curSuggestionMessage.current = null;
+            }
+        };
+        inputRef.current.addEventListener("click", handleClick);
+        return () =>
+            inputRef.current?.removeEventListener("click", handleClick);
+    }, [inputRef]);
+
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <Toaster />
@@ -227,6 +266,13 @@ export default function ViewpointCard({
                     }
                 }}
             />
+            {suggestionTarget && curSuggestionMessage.current && (
+                <SuggestionPopover
+                    target={suggestionTarget}
+                    show={isSuggestionOpen}
+                    suggestionMessage={curSuggestionMessage.current}
+                />
+            )}
             <div className="flex justify-end gap-3">
                 <Button
                     component={Link}
