@@ -29,7 +29,7 @@ export default function ContentCardWithSidebar({
             const references: number[] = [];
             paragraph.map((fragment) => {
                 if (
-                    fragment.type === "reference" &&
+                    fragment.type === "Reference" &&
                     fragment.references !== null
                 ) {
                     // Add the reference to the list if it's not already there
@@ -71,7 +71,7 @@ export default function ContentCardWithSidebar({
                             key={index}
                             className="break-all"
                             style={
-                                part.type === "content"
+                                part.type === "Content"
                                     ? undefined
                                     : { color: "#15803D" }
                             }

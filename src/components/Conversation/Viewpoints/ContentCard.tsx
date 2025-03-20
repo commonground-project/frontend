@@ -21,7 +21,7 @@ export default function ContentCard({ content }: ContentCardProps) {
                             key={index}
                             className="break-all"
                             style={
-                                part.type === "content"
+                                part.type === "Content"
                                     ? undefined
                                     : { color: "#15803D" }
                             }

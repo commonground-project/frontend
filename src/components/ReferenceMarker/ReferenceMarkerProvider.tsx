@@ -43,12 +43,12 @@ export default function ReferenceMarkerProvider({
 
             paragraph.forEach((part) => {
                 // plain text
-                if (part.type === "content") {
+                if (part.type === "Content") {
                     const textNode = document.createTextNode(part.text);
                     p.appendChild(textNode);
                 }
                 // insert reference marker start
-                else if (part.type === "referenceStart") {
+                else if (part.type === "ReferenceStart") {
                     const startMarker = generateReferenceMarker({
                         id: String(avaliableMarkerId.current),
                         type: "start",
@@ -56,7 +56,7 @@ export default function ReferenceMarkerProvider({
                     p.appendChild(startMarker);
                 }
                 // insert reference counter and update the selectedFacts map
-                else if (part.type === "referenceCounter") {
+                else if (part.type === "ReferenceCounter") {
                     const counter = generateReferenceCounter({
                         id: String(avaliableMarkerId.current),
                         referencedIndexes: part.references ?? [],
@@ -68,7 +68,7 @@ export default function ReferenceMarkerProvider({
                     );
                 }
                 // insert reference marker end
-                else if (part.type === "referenceEnd") {
+                else if (part.type === "ReferenceEnd") {
                     const endMarker = generateReferenceMarker({
                         id: String(avaliableMarkerId.current),
                         type: "end",

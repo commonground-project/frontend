@@ -4,11 +4,11 @@ export type preprocessReferenceContentParams = {
 
 export type typedContentFragment = {
     type:
-        | "content" // plain text
-        | "reference" // text of the reference, highlighted
-        | "referenceStart" // start of the reference, invisible
-        | "referenceEnd" // end of the reference, invisible
-        | "referenceCounter"; // counter of the reference, highlighted
+        | "Content" // plain text
+        | "Reference" // text of the reference, highlighted
+        | "ReferenceStart" // start of the reference, invisible
+        | "ReferenceEnd" // end of the reference, invisible
+        | "ReferenceCounter"; // counter of the reference, highlighted
     text: string;
     references: number[] | null;
 };
@@ -30,7 +30,7 @@ export function preprocessReferenceContent({
         // Push normal text before the reference
         if (lastIndex < match.index) {
             result.push({
-                type: "content",
+                type: "Content",
                 text: content.slice(lastIndex, match.index),
                 references: null,
             });
@@ -49,22 +49,22 @@ export function preprocessReferenceContent({
         // Push the reference with start and end markers for further styling and hydration
         result.push(
             {
-                type: "referenceStart",
+                type: "ReferenceStart",
                 text: "",
                 references: null,
             },
             {
-                type: "reference",
+                type: "Reference",
                 text: referenceText,
                 references: references,
             },
             {
-                type: "referenceCounter",
+                type: "ReferenceCounter",
                 text: referenceCounter,
                 references: references,
             },
             {
-                type: "referenceEnd",
+                type: "ReferenceEnd",
                 text: "",
                 references: null,
             },
@@ -77,7 +77,7 @@ export function preprocessReferenceContent({
     // Push remaining text after the last reference
     if (lastIndex < content.length) {
         result.push({
-            type: "content",
+            type: "Content",
             text: content.slice(lastIndex),
             references: null,
         });
