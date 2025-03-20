@@ -1,11 +1,11 @@
 "use client";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Button, TextInput } from "@mantine/core";
-import { useEffect, useContext, useRef, useMemo } from "react";
+import { Button, TextInput, Popover } from "@mantine/core";
+import { useRouter } from "next/navigation";
+import { useEffect, useContext, useRef, useMemo, useState } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { Toaster, toast } from "sonner";
-import Link from "next/link";
 import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
@@ -33,6 +33,10 @@ export default function ViewpointCard({
     pendingPublish,
 }: ViewpointCardProps) {
     const { inputRef } = useContext(ReferenceMarkerContext);
+    const router = useRouter();
+
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
+        useState<boolean>(false); // is the confirm delete popover open
 
     const contentEmpty = useRef<boolean>(initialContentEmpty);
     const setContentEmpty = (value: boolean) => {
@@ -201,23 +205,52 @@ export default function ViewpointCard({
                 }}
             />
             <div className="flex justify-end gap-3">
-                <Button
-                    component={Link}
-                    href={`/issues/${issueId}`}
-                    variant="outline"
-                    color="#525252"
-                    leftSection={<TrashIcon className="h-5 w-5" />}
-                    classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
-                        section: "mr-1",
-                    }}
-                    onClick={() => {
-                        if (confirm("確定要刪除此觀點嗎？"))
-                            deleteContextFromLocal();
-                    }}
+                <Popover
+                    opened={isConfirmDeleteOpen}
+                    onChange={setIsConfirmDeleteOpen}
+                    radius={7}
                 >
-                    刪除
-                </Button>
+                    <Popover.Target>
+                        <Button
+                            variant="outline"
+                            color="#525252"
+                            leftSection={<TrashIcon className="h-5 w-5" />}
+                            classNames={{
+                                root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
+                                section: "mr-1",
+                            }}
+                            onClick={() => setIsConfirmDeleteOpen(true)}
+                        >
+                            刪除
+                        </Button>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                        <div className="text-lg font-semibold text-neutral-700">
+                            確定要刪除此觀點嗎？
+                        </div>
+                        <div className="flex justify-evenly gap-3 pt-3">
+                            <Button
+                                variant="light"
+                                color="red"
+                                onClick={() => {
+                                    deleteContextFromLocal();
+                                    router.push(`/issues/${issueId}`);
+                                }}
+                            >
+                                刪除
+                            </Button>
+                            <Button
+                                variant="light"
+                                color="green"
+                                onClick={() => {
+                                    setIsConfirmDeleteOpen(false);
+                                }}
+                            >
+                                取消
+                            </Button>
+                        </div>
+                    </Popover.Dropdown>
+                </Popover>
                 <Button
                     variant="filled"
                     color="#2563eb"
