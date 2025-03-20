@@ -162,9 +162,7 @@ export function removeAllSuggestionMarkers() {
     const suggestionMarkers = document.querySelectorAll(`.suggestion-marker`);
 
     // Dehighlight the text between the suggestion markers
-    console.log("suggestion markers", suggestionMarkers);
     for (let i = 0; i < suggestionMarkers.length; i += 2) {
-        console.log("i", i);
         const highlightedRange = new Range();
         highlightedRange.setStartAfter(suggestionMarkers[i] as Node); // Start after the start marker
         highlightedRange.setEndBefore(suggestionMarkers[i + 1] as Node); // End before the end marker
