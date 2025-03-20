@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { debounce } from "lodash";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -76,17 +76,15 @@ export default function FactCreationModal({
         },
     });
 
-    const checkUrlValidity = useMemo(
-        () =>
-            debounce((url: string) => {
-                console.log("checking url: ", url);
-                websiteCheckMutation.mutate(url);
-            }, 500),
-        [],
+    const checkUrlValidity = useRef(
+        debounce((url: string) => {
+            console.log("checking url: ", url);
+            websiteCheckMutation.mutate(url);
+        }, 500),
     );
 
     useEffect(() => {
-        checkUrlValidity(url);
+        checkUrlValidity.current(url);
     }, [url]);
 
     const addReferenceMutation = useMutation({
