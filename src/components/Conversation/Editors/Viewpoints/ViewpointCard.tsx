@@ -13,6 +13,7 @@ type ViewpointCardProps = {
     issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
+    viewpointTitleRef: RefObject<HTMLInputElement | null>;
     phrasedContent: RefObject<string>;
     viewpointFactList: Fact[];
     saveContextToLocal: (
@@ -30,6 +31,7 @@ export default function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,
+    viewpointTitleRef,
     phrasedContent,
     viewpointFactList,
     saveContextToLocal,
@@ -104,6 +106,7 @@ export default function ViewpointCard({
         if (inputRef?.current === null || inputRef.current.innerHTML !== "")
             return;
         const placeholderElement = document.createElement("p");
+        placeholderElement.id = "placeholder";
         placeholderElement.className = "text-neutral-500";
         placeholderElement.textContent =
             "開始打字，或選取一段文字來新增引註資料";
@@ -141,7 +144,7 @@ export default function ViewpointCard({
                     mutation.type === "characterData"
                 )
                     autoSave(
-                        viewpointTitle,
+                        viewpointTitleRef.current?.value ?? viewpointTitle,
                         viewpointFactList.map((fact) => fact.id),
                     );
             });
@@ -156,7 +159,13 @@ export default function ViewpointCard({
         return () => {
             observer.disconnect();
         };
-    }, [inputRef, autoSave, viewpointTitle, viewpointFactList]);
+    }, [
+        inputRef,
+        autoSave,
+        viewpointTitle,
+        viewpointFactList,
+        viewpointTitleRef,
+    ]);
 
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty.current) {
@@ -174,11 +183,12 @@ export default function ViewpointCard({
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
+                ref={viewpointTitleRef}
                 value={viewpointTitle}
                 onChange={(e) => {
                     setViewpointTitle(e.currentTarget.value);
                     autoSave(
-                        viewpointTitle,
+                        viewpointTitleRef.current?.value ?? viewpointTitle,
                         viewpointFactList.map((fact) => fact.id),
                     );
                 }}

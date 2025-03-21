@@ -88,6 +88,14 @@ export default function FactListCard({
         };
     }, [autoSave]);
 
+    // auto save when the viewpoint factlist changes
+    useEffect(() => {
+        autoSave(
+            viewpointTitle,
+            viewpointFactList.map((fact) => fact.id),
+        );
+    }, [viewpointFactList, viewpointTitle, autoSave]);
+
     // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
         // Find the array index of the fact to be removed
@@ -105,12 +113,6 @@ export default function FactListCard({
 
         // Update Reference Markers
         removeFactFromAllReferenceMarker(factIndex);
-
-        // Save the context to local storage
-        autoSave(
-            viewpointTitle,
-            viewpointFactList.map((fact) => fact.id),
-        );
     };
 
     //add the selected fact to the viewpointFactList
@@ -133,12 +135,6 @@ export default function FactListCard({
         }
 
         setViewpointFactList((prev) => [...prev, selectedFact]);
-
-        // Save the context to local storage
-        autoSave(
-            viewpointTitle,
-            viewpointFactList.map((fact) => fact.id),
-        );
     };
 
     return (

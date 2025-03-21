@@ -27,26 +27,16 @@ export default function AuthorViewpoint() {
     const router = useRouter();
 
     const [viewpointTitle, setViewpointTitle] = useState<string>("");
-    const viewpointTitleRef = useRef<string>("");
+    const viewpointTitleRef = useRef<HTMLInputElement>(null); // to get the newest value
     const phrasedViewpointContent = useRef<string>("");
     const [initialContentEmpty, setInitialContentEmpty] =
         useState<boolean>(true);
     const [viewpointFactList, setViewpointFactList] = useState<Fact[]>([]);
-    const viewpointFactListRef = useRef<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
     const queryClient = useQueryClient();
 
     const issueId = params.id as string;
-
-    // update the ref when the state changes
-    useEffect(() => {
-        viewpointTitleRef.current = viewpointTitle;
-    }, [viewpointTitle]);
-
-    useEffect(() => {
-        viewpointFactListRef.current = viewpointFactList;
-    }, [viewpointFactList]);
 
     const postNewViewpoint = useMutation({
         mutationKey: ["postNewViewpoint", issueId],
@@ -208,6 +198,7 @@ export default function AuthorViewpoint() {
                         <ViewpointCard
                             issueId={issueId}
                             viewpointTitle={viewpointTitle}
+                            viewpointTitleRef={viewpointTitleRef}
                             setViewpointTitle={setViewpointTitle}
                             phrasedContent={phrasedViewpointContent}
                             viewpointFactList={viewpointFactList}
@@ -223,7 +214,9 @@ export default function AuthorViewpoint() {
                     <div className="w-1/3">
                         <FactListCard
                             issueId={issueId}
-                            viewpointTitle={viewpointTitle}
+                            viewpointTitle={
+                                viewpointTitleRef.current?.value ?? ""
+                            }
                             viewpointFactList={viewpointFactList}
                             setViewpointFactList={setViewpointFactList}
                             saveContextToLocal={saveContextToLocal}
