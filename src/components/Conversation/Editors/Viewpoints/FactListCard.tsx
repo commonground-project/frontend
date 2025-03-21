@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -19,13 +19,19 @@ import type { Fact } from "@/types/conversations.types";
 
 type FactListCardProps = {
     issueId: string;
+    viewpointTitle: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
-    saveContextToLocal: () => void;
+    saveContextToLocal: (
+        title: string,
+        content: string,
+        facts: string[],
+    ) => void;
 };
 
 export default function FactListCard({
     issueId,
+    viewpointTitle,
     viewpointFactList,
     setViewpointFactList,
     saveContextToLocal,
@@ -36,6 +42,7 @@ export default function FactListCard({
         removeFactFromReferenceMarker,
         removeFactFromAllReferenceMarker,
         getCurSelectedFacts,
+        getInputFieldContent,
     } = useContext(ReferenceMarkerContext);
 
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
@@ -43,10 +50,12 @@ export default function FactListCard({
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
 
-    const autoSave = useRef(
-        debounce(() => {
-            saveContextToLocal();
-        }, 2000),
+    const autoSave = useMemo(
+        () =>
+            debounce((title: string, facts: string[]) => {
+                saveContextToLocal(title, getInputFieldContent(), facts);
+            }, 2000),
+        [getInputFieldContent, saveContextToLocal],
     );
 
     const { data, error } = useInfiniteQuery({
@@ -73,7 +82,7 @@ export default function FactListCard({
 
     // clean up the auto-save function when the component unmounts
     useEffect(() => {
-        const autoSaveFunc = autoSave.current;
+        const autoSaveFunc = autoSave;
         return () => {
             autoSaveFunc.cancel();
         };
@@ -98,7 +107,10 @@ export default function FactListCard({
         removeFactFromAllReferenceMarker(factIndex);
 
         // Save the context to local storage
-        autoSave.current();
+        autoSave(
+            viewpointTitle,
+            viewpointFactList.map((fact) => fact.id),
+        );
     };
 
     //add the selected fact to the viewpointFactList
@@ -123,7 +135,10 @@ export default function FactListCard({
         setViewpointFactList((prev) => [...prev, selectedFact]);
 
         // Save the context to local storage
-        autoSave.current();
+        autoSave(
+            viewpointTitle,
+            viewpointFactList.map((fact) => fact.id),
+        );
     };
 
     return (

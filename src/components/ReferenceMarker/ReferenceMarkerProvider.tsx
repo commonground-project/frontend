@@ -9,6 +9,7 @@ import {
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
+import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 
 export default function ReferenceMarkerProvider({
     children,
@@ -427,6 +428,11 @@ export default function ReferenceMarkerProvider({
             : (selectedFacts.get(curReferenceMarkerId) ?? []); // Existing reference marker selected
     };
 
+    const getInputFieldContent = useCallback(() => {
+        if (!inputRef.current) return "";
+        return phraseReferencedContent(inputRef.current);
+    }, [inputRef]);
+
     return (
         <ReferenceMarkerContext.Provider
             value={{
@@ -436,6 +442,7 @@ export default function ReferenceMarkerProvider({
                 removeFactFromReferenceMarker,
                 removeFactFromAllReferenceMarker,
                 getCurSelectedFacts,
+                getInputFieldContent,
             }}
         >
             {children}

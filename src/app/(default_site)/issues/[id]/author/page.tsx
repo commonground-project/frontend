@@ -135,28 +135,6 @@ export default function AuthorViewpoint() {
         [getFactById], // Only depend on `mutate`, not the entire `getFactById`
     );
 
-    // save the context to local storage
-    const saveContextToLocal = () => {
-        // if the viewpoint is empty, do not save
-        if (
-            viewpointTitleRef.current === "" &&
-            phrasedViewpointContent.current === "" &&
-            viewpointFactListRef.current.length === 0
-        ) {
-            deleteContextFromLocal();
-            return;
-        }
-        const username = decodeUserFromString(cookie.auth_token)?.username;
-        localStorage.setItem(
-            window.location.pathname + `/${username}`,
-            JSON.stringify({
-                title: viewpointTitleRef.current, // use ref to get the latest value
-                content: phrasedViewpointContent.current,
-                facts: viewpointFactListRef.current.map((fact) => fact.id),
-            }),
-        );
-    };
-
     // restore the context from local storage
     useEffect(() => {
         console.log("restore context");
@@ -178,10 +156,31 @@ export default function AuthorViewpoint() {
     }, []);
 
     // delete the context from local storage
-    const deleteContextFromLocal = () => {
+    const deleteContextFromLocal = useCallback(() => {
         const username = decodeUserFromString(cookie.auth_token)?.username;
         localStorage.removeItem(window.location.pathname + `/${username}`);
-    };
+    }, [cookie.auth_token]);
+
+    // save the context to local storage
+    const saveContextToLocal = useCallback(
+        (title: string, content: string, facts: string[]) => {
+            const username = decodeUserFromString(cookie.auth_token)?.username;
+            // if the viewpoint is empty, do not save
+            if (title === "" && content === "" && facts.length === 0) {
+                deleteContextFromLocal();
+                return;
+            }
+            localStorage.setItem(
+                window.location.pathname + `/${username}`,
+                JSON.stringify({
+                    title,
+                    content,
+                    facts,
+                }),
+            );
+        },
+        [cookie.auth_token, deleteContextFromLocal],
+    );
 
     const publishViewpoint = () => {
         postNewViewpoint.mutate({
@@ -211,6 +210,7 @@ export default function AuthorViewpoint() {
                             viewpointTitle={viewpointTitle}
                             setViewpointTitle={setViewpointTitle}
                             phrasedContent={phrasedViewpointContent}
+                            viewpointFactList={viewpointFactList}
                             saveContextToLocal={saveContextToLocal}
                             deleteContextFromLocal={deleteContextFromLocal}
                             publishViewpoint={publishViewpoint}
@@ -223,6 +223,7 @@ export default function AuthorViewpoint() {
                     <div className="w-1/3">
                         <FactListCard
                             issueId={issueId}
+                            viewpointTitle={viewpointTitle}
                             viewpointFactList={viewpointFactList}
                             setViewpointFactList={setViewpointFactList}
                             saveContextToLocal={saveContextToLocal}

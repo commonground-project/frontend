@@ -5,16 +5,21 @@ import { useRouter } from "next/navigation";
 import { useEffect, useContext, useRef, useMemo, useState } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
-import { Toaster, toast } from "sonner";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
+import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {
     issueId: string;
     viewpointTitle: string;
     setViewpointTitle: (value: string) => void;
     phrasedContent: RefObject<string>;
-    saveContextToLocal: () => void;
+    viewpointFactList: Fact[];
+    saveContextToLocal: (
+        title: string,
+        content: string,
+        facts: string[],
+    ) => void;
     deleteContextFromLocal: () => void;
     publishViewpoint: () => void;
     initialContentEmpty: boolean;
@@ -26,13 +31,16 @@ export default function ViewpointCard({
     viewpointTitle,
     setViewpointTitle,
     phrasedContent,
+    viewpointFactList,
     saveContextToLocal,
     deleteContextFromLocal,
     publishViewpoint,
     initialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
-    const { inputRef } = useContext(ReferenceMarkerContext);
+    const { inputRef, getInputFieldContent } = useContext(
+        ReferenceMarkerContext,
+    );
     const router = useRouter();
 
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
@@ -48,17 +56,15 @@ export default function ViewpointCard({
     }, [initialContentEmpty]);
 
     // auto-save the viewpoint content
-    const autoSave = useRef(
-        debounce((where: string) => {
-            console.log(`Auto-saving viewpoint content in ${where}`);
+    const autoSave = useMemo(
+        () =>
+            debounce((title: string, facts: string[]) => {
+                const content = getInputFieldContent();
+                phrasedContent.current = content;
 
-            if (inputRef.current === null) return;
-
-            const content = phraseReferencedContent(inputRef.current);
-            phrasedContent.current = content;
-
-            saveContextToLocal();
-        }, 2000),
+                saveContextToLocal(title, content, facts);
+            }, 2000),
+        [getInputFieldContent, phrasedContent, saveContextToLocal],
     );
 
     // add event handlers for ctrl+s and cmd+s for saving
@@ -66,7 +72,16 @@ export default function ViewpointCard({
         const handleSave = (e: KeyboardEvent) => {
             if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
-                saveContextToLocal();
+
+                const content = getInputFieldContent();
+                phrasedContent.current = content;
+
+                saveContextToLocal(
+                    viewpointTitle,
+                    content,
+                    viewpointFactList.map((fact) => fact.id),
+                );
+                // console.log("saved");
                 toast.success("儲存成功");
             }
         };
@@ -76,7 +91,13 @@ export default function ViewpointCard({
         return () => {
             window.removeEventListener("keydown", handleSave);
         };
-    }, [saveContextToLocal]);
+    }, [
+        saveContextToLocal,
+        viewpointTitle,
+        viewpointFactList,
+        getInputFieldContent,
+        phrasedContent,
+    ]);
 
     //manage the placeholder in the content area
     useEffect(() => {
@@ -91,7 +112,7 @@ export default function ViewpointCard({
 
     // clean up the auto-save function when the component unmounts
     useEffect(() => {
-        const autoSaveFunc = autoSave.current;
+        const autoSaveFunc = autoSave;
         return () => {
             autoSaveFunc.cancel();
         };
@@ -119,7 +140,10 @@ export default function ViewpointCard({
                     mutation.type === "childList" ||
                     mutation.type === "characterData"
                 )
-                    autoSave.current("mutation observer");
+                    autoSave(
+                        viewpointTitle,
+                        viewpointFactList.map((fact) => fact.id),
+                    );
             });
         });
 
@@ -132,7 +156,7 @@ export default function ViewpointCard({
         return () => {
             observer.disconnect();
         };
-    }, [inputRef]);
+    }, [inputRef, autoSave, viewpointTitle, viewpointFactList]);
 
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty.current) {
@@ -141,21 +165,22 @@ export default function ViewpointCard({
         }
 
         if (inputRef.current === null) return;
-        const content = phraseReferencedContent(inputRef.current);
-        phrasedContent.current = content;
+        phrasedContent.current = getInputFieldContent();
 
         publishViewpoint();
     };
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
-            <Toaster />
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 value={viewpointTitle}
                 onChange={(e) => {
                     setViewpointTitle(e.currentTarget.value);
-                    autoSave.current("title input");
+                    autoSave(
+                        viewpointTitle,
+                        viewpointFactList.map((fact) => fact.id),
+                    );
                 }}
                 variant="unstyled"
                 radius={0}

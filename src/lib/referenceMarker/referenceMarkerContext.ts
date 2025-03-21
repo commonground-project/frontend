@@ -7,6 +7,7 @@ type ReferenceMarkerContext = {
     removeFactFromReferenceMarker: (factIndex: number) => void;
     removeFactFromAllReferenceMarker: (factIndex: number) => void;
     getCurSelectedFacts: () => number[];
+    getInputFieldContent: () => string; // get the content in input field in backend format
 };
 
 export const ReferenceMarkerContext = createContext<ReferenceMarkerContext>({
@@ -31,5 +32,11 @@ export const ReferenceMarkerContext = createContext<ReferenceMarkerContext>({
             "ReferenceMarkerProvider not found or has not been set up",
         );
         return [];
+    },
+    getInputFieldContent: () => {
+        console.error(
+            "ReferenceMarkerProvider not found or has not been set up",
+        );
+        return "";
     },
 });
