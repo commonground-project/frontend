@@ -37,7 +37,7 @@ export default function AddReplyBar({
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isReferenceModalOpen, setIsReferenceModalOpen] = useState(false);
     const [animationSeq, setAnimationSeq] = useState<number | null>(null);
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
@@ -111,11 +111,7 @@ export default function AddReplyBar({
     });
 
     useEffect(() => {
-        if (inFocus) {
-            setIsEditorReady(true);
-        } else {
-            setIsEditorReady(false);
-        }
+        setIsEditorReady(inFocus);
     }, [inFocus, setIsEditorReady]);
 
     useEffect(() => {
@@ -237,14 +233,16 @@ export default function AddReplyBar({
                                     variant="transparent"
                                     className="group disabled:bg-transparent"
                                     disabled={!inSelectionMode}
-                                    onClick={() => setIsModalOpen(true)}
+                                    onClick={() =>
+                                        setIsReferenceModalOpen(true)
+                                    }
                                 >
                                     <LinkIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
                                 </ActionIcon>
                                 <ReplyReferenceModal
                                     issueId={issueId}
-                                    isModalOpen={isModalOpen}
-                                    setIsModalOpen={setIsModalOpen}
+                                    isModalOpen={isReferenceModalOpen}
+                                    setIsModalOpen={setIsReferenceModalOpen}
                                     replyFactList={replyFactList}
                                     setReplyFactList={setReplyFactList}
                                 />
