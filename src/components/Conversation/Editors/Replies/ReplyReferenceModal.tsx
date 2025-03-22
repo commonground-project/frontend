@@ -40,6 +40,7 @@ export default function ReplyReferenceModal({
 
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookie] = useCookies(["auth_token"]);
+    const [searchValue, setSearchValue] = useState<string>("");
 
     const { data, error } = useInfiniteQuery({
         queryKey: ["facts", issueId],
@@ -108,6 +109,10 @@ export default function ReplyReferenceModal({
             <Select
                 variant="unstyled"
                 searchable
+                clearable
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                onDropdownClose={() => setSearchValue("")}
                 checkIconPosition="right"
                 radius={0}
                 classNames={{
@@ -119,7 +124,6 @@ export default function ReplyReferenceModal({
                     <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
                 }
                 leftSectionWidth={20}
-                // value={searchValue}
                 onChange={(selectedFactId) => {
                     if (!selectedFactId) return;
                     addFact(selectedFactId);
