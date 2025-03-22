@@ -133,7 +133,7 @@ export default function ReplyReferenceModal({
                             ),
                     )
                     .map((fact) => ({
-                        value: String(fact.id),
+                        value: fact.id,
                         label: fact.title,
                     }))}
                 nothingFoundMessage={
@@ -167,11 +167,8 @@ export default function ReplyReferenceModal({
                         inSelectionMode={true}
                         isSelected={getCurSelectedFacts().includes(index)}
                         setIsSelected={(isSelected) => {
-                            if (isSelected) {
-                                addFactToReferenceMarker(index);
-                            } else {
-                                removeFactFromReferenceMarker(index);
-                            }
+                            if (isSelected) addFactToReferenceMarker(index);
+                            else removeFactFromReferenceMarker(index);
                         }}
                     />
                 ))}
