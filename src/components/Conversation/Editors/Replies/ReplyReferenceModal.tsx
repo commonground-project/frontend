@@ -103,6 +103,7 @@ export default function ReplyReferenceModal({
             classNames={{
                 title: "font-bold text-black",
             }}
+            centered
             title="引註事實"
             size="lg"
         >
