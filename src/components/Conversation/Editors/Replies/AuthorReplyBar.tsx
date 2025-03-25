@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
-import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 import {
     LinkIcon,
     PaperAirplaneIcon,
@@ -18,41 +16,30 @@ import {
 import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
 import { ActionIcon, Loader } from "@mantine/core";
-import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/ReplyReferenceModal";
-
-import type { Fact } from "@/types/conversations.types";
 
 type AuthorReplyBarProps = {
-    issueId: string;
-    viewpointId: string;
+    id: string;
 };
 
-export default function AddReplyBar({
-    issueId,
-    viewpointId,
-}: AuthorReplyBarProps) {
-    const { inputRef, inSelectionMode, setIsEditorReady } = useContext(
-        ReferenceMarkerContext,
-    );
-
+export default function AddReplyBar({ id }: AuthorReplyBarProps) {
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
-    const [isReferenceModalOpen, setIsReferenceModalOpen] = useState(false);
     const [animationSeq, setAnimationSeq] = useState<number | null>(null);
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
-    const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
+
+    const inputRef = useRef<HTMLDivElement>(null);
 
     const queryClient = useQueryClient();
 
     const postReplyMutation = useMutation({
-        mutationKey: ["postReply", viewpointId],
+        mutationKey: ["postReply", id],
         mutationFn: (payload: PostReplyParams) =>
-            postReply(payload, viewpointId, cookie.auth_token),
+            postReply(payload, id, cookie.auth_token),
         onSuccess(data) {
             queryClient.setQueryData(
-                ["replies", viewpointId],
+                ["replies", id],
                 (oldData?: {
                     pages: PaginatedPage<Reply>[];
                     pageParams: number[];
@@ -98,9 +85,7 @@ export default function AddReplyBar({
                 },
             );
 
-            queryClient.invalidateQueries({
-                queryKey: ["replies", viewpointId],
-            });
+            queryClient.invalidateQueries({ queryKey: ["replies", id] });
             if (inputRef.current) inputRef.current.innerHTML = "";
             setInFocusQueue(false);
         },
@@ -109,10 +94,6 @@ export default function AddReplyBar({
             toast.error("發送回覆時發生未知的錯誤，請再試一次");
         },
     });
-
-    useEffect(() => {
-        setIsEditorReady(inFocus);
-    }, [inFocus, setIsEditorReady]);
 
     useEffect(() => {
         //manage the placeholder in the content area
@@ -146,16 +127,18 @@ export default function AddReplyBar({
     useEffect(() => {
         if (!inFocus || !inputRef.current) return;
         inputRef.current.focus();
-    }, [inFocus, inputRef]);
+    }, [inFocus]);
 
-    const postReplyFn = () => {
+    const postViewpoint = () => {
         if (inputRef.current === null) return;
-        const content = phraseReferencedContent(inputRef.current);
-
+        const content = Array.from(inputRef.current.childNodes)
+            .map((node) => node.textContent?.trim())
+            .filter((text) => text !== "")
+            .join("\n");
         postReplyMutation.mutate({
             content,
             quotes: [],
-            facts: replyFactList.map((fact) => fact.id),
+            facts: [],
         });
     };
 
@@ -229,23 +212,14 @@ export default function AddReplyBar({
 
                         <div className="flex w-full items-center justify-between">
                             <div className="mt-2 flex items-center">
+                                {/* TODO: References, disabled as feature is not in this sprint */}
                                 <ActionIcon
                                     variant="transparent"
                                     className="group disabled:bg-transparent"
-                                    disabled={!inSelectionMode}
-                                    onClick={() =>
-                                        setIsReferenceModalOpen(true)
-                                    }
+                                    disabled
                                 >
                                     <LinkIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
                                 </ActionIcon>
-                                <ReplyReferenceModal
-                                    issueId={issueId}
-                                    isModalOpen={isReferenceModalOpen}
-                                    setIsModalOpen={setIsReferenceModalOpen}
-                                    replyFactList={replyFactList}
-                                    setReplyFactList={setReplyFactList}
-                                />
                                 {/* TODO: Quotes, disabled as feature is not in this sprint */}
                                 <ActionIcon
                                     variant="transparent"
@@ -261,7 +235,7 @@ export default function AddReplyBar({
                                 disabled={
                                     contentEmpty || postReplyMutation.isPending
                                 }
-                                onClick={postReplyFn}
+                                onClick={postViewpoint}
                             >
                                 {postReplyMutation.isPending ? (
                                     <Loader

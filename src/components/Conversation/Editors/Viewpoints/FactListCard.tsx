@@ -160,7 +160,7 @@ export default function FactListCard({
                     facts.forEach((fact) => addFact(fact.id))
                 }
             />
-            <div className="h-[calc(100vh-265px)] overflow-y-auto">
+            <div className="h-[calc(100vh-265px)] overflow-auto">
                 {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
                 + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
                 <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
