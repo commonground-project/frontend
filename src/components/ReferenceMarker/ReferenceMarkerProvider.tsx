@@ -94,6 +94,44 @@ export default function ReferenceMarkerProvider({
         return () => observer.disconnect();
     }, [inputRef]);
 
+    // Setup paste event listener on the input area.
+    // Prevent the ecitor from preserving text styles when pasting text from other styles.
+    useEffect(() => {
+        const handlePaste = (event: ClipboardEvent) => {
+            event.preventDefault(); // Stop default paste behavior
+
+            if (!event.clipboardData) return;
+            const text = event.clipboardData.getData("text/plain");
+
+            // Insert text at cursor position
+            const selection = window.getSelection();
+            if (!selection || selection.rangeCount === 0) return;
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents(); // Remove selected text if any
+
+            const textNode = document.createTextNode(text);
+            range.insertNode(textNode);
+
+            // Move cursor after inserted text
+            range.setStartAfter(textNode);
+            range.setEndAfter(textNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        };
+
+        const editor = inputRef.current;
+        if (editor) {
+            editor.addEventListener("paste", handlePaste);
+        }
+
+        return () => {
+            if (editor) {
+                editor.removeEventListener("paste", handlePaste);
+            }
+        };
+    }, []);
+
     // Handle selection change and areas
     // Check whether the selection overlaps with an existing reference marker
     const rangeOverlaps = (

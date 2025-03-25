@@ -72,6 +72,7 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
                                     {fact.references.map((reference) => (
                                         <ReferenceBar
                                             key={reference.id}
+                                            showSrcTitle={true}
                                             reference={reference}
                                         />
                                     ))}

@@ -1,17 +1,17 @@
 "use client";
 
-import useAuth from "@/hooks/auth/useAuth";
+import { AuthContext } from "@/lib/auth/authContext";
 import { useHeaderStore } from "@/lib/stores/headerStore";
 import { Cog8ToothIcon } from "@heroicons/react/16/solid";
 import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { ActionIcon, Avatar, Button, Menu } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SettingsModal from "./SettingsModal";
 
 export default function Header() {
-    const { user, logout } = useAuth();
+    const { user, logout } = useContext(AuthContext);
     const headerStore = useHeaderStore();
     const router = useRouter();
     const [isSettingsModalOpened, setIsSettingsModalOpened] = useState(false);

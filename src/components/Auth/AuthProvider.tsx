@@ -39,7 +39,7 @@ export default function AuthProvider({
 
             const current_time = new Date().getTime();
             const tokenAge = current_time - newToken.iat * 1000;
-            if (tokenAge > 30000) {
+            if (tokenAge > 60000) {
                 throw new Error("Token is too old, please re-login");
             }
 
@@ -99,17 +99,16 @@ export default function AuthProvider({
     useEffect(() => {
         if (!decodedToken) return;
 
-        const timeout = setTimeout(
-            () => {
-                if (
-                    !cookies.auth_refresh_token ||
-                    refreshTokenMutation.isPending
-                )
-                    return;
-                refreshTokenMutation.mutate(cookies.auth_refresh_token);
-            },
+        const expirationTime = Math.min(
             decodedToken.exp * 1000 - Date.now() - 30000,
+            2147483647,
         );
+
+        const timeout = setTimeout(() => {
+            if (!cookies.auth_refresh_token || refreshTokenMutation.isPending)
+                return;
+            refreshTokenMutation.mutate(cookies.auth_refresh_token);
+        }, expirationTime);
         return () => clearTimeout(timeout);
     }, [cookies.auth_refresh_token, decodedToken, refreshTokenMutation]);
 
