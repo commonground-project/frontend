@@ -11,7 +11,7 @@ type FactCardProps = {
     setIsSelected: (isSelected: boolean) => void;
 };
 
-export default function EditableViewpointReference({
+export default function EditableReplyReference({
     fact,
     removeFact,
     inSelectionMode,
@@ -19,22 +19,24 @@ export default function EditableViewpointReference({
     setIsSelected,
 }: FactCardProps) {
     return (
-        <div className="flex w-full gap-2.5 rounded-lg p-2 hover:bg-[#f0f0f0]">
-            {inSelectionMode && (
-                <div className="flex-shrink-0 pt-1">
-                    <Checkbox
-                        radius={"xl"}
-                        checked={isSelected}
-                        onChange={(e) => setIsSelected(e.currentTarget.checked)}
-                    />
-                </div>
-            )}
-            <div className="min-w-0 flex-1">
+        <div className="rounded-lg p-2 hover:bg-gray-50">
+            <div className="flex w-full gap-1">
+                {inSelectionMode && (
+                    <div className="pt-1">
+                        <Checkbox
+                            radius={"xl"}
+                            checked={isSelected}
+                            onChange={(e) =>
+                                setIsSelected(e.currentTarget.checked)
+                            }
+                        />
+                    </div>
+                )}
                 <div className="group flex w-full justify-between">
-                    <h1 className="text-lg font-normal text-black">
+                    <div className="text-base font-bold text-black">
                         {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
-                    </h1>
+                    </div>
                     <ActionIcon
                         variant="transparent"
                         classNames={{
@@ -45,16 +47,13 @@ export default function EditableViewpointReference({
                         <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                     </ActionIcon>
                 </div>
-                {fact.references.map((reference) => (
-                    <div key={reference.id} className="mt-1 flex min-w-0">
-                        <ReferenceBar
-                            key={reference.id}
-                            reference={reference}
-                            showSrcTitle={true}
-                        />
-                    </div>
-                ))}
             </div>
+            {fact.references.map((reference) => (
+                <div key={reference.id} className="mt-1 flex items-center">
+                    <ReferenceBar reference={reference} />
+                    <div className="truncate text-base">{reference.title}</div>
+                </div>
+            ))}
         </div>
     );
 }
