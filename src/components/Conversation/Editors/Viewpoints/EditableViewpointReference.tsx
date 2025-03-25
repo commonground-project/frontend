@@ -25,7 +25,11 @@ export default function EditableViewpointReference({
                     <Checkbox
                         radius={"xl"}
                         checked={isSelected}
-                        onChange={(e) => setIsSelected(e.currentTarget.checked)}
+                        readOnly
+                        onMouseDown={(e) => {
+                            e.preventDefault();
+                            setIsSelected(!isSelected);
+                        }}
                     />
                 </div>
             )}
