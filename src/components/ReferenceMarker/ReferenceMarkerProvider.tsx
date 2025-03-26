@@ -322,7 +322,7 @@ export default function ReferenceMarkerProvider({
         tooltip.style.top = `${rangeRect.top - 30}px`;
         tooltip.style.left = `${leftX}px`;
         tooltip.classList.remove("opacity-0");
-    }, [setInSelectionMode, getSelectedReferenceMarker]);
+    }, [setInSelectionMode, getSelectedReferenceMarker, factHintTooltip]);
 
     // Add event listeners for selection change and window resize
     useEffect(() => {
