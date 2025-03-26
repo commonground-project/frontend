@@ -14,9 +14,11 @@ import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedC
 export default function ReferenceMarkerProvider({
     children,
     historyRecord,
+    factHintTooltip,
 }: {
     children: React.ReactNode;
     historyRecord?: string; // the content with reference in backend format
+    factHintTooltip: string; // the hint to tell user where to select fact from. Will show when user select text
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
         new Map(),
@@ -301,7 +303,7 @@ export default function ReferenceMarkerProvider({
         tooltip.className =
             "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
         tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = "從右側選取引註事實";
+        tooltip.textContent = factHintTooltip;
         document.body.appendChild(tooltip);
 
         // Calculate the middlepoint of the selection

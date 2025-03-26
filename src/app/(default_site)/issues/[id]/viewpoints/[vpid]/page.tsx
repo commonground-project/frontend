@@ -63,7 +63,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <hr className="h-8" />
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
-            <ReferenceMarkerProvider>
+            <ReferenceMarkerProvider factHintTooltip="點選連結圖示以引註資料">
                 <AuthorReplyBar
                     issueId={pageParams.id}
                     viewpointId={viewpoint.id}
