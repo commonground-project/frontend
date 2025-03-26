@@ -168,6 +168,26 @@ export default function ReferenceMarkerProvider({
                     range.setStartAfter(range.endContainer);
                     range.setEndAfter(range.endContainer);
                 }
+
+                // If not all of the markers is removed, reinsert the deleted tags
+                // move the range to the end of the highlight wrapper and outside it
+                if (range.endContainer.TEXT_NODE) {
+                    if (
+                        range.endContainer.parentElement?.classList.contains(
+                            "highlight-wrapper",
+                        )
+                    ) {
+                        range.setStartAfter(range.endContainer.parentElement!);
+                        range.setEndAfter(range.endContainer.parentElement!);
+                    }
+                } else if (
+                    (range.endContainer as HTMLElement).classList.contains(
+                        "highlight-wrapper",
+                    )
+                ) {
+                    range.setStartAfter(range.endContainer);
+                    range.setEndAfter(range.endContainer);
+                }
                 nodes.forEach((node) => {
                     const newSpan = node.cloneNode(true);
                     range.insertNode(newSpan);
@@ -295,6 +315,7 @@ export default function ReferenceMarkerProvider({
         setCurReferenceMarkerId(
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
+        lastSelectionRange.current = range;
         lastSelectionRange.current = range;
 
         // Create tooltip element
