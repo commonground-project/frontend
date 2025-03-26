@@ -5,7 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 import {
     LinkIcon,
     PaperAirplaneIcon,
@@ -31,9 +30,12 @@ export default function AddReplyBar({
     issueId,
     viewpointId,
 }: AuthorReplyBarProps) {
-    const { inputRef, inSelectionMode, setIsEditorReady } = useContext(
-        ReferenceMarkerContext,
-    );
+    const {
+        inputRef,
+        inSelectionMode,
+        setIsEditorReady,
+        getInputFieldContent,
+    } = useContext(ReferenceMarkerContext);
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
@@ -150,7 +152,7 @@ export default function AddReplyBar({
 
     const postReplyFn = () => {
         if (inputRef.current === null) return;
-        const content = phraseReferencedContent(inputRef.current);
+        const content = getInputFieldContent();
 
         postReplyMutation.mutate({
             content,

@@ -7,7 +7,10 @@ function extractReferenceCounter(referenceCounter: string): number[] {
     return referenceIndexes;
 }
 
-function treeWalker(node: Node, isToplevel: boolean = false): string {
+export function treeWalker_referenceText(
+    node: Node,
+    isToplevel: boolean = false,
+): string {
     // DFS
     // Edge case: text node
     if (node.nodeType === Node.TEXT_NODE) {
@@ -62,14 +65,7 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
         ) {
             str += "\n";
         }
-        str += treeWalker(child);
+        str += treeWalker_referenceText(child);
     });
     return str; // return only the add on content
-}
-
-export function phraseReferencedContent(toplevelContainer: HTMLElement) {
-    console.log("start processing");
-    const resultContent = treeWalker(toplevelContainer, true);
-    console.log("end processing");
-    return resultContent;
 }

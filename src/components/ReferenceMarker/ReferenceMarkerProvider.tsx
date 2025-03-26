@@ -9,7 +9,7 @@ import {
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
+import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
 
 export default function ReferenceMarkerProvider({
     children,
@@ -504,7 +504,7 @@ export default function ReferenceMarkerProvider({
 
     const getInputFieldContent = useCallback(() => {
         if (!inputRef.current) return "";
-        return phraseReferencedContent(inputRef.current);
+        return treeWalker_referenceText(inputRef.current);
     }, [inputRef]);
 
     return (
