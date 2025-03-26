@@ -2,6 +2,7 @@ import { createContext } from "react";
 
 type ReferenceMarkerContext = {
     inSelectionMode: boolean;
+    setIsEditorReady: (value: boolean) => void;
     inputRef: React.RefObject<HTMLDivElement | null>;
     addFactToReferenceMarker: (factIndex: number) => void;
     removeFactFromReferenceMarker: (factIndex: number) => void;
@@ -12,6 +13,7 @@ type ReferenceMarkerContext = {
 
 export const ReferenceMarkerContext = createContext<ReferenceMarkerContext>({
     inSelectionMode: false,
+    setIsEditorReady: () => {},
     inputRef: { current: null },
 
     // Print error message if the function is called without setting up the provider

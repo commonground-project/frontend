@@ -9,25 +9,29 @@ import {
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
-import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
+import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
 
 export default function ReferenceMarkerProvider({
     children,
     historyRecord,
+    factHintTooltip,
 }: {
     children: React.ReactNode;
     historyRecord?: string; // the content with reference in backend format
+    factHintTooltip: string; // the hint to tell user where to select fact from. Will show when user select text
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
         new Map(),
     );
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
+    const [isEditorReady, setIsEditorReady] = useState<boolean>(false);
     const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
         number | null
     >(null);
     const [isRecordRestored, setIsRecordRestored] = useState<boolean>(false);
     const avaliableMarkerId = useRef<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
+    const lastSelectionRange = useRef<Range | null>(null);
 
     // Restore the history record
     useEffect(() => {
@@ -144,7 +148,46 @@ export default function ReferenceMarkerProvider({
             countMap.forEach((nodes) => {
                 // If both start and end markers are removed, then the reference is fully removed
                 if (nodes.length === 3) return;
-                // If not all of the markers is removed, reinsert the whole reference
+
+                // If not all of the markers is removed, reinsert the deleted tags
+                // move the range to the end of the highlight wrapper and outside it
+                if (range.endContainer.TEXT_NODE) {
+                    if (
+                        range.endContainer.parentElement?.classList.contains(
+                            "highlight-wrapper",
+                        )
+                    ) {
+                        range.setStartAfter(range.endContainer.parentElement!);
+                        range.setEndAfter(range.endContainer.parentElement!);
+                    }
+                } else if (
+                    (range.endContainer as HTMLElement).classList.contains(
+                        "highlight-wrapper",
+                    )
+                ) {
+                    range.setStartAfter(range.endContainer);
+                    range.setEndAfter(range.endContainer);
+                }
+
+                // If not all of the markers is removed, reinsert the deleted tags
+                // move the range to the end of the highlight wrapper and outside it
+                if (range.endContainer.TEXT_NODE) {
+                    if (
+                        range.endContainer.parentElement?.classList.contains(
+                            "highlight-wrapper",
+                        )
+                    ) {
+                        range.setStartAfter(range.endContainer.parentElement!);
+                        range.setEndAfter(range.endContainer.parentElement!);
+                    }
+                } else if (
+                    (range.endContainer as HTMLElement).classList.contains(
+                        "highlight-wrapper",
+                    )
+                ) {
+                    range.setStartAfter(range.endContainer);
+                    range.setEndAfter(range.endContainer);
+                }
                 nodes.forEach((node) => {
                     const newSpan = node.cloneNode(true);
                     range.insertNode(newSpan);
@@ -161,7 +204,7 @@ export default function ReferenceMarkerProvider({
             subtree: true,
         });
         return () => observer.disconnect();
-    }, [inputRef]);
+    }, [inputRef, isEditorReady]);
 
     // Setup paste event listener on the input area.
     // Prevent the ecitor from preserving text styles when pasting text from other styles.
@@ -272,6 +315,8 @@ export default function ReferenceMarkerProvider({
         setCurReferenceMarkerId(
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
+        lastSelectionRange.current = range;
+        lastSelectionRange.current = range;
 
         // Create tooltip element
         const rangeRect = range.getBoundingClientRect();
@@ -279,7 +324,7 @@ export default function ReferenceMarkerProvider({
         tooltip.className =
             "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
         tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = "從右側選取引註事實";
+        tooltip.textContent = factHintTooltip;
         document.body.appendChild(tooltip);
 
         // Calculate the middlepoint of the selection
@@ -298,7 +343,7 @@ export default function ReferenceMarkerProvider({
         tooltip.style.top = `${rangeRect.top - 30}px`;
         tooltip.style.left = `${leftX}px`;
         tooltip.classList.remove("opacity-0");
-    }, [setInSelectionMode, getSelectedReferenceMarker]);
+    }, [setInSelectionMode, getSelectedReferenceMarker, factHintTooltip]);
 
     // Add event listeners for selection change and window resize
     useEffect(() => {
@@ -345,9 +390,11 @@ export default function ReferenceMarkerProvider({
             }
 
             // Update the selected area with the new reference marker
-            const selection = window.getSelection();
-            if (!selection) return;
-            const range = selection.getRangeAt(0);
+            // const selection = window.getSelection();
+            // if (!selection) return;
+            // const range = selection.getRangeAt(0);
+            if (lastSelectionRange.current === null) return;
+            const range = lastSelectionRange.current;
             encapsuleReferenceMarker({
                 range,
                 referenceMarkerId: String(avaliableMarkerId.current),
@@ -358,6 +405,15 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Remove a fact from the current reference marker
@@ -385,6 +441,15 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Remove the fact from the imported FactList
@@ -419,6 +484,15 @@ export default function ReferenceMarkerProvider({
 
         // Update the selected facts state
         setSelectedFacts(newMap);
+
+        // Reestimate the selection area
+        if (lastSelectionRange.current == null) return;
+        const selectedMarkerId = getSelectedReferenceMarker(
+            lastSelectionRange.current,
+        );
+        setCurReferenceMarkerId(
+            selectedMarkerId ? Number(selectedMarkerId) : null,
+        );
     };
 
     // Get the selected facts for current selected reference marker as array
@@ -430,13 +504,14 @@ export default function ReferenceMarkerProvider({
 
     const getInputFieldContent = useCallback(() => {
         if (!inputRef.current) return "";
-        return phraseReferencedContent(inputRef.current);
+        return treeWalker_referenceText(inputRef.current);
     }, [inputRef]);
 
     return (
         <ReferenceMarkerContext.Provider
             value={{
                 inSelectionMode,
+                setIsEditorReady,
                 inputRef,
                 addFactToReferenceMarker,
                 removeFactFromReferenceMarker,
