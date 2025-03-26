@@ -2,7 +2,7 @@ export type preprocessReferenceContentParams = {
     content: string;
 };
 
-export type typedContentFragment = {
+export type TypedContentFragment = {
     type:
         | "Content" // plain text
         | "Reference" // text of the reference, highlighted
@@ -13,7 +13,7 @@ export type typedContentFragment = {
     references: number[] | null;
 };
 
-export type preprocessedContentFragments = typedContentFragment[][]; // first index is paragraph, second index is the content/reference in the paragraph
+export type preprocessedContentFragments = TypedContentFragment[][]; // first index is paragraph, second index is the content/reference in the paragraph
 
 // turn the content in backend format (markdown like) to frontend format (with references markers)
 export function preprocessReferenceContent({
@@ -24,7 +24,7 @@ export function preprocessReferenceContent({
 
     let lastIndex = 0;
     let match;
-    const result: typedContentFragment[] = [];
+    const result: TypedContentFragment[] = [];
 
     while ((match = regex.exec(content)) !== null) {
         // Push normal text before the reference
