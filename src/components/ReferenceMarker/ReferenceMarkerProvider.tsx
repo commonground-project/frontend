@@ -2,25 +2,94 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
+    generateReferenceMarker,
+    generateReferenceCounter,
     encapsuleReferenceMarker,
     updateReferenceCounter,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
+import { phraseReferencedContent } from "@/lib/referenceMarker/phraseReferencedContent";
 
 export default function ReferenceMarkerProvider({
     children,
+    historyRecord,
 }: {
     children: React.ReactNode;
+    historyRecord?: string; // the content with reference in backend format
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
-        new Map().set(0, []),
+        new Map(),
     );
     const [inSelectionMode, setInSelectionMode] = useState<boolean>(false);
     const [curReferenceMarkerId, setCurReferenceMarkerId] = useState<
         number | null
     >(null);
-    const [avaliableMarkerId, setAvaliableMarkerId] = useState<number>(0);
+    const [isRecordRestored, setIsRecordRestored] = useState<boolean>(false);
+    const avaliableMarkerId = useRef<number>(0);
     const inputRef = useRef<HTMLDivElement>(null);
+
+    // Restore the history record
+    useEffect(() => {
+        if (!historyRecord || historyRecord === "" || isRecordRestored) return; // No history record to restore, or already restored
+        setIsRecordRestored(true);
+        if (inputRef.current === null) return; // The inputRef is not ready
+
+        const content = preprocessReferenceContent({ content: historyRecord });
+        const newSelectedFacts = new Map<number, number[]>();
+
+        inputRef.current.innerHTML = "";
+        content.forEach((paragraph) => {
+            const p = document.createElement("div");
+
+            paragraph.forEach((part) => {
+                // plain text
+                if (part.type === "Content") {
+                    const textNode = document.createTextNode(part.text);
+                    p.appendChild(textNode);
+                }
+                // insert reference marker start
+                else if (part.type === "ReferenceStart") {
+                    const startMarker = generateReferenceMarker({
+                        id: String(avaliableMarkerId.current),
+                        type: "start",
+                    });
+                    p.appendChild(startMarker);
+                }
+                // insert reference counter and update the selectedFacts map
+                else if (part.type === "ReferenceCounter") {
+                    const counter = generateReferenceCounter({
+                        id: String(avaliableMarkerId.current),
+                        referencedIndexes: part.references ?? [],
+                    });
+                    p.appendChild(counter);
+                    newSelectedFacts.set(
+                        avaliableMarkerId.current,
+                        part.references ?? [],
+                    );
+                }
+                // insert reference marker end
+                else if (part.type === "ReferenceEnd") {
+                    const endMarker = generateReferenceMarker({
+                        id: String(avaliableMarkerId.current),
+                        type: "end",
+                    });
+                    p.appendChild(endMarker);
+                    avaliableMarkerId.current++;
+                }
+                // highlight reference text
+                else {
+                    const span = document.createElement("span");
+                    span.textContent = part.text;
+                    span.style.color = "#10B981";
+                    p.appendChild(span);
+                }
+            });
+
+            inputRef.current?.appendChild(p);
+        });
+        setSelectedFacts(newSelectedFacts);
+    }, [inputRef, historyRecord, isRecordRestored]);
 
     // Setup observer on the input area
     useEffect(() => {
@@ -156,10 +225,15 @@ export default function ReferenceMarkerProvider({
 
     // Get the selected reference marker, which the user wants to update
     const getSelectedReferenceMarker = useCallback((range: Range) => {
-        const startMarkers = document.querySelectorAll(
+        const startMarkers = inputRef.current?.querySelectorAll(
             ".reference-marker.start",
         );
-        const endMarkers = document.querySelectorAll(".reference-marker.end");
+        const endMarkers = inputRef.current?.querySelectorAll(
+            ".reference-marker.end",
+        );
+
+        // If there are no markers, return null
+        if (!startMarkers || !endMarkers) return null;
 
         let selectedMarkerId: string | null = null;
         if (startMarkers.length > 0) {
@@ -246,7 +320,10 @@ export default function ReferenceMarkerProvider({
             // Add the fact to the selectedFacts map
             const existingFacts = newMap.get(curReferenceMarkerId) ?? [];
             if (!existingFacts.includes(factIndex)) {
-                newMap.set(curReferenceMarkerId, [...existingFacts, factIndex]);
+                newMap.set(
+                    curReferenceMarkerId,
+                    [...existingFacts, factIndex].sort(),
+                );
             }
 
             // Update the selected reference counter
@@ -259,9 +336,12 @@ export default function ReferenceMarkerProvider({
         // No marker id, new id = avaliableMarkerId
         else {
             // Add the fact to the selectedFacts map
-            const existingFacts = newMap.get(avaliableMarkerId) ?? [];
+            const existingFacts = newMap.get(avaliableMarkerId.current) ?? [];
             if (!existingFacts.includes(factIndex)) {
-                newMap.set(avaliableMarkerId, [...existingFacts, factIndex]);
+                newMap.set(
+                    avaliableMarkerId.current,
+                    [...existingFacts, factIndex].sort(),
+                );
             }
 
             // Update the selected area with the new reference marker
@@ -270,10 +350,10 @@ export default function ReferenceMarkerProvider({
             const range = selection.getRangeAt(0);
             encapsuleReferenceMarker({
                 range,
-                referenceMarkerId: String(avaliableMarkerId),
-                referencedIndexes: newMap.get(avaliableMarkerId) ?? [],
+                referenceMarkerId: String(avaliableMarkerId.current),
+                referencedIndexes: newMap.get(avaliableMarkerId.current) ?? [],
             });
-            setAvaliableMarkerId((prev) => prev + 1);
+            avaliableMarkerId.current++;
         }
 
         // Update the selected facts state
@@ -323,8 +403,10 @@ export default function ReferenceMarkerProvider({
         }
 
         // Get current displayed reference markers id
+        if (!inputRef.current) return;
+
         const displayedReferenceMarkersId = Array.from(
-            document.querySelectorAll(".reference-marker.start"),
+            inputRef.current.querySelectorAll(".reference-marker.start"),
         ).map((marker) => Number(marker.getAttribute("data-marker-id")));
 
         // Update the existing reference counters
@@ -341,12 +423,15 @@ export default function ReferenceMarkerProvider({
 
     // Get the selected facts for current selected reference marker as array
     const getCurSelectedFacts = () => {
-        // If curReferenceMarkerId is null, use the avaliableMarkerId
-        // Which means a new reference marker is being created
         return curReferenceMarkerId === null
-            ? (selectedFacts.get(avaliableMarkerId) ?? [])
-            : (selectedFacts.get(curReferenceMarkerId) ?? []);
+            ? [] // No reference marker selected
+            : (selectedFacts.get(curReferenceMarkerId) ?? []); // Existing reference marker selected
     };
+
+    const getInputFieldContent = useCallback(() => {
+        if (!inputRef.current) return "";
+        return phraseReferencedContent(inputRef.current);
+    }, [inputRef]);
 
     return (
         <ReferenceMarkerContext.Provider
@@ -357,6 +442,7 @@ export default function ReferenceMarkerProvider({
                 removeFactFromReferenceMarker,
                 removeFactFromAllReferenceMarker,
                 getCurSelectedFacts,
+                getInputFieldContent,
             }}
         >
             {children}
