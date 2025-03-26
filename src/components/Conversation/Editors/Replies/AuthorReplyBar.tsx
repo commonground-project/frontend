@@ -112,6 +112,7 @@ export default function AddReplyBar({
         },
     });
 
+    // the Editor is ready (rendered) when is in focus
     useEffect(() => {
         setIsEditorReady(inFocus);
     }, [inFocus, setIsEditorReady]);
