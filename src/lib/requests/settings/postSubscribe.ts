@@ -69,11 +69,12 @@ export const generateSubscriptionObject =
         return subscriptionObject;
     };
 
-async function requestNotificationPermission() {
+async function requestNotificationPermission(): Promise<boolean> {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
-        throw new Error("Notification permission denied");
+        return false;
     }
+    return true;
 }
 
 export type subscribeWebPushParams = {
@@ -99,7 +100,11 @@ export const subscribeWebPush = async ({
     }
 
     // Request Notification and Push Permission
-    requestNotificationPermission();
+    const hasPermission = await requestNotificationPermission();
+    if (!hasPermission) {
+        console.info("Send notification permission denied");
+        return;
+    }
 
     // Get the push subscription object
     const subscriptionObject = await generateSubscriptionObject();
