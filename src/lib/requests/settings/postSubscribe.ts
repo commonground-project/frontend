@@ -102,7 +102,7 @@ export const subscribeWebPush = async ({
     // Request Notification and Push Permission
     const hasPermission = await requestNotificationPermission();
     if (!hasPermission) {
-        console.info("Send notification permission denied");
+        console.info("Notification permission denied");
         return;
     }
 
