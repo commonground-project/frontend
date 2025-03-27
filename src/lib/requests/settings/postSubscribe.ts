@@ -1,6 +1,5 @@
 import type { WebPushSubscription } from "@/types/users.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
-import { boolean } from "zod";
 
 type postSubscribeParams = {
     subscription: WebPushSubscription;
