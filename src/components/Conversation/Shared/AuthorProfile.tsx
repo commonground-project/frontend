@@ -34,7 +34,7 @@ export default function AuthorProfile({
         else if (diffInDays < 7) setDisplayedTimeString(`${diffInDays} 天前`);
         // Show absolute date if older than a week
         else setDisplayedTimeString(createdAt.toLocaleDateString());
-    }, []);
+    }, [createdAt]);
 
     return (
         <div className="mb-1 flex">
