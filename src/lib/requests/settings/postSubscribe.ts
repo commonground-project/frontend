@@ -69,14 +69,6 @@ export const generateSubscriptionObject =
         return subscriptionObject;
     };
 
-async function requestNotificationPermission(): Promise<boolean> {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-        return false;
-    }
-    return true;
-}
-
 export type subscribeWebPushParams = {
     auth_token: string;
 };
@@ -86,25 +78,14 @@ export const subscribeWebPush = async ({
 }: subscribeWebPushParams) => {
     // Register service worker
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-            .register("/serviceWorker.js")
-            .then((registration) => {
-                console.log(
-                    "Service Worker registered with scope:",
-                    registration.scope,
-                );
-            })
-            .catch((error) => {
-                console.error("Service Worker registration failed:", error);
-            });
+        navigator.serviceWorker.register("/serviceWorker.js").catch((error) => {
+            console.error("Service Worker registration failed:", error);
+        });
     }
 
     // Request Notification and Push Permission
-    const hasPermission = await requestNotificationPermission();
-    if (!hasPermission) {
-        console.info("Notification permission denied");
-        return;
-    }
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
 
     // Get the push subscription object
     const subscriptionObject = await generateSubscriptionObject();
@@ -115,7 +96,6 @@ export const subscribeWebPush = async ({
             subscription: subscriptionObject,
             auth_token,
         });
-        console.log("Successfully subscribed to push notifications");
     } catch (error) {
         console.error("Failed to subscribe to push notifications: ", error);
     }
