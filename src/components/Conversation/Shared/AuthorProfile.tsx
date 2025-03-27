@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import { Avatar } from "@mantine/core";
 
 type AuthorProfileProps = {
@@ -11,23 +13,28 @@ export default function AuthorProfile({
     authorAvatar,
     createdAt,
 }: AuthorProfileProps) {
-    const formatTimeAgo = (date: Date) => {
+    const [displayedTimeString, setDisplayedTimeString] = useState<string>("");
+
+    useEffect(() => {
+        if (!createdAt) return;
+
         const now = new Date(); // Get current local time
         const diffInSeconds = Math.floor(
-            (now.getTime() - date.getTime()) / 1000,
+            (now.getTime() - createdAt.getTime()) / 1000,
         );
         const diffInMinutes = Math.floor(diffInSeconds / 60);
         const diffInHours = Math.floor(diffInMinutes / 60);
         const diffInDays = Math.floor(diffInHours / 24);
 
-        if (diffInSeconds < 60) return "剛剛";
-        if (diffInMinutes < 60) return `${diffInMinutes} 分鐘前`;
-        if (diffInHours < 24) return `${diffInHours} 小時前`;
-        if (diffInDays < 7) return `${diffInDays} 天前`;
-
+        if (diffInSeconds < 60) setDisplayedTimeString("剛剛");
+        else if (diffInMinutes < 60)
+            setDisplayedTimeString(`${diffInMinutes} 分鐘前`);
+        else if (diffInHours < 24)
+            setDisplayedTimeString(`${diffInHours} 小時前`);
+        else if (diffInDays < 7) setDisplayedTimeString(`${diffInDays} 天前`);
         // Show absolute date if older than a week
-        return date.toLocaleDateString();
-    };
+        else setDisplayedTimeString(createdAt.toLocaleDateString());
+    }, [createdAt]);
 
     return (
         <div className="mb-1 flex">
@@ -40,11 +47,10 @@ export default function AuthorProfile({
             <p className="ml-1.5 inline-block text-xs font-normal text-neutral-600">
                 {authorName}
             </p>
-            {createdAt && (
-                <p className="ml-3 inline-block text-xs font-normal text-neutral-600">
-                    {formatTimeAgo(createdAt)}
-                </p>
-            )}
+
+            <p className="ml-3 inline-block text-xs font-normal text-neutral-600">
+                {displayedTimeString}
+            </p>
         </div>
     );
 }
