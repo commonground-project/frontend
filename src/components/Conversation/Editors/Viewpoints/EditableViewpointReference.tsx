@@ -21,7 +21,7 @@ export default function EditableViewpointReference({
     return (
         <div className="flex w-full gap-2.5 rounded-lg p-2 hover:bg-[#f0f0f0]">
             {inSelectionMode && (
-                <div className="flex-shrink-0 pt-1">
+                <div className="shrink-0 pt-1">
                     <Checkbox
                         radius={"xl"}
                         checked={isSelected}

@@ -168,7 +168,7 @@ export default function FactListCard({
                     checkIconPosition="right"
                     radius={0}
                     classNames={{
-                        input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
+                        input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-hidden",
                     }}
                     placeholder="搜尋 CommonGround"
                     nothingFoundMessage={

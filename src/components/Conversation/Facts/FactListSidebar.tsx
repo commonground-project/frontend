@@ -33,7 +33,7 @@ export default function FactListSideBar({
                 cardRef.current &&
                 !cardRef.current.contains(event.target as Node)
             ) {
-                console.log("blur");
+                console.log("blur-sm");
                 setExpandedSidebarIndex((prev) =>
                     prev === sidebarIndex ? null : prev,
                 );

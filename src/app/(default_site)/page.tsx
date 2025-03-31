@@ -13,7 +13,7 @@ export default async function HomePage() {
     const user = decodeUserFromString(auth_token);
 
     return (
-        <main className="flex flex-grow flex-col items-center p-8">
+        <main className="flex grow flex-col items-center p-8">
             <h1 className="w-full max-w-3xl pb-3 text-2xl font-semibold text-neutral-900">
                 {user?.username ? `${user?.username}, ` : ""}歡迎來到
                 CommonGround

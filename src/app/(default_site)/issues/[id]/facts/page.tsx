@@ -41,7 +41,7 @@ export default async function FactsPage({ params }: FactsPageProps) {
     if (!issue) return null;
 
     return (
-        <main className="flex flex-grow flex-col items-center p-8 pb-16">
+        <main className="flex grow flex-col items-center p-8 pb-16">
             <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
                 <h1 className="py-1 font-sans text-2xl font-bold">
                     {issue.title}

@@ -186,7 +186,7 @@ export default function AddReplyBar({
                 {inFocus ? (
                     <div className="w-full px-6 py-3">
                         <div
-                            className="w-full bg-transparent text-neutral-900 focus:outline-none"
+                            className="w-full bg-transparent text-neutral-900 focus:outline-hidden"
                             contentEditable
                             ref={inputRef}
                             onInput={(e) => {

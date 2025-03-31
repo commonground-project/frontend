@@ -39,7 +39,7 @@ export default async function IssueView({ params }: IssueViewProps) {
 
     return (
         <div>
-            <main className="flex flex-grow flex-col items-center p-8 pb-16">
+            <main className="flex grow flex-col items-center p-8 pb-16">
                 <IssueCard issue={issue} />
                 <ViewpointList issueId={issueId} />
             </main>

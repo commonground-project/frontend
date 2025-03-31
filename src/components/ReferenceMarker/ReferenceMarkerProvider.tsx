@@ -322,7 +322,7 @@ export default function ReferenceMarkerProvider({
         const rangeRect = range.getBoundingClientRect();
         const tooltip = document.createElement("div");
         tooltip.className =
-            "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
+            "absolute bg-blue-600 z-30 text-white text-xs rounded-sm py-1 px-2 opacity-0";
         tooltip.id = "fact-hint-tooltip";
         tooltip.textContent = factHintTooltip;
         document.body.appendChild(tooltip);

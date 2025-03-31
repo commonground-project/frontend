@@ -118,7 +118,7 @@ export default function ReplyReferenceModal({
                 radius={0}
                 classNames={{
                     root: "w-full",
-                    input: "ml-1 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
+                    input: "ml-1 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-hidden",
                 }}
                 placeholder="搜尋 CommonGround"
                 leftSection={

@@ -197,13 +197,13 @@ export default function ViewpointCard({
                 placeholder="用一句話簡述你的觀點"
                 className="w-full"
                 classNames={{
-                    input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
+                    input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-hidden",
                 }}
             />
             <div
                 id="viewpoint-input"
                 contentEditable
-                className="h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-none"
+                className="h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-hidden"
                 ref={inputRef}
                 onInput={(e) => {
                     Array.from(e.currentTarget.children).forEach((node) => {

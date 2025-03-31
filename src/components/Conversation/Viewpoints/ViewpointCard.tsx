@@ -46,7 +46,7 @@ export default function ViewpointCard({
                         })
                     }
                 />
-                <div className="flex flex-shrink-0 items-center gap-1 text-emerald-600">
+                <div className="flex shrink-0 items-center gap-1 text-emerald-600">
                     <p>查看完整觀點</p>
                     <ArrowRightIcon className="w-4" />
                 </div>

@@ -284,7 +284,7 @@ export default function FactCreationModal({
                             type="url"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
+                            className="flex-1 border-none bg-transparent outline-hidden placeholder:text-neutral-500"
                             placeholder="新增引註資料"
                         />
                         <Button
