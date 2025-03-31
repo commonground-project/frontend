@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { CommonGroundMantineTheme } from "@/lib/configs/mantine";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { CookiesProvider } from "react-cookie";
 import { decodeToken } from "react-jwt";
 import { Noto_Serif_TC } from "next/font/google";
 import type { DecodedToken } from "@/types/users.types";
@@ -72,14 +73,16 @@ export default function Providers({ children }: ProviderProps) {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <PostHogProvider client={posthog}>
-                    <MantineProvider theme={CommonGroundMantineTheme}>
-                        {children}
-                    </MantineProvider>
-                    <Toaster richColors />
-                </PostHogProvider>
-            </AuthProvider>
+            <CookiesProvider>
+                <AuthProvider>
+                    <PostHogProvider client={posthog}>
+                        <MantineProvider theme={CommonGroundMantineTheme}>
+                            {children}
+                        </MantineProvider>
+                        <Toaster richColors />
+                    </PostHogProvider>
+                </AuthProvider>
+            </CookiesProvider>
         </QueryClientProvider>
     );
 }
