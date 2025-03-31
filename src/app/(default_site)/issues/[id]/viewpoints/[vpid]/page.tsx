@@ -54,7 +54,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
 
     return (
         <div>
-            <main className="mx-auto w-full max-w-3xl pb-40 pt-8">
+            <main className="mx-auto w-full max-w-3xl pt-8 pb-40">
                 <PageDisplayCard
                     issueId={pageParams.id}
                     issueTitle={issue.title}

@@ -163,7 +163,7 @@ export default function AddReplyBar({
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
+        <div className="fixed right-0 bottom-0 left-0 flex justify-center pb-3">
             <div
                 onClick={() => {
                     if (!cookie.auth_token) {

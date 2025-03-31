@@ -254,7 +254,7 @@ export default function FactCreationModal({
                                                 ),
                                             )
                                         }
-                                        className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                                        className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100"
                                         disabled={
                                             reference.status === "loading"
                                         }
@@ -267,7 +267,7 @@ export default function FactCreationModal({
                                             reference.status === "loading"
                                         }
                                     />
-                                    <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
+                                    <div className="mt-1.5 ml-1 max-w-[20rem] truncate text-gray-800">
                                         {reference.title}
                                     </div>
                                 </div>

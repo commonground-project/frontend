@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className="fixed inset-0 break-words bg-neutral-200 pt-14 antialiased">
+            <body className="fixed inset-0 bg-neutral-200 pt-14 break-words antialiased">
                 <Providers>{children}</Providers>
             </body>
         </html>

@@ -23,7 +23,7 @@ export default function ReferenceBar({
             href={reference.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-w-0 max-w-full shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
+            className="inline-flex max-w-full min-w-0 shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
         >
             {isLoading ? (
                 <Loader size="xs" />

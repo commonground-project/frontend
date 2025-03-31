@@ -85,8 +85,8 @@ export default function TimeLineModal({
                     <Timeline.Item
                         bullet={
                             <div className="relative">
-                                <div className="absolute -left-1 -top-1 h-2 w-2 bg-white" />
-                                <ArrowDownIcon className="absolute -left-2 -top-2 h-4 w-4 text-black" />
+                                <div className="absolute -top-1 -left-1 h-2 w-2 bg-white" />
+                                <ArrowDownIcon className="absolute -top-2 -left-2 h-4 w-4 text-black" />
                             </div>
                         }
                     />

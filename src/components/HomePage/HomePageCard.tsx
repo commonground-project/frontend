@@ -13,7 +13,7 @@ const HomePageCard = forwardRef<HTMLAnchorElement, HomePageCardProps>(
                 <h1 className="text-lg font-semibold duration-300 group-hover:text-emerald-500">
                     {issue.title}
                 </h1>
-                <p className="mt-1 whitespace-pre-wrap text-base font-normal">
+                <p className="mt-1 text-base font-normal whitespace-pre-wrap">
                     {issue.description.slice(0, 100) + "..."}
                 </p>
             </Link>

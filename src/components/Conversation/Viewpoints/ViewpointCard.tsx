@@ -25,7 +25,7 @@ export default function ViewpointCard({
             <h1 className="text-lg font-semibold text-neutral-700">
                 {viewpoint.title}
             </h1>
-            <div className="mb-2 mt-1 flex flex-col gap-3">
+            <div className="mt-1 mb-2 flex flex-col gap-3">
                 <ContentCard content={viewpoint.content} />
             </div>
             <div className="flex justify-between align-bottom">

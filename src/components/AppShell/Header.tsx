@@ -17,7 +17,7 @@ export default function Header() {
     const [isSettingsModalOpened, setIsSettingsModalOpened] = useState(false);
 
     return (
-        <div className="fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
+        <div className="fixed top-0 right-0 left-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
             <div />
             <Link href="/">
                 <h1 className="font-serif text-2xl font-bold text-black">

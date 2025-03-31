@@ -13,7 +13,7 @@ export default function AddViewpointBar({ id }: AddViewpointBarProps) {
     const [cookie] = useCookies(["auth_token"]);
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center px-8 pb-3">
+        <div className="fixed right-0 bottom-0 left-0 flex justify-center px-8 pb-3">
             <Link
                 href={`/issues/${id}/author`}
                 className="left-4 z-20 flex w-full max-w-3xl items-center rounded-full border-[1px] border-zinc-500 bg-neutral-50 py-2"
