@@ -35,6 +35,7 @@ export default function ContentCardWithSidebar({
                                     classNames={{
                                         dropdown: "border-0 bg-white",
                                     }}
+                                    middlewares={{ inline: true }}
                                 >
                                     <HoverCard.Target>
                                         <span className="break-all text-green-700">
