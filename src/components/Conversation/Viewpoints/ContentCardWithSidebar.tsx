@@ -29,30 +29,6 @@ export default function ContentCardWithSidebar({
                             part.type === "ReferenceCounter"
                         ) {
                             return (
-                                // <Tooltip
-                                //     color="transparent"
-                                //     label={
-                                //         <div className="bg-white shadow-xl">
-                                //             {part.references?.map((factidx) => {
-                                //                 const fact = facts[factidx];
-                                //                 if (!fact) return null;
-                                //                 return (
-                                //                     <FactCard
-                                //                         fact={fact}
-                                //                         factIndex={factidx}
-                                //                         key={fact.id}
-                                //                     />
-                                //                 );
-                                //             })}
-                                //         </div>
-                                //     }
-                                //     inline
-                                //     key={index}
-                                // >
-                                //     <span className="break-all text-green-700">
-                                //         {part.text}
-                                //     </span>
-                                // </Tooltip>
                                 <HoverCard
                                     shadow="xl"
                                     key={index}
