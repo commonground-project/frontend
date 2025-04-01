@@ -21,10 +21,7 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
             {viewpointContent.map((paragraph, index) => (
                 <p key={index}>
                     {paragraph.map((part, index) => {
-                        if (
-                            part.type === "Reference" ||
-                            part.type === "ReferenceCounter"
-                        ) {
+                        if (part.type === "Reference") {
                             return (
                                 <HoverCard
                                     shadow="xl"
@@ -53,6 +50,15 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
                                         })}
                                     </HoverCard.Dropdown>
                                 </HoverCard>
+                            );
+                        } else if (part.type === "ReferenceCounter") {
+                            return (
+                                <span
+                                    key={index}
+                                    className="break-all text-green-700"
+                                >
+                                    {part.text}
+                                </span>
                             );
                         } else
                             return (
