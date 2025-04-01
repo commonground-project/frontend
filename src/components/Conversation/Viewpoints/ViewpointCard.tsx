@@ -1,5 +1,5 @@
 import type { Reaction, ViewPoint } from "@/types/conversations.types";
-import ContentCard from "./ContentCard";
+import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 import AuthorProfile from "../Shared/AuthorProfile";
@@ -26,7 +26,10 @@ export default function ViewpointCard({
                 {viewpoint.title}
             </h1>
             <div className="mb-2 mt-1 flex flex-col gap-3">
-                <ContentCard content={viewpoint.content} />
+                <ContentCard
+                    content={viewpoint.content}
+                    facts={viewpoint.facts}
+                />
             </div>
             <div className="flex justify-between align-bottom">
                 <TernaryReactions

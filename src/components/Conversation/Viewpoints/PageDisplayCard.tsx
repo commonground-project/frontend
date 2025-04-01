@@ -3,7 +3,7 @@
 import { type ViewPoint } from "@/types/conversations.types";
 import Link from "next/link";
 import AuthorProfile from "../Shared/AuthorProfile";
-import ContentCardWithSidebar from "./ContentCardWithSidebar";
+import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 
@@ -32,7 +32,7 @@ export default function PageDisplayCard({
                 />
             </div>
             <div className="my-3 flex flex-col gap-3 text-lg">
-                <ContentCardWithSidebar
+                <ContentCard
                     facts={viewpoint.facts}
                     content={viewpoint.content}
                 />
