@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo } from "react";
 import { type Fact } from "@/types/conversations.types";
-import FactListSideBar from "../Facts/FactListSidebar";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
+import { HoverCard, Tooltip } from "@mantine/core";
+import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 
 type ContentCardWithSidebarProps = {
     facts: Fact[];
@@ -14,102 +15,80 @@ export default function ContentCardWithSidebar({
     facts,
     content,
 }: ContentCardWithSidebarProps) {
-    const paragraphRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-    const [paragraphPositions, setParagraphPositions] = useState<number[]>([]);
-    const [paragraphReferences, setParagraphReferences] = useState<number[][]>(
-        [],
-    );
-    const [expandedSidebarIndex, setExpandedSidebarIndex] = useState<
-        number | null
-    >(null);
-
     const viewpointContent = useMemo(() => {
-        const parsedContents = preprocessReferenceContent({ content });
-        const allReferences = parsedContents.map((paragraph) => {
-            const references: number[] = [];
-            paragraph.map((fragment) => {
-                if (
-                    fragment.type === "Reference" &&
-                    fragment.references !== null
-                ) {
-                    // Add the reference to the list if it's not already there
-                    fragment.references.map((ref) => {
-                        if (references.find((r) => r === ref) === undefined)
-                            references.push(ref);
-                    });
-                }
-            });
-            return references;
-        });
-        return { parsedContents, allReferences };
+        return preprocessReferenceContent({ content });
     }, [content]);
-
-    useEffect(() => {
-        setParagraphReferences(viewpointContent.allReferences);
-    }, [viewpointContent.allReferences]);
-
-    useEffect(() => {
-        if (paragraphRefs.current.length > 0) {
-            const positions = paragraphRefs.current.map(
-                (el) => el?.offsetTop ?? 0,
-            );
-            setParagraphPositions(positions);
-        }
-    }, []);
 
     return (
         <>
-            {viewpointContent.parsedContents.map((paragraph, index) => (
-                <p
-                    key={index}
-                    ref={(el) => {
-                        paragraphRefs.current[index] = el;
-                    }}
-                >
-                    {paragraph.map((part, index) => (
-                        <span
-                            key={index}
-                            className="break-all"
-                            style={
-                                part.type === "Content"
-                                    ? undefined
-                                    : { color: "#15803D" }
-                            }
-                        >
-                            {part.text}
-                        </span>
-                    ))}
+            {viewpointContent.map((paragraph, index) => (
+                <p key={index}>
+                    {paragraph.map((part, index) => {
+                        if (
+                            part.type === "Reference" ||
+                            part.type === "ReferenceCounter"
+                        ) {
+                            return (
+                                // <Tooltip
+                                //     color="transparent"
+                                //     label={
+                                //         <div className="bg-white shadow-xl">
+                                //             {part.references?.map((factidx) => {
+                                //                 const fact = facts[factidx];
+                                //                 if (!fact) return null;
+                                //                 return (
+                                //                     <FactCard
+                                //                         fact={fact}
+                                //                         factIndex={factidx}
+                                //                         key={fact.id}
+                                //                     />
+                                //                 );
+                                //             })}
+                                //         </div>
+                                //     }
+                                //     inline
+                                //     key={index}
+                                // >
+                                //     <span className="break-all text-green-700">
+                                //         {part.text}
+                                //     </span>
+                                // </Tooltip>
+                                <HoverCard
+                                    shadow="xl"
+                                    key={index}
+                                    classNames={{
+                                        dropdown: "border-0 bg-white",
+                                    }}
+                                >
+                                    <HoverCard.Target>
+                                        <span className="break-all text-green-700">
+                                            {part.text}
+                                        </span>
+                                    </HoverCard.Target>
+                                    <HoverCard.Dropdown>
+                                        {part.references?.map((factidx) => {
+                                            const fact = facts[factidx];
+                                            if (!fact) return null;
+                                            return (
+                                                <FactCard
+                                                    fact={fact}
+                                                    factIndex={factidx}
+                                                    key={fact.id}
+                                                />
+                                            );
+                                        })}
+                                    </HoverCard.Dropdown>
+                                </HoverCard>
+                            );
+                        } else
+                            return (
+                                <span key={index} className="break-all">
+                                    {part.text}
+                                </span>
+                            );
+                    })}
                 </p>
             ))}
-            {paragraphPositions.length > 0 &&
-                paragraphPositions.map((position, index) => (
-                    <div
-                        style={{
-                            display: `${expandedSidebarIndex === null || expandedSidebarIndex === index ? "" : "none"}`,
-                            position: "absolute",
-                            right: "-226px",
-                            //226 px = 208px width + 18px margin left
-                            top: `${position}px`,
-                        }}
-                        key={index}
-                    >
-                        <FactListSideBar
-                            sidebarIndex={index}
-                            setExpandedSidebarIndex={setExpandedSidebarIndex}
-                            curExpanded={
-                                expandedSidebarIndex === index ? true : false
-                            }
-                            facts={facts}
-                            factIndexes={paragraphReferences[index]}
-                            maxHeight={
-                                expandedSidebarIndex === index
-                                    ? 1000 // arbitrary large number
-                                    : (paragraphRefs.current[index]
-                                          ?.offsetHeight ?? 0)
-                            }
-                        />
-                    </div>
-                ))}
         </>
     );
 }
