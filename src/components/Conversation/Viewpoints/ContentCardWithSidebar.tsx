@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { type Fact } from "@/types/conversations.types";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
-import { HoverCard, Tooltip } from "@mantine/core";
+import { HoverCard } from "@mantine/core";
 import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 
 type ContentCardWithSidebarProps = {
