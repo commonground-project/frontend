@@ -19,7 +19,7 @@ export default function PageDisplayCard({
     viewpoint,
 }: PageDisplayCardProps) {
     return (
-        <div className="relative rounded-xl bg-white px-7 py-6">
+        <div className="relative rounded-xl bg-neutral-100 px-7 py-6">
             <Link href={`/issues/${issueId}`}>
                 <p className="text-lg text-neutral-600">觀點・{issueTitle}</p>
             </Link>

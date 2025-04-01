@@ -46,7 +46,7 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
     if (error) return null;
 
     return (
-        <div className="rounded-xl bg-white px-7 py-6">
+        <div className="rounded-xl bg-neutral-100 px-7 py-6">
             <h1 className="mb-2 text-xl font-semibold">查看所有回覆</h1>
             <div className="mt-2 flex flex-col gap-3">
                 {data &&
