@@ -27,7 +27,7 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
                                     shadow="xl"
                                     key={index}
                                     classNames={{
-                                        dropdown: "border-0 bg-white",
+                                        dropdown: "border-0 bg-white max-w-56",
                                     }}
                                     middlewares={{ inline: true }}
                                 >
@@ -37,17 +37,19 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
                                         </span>
                                     </HoverCard.Target>
                                     <HoverCard.Dropdown>
-                                        {part.references?.map((factidx) => {
-                                            const fact = facts[factidx];
-                                            if (!fact) return null;
-                                            return (
-                                                <FactCard
-                                                    fact={fact}
-                                                    factIndex={factidx}
-                                                    key={fact.id}
-                                                />
-                                            );
-                                        })}
+                                        <div className="flex flex-col gap-1">
+                                            {part.references?.map((factidx) => {
+                                                const fact = facts[factidx];
+                                                if (!fact) return null;
+                                                return (
+                                                    <FactCard
+                                                        fact={fact}
+                                                        factIndex={factidx}
+                                                        key={fact.id}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
                                     </HoverCard.Dropdown>
                                 </HoverCard>
                             );
