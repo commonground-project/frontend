@@ -504,7 +504,7 @@ export default function ReferenceMarkerProvider({
 
     const getInputFieldContent = useCallback(() => {
         if (!inputRef.current) return "";
-        return treeWalker_referenceText(inputRef.current);
+        return treeWalker_referenceText(inputRef.current, true);
     }, [inputRef]);
 
     return (

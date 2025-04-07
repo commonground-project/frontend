@@ -14,14 +14,12 @@ export function treeWalker_referenceText(
     // DFS
     // Edge case: text node
     if (node.nodeType === Node.TEXT_NODE) {
-        console.log("text node");
         return node.textContent ?? "";
     } else if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as HTMLElement;
 
         // Edge case: placeholder, ignore it
         if (element.id === "placeholder") {
-            console.log("placeholder");
             return "";
         }
 
@@ -30,13 +28,11 @@ export function treeWalker_referenceText(
             element.classList.contains("reference-marker") &&
             element.classList.contains("start")
         ) {
-            console.log("reference marker start");
             return "[";
         }
 
         // Edge case: reference counter
         else if (element.classList.contains("reference-counter")) {
-            console.log("reference counter");
             const referenceIndexes = extractReferenceCounter(
                 element.textContent ?? "",
             );
@@ -49,7 +45,6 @@ export function treeWalker_referenceText(
             element.classList.contains("reference-marker") &&
             element.classList.contains("end")
         ) {
-            console.log("reference marker end");
             return "";
         }
     }
