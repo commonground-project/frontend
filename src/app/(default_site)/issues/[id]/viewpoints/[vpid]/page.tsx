@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getIssueByID } from "@/lib/requests/issues/getIssueById";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
+import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
 import type { Issue, ViewPoint } from "@/types/conversations.types";
 
 type ViewpointPageProps = {
@@ -29,7 +30,6 @@ export async function generateMetadata({ params }: ViewpointPageProps) {
 export default async function ViewpointPage({ params }: ViewpointPageProps) {
     const cookieStore = await cookies();
     const auth_token = cookieStore.get("auth_token");
-    if (!auth_token) return redirect("/login");
 
     const pageParams = await params;
     if (!pageParams.id || !pageParams.vpid) return notFound();
@@ -37,7 +37,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
     let issue: Issue | null = null;
 
     try {
-        issue = await getIssueByID(pageParams.id, auth_token.value);
+        issue = await getIssueByID(pageParams.id, auth_token?.value);
     } catch (error: any) {
         if (error.status === 404) return notFound();
         throw error;
@@ -46,7 +46,7 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
     let viewpoint: ViewPoint | null = null;
 
     try {
-        viewpoint = await getViewpointByID(pageParams.vpid, auth_token.value);
+        viewpoint = await getViewpointByID(pageParams.vpid, auth_token?.value);
     } catch (error: any) {
         if (error.status === 404) return notFound();
         throw error;
@@ -63,7 +63,12 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <hr className="h-8" />
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
-            <AuthorReplyBar id={viewpoint.id} />
+            <ReferenceMarkerProvider factHintTooltip="點選連結圖示以引註資料">
+                <AuthorReplyBar
+                    issueId={pageParams.id}
+                    viewpointId={viewpoint.id}
+                />
+            </ReferenceMarkerProvider>
         </div>
     );
 }

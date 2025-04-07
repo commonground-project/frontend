@@ -22,7 +22,10 @@ export default function SettingsModal({
 
     const { data } = useQuery({
         queryKey: ["getUserSettings"],
-        queryFn: () => getUserSettings({ auth_token: cookie.auth_token }),
+        queryFn: () =>
+            cookie.auth_token
+                ? getUserSettings({ auth_token: cookie.auth_token })
+                : null,
     });
 
     const [newReplyInMyViewpoint, setNewReplyInMyViewpoint] = useState(false);

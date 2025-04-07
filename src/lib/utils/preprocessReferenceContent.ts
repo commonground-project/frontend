@@ -2,14 +2,20 @@ export type preprocessReferenceContentParams = {
     content: string;
 };
 
-export type typedContentFragment = {
-    type: "content" | "reference";
+export type TypedContentFragment = {
+    type:
+        | "Content" // plain text
+        | "Reference" // text of the reference, highlighted
+        | "ReferenceStart" // start of the reference, invisible
+        | "ReferenceEnd" // end of the reference, invisible
+        | "ReferenceCounter"; // counter of the reference, highlighted
     text: string;
     references: number[] | null;
 };
 
-export type preprocessedContentFragments = typedContentFragment[][]; // first index is paragraph, second index is the content/reference in the paragraph
+export type preprocessedContentFragments = TypedContentFragment[][]; // first index is paragraph, second index is the content/reference in the paragraph
 
+// turn the content in backend format (markdown like) to frontend format (with references markers)
 export function preprocessReferenceContent({
     content,
 }: preprocessReferenceContentParams): preprocessedContentFragments {
@@ -18,31 +24,51 @@ export function preprocessReferenceContent({
 
     let lastIndex = 0;
     let match;
-    const result: typedContentFragment[] = [];
+    const result: TypedContentFragment[] = [];
 
     while ((match = regex.exec(content)) !== null) {
         // Push normal text before the reference
         if (lastIndex < match.index) {
             result.push({
-                type: "content",
+                type: "Content",
                 text: content.slice(lastIndex, match.index),
                 references: null,
             });
         }
-        let referenceText = match[1];
+        const referenceText = match[1];
+        let referenceCounter = "";
         const references: number[] = [];
         match[2].split(",").map((num) => {
             // Push the reference text
-            referenceText = referenceText + `[${Number(num) + 1}]`;
+            referenceCounter += `[${Number(num) + 1}]`;
             // record the reference
             if (references.find((ref) => ref === Number(num)) === undefined)
                 references.push(Number(num));
         });
-        result.push({
-            type: "reference",
-            text: referenceText,
-            references: references,
-        });
+
+        // Push the reference with start and end markers for further styling and hydration
+        result.push(
+            {
+                type: "ReferenceStart",
+                text: "",
+                references: null,
+            },
+            {
+                type: "Reference",
+                text: referenceText,
+                references: references,
+            },
+            {
+                type: "ReferenceCounter",
+                text: referenceCounter,
+                references: references,
+            },
+            {
+                type: "ReferenceEnd",
+                text: "",
+                references: null,
+            },
+        );
 
         // Update the lastIndex to the end of the current match
         lastIndex = regex.lastIndex;
@@ -51,7 +77,7 @@ export function preprocessReferenceContent({
     // Push remaining text after the last reference
     if (lastIndex < content.length) {
         result.push({
-            type: "content",
+            type: "Content",
             text: content.slice(lastIndex),
             references: null,
         });

@@ -1,17 +1,17 @@
 "use client";
 
-import useAuth from "@/hooks/auth/useAuth";
+import { AuthContext } from "@/lib/auth/authContext";
 import { useHeaderStore } from "@/lib/stores/headerStore";
 import { Cog8ToothIcon } from "@heroicons/react/16/solid";
 import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { ActionIcon, Avatar, Button, Menu } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SettingsModal from "./SettingsModal";
 
 export default function Header() {
-    const { user, logout } = useAuth();
+    const { user, logout } = useContext(AuthContext);
     const headerStore = useHeaderStore();
     const router = useRouter();
     const [isSettingsModalOpened, setIsSettingsModalOpened] = useState(false);
@@ -20,7 +20,9 @@ export default function Header() {
         <div className="fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-between bg-neutral-100 px-7">
             <div />
             <Link href="/">
-                <h1 className="text-2xl font-bold text-black">CommonGround</h1>
+                <h1 className="font-serif text-2xl font-bold text-black">
+                    CommonGround
+                </h1>
             </Link>
             {user ? (
                 <Menu position="bottom-end">

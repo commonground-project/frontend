@@ -1,9 +1,9 @@
-import type { Issue } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 import { generateRequestHeaders } from "../generateRequestHeaders";
 
-export type getIssuesResponse = {
-    content: Issue[];
+type PaginatedFactsResponse = {
+    content: Fact[];
     page: {
         size: number;
         totalElement: number;
@@ -12,12 +12,13 @@ export type getIssuesResponse = {
     };
 };
 
-export const getIssues = async (
-    pageParams: number,
+export const getPaginatedFacts = async (
+    pageParam: number,
+    size: number = 10,
     auth_token?: string,
-): Promise<getIssuesResponse> => {
-    return await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issues?page=${pageParams}&size=10`,
+): Promise<PaginatedFactsResponse> => {
+    return fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${pageParam}&size=${size}`,
         {
             method: "GET",
             headers: generateRequestHeaders(auth_token),

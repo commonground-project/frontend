@@ -14,9 +14,9 @@ export async function generateMetadata({
 }: FactsPageProps): Promise<Metadata> {
     const cookieStore = await cookies();
     const pageId = (await params).id;
-    const userToken = cookieStore.get("auth_token")?.value as string;
+    const auth_token = cookieStore.get("auth_token")?.value as string;
 
-    const issue = await getIssueByID(pageId, userToken);
+    const issue = await getIssueByID(pageId, auth_token);
     return {
         title: `CommonGround - ${issue.title}`,
         description: issue.description,
@@ -26,12 +26,12 @@ export async function generateMetadata({
 export default async function FactsPage({ params }: FactsPageProps) {
     const cookieStore = await cookies();
     const pageId = (await params).id;
-    const userToken = cookieStore.get("auth_token")?.value as string;
+    const auth_token = cookieStore.get("auth_token")?.value as string;
 
     let issue: Issue | null = null;
 
     try {
-        issue = await getIssueByID(pageId, userToken);
+        issue = await getIssueByID(pageId, auth_token);
     } catch (e) {
         console.error(e);
         if (e == "Error: Not found") notFound();

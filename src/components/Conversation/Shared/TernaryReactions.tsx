@@ -94,6 +94,10 @@ export default function TernaryReactions({
     const handleReaction = (
         reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
     ) => {
+        if (cookie.auth_token === undefined) {
+            toast.info("登入以使用回應功能");
+            return;
+        }
         updateReaction.mutate(
             reaction === currentReaction ? Reaction.NONE : reaction,
         );

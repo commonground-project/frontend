@@ -7,7 +7,10 @@ function extractReferenceCounter(referenceCounter: string): number[] {
     return referenceIndexes;
 }
 
-function treeWalker(node: Node, isToplevel: boolean = false): string {
+export function treeWalker_referenceText(
+    node: Node,
+    isToplevel: boolean = false,
+): string {
     // DFS
     // Edge case: text node
     if (node.nodeType === Node.TEXT_NODE) {
@@ -15,14 +18,22 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
         return node.textContent ?? "";
     } else if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as HTMLElement;
+
+        // Edge case: placeholder, ignore it
+        if (element.id === "placeholder") {
+            console.log("placeholder");
+            return "";
+        }
+
         // Edge case: reference marker start
-        if (
+        else if (
             element.classList.contains("reference-marker") &&
             element.classList.contains("start")
         ) {
             console.log("reference marker start");
             return "[";
         }
+
         // Edge case: reference counter
         else if (element.classList.contains("reference-counter")) {
             console.log("reference counter");
@@ -32,6 +43,7 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
             //end the reference here
             return `](${referenceIndexes.join(",")})`;
         }
+
         // Edge case: reference marker end
         else if (
             element.classList.contains("reference-marker") &&
@@ -53,14 +65,7 @@ function treeWalker(node: Node, isToplevel: boolean = false): string {
         ) {
             str += "\n";
         }
-        str += treeWalker(child);
+        str += treeWalker_referenceText(child);
     });
     return str; // return only the add on content
-}
-
-export function phraseReferencedContent(toplevelContainer: HTMLElement) {
-    console.log("start processing");
-    const resultContent = treeWalker(toplevelContainer, true);
-    console.log("end processing");
-    return resultContent;
 }
