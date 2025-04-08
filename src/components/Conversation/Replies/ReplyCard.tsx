@@ -5,6 +5,7 @@ import AuthorProfile from "../Shared/AuthorProfile";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postReplyReaction } from "@/lib/requests/replies/postReplyReaction";
 import type { Ref } from "react";
+import ContentCard from "@/components/Conversation/Shared/ContentCard";
 
 type ReplyCardProps = {
     reply: Reply;
@@ -19,11 +20,7 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
                 authorAvatar={reply.authorAvatar}
                 createdAt={reply.createdAt}
             />
-            <div className="my-2 flex flex-col gap-2">
-                {reply.content.split("\n").map((line, index) => (
-                    <p key={index}>{line}</p>
-                ))}
-            </div>
+            <ContentCard content={reply.content} facts={reply.facts} />
             <TernaryReactions
                 parentTitle={reply.content}
                 parentId={reply.id}
