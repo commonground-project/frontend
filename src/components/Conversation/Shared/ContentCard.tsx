@@ -34,6 +34,10 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
                                     <HoverCard.Target>
                                         <span className="break-all text-green-700">
                                             {part.text}
+                                            {/* put the reference counter together */}
+                                            {paragraph[index + 1]?.type ===
+                                                "ReferenceCounter" &&
+                                                paragraph[index + 1].text}
                                         </span>
                                     </HoverCard.Target>
                                     <HoverCard.Dropdown>
@@ -53,21 +57,13 @@ export default function ContentCard({ facts, content }: ContentCardProps) {
                                     </HoverCard.Dropdown>
                                 </HoverCard>
                             );
-                        } else if (part.type === "ReferenceCounter") {
-                            return (
-                                <span
-                                    key={index}
-                                    className="break-all text-green-700"
-                                >
-                                    {part.text}
-                                </span>
-                            );
-                        } else
+                        } else if (part.type === "Content") {
                             return (
                                 <span key={index} className="break-all">
                                     {part.text}
                                 </span>
                             );
+                        }
                     })}
                 </p>
             ))}
