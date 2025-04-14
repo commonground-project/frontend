@@ -34,8 +34,8 @@ export default function LoginPage() {
     }, [setHideLoginButton]);
 
     return (
-        <div className="flex h-full w-full items-center justify-center">
-            <div className="rounded-lg bg-gray-100 px-20 py-10 font-bold text-black shadow-md">
+        <div className="flex h-full w-full items-center justify-center bg-neutral-50">
+            <div className="rounded-lg bg-neutral-50 px-20 py-10 font-bold text-black shadow-md">
                 <h1 className="mb-4 text-center text-2xl">登入 CommonGround</h1>
                 <div className="flex justify-center">
                     <button
