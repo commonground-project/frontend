@@ -35,11 +35,15 @@ export default function LoginPage() {
 
     return (
         <div className="flex h-full w-full items-center justify-center bg-neutral-50">
-            <div className="hidden h-full w-1/2 overflow-hidden bg-[url('/CGGradient.jpeg')] bg-cover bg-[position:-150px_0px] bg-no-repeat md:block"></div>
+            <div className="hidden h-full w-1/2 bg-[url('/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
             <div className="flex justify-center md:w-1/2">
                 <div className="flex flex-col items-center md:items-start">
-                    <img src="CGLogo.svg" alt="Logo" className="mb-6 size-24" />
-                    <h1 className="mb-8 text-center font-roboto text-[32px] font-bold text-emerald-600">
+                    <img
+                        src="CGLogo.svg"
+                        alt="Logo"
+                        className="mb-6 size-24 md:mb-3"
+                    />
+                    <h1 className="mb-8 text-center font-roboto text-[32px] font-bold text-emerald-600 md:mb-11 md:text-[40px]">
                         COMMONGROUND
                     </h1>
                     <button
@@ -51,7 +55,7 @@ export default function LoginPage() {
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
-                            className="size-6"
+                            className="size-6 md:size-[30px]"
                         >
                             <path
                                 fill="#4285F4"
