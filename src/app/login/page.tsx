@@ -50,10 +50,12 @@ export default function LoginPage() {
                     />
                     <img
                         src="/LogoTextGreen.svg"
+                        alt="Logo"
                         className="mb-8 h-6 md:hidden"
                     />
                     <img
                         src="/LogoTextBlack.svg"
+                        alt="Logo"
                         className="mb-11 ml-2 hidden h-7 md:block"
                     />
                     <button
