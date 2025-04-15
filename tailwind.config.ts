@@ -14,7 +14,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["Noto Sans TC", "sans-serif"],
-        roboto:  ["Roboto", "sans-serif"],
+        serif: ["Noto Serif TC", "serif"],
       },
     },
   },

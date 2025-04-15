@@ -13,6 +13,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { CookiesProvider } from "react-cookie";
 import { decodeToken } from "react-jwt";
+import { Noto_Serif_TC } from "next/font/google";
 import type { DecodedToken } from "@/types/users.types";
 import AuthProvider from "@/components/Auth/AuthProvider";
 
@@ -57,6 +58,11 @@ if (typeof window !== "undefined") {
         },
     });
 }
+
+const __notoSerifTC = Noto_Serif_TC({
+    subsets: ["latin"], // Use 'chinese-traditional' if available in future
+    display: "swap",
+});
 
 type ProviderProps = {
     children: ReactNode;
