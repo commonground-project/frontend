@@ -37,20 +37,30 @@ export default function LoginPage() {
         <div className="flex h-full w-full items-center justify-center bg-neutral-50">
             <div className="hidden h-full w-1/2 bg-[url('/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
             <div className="flex justify-center md:w-1/2">
-                <div className="flex flex-col items-center md:items-start">
+                <div className="flex w-full max-w-md flex-col items-center justify-center md:items-start">
                     <img
-                        src="CGLogo.svg"
+                        src="/LogoGreen.svg"
                         alt="Logo"
-                        className="mb-6 size-24 md:mb-3"
+                        className="mb-6 size-24 md:hidden"
                     />
-                    <h1 className="mb-8 text-center font-roboto text-[32px] font-bold text-emerald-600 md:mb-11 md:text-[40px]">
-                        COMMONGROUND
-                    </h1>
+                    <img
+                        src="/LogoBlack.svg"
+                        alt="Logo"
+                        className="mb-3 hidden size-24 md:block"
+                    />
+                    <img
+                        src="/LogoTextGreen.svg"
+                        className="mb-8 h-6 md:hidden"
+                    />
+                    <img
+                        src="/LogoTextBlack.svg"
+                        className="mb-11 ml-2 hidden h-7 md:block"
+                    />
                     <button
                         onClick={() =>
                             handleLogin(getSearchParams("r") ?? undefined)
                         }
-                        className="flex max-w-full items-center space-x-2 rounded-xl border-[1px] border-neutral-400 bg-transparent px-[72px] py-3 text-black transition-colors hover:bg-gray-200"
+                        className="flex w-full items-center justify-center space-x-2 rounded-xl border-[1px] border-neutral-400 bg-transparent px-[72px] py-3 text-black transition-colors hover:bg-gray-200"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
