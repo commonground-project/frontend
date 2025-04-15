@@ -20,8 +20,16 @@ export default function Header() {
         <div className="fixed left-0 right-0 top-0 z-20 flex h-12 items-center justify-center bg-neutral-100 px-7 md:h-14 md:justify-between">
             <div />
             <Link href="/" className="inline-flex items-center gap-[7px]">
-                <img src="/LogoGreen.svg" alt="logo" className="size-8" />
-                <img src="/LogoTextGreen.svg" alt="logo" className="h-4" />
+                <img
+                    src="/LogoGreen.svg"
+                    alt="logo"
+                    className="size-7 md:size-8"
+                />
+                <img
+                    src="/LogoTextGreen.svg"
+                    alt="logo"
+                    className="h-3 md:h-4"
+                />
             </Link>
             <div className="hidden md:block">
                 {user ? (
