@@ -43,7 +43,9 @@ export default async function IssueView({ params }: IssueViewProps) {
                 <div className="mb-6 w-full max-w-3xl">
                     <IssueCard issue={issue} />
                 </div>
-                <ViewpointList issueId={issueId} />
+                <div className="w-full max-w-3xl">
+                    <ViewpointList issueId={issueId} />
+                </div>
             </main>
             <AddViewpointBar id={issueId} />
         </div>
