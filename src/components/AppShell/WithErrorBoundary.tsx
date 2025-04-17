@@ -1,8 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "./ErrorFallBack";
 
-import type { JSX } from "react";
-
 export default function withErrorBoundary<P extends object>(
     Component: React.ComponentType<P>,
 ) {
