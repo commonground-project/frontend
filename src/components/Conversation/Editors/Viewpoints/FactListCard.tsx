@@ -14,8 +14,10 @@ import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFact
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
 type FactListCardProps = {
     issueId: string;
@@ -29,7 +31,7 @@ type FactListCardProps = {
     ) => void;
 };
 
-export default function FactListCard({
+export function FactListCard({
     issueId,
     viewpointTitle,
     viewpointFactList,
@@ -139,6 +141,7 @@ export default function FactListCard({
 
     return (
         <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
+            <ErrorTester />
             <h1 className="mb-1 text-lg font-semibold text-neutral-700">
                 事實
             </h1>
@@ -231,3 +234,5 @@ export default function FactListCard({
         </div>
     );
 }
+
+export default withErrorBoundary(FactListCard);

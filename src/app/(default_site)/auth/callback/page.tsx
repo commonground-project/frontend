@@ -6,9 +6,10 @@ import { useContext, useEffect } from "react";
 import { toast } from "sonner";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 import { decodeToken } from "react-jwt";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 import type { DecodedToken } from "@/types/users.types";
 
-export default function CallbackPage() {
+export function CallbackPage() {
     const router = useRouter();
     const { login } = useContext(AuthContext);
 
@@ -50,3 +51,5 @@ export default function CallbackPage() {
 
     return <div></div>;
 }
+
+export default withErrorBoundary(CallbackPage);

@@ -18,6 +18,8 @@ import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
 import { ActionIcon, Loader } from "@mantine/core";
 import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/ReplyReferenceModal";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
 import type { Fact } from "@/types/conversations.types";
 
@@ -26,10 +28,7 @@ type AuthorReplyBarProps = {
     viewpointId: string;
 };
 
-export default function AddReplyBar({
-    issueId,
-    viewpointId,
-}: AuthorReplyBarProps) {
+export function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     const {
         inputRef,
         inSelectionMode,
@@ -164,6 +163,7 @@ export default function AddReplyBar({
 
     return (
         <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
+            <ErrorTester />
             <div
                 onClick={() => {
                     if (!cookie.auth_token) {
@@ -289,3 +289,5 @@ export default function AddReplyBar({
         </div>
     );
 }
+
+export default withErrorBoundary(AddReplyBar);

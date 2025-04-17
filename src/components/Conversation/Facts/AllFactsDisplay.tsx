@@ -11,12 +11,14 @@ import { v4 as uuidv4 } from "uuid";
 import FactSkeleton from "./FactSkeleton";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
 interface AllFactsDisplayProps {
     issueId: string;
 }
 
-export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
+export function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookies] = useCookies(["auth_token"]);
 
@@ -43,6 +45,7 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
 
     return (
         <div className="mt-3">
+            <ErrorTester />
             <h2 className="mb-1 text-lg font-semibold text-black">所有事實</h2>
             <div className="flex flex-col gap-2">
                 {factQuery.isLoading && (
@@ -106,3 +109,5 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
         </div>
     );
 }
+
+export default withErrorBoundary(AllFactsDisplay);

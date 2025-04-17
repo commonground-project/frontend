@@ -7,8 +7,10 @@ import HomePageCard from "../../components/HomePage/HomePageCard";
 import { getIssues } from "@/lib/requests/issues/getIssues";
 import HomePageCardSkeleton from "./HomePageCardSkeleton";
 import { useCookies } from "react-cookie";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
-export default function Page() {
+export function Page() {
     const [cookies] = useCookies(["auth_token"]);
 
     const { ref, inView } = useInView();
@@ -32,6 +34,7 @@ export default function Page() {
 
     return (
         <div className="w-full max-w-3xl rounded-md bg-neutral-100 px-7 py-6 text-black">
+            <ErrorTester />
             <div className="flex w-full flex-col gap-2">
                 {data &&
                     data.pages.map((page, pageIndex, pages) =>
@@ -73,3 +76,5 @@ export default function Page() {
         </div>
     );
 }
+
+export default withErrorBoundary(Page);

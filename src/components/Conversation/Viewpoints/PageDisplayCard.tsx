@@ -6,6 +6,8 @@ import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
 type PageDisplayCardProps = {
     issueId: string;
@@ -13,13 +15,14 @@ type PageDisplayCardProps = {
     viewpoint: ViewPoint;
 };
 
-export default function PageDisplayCard({
+export function PageDisplayCard({
     issueId,
     issueTitle,
     viewpoint,
 }: PageDisplayCardProps) {
     return (
         <div className="relative rounded-xl bg-neutral-100 px-7 py-6">
+            <ErrorTester />
             <Link href={`/issues/${issueId}`}>
                 <p className="text-lg text-neutral-600">觀點・{issueTitle}</p>
             </Link>
@@ -57,3 +60,5 @@ export default function PageDisplayCard({
         </div>
     );
 }
+
+export default withErrorBoundary(PageDisplayCard);

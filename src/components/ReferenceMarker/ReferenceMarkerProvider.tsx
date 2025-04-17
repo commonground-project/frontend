@@ -10,8 +10,10 @@ import {
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "../Testing/ErrorTester";
 
-export default function ReferenceMarkerProvider({
+export function ReferenceMarkerProvider({
     children,
     historyRecord,
     factHintTooltip,
@@ -520,7 +522,10 @@ export default function ReferenceMarkerProvider({
                 getInputFieldContent,
             }}
         >
+            <ErrorTester />
             {children}
         </ReferenceMarkerContext.Provider>
     );
 }
+
+export default withErrorBoundary(ReferenceMarkerProvider);
