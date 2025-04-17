@@ -18,8 +18,9 @@ export default async function HomePage() {
                 {user?.username ? `${user?.username}, ` : ""}歡迎來到
                 CommonGround
             </h1>
-
-            <HomePageContent />
+            <div className="w-full max-w-3xl">
+                <HomePageContent />
+            </div>
         </main>
     );
 }

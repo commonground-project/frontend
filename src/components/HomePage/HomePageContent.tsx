@@ -8,7 +8,6 @@ import { getIssues } from "@/lib/requests/issues/getIssues";
 import HomePageCardSkeleton from "./HomePageCardSkeleton";
 import { useCookies } from "react-cookie";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "@/components/Testing/ErrorTester";
 
 export function Page() {
     const [cookies] = useCookies(["auth_token"]);
@@ -33,8 +32,7 @@ export function Page() {
     }, [inView, hasNextPage, fetchNextPage, isLoading]);
 
     return (
-        <div className="w-full max-w-3xl rounded-md bg-neutral-100 px-7 py-6 text-black">
-            <ErrorTester />
+        <div className="rounded-md bg-neutral-100 px-7 py-6 text-black">
             <div className="flex w-full flex-col gap-2">
                 {data &&
                     data.pages.map((page, pageIndex, pages) =>
