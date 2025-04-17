@@ -35,26 +35,26 @@ export default function LoginPage() {
 
     return (
         <div className="flex h-full w-full items-center justify-center bg-neutral-50">
-            <div className="hidden h-full w-1/2 bg-[url('/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
+            <div className="hidden h-full w-1/2 bg-[url('/assets/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
             <div className="flex justify-center md:w-1/2">
                 <div className="flex w-full max-w-md flex-col items-center justify-center md:items-start">
                     <img
-                        src="/LogoGreen.svg"
+                        src="/assets/LogoGreen.svg"
                         alt="Logo"
                         className="mb-6 size-24 md:hidden"
                     />
                     <img
-                        src="/LogoBlack.svg"
+                        src="/assets/LogoBlack.svg"
                         alt="Logo"
                         className="mb-3 hidden size-24 md:block"
                     />
                     <img
-                        src="/LogoTextGreen.svg"
+                        src="/assets/LogoTextGreen.svg"
                         alt="Logo"
                         className="mb-8 h-6 md:hidden"
                     />
                     <img
-                        src="/LogoTextBlack.svg"
+                        src="/assets/LogoTextBlack.svg"
                         alt="Logo"
                         className="mb-11 ml-2 hidden h-7 md:block"
                     />
