@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 export default function NotFound() {
     return (
         <div className="flex h-full items-center justify-center gap-24">
-            <img src="/404.png" alt="404" className="inline-block w-[512px]" />
+            <img
+                src="/assets/404.png"
+                alt="404"
+                className="inline-block w-[512px]"
+            />
             <div className="inline-block">
                 <h1 className="mb-9 font-sans text-9xl font-bold">404</h1>
                 <h2 className="mb-6 font-sans text-4xl font-bold">

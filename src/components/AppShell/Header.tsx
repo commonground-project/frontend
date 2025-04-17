@@ -21,12 +21,12 @@ export default function Header() {
             <div />
             <Link href="/" className="inline-flex items-center gap-[7px]">
                 <img
-                    src="/LogoGreen.svg"
+                    src="/assets/LogoGreen.svg"
                     alt="logo"
                     className="size-7 md:size-8"
                 />
                 <img
-                    src="/LogoTextGreen.svg"
+                    src="/assets/LogoTextGreen.svg"
                     alt="logo"
                     className="h-3 md:h-4"
                 />
