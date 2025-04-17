@@ -18,7 +18,6 @@ import type { KnownErrorResponse } from "@/types/requests.types";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 import type { DecodedToken } from "@/types/users.types";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "@/components/Testing/ErrorTester";
 
 export function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
@@ -88,7 +87,6 @@ export function OnboardingPage() {
 
     return (
         <main className="flex flex-col items-center pt-[76px]">
-            <ErrorTester />
             <div className="w-full max-w-3xl rounded-lg bg-neutral-100 px-6 py-5">
                 <h1 className="mb-4 text-2xl font-semibold text-neutral-900">
                     歡迎來到 CommonGround
