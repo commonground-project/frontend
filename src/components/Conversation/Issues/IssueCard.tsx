@@ -11,16 +11,19 @@ import type { Issue } from "@/types/conversations.types";
 import { Tooltip, Button } from "@mantine/core";
 import { useState } from "react";
 import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import ErrorTester from "@/components/Testing/ErrorTester";
 
 type IssueCardProps = {
     issue: Issue;
 };
 
-export default function IssueCard({ issue }: IssueCardProps) {
+export function IssueCard({ issue }: IssueCardProps) {
     const [isTimelimeModalOpen, setIsTimelimeModalOpen] = useState(false);
 
     return (
-        <div className="mb-6 w-full max-w-3xl rounded-md bg-neutral-100 p-5 text-black">
+        <div className="rounded-md bg-neutral-100 p-5 text-black">
+            <ErrorTester />
             <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
             {issue.description !== "" ? (
                 <div className="mt-3">
@@ -75,3 +78,5 @@ export default function IssueCard({ issue }: IssueCardProps) {
         </div>
     );
 }
+
+export default withErrorBoundary(IssueCard);

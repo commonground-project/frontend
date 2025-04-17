@@ -9,7 +9,10 @@ export default function ErrorFallBack() {
             <div className="font-medium text-red-500">請嘗試重新整理頁面</div>
             <div className="font-medium text-red-500">
                 若錯誤持續發生，請
-                <Link href="mailto:contact@commonground.tw" className="inline">
+                <Link
+                    href="mailto:contact@commonground.tw"
+                    className="inline underline decoration-solid decoration-2"
+                >
                     聯繫我們
                 </Link>
             </div>
