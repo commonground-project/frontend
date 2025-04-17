@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { getIssueViewpoints } from "@/lib/requests/viewpoints/getIssueViewpoints";
 import ViewpointSkeleton from "./ViewpointSkeleton";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "@/components/Testing/ErrorTester";
 
 type ViewPointListProps = {
     issueId: string;
@@ -55,7 +54,6 @@ export function ViewPointList({ issueId }: ViewPointListProps) {
 
     return (
         <div className="rounded-md bg-neutral-100 p-5 text-black">
-            <ErrorTester />
             <h1 className="mb-2 text-xl font-semibold">查看所有觀點</h1>
             {data?.pages[0].content.length === 0 ? (
                 <EmptyViewpointCard id={issueId} />
