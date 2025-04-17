@@ -17,7 +17,6 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
-import ErrorTester from "@/components/Testing/ErrorTester";
 
 type FactListCardProps = {
     issueId: string;
@@ -141,7 +140,6 @@ export function FactListCard({
 
     return (
         <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
-            <ErrorTester />
             <h1 className="mb-1 text-lg font-semibold text-neutral-700">
                 事實
             </h1>

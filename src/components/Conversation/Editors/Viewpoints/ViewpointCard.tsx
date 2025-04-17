@@ -8,7 +8,6 @@ import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "@/components/Testing/ErrorTester";
 import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {
@@ -183,7 +182,6 @@ export function ViewpointCard({
 
     return (
         <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
-            <ErrorTester />
             <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
             <TextInput
                 ref={viewpointTitleRef}

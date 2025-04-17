@@ -11,7 +11,6 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "../Testing/ErrorTester";
 
 export function ReferenceMarkerProvider({
     children,
@@ -522,7 +521,6 @@ export function ReferenceMarkerProvider({
                 getInputFieldContent,
             }}
         >
-            <ErrorTester />
             {children}
         </ReferenceMarkerContext.Provider>
     );
