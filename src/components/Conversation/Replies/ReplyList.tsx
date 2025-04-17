@@ -10,7 +10,6 @@ import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
 import ReplySkeleton from "./ReplySkeleton";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
-import ErrorTester from "@/components/Testing/ErrorTester";
 
 type ReplyListProps = {
     viewpointId: string;
@@ -49,7 +48,6 @@ export function ReplyList({ viewpointId }: ReplyListProps) {
 
     return (
         <div className="rounded-xl bg-neutral-100 px-7 py-6">
-            <ErrorTester />
             <h1 className="mb-2 text-xl font-semibold">查看所有回覆</h1>
             <div className="mt-2 flex flex-col gap-3">
                 {data &&
