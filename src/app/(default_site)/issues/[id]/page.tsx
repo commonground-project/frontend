@@ -40,7 +40,7 @@ export default async function IssueView({ params }: IssueViewProps) {
     return (
         <div>
             <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                <div className="mb-6 w-full max-w-3xl rounded-md">
+                <div className="mb-6 w-full max-w-3xl">
                     <IssueCard issue={issue} />
                 </div>
                 <ViewpointList issueId={issueId} />

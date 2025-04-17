@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ErrorFallBack() {
     return (
-        <div className="flex h-full w-full flex-col items-center justify-center bg-red-200">
+        <div className="flex h-full w-full flex-col items-center justify-center rounded-md bg-red-200 p-2">
             <ExclamationTriangleIcon className="size-32 text-red-500" />
             <div className="text-4xl font-bold text-red-500">Error</div>
             <div className="font-medium text-red-500">請嘗試重新整理頁面</div>
