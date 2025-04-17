@@ -8,7 +8,7 @@ export default function Layout({
     return (
         <>
             <Header />
-            <div className="scrollbar-gutter-stable-both-edges overflow-y- h-[calc(100vh-56px)] pt-14">
+            <div className="scrollbar-gutter-stable-both-edges h-[calc(100vh-56px)] overflow-y-auto pt-14">
                 {children}
             </div>
         </>

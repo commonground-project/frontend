@@ -8,15 +8,17 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
     return (
-        <div className="flex h-full items-center justify-center gap-24">
+        <div className="flex h-full flex-col items-start justify-center gap-12 bg-white px-8 md:flex-row md:items-center md:gap-24">
             <img
-                src="/assets/404.png"
+                src="/404.png"
                 alt="404"
-                className="inline-block w-[512px]"
+                className="inline-block w-9/12 max-w-[512px]"
             />
             <div className="inline-block">
-                <h1 className="mb-9 font-sans text-9xl font-bold">404</h1>
-                <h2 className="mb-6 font-sans text-4xl font-bold">
+                <h1 className="mb-5 font-sans text-7xl font-bold md:mb-9 md:text-9xl">
+                    404
+                </h1>
+                <h2 className="mb-6 hidden font-sans text-4xl font-bold md:block">
                     我們找不到您請求的頁面
                 </h2>
                 <h2 className="mb-6 font-sans text-2xl">
