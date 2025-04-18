@@ -17,9 +17,8 @@ import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
 import type { KnownErrorResponse } from "@/types/requests.types";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 import type { DecodedToken } from "@/types/users.types";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-export function OnboardingPage() {
+export default function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
     const { login, logout } = useAuth();
     const router = useRouter();
@@ -135,5 +134,3 @@ export function OnboardingPage() {
         </main>
     );
 }
-
-export default withErrorBoundary(OnboardingPage);

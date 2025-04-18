@@ -3,9 +3,8 @@
 import { useHeaderStore } from "@/lib/stores/headerStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-export function LoginPage() {
+export default function LoginPage() {
     const router = useRouter();
 
     const getSearchParams = (param: string) => {
@@ -74,5 +73,3 @@ export function LoginPage() {
         </div>
     );
 }
-
-export default withErrorBoundary(LoginPage);
