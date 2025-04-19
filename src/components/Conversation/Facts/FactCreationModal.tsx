@@ -1,38 +1,40 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
+import { toast } from "sonner";
 import { debounce } from "lodash";
+import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { Modal, Button, ActionIcon, TextInput } from "@mantine/core";
 import { LinkIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { Fact, FactReference } from "@/types/conversations.types";
-import ReferenceBar from "./ReferenceBar";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import type { PaginatedIssueFactsByIdResponse } from "@/lib/requests/issues/getIssueFacts";
 import { createIsolatedFact } from "@/lib/requests/facts/createFact";
 import { postReference } from "@/lib/requests/references/postReference";
 import { websiteCheck } from "@/lib/requests/references/websiteCheck";
-import { useCookies } from "react-cookie";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
-import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
+import ReferenceBar from "./ReferenceBar";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-type FactModelProps = {
+type FactReferenceWithStatus = FactReference & {
+    status: "loading" | "success" | "error";
+};
+
+type FactCreationModalContentProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
     factCreationCallback?: (createdFacts: Fact[]) => void;
 };
 
-type FactReferenceWithStatus = FactReference & {
-    status: "loading" | "success" | "error";
-};
-
-export default function FactCreationModal({
+function FactCreationModalContent({
     issueId,
     creationID,
     setCreationID,
     factCreationCallback,
-}: FactModelProps) {
+}: FactCreationModalContentProps) {
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
     const [__isUrlValid, setIsUrlValid] = useState(false);
@@ -211,6 +213,124 @@ export default function FactCreationModal({
     });
 
     return (
+        <div className="flex min-h-[250px] flex-col justify-between">
+            <div>
+                {/* fact title */}
+                <TextInput
+                    value={title}
+                    onChange={(e) => setTitle(e.currentTarget.value)}
+                    variant="unstyled"
+                    placeholder="簡述這個事實"
+                    classNames={{
+                        input: "border-none text-xl placeholder:text-neutral-500 text-neutral-800 font-bold",
+                    }}
+                    className="pb-2"
+                />
+
+                {/* reference display */}
+                <div>
+                    <h2 className="mb-2 text-sm font-bold">引註資料</h2>
+                    <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
+                        {references.map((reference) => (
+                            <div
+                                key={reference.id}
+                                className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
+                            >
+                                <ActionIcon
+                                    variant="transparent"
+                                    onClick={() =>
+                                        setReferences((prev) =>
+                                            prev.filter(
+                                                (ref) =>
+                                                    ref.id !== reference.id,
+                                            ),
+                                        )
+                                    }
+                                    className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
+                                    disabled={reference.status === "loading"}
+                                >
+                                    <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                                </ActionIcon>
+                                <ReferenceBar
+                                    reference={reference}
+                                    isLoading={reference.status === "loading"}
+                                />
+                                <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
+                                    {reference.title}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                {/* fact URL input */}
+                <div className="flex w-full items-center py-0.5">
+                    <LinkIcon className="mr-2 size-5 text-neutral-500" />
+                    <input
+                        type="url"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
+                        placeholder="新增引註資料"
+                    />
+                    <Button
+                        variant="transparent"
+                        className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-600 transition-colors hover:text-gray-800 disabled:bg-inherit disabled:text-gray-400"
+                        onClick={() => {
+                            setIsUrlValid(false);
+                            addReferenceMutation.mutate({
+                                url,
+                                temporaryId: uuidv4(),
+                            });
+                            setUrl("");
+                        }}
+                        // disabled={!isUrlValid}
+                    >
+                        <PlusIcon className="size-6" />
+                    </Button>
+                </div>
+
+                {/* Submit Button */}
+                <div className="mt-2 flex justify-end">
+                    <Button
+                        onClick={() => {
+                            createFactMutation.mutate({
+                                title,
+                                references,
+                            });
+                        }}
+                        loading={createFactMutation.isPending}
+                        className="flex items-center rounded-[4px] bg-blue-600 px-4 py-[6px] text-white hover:bg-blue-800 disabled:opacity-50"
+                        disabled={title.length < 5 || references.length === 0}
+                    >
+                        建立
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+const FactCreationModalContentWithErrorBoundary = withErrorBoundary(
+    FactCreationModalContent,
+);
+
+type FactModelProps = {
+    issueId: string;
+    creationID: string | null;
+    setCreationID: (newId: string | null) => void;
+    factCreationCallback?: (createdFacts: Fact[]) => void;
+};
+
+export default function FactCreationModal({
+    issueId,
+    creationID,
+    setCreationID,
+    factCreationCallback,
+}: FactModelProps) {
+    return (
         <Modal
             opened={creationID !== null}
             onClose={() => setCreationID(null)}
@@ -221,109 +341,12 @@ export default function FactCreationModal({
             }}
             title="引入新的事實"
         >
-            <div className="flex min-h-[250px] flex-col justify-between">
-                <div>
-                    {/* fact title */}
-                    <TextInput
-                        value={title}
-                        onChange={(e) => setTitle(e.currentTarget.value)}
-                        variant="unstyled"
-                        placeholder="簡述這個事實"
-                        classNames={{
-                            input: "border-none text-xl placeholder:text-neutral-500 text-neutral-800 font-bold",
-                        }}
-                        className="pb-2"
-                    />
-
-                    {/* reference display */}
-                    <div>
-                        <h2 className="mb-2 text-sm font-bold">引註資料</h2>
-                        <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
-                            {references.map((reference) => (
-                                <div
-                                    key={reference.id}
-                                    className="group relative flex flex-col items-start justify-between rounded-lg p-2 hover:bg-gray-50"
-                                >
-                                    <ActionIcon
-                                        variant="transparent"
-                                        onClick={() =>
-                                            setReferences((prev) =>
-                                                prev.filter(
-                                                    (ref) =>
-                                                        ref.id !== reference.id,
-                                                ),
-                                            )
-                                        }
-                                        className="absolute right-1 top-1 opacity-0 transition-opacity group-hover:opacity-100"
-                                        disabled={
-                                            reference.status === "loading"
-                                        }
-                                    >
-                                        <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                                    </ActionIcon>
-                                    <ReferenceBar
-                                        reference={reference}
-                                        isLoading={
-                                            reference.status === "loading"
-                                        }
-                                    />
-                                    <div className="ml-1 mt-1.5 max-w-[20rem] truncate text-gray-800">
-                                        {reference.title}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    {/* fact URL input */}
-                    <div className="flex w-full items-center py-0.5">
-                        <LinkIcon className="mr-2 size-5 text-neutral-500" />
-                        <input
-                            type="url"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
-                            placeholder="新增引註資料"
-                        />
-                        <Button
-                            variant="transparent"
-                            className="flex items-center gap-1 rounded-full py-1 text-sm text-gray-600 transition-colors hover:text-gray-800 disabled:bg-inherit disabled:text-gray-400"
-                            onClick={() => {
-                                setIsUrlValid(false);
-                                addReferenceMutation.mutate({
-                                    url,
-                                    temporaryId: uuidv4(),
-                                });
-                                setUrl("");
-                            }}
-                            // disabled={!isUrlValid}
-                        >
-                            <PlusIcon className="size-6" />
-                        </Button>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="mt-2 flex justify-end">
-                        <Button
-                            onClick={() => {
-                                createFactMutation.mutate({
-                                    title,
-                                    references,
-                                });
-                            }}
-                            loading={createFactMutation.isPending}
-                            className="flex items-center rounded-[4px] bg-blue-600 px-4 py-[6px] text-white hover:bg-blue-800 disabled:opacity-50"
-                            disabled={
-                                title.length < 5 || references.length === 0
-                            }
-                        >
-                            建立
-                        </Button>
-                    </div>
-                </div>
-            </div>
+            <FactCreationModalContentWithErrorBoundary
+                issueId={issueId}
+                creationID={creationID}
+                setCreationID={setCreationID}
+                factCreationCallback={factCreationCallback}
+            />
         </Modal>
     );
 }
