@@ -14,7 +14,7 @@ type SettingsModalContentProps = {
     setOpened: (newState: boolean) => void;
 };
 
-export function SettingsModalContent({
+function SettingsModalContent({
     settingModalCallback,
     setOpened,
 }: SettingsModalContentProps) {

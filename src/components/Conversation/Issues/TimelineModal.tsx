@@ -1,27 +1,21 @@
 "use client";
 
-import { Modal, Timeline } from "@mantine/core";
-import { type Dispatch, type SetStateAction, useMemo } from "react";
-import { ArrowDownIcon } from "@heroicons/react/16/solid";
+import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
-import { toast } from "sonner";
-import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
+import { Modal, Timeline } from "@mantine/core";
+import { ArrowDownIcon } from "@heroicons/react/16/solid";
+import { type Dispatch, type SetStateAction, useMemo } from "react";
 
-type TimeLineModalProps = {
-    isOpen: boolean;
-    setIsOpen: Dispatch<SetStateAction<boolean>>;
+import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
+import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+
+type TimeLineModalContentProps = {
     issueId: string;
-    issueTitle: string;
 };
 
-export default function TimeLineModal({
-    isOpen,
-    setIsOpen,
-    issueId,
-    issueTitle,
-}: TimeLineModalProps) {
+function TimeLineModalContent({ issueId }: TimeLineModalContentProps) {
     const [cookie] = useCookies(["auth_token"]);
 
     const { isPending, error, data } = useQuery({
@@ -43,15 +37,7 @@ export default function TimeLineModal({
     }
 
     return (
-        <Modal
-            opened={isOpen}
-            onClose={() => setIsOpen(false)}
-            title={`《${issueTitle}》的演進`}
-            size="620px"
-            classNames={{
-                title: "font-bold",
-            }}
-        >
+        <>
             {isPending ? (
                 <TimelineSkeleton />
             ) : sortedTimeline.length === 0 ? (
@@ -93,6 +79,37 @@ export default function TimeLineModal({
                 </Timeline>
             )}
             <div className="h-3" />
+        </>
+    );
+}
+
+const TimeLineModalContentWithErrorBoundary =
+    withErrorBoundary(TimeLineModalContent);
+
+type TimeLineModalProps = {
+    isOpen: boolean;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
+    issueId: string;
+    issueTitle: string;
+};
+
+export default function TimeLineModal({
+    isOpen,
+    setIsOpen,
+    issueId,
+    issueTitle,
+}: TimeLineModalProps) {
+    return (
+        <Modal
+            opened={isOpen}
+            onClose={() => setIsOpen(false)}
+            title={`《${issueTitle}》的演進`}
+            size="620px"
+            classNames={{
+                title: "font-bold",
+            }}
+        >
+            <TimeLineModalContentWithErrorBoundary issueId={issueId} />
         </Modal>
     );
 }
