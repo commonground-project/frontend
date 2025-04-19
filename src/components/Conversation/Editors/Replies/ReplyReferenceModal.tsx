@@ -15,22 +15,19 @@ import EditableReplyReference from "@/components/Conversation/Editors/Replies/Ed
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 import type { Fact } from "@/types/conversations.types";
+import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-type ReplyReferenceModalProps = {
+type ReplyReferenceModalContentProps = {
     issueId: string;
-    isModalOpen: boolean;
-    setIsModalOpen: (value: boolean) => void;
     replyFactList: Fact[];
     setReplyFactList: Dispatch<SetStateAction<Fact[]>>;
 };
 
-export default function ReplyReferenceModal({
+function ReplyReferenceModalContent({
     issueId,
-    isModalOpen,
-    setIsModalOpen,
     replyFactList,
     setReplyFactList,
-}: ReplyReferenceModalProps) {
+}: ReplyReferenceModalContentProps) {
     const {
         addFactToReferenceMarker,
         removeFactFromReferenceMarker,
@@ -97,16 +94,7 @@ export default function ReplyReferenceModal({
     };
 
     return (
-        <Modal
-            opened={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            classNames={{
-                title: "font-bold text-black",
-            }}
-            centered
-            title="引註事實"
-            size="lg"
-        >
+        <>
             <Select
                 variant="unstyled"
                 searchable
@@ -178,6 +166,45 @@ export default function ReplyReferenceModal({
                     />
                 ))}
             </div>
+        </>
+    );
+}
+
+const ReplyReferenceModalContentWithErrorBoundary = withErrorBoundary(
+    ReplyReferenceModalContent,
+);
+
+type ReplyReferenceModalProps = {
+    issueId: string;
+    isModalOpen: boolean;
+    setIsModalOpen: (value: boolean) => void;
+    replyFactList: Fact[];
+    setReplyFactList: Dispatch<SetStateAction<Fact[]>>;
+};
+
+export default function ReplyReferenceModal({
+    issueId,
+    isModalOpen,
+    setIsModalOpen,
+    replyFactList,
+    setReplyFactList,
+}: ReplyReferenceModalProps) {
+    return (
+        <Modal
+            opened={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            classNames={{
+                title: "font-bold text-black",
+            }}
+            centered
+            title="引註事實"
+            size="lg"
+        >
+            <ReplyReferenceModalContentWithErrorBoundary
+                issueId={issueId}
+                replyFactList={replyFactList}
+                setReplyFactList={setReplyFactList}
+            />
         </Modal>
     );
 }
