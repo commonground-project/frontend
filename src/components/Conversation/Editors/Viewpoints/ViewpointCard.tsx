@@ -178,7 +178,7 @@ export default function ViewpointCard({
     };
 
     return (
-        <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg px-7 py-4">
+        <div className="flex h-full flex-col gap-2 rounded-lg px-7 py-4">
             <div className="flex justify-between md:hidden">
                 <Link
                     href={`/issues/${issueId}`}
@@ -219,45 +219,49 @@ export default function ViewpointCard({
                     input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
                 }}
             />
-            <div
-                id="viewpoint-input"
-                contentEditable
-                className="h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-none"
-                ref={inputRef}
-                onInput={(e) => {
-                    Array.from(e.currentTarget.children).forEach((node) => {
-                        if (node.className.includes("pt-1.5")) return;
-                        node.classList.add("pt-1.5");
-                    });
-                }}
-                onFocus={() => {
-                    if (!contentEmpty.current || !inputRef?.current) return;
-                    inputRef.current.innerHTML = "";
-                }}
-                onBlur={() => {
-                    if (inputRef?.current === null) return;
-                    const isEmpty = Array.from(
-                        inputRef.current.childNodes,
-                    ).every(
-                        (node) =>
-                            (node.nodeType === Node.ELEMENT_NODE &&
-                                (node as HTMLElement).tagName === "BR") ||
-                            (node.nodeType === Node.TEXT_NODE &&
-                                node.textContent?.trim() === ""),
-                    );
-                    contentEmpty.current = isEmpty;
-                    if (isEmpty) {
+            <div className="max-h-[calc(100vh-32px-36px-16px-16px-56px)] overflow-y-auto">
+                {/* max-h-[calc(100hv-32px(publish button)-36px(Title input)-16px(gap from container)-16px(padding from container)-56px(header))] */}
+                <div
+                    id="viewpoint-input"
+                    contentEditable
+                    className="h-full min-h-7 w-full resize-none bg-transparent text-lg font-normal text-neutral-700 placeholder:text-neutral-500 focus:outline-none"
+                    ref={inputRef}
+                    onInput={(e) => {
+                        Array.from(e.currentTarget.children).forEach((node) => {
+                            if (node.className.includes("pt-1.5")) return;
+                            node.classList.add("pt-1.5");
+                        });
+                    }}
+                    onFocus={() => {
+                        if (!contentEmpty.current || !inputRef?.current) return;
                         inputRef.current.innerHTML = "";
-                        const placeholderElement = document.createElement("p");
-                        placeholderElement.id = "placeholder";
-                        placeholderElement.className = "text-neutral-500";
-                        placeholderElement.textContent =
-                            "開始打字，或選取一段文字來新增引註資料";
-                        inputRef.current.appendChild(placeholderElement);
-                        return;
-                    }
-                }}
-            />
+                    }}
+                    onBlur={() => {
+                        if (inputRef?.current === null) return;
+                        const isEmpty = Array.from(
+                            inputRef.current.childNodes,
+                        ).every(
+                            (node) =>
+                                (node.nodeType === Node.ELEMENT_NODE &&
+                                    (node as HTMLElement).tagName === "BR") ||
+                                (node.nodeType === Node.TEXT_NODE &&
+                                    node.textContent?.trim() === ""),
+                        );
+                        contentEmpty.current = isEmpty;
+                        if (isEmpty) {
+                            inputRef.current.innerHTML = "";
+                            const placeholderElement =
+                                document.createElement("p");
+                            placeholderElement.id = "placeholder";
+                            placeholderElement.className = "text-neutral-500";
+                            placeholderElement.textContent =
+                                "開始打字，或選取一段文字來新增引註資料";
+                            inputRef.current.appendChild(placeholderElement);
+                            return;
+                        }
+                    }}
+                />
+            </div>
             <div className="hidden md:flex md:justify-end md:gap-3">
                 <Popover
                     opened={isConfirmDeleteOpen}
