@@ -6,7 +6,7 @@ import {
     ArrowLeftStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import SettingsModal from "@/components/AppShell/SettingsModal";
-import { User } from "@/types/users.types";
+import type { User } from "@/types/users.types";
 
 type UserMenuProps = {
     user: User;
