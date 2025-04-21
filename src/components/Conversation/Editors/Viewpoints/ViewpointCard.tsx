@@ -1,5 +1,5 @@
 "use client";
-import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, TextInput, Popover } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useEffect, useContext, useRef, useMemo, useState } from "react";
@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import Link from "next/link";
 import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {
@@ -49,12 +50,9 @@ export default function ViewpointCard({
         useState<boolean>(false); // is the confirm delete popover open
 
     const contentEmpty = useRef<boolean>(initialContentEmpty);
-    const setContentEmpty = (value: boolean) => {
-        contentEmpty.current = value;
-    };
 
     useMemo(() => {
-        setContentEmpty(initialContentEmpty);
+        contentEmpty.current = initialContentEmpty;
     }, [initialContentEmpty]);
 
     // auto-save the viewpoint content
@@ -180,8 +178,29 @@ export default function ViewpointCard({
     };
 
     return (
-        <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg bg-neutral-100 px-7 py-4">
-            <h1 className="text-lg font-semibold text-neutral-700">觀點</h1>
+        <div className="flex h-full flex-col gap-2 overflow-auto rounded-lg px-7 py-4">
+            <div className="flex justify-between md:hidden">
+                <Link
+                    href={`/issues/${issueId}`}
+                    className="text-neutral-500 duration-300 hover:text-emerald-500"
+                >
+                    <XMarkIcon className="inline-block h-6 w-6 text-neutral-500" />
+                </Link>
+                <Button
+                    variant="filled"
+                    color="#2563eb"
+                    leftSection={<PlusIcon className="h-5 w-5" />}
+                    disabled={viewpointTitle == "" || contentEmpty.current}
+                    classNames={{
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
+                        section: "mr-1",
+                    }}
+                    onClick={onPublish}
+                    loading={pendingPublish}
+                >
+                    發表
+                </Button>
+            </div>
             <TextInput
                 ref={viewpointTitleRef}
                 value={viewpointTitle}
@@ -226,7 +245,7 @@ export default function ViewpointCard({
                             (node.nodeType === Node.TEXT_NODE &&
                                 node.textContent?.trim() === ""),
                     );
-                    setContentEmpty(isEmpty);
+                    contentEmpty.current = isEmpty;
                     if (isEmpty) {
                         inputRef.current.innerHTML = "";
                         const placeholderElement = document.createElement("p");
@@ -239,7 +258,7 @@ export default function ViewpointCard({
                     }
                 }}
             />
-            <div className="flex justify-end gap-3">
+            <div className="hidden md:flex md:justify-end md:gap-3">
                 <Popover
                     opened={isConfirmDeleteOpen}
                     onChange={setIsConfirmDeleteOpen}
