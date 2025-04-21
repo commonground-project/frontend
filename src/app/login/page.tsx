@@ -37,7 +37,7 @@ export default function LoginPage() {
         <div className="flex h-full w-full items-center justify-center bg-neutral-50">
             <div className="hidden h-full w-1/2 bg-[url('/assets/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
             <div className="flex justify-center md:w-1/2">
-                <div className="flex w-full max-w-md flex-col items-center justify-center md:items-start">
+                <div className="mx-10 flex w-full max-w-md flex-col items-center justify-center md:items-start">
                     <img
                         src="/assets/LogoGreen.svg"
                         alt="Logo"
@@ -62,7 +62,7 @@ export default function LoginPage() {
                         onClick={() =>
                             handleLogin(getSearchParams("r") ?? undefined)
                         }
-                        className="flex w-full items-center justify-center space-x-2 rounded-xl border-[1px] border-neutral-400 bg-transparent px-[72px] py-3 text-black transition-colors hover:bg-gray-200"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border-[1px] border-neutral-400 bg-transparent px-1 py-3 text-black transition-colors hover:bg-gray-200"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
