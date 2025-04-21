@@ -196,7 +196,7 @@ export default function AuthorViewpoint() {
                     factHintTooltip="從右側選取引註事實"
                     historyRecord={phrasedViewpointContent.current}
                 >
-                    <div className="w-2/3">
+                    <div className="w-full md:w-2/3">
                         <ViewpointCard
                             issueId={issueId}
                             viewpointTitle={viewpointTitle}
@@ -213,7 +213,7 @@ export default function AuthorViewpoint() {
                             }
                         />
                     </div>
-                    <div className="w-1/3">
+                    <div className="hidden md:block md:w-1/3">
                         <FactListCard
                             issueId={issueId}
                             viewpointTitle={
