@@ -1,6 +1,8 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
+// import { NavigationProgress } from "@mantine/nprogress";
+import { ProgressProvider } from "@bprogress/next/app";
 import type { ReactNode } from "react";
 import {
     isServer,
@@ -14,6 +16,12 @@ import { PostHogProvider } from "posthog-js/react";
 import { CookiesProvider } from "react-cookie";
 import { decodeToken } from "react-jwt";
 import { Noto_Serif_TC } from "next/font/google";
+// import { useEffect, useRef } from "react";
+// import { usePathname } from "next/navigation";
+// import {
+//     startNavigationProgress,
+//     completeNavigationProgress,
+// } from "@mantine/nprogress";
 import type { DecodedToken } from "@/types/users.types";
 import AuthProvider from "@/components/Auth/AuthProvider";
 
@@ -71,13 +79,38 @@ type ProviderProps = {
 export default function Providers({ children }: ProviderProps) {
     const queryClient = getQueryClient();
 
+    // const pathname = usePathname();
+    // const previousPath = useRef(pathname);
+
+    // useEffect(() => {
+    //     if (previousPath.current !== pathname) {
+    //         startNavigationProgress();
+
+    //         // Fake delay to simulate loading — adjust as needed
+    //         const timeout = setTimeout(() => {
+    //             completeNavigationProgress();
+    //         }, 300);
+
+    //         previousPath.current = pathname;
+
+    //         return () => clearTimeout(timeout);
+    //     }
+    // }, [pathname]);
+
     return (
         <QueryClientProvider client={queryClient}>
             <CookiesProvider>
                 <AuthProvider>
                     <PostHogProvider client={posthog}>
                         <MantineProvider theme={CommonGroundMantineTheme}>
-                            {children}
+                            <ProgressProvider
+                                height="4px"
+                                color="#00bc7d"
+                                options={{ showSpinner: false }}
+                                shallowRouting
+                            >
+                                {children}
+                            </ProgressProvider>
                         </MantineProvider>
                         <Toaster richColors />
                     </PostHogProvider>

@@ -1,5 +1,6 @@
 import "@mantine/core/styles.css";
 import "./globals.css";
+// import "@mantine/nprogress/styles.css";
 import Providers from "./providers";
 
 export default function RootLayout({
