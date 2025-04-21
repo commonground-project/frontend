@@ -7,9 +7,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 
-import Link from "next/link";
-import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
-
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import { getFact } from "@/lib/requests/facts/getFact";
 
@@ -182,14 +179,7 @@ export default function AuthorViewpoint() {
     };
 
     return (
-        <main className="mx-auto my-8 w-full max-w-7xl">
-            <Link
-                href={`/issues/${issueId}`}
-                className="mb-2 ml-7 flex w-[100px] items-center text-lg font-semibold text-neutral-500 duration-300 hover:text-emerald-500"
-            >
-                <ArrowLongLeftIcon className="mr-1 inline-block h-6 w-6" />
-                返回議題
-            </Link>
+        <main className="mx-auto h-full w-full max-w-7xl bg-neutral-50">
             <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
                 <ReferenceMarkerProvider
