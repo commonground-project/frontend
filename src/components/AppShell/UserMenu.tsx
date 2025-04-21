@@ -21,14 +21,13 @@ export default function UserMenu({ user, logout }: UserMenuProps) {
         <>
             <Menu>
                 <Menu.Target>
-                    <ActionIcon variant="transparent" className="size-8">
+                    <ActionIcon variant="transparent" size={35}>
                         <Avatar
                             variant="transparent"
-                            classNames={{
-                                image: "size-8",
-                            }}
+                            radius="xl"
+                            size={32}
                             color="black"
-                            src={`/api/user/avatar/${user.username}`}
+                            src={user.avatar}
                             alt={user.nickname}
                         />
                     </ActionIcon>
