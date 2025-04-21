@@ -194,7 +194,7 @@ export default function ViewpointCard({
                 }}
                 variant="unstyled"
                 radius={0}
-                placeholder="用一句話簡述你的觀點"
+                placeholder="一句話簡述你的觀點"
                 className="w-full"
                 classNames={{
                     input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
