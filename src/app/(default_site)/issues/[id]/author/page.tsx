@@ -16,6 +16,7 @@ import { getFact } from "@/lib/requests/facts/getFact";
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
 import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
+import Footer from "@/components/AppShell/Footer";
 
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
@@ -224,6 +225,9 @@ export default function AuthorViewpoint() {
                         />
                     </div>
                 </ReferenceMarkerProvider>
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 z-10 md:hidden">
+                <Footer />
             </div>
         </main>
     );
