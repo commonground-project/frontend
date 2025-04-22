@@ -14,7 +14,7 @@ type PageDisplayCardProps = {
     viewpoint: ViewPoint;
 };
 
-export function PageDisplayCard({
+function PageDisplayCard({
     issueId,
     issueTitle,
     viewpoint,

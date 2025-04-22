@@ -27,7 +27,7 @@ type AuthorReplyBarProps = {
     viewpointId: string;
 };
 
-export function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
+function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     const {
         inputRef,
         inSelectionMode,

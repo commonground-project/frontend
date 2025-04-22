@@ -14,7 +14,7 @@ type ViewPointListProps = {
     issueId: string;
 };
 
-export function ViewPointList({ issueId }: ViewPointListProps) {
+function ViewPointList({ issueId }: ViewPointListProps) {
     const { ref, inView } = useInView();
 
     const [cookie] = useCookies(["auth_token"]);

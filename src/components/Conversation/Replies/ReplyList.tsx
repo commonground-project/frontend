@@ -15,7 +15,7 @@ type ReplyListProps = {
     viewpointId: string;
 };
 
-export function ReplyList({ viewpointId }: ReplyListProps) {
+function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
 
     const { data, error, isFetching, fetchNextPage, hasNextPage } =

@@ -17,7 +17,7 @@ type IssueCardProps = {
     issue: Issue;
 };
 
-export function IssueCard({ issue }: IssueCardProps) {
+function IssueCard({ issue }: IssueCardProps) {
     const [isTimelimeModalOpen, setIsTimelimeModalOpen] = useState(false);
 
     return (

@@ -9,7 +9,7 @@ import HomePageCardSkeleton from "./HomePageCardSkeleton";
 import { useCookies } from "react-cookie";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-export function Page() {
+function Page() {
     const [cookies] = useCookies(["auth_token"]);
 
     const { ref, inView } = useInView();

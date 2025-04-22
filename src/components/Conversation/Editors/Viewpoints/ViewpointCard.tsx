@@ -28,7 +28,7 @@ type ViewpointCardProps = {
     pendingPublish: boolean;
 };
 
-export function ViewpointCard({
+function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,

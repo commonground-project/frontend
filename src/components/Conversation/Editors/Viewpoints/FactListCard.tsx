@@ -30,7 +30,7 @@ type FactListCardProps = {
     ) => void;
 };
 
-export function FactListCard({
+function FactListCard({
     issueId,
     viewpointTitle,
     viewpointFactList,

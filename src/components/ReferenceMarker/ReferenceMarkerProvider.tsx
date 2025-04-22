@@ -12,7 +12,7 @@ import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceConte
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
 import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
 
-export function ReferenceMarkerProvider({
+function ReferenceMarkerProvider({
     children,
     historyRecord,
     factHintTooltip,
