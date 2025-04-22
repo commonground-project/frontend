@@ -179,7 +179,7 @@ export default function AuthorViewpoint() {
     };
 
     return (
-        <main className="mx-auto h-full w-full max-w-7xl bg-neutral-50">
+        <main className="h-full w-full bg-neutral-50">
             <div className="flex h-[calc(100vh-157px)] w-full items-stretch gap-7">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
                 <ReferenceMarkerProvider
