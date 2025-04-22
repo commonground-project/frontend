@@ -15,7 +15,7 @@ import EditableReplyReference from "@/components/Conversation/Editors/Replies/Ed
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 import type { Fact } from "@/types/conversations.types";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ReplyReferenceModalContentProps = {
     issueId: string;

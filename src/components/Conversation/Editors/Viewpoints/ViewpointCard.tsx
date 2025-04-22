@@ -7,7 +7,7 @@ import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {

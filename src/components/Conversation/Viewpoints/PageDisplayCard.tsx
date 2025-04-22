@@ -6,7 +6,7 @@ import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type PageDisplayCardProps = {
     issueId: string;

@@ -11,7 +11,7 @@ import type { Issue } from "@/types/conversations.types";
 import { Tooltip, Button } from "@mantine/core";
 import { useState } from "react";
 import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type IssueCardProps = {
     issue: Issue;

@@ -18,7 +18,7 @@ import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
 import { ActionIcon, Loader } from "@mantine/core";
 import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/ReplyReferenceModal";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
 

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
 import ReplySkeleton from "./ReplySkeleton";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ReplyListProps = {
     viewpointId: string;

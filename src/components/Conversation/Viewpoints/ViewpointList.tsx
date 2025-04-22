@@ -8,7 +8,7 @@ import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import { getIssueViewpoints } from "@/lib/requests/viewpoints/getIssueViewpoints";
 import ViewpointSkeleton from "./ViewpointSkeleton";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ViewPointListProps = {
     issueId: string;

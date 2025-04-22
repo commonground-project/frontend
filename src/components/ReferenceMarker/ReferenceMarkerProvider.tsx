@@ -10,7 +10,7 @@ import {
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 function ReferenceMarkerProvider({
     children,

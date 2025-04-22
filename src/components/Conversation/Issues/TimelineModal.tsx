@@ -9,7 +9,7 @@ import { type Dispatch, type SetStateAction, useMemo } from "react";
 
 import { getIssueTimeline } from "@/lib/requests/timeline/getIssueTimeline";
 import TimelineSkeleton from "@/components/Conversation/Issues/TimelineSkeleton";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type TimeLineModalContentProps = {
     issueId: string;

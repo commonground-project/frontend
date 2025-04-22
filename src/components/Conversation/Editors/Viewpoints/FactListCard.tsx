@@ -14,7 +14,7 @@ import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFact
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
 

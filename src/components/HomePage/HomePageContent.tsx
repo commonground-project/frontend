@@ -7,7 +7,7 @@ import HomePageCard from "../../components/HomePage/HomePageCard";
 import { getIssues } from "@/lib/requests/issues/getIssues";
 import HomePageCardSkeleton from "./HomePageCardSkeleton";
 import { useCookies } from "react-cookie";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 function Page() {
     const [cookies] = useCookies(["auth_token"]);

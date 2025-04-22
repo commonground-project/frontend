@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import FactSkeleton from "./FactSkeleton";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 interface AllFactsDisplayProps {
     issueId: string;

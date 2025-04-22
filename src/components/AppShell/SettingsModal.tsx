@@ -7,7 +7,7 @@ import { Checkbox, Button, Modal } from "@mantine/core";
 
 import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
 import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type SettingsModalContentProps = {
     settingModalCallback?: () => void;

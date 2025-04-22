@@ -16,7 +16,7 @@ import { postReference } from "@/lib/requests/references/postReference";
 import { websiteCheck } from "@/lib/requests/references/websiteCheck";
 import { relateFactToIssue } from "@/lib/requests/issues/relateFactToIssue";
 import ReferenceBar from "./ReferenceBar";
-import withErrorBoundary from "@/components/AppShell/WithErrorBoundary";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type FactReferenceWithStatus = FactReference & {
     status: "loading" | "success" | "error";
