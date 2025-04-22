@@ -169,6 +169,7 @@ function ViewpointCard({
     const onPublish = () => {
         if (viewpointTitle == "" || contentEmpty.current) {
             toast.error("標題和內容不得為空");
+
             return;
         }
 
@@ -217,7 +218,7 @@ function ViewpointCard({
                 placeholder="一句話簡述你的觀點"
                 className="w-full"
                 classNames={{
-                    input: "border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
+                    input: "font-serif border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
                 }}
             />
             <div className="max-h-[calc(100vh-32px-36px-16px-16px-56px)] overflow-y-auto">
