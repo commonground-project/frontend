@@ -1,11 +1,10 @@
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "../../components/AppShell/ErrorFallBack";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
 export default function withErrorBoundary<P extends object>(
     Component: React.ComponentType<P>,
 ) {
     const ComponentWithBoundary = (props: P) => (
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
+        <ErrorBoundary>
             <Component {...props} />
         </ErrorBoundary>
     );
