@@ -7,17 +7,19 @@ import { Checkbox, Button, Modal } from "@mantine/core";
 
 import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
 import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
-import withErrorBoundary from "@/lib/utils/withErrorBoundary";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
-type SettingsModalContentProps = {
-    settingModalCallback?: () => void;
+type SettingModalProps = {
+    opened: boolean;
     setOpened: (newState: boolean) => void;
+    settingModalCallback?: () => void;
 };
 
-function SettingsModalContent({
-    settingModalCallback,
+export default function SettingsModal({
+    opened,
     setOpened,
-}: SettingsModalContentProps) {
+    settingModalCallback,
+}: SettingModalProps) {
     const [cookie] = useCookies(["auth_token"]);
 
     const { data } = useQuery({
@@ -60,55 +62,6 @@ function SettingsModalContent({
     });
 
     return (
-        <>
-            <h2 className="text-base font-medium">通知</h2>
-            <Checkbox
-                checked={newReplyInMyViewpoint}
-                onChange={(event) =>
-                    setNewReplyInMyViewpoint(event.currentTarget.checked)
-                }
-                className="mt-2"
-                label="在我的觀點下有新的回覆時通知我"
-            />
-            <Checkbox
-                checked={newReferenceToMyReply}
-                onChange={(event) =>
-                    setNewReferenceToMyReply(event.currentTarget.checked)
-                }
-                className="mt-2"
-                label="在我的回覆被節錄時通知我"
-            />
-            <div className="flex justify-end">
-                <Button
-                    onClick={() => {
-                        if (settingModalCallback) settingModalCallback();
-                        updateUserSettingsMutation.mutate();
-                        setOpened(false);
-                    }}
-                    loading={updateUserSettingsMutation.isPending}
-                >
-                    儲存
-                </Button>
-            </div>
-        </>
-    );
-}
-
-const SettingsModalContentWithErrorBoundary =
-    withErrorBoundary(SettingsModalContent);
-
-type SettingModalProps = {
-    opened: boolean;
-    setOpened: (newState: boolean) => void;
-    settingModalCallback?: () => void;
-};
-
-export default function SettingsModal({
-    opened,
-    setOpened,
-    settingModalCallback,
-}: SettingModalProps) {
-    return (
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
@@ -117,10 +70,37 @@ export default function SettingsModal({
                 title: "text-xl font-bold",
             }}
         >
-            <SettingsModalContentWithErrorBoundary
-                setOpened={setOpened}
-                settingModalCallback={settingModalCallback}
-            />
+            <ErrorBoundary>
+                <h2 className="text-base font-medium">通知</h2>
+                <Checkbox
+                    checked={newReplyInMyViewpoint}
+                    onChange={(event) =>
+                        setNewReplyInMyViewpoint(event.currentTarget.checked)
+                    }
+                    className="mt-2"
+                    label="在我的觀點下有新的回覆時通知我"
+                />
+                <Checkbox
+                    checked={newReferenceToMyReply}
+                    onChange={(event) =>
+                        setNewReferenceToMyReply(event.currentTarget.checked)
+                    }
+                    className="mt-2"
+                    label="在我的回覆被節錄時通知我"
+                />
+                <div className="flex justify-end">
+                    <Button
+                        onClick={() => {
+                            if (settingModalCallback) settingModalCallback();
+                            updateUserSettingsMutation.mutate();
+                            setOpened(false);
+                        }}
+                        loading={updateUserSettingsMutation.isPending}
+                    >
+                        儲存
+                    </Button>
+                </div>
+            </ErrorBoundary>
         </Modal>
     );
 }
