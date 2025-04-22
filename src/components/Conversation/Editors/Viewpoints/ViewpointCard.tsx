@@ -189,11 +189,10 @@ export default function ViewpointCard({
                 </Link>
                 <Button
                     variant="filled"
-                    color="#2563eb"
                     leftSection={<PlusIcon className="h-5 w-5" />}
                     disabled={viewpointTitle == "" || contentEmpty.current}
                     classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
                         section: "mr-1",
                     }}
                     onClick={onPublish}
@@ -312,11 +311,10 @@ export default function ViewpointCard({
                 </Popover>
                 <Button
                     variant="filled"
-                    color="#2563eb"
                     leftSection={<PlusIcon className="h-5 w-5" />}
                     disabled={viewpointTitle == "" || contentEmpty.current}
                     classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white disabled:bg-blue-300",
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
                         section: "mr-1",
                     }}
                     onClick={onPublish}
