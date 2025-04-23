@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
 
 type FactCardProps = {
+    index: number;
     fact: Fact;
     removeFact: (id: string) => void;
     inSelectionMode: boolean;
@@ -12,6 +13,7 @@ type FactCardProps = {
 };
 
 export default function EditableViewpointReference({
+    index,
     fact,
     removeFact,
     inSelectionMode,
@@ -19,11 +21,10 @@ export default function EditableViewpointReference({
     setIsSelected,
 }: FactCardProps) {
     return (
-        <div className="flex w-full gap-2.5 rounded-lg p-2 hover:bg-[#f0f0f0]">
-            {inSelectionMode && (
+        <div className="flex w-full gap-2.5 rounded-lg border border-neutral-400 p-4 hover:bg-[#f0f0f0]">
+            {inSelectionMode ? (
                 <div className="flex-shrink-0 pt-1">
                     <Checkbox
-                        radius={"xl"}
                         checked={isSelected}
                         readOnly
                         onMouseDown={(e) => {
@@ -32,6 +33,8 @@ export default function EditableViewpointReference({
                         }}
                     />
                 </div>
+            ) : (
+                <div className="font-mono">{`[${index}]`}</div>
             )}
             <div className="min-w-0 flex-1">
                 <div className="group flex w-full justify-between">
