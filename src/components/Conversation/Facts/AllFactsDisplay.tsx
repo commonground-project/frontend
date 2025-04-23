@@ -17,7 +17,7 @@ interface AllFactsDisplayProps {
     issueId: string;
 }
 
-export function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
+function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookies] = useCookies(["auth_token"]);
 
