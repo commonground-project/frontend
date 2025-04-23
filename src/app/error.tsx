@@ -4,8 +4,8 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 export default function Error({
-    error, // eslint-disable-line
-    reset, // eslint-disable-line
+    error: __error,
+    reset,
 }: {
     error: Error & { digest?: string };
     reset: () => void;
