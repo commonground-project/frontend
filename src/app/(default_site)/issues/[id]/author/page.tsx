@@ -179,31 +179,34 @@ export default function AuthorViewpoint() {
     };
 
     return (
-        <main className="h-full w-full bg-neutral-50">
-            <div className="flex h-[calc(100vh-157px)] w-full items-stretch gap-7">
+        <main className="h-full w-full bg-neutral-50 px-6 pt-3 md:px-0 md:pt-0">
+            <div className="flex h-full w-full">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
                 <ReferenceMarkerProvider
                     factHintTooltip="從右側選取引註事實"
                     historyRecord={phrasedViewpointContent.current}
                 >
-                    <div className="w-full md:w-2/3">
-                        <ViewpointCard
-                            issueId={issueId}
-                            viewpointTitle={viewpointTitle}
-                            viewpointTitleRef={viewpointTitleRef}
-                            setViewpointTitle={setViewpointTitle}
-                            phrasedContent={phrasedViewpointContent}
-                            viewpointFactList={viewpointFactList}
-                            saveContextToLocal={saveContextToLocal}
-                            deleteContextFromLocal={deleteContextFromLocal}
-                            publishViewpoint={publishViewpoint}
-                            initialContentEmpty={initialContentEmpty}
-                            pendingPublish={
-                                postNewViewpoint.status === "pending"
-                            }
-                        />
+                    <div className="flex w-full justify-center md:w-2/3 md:pb-10 md:pt-8">
+                        <div className="w-full max-w-[700px]">
+                            <ViewpointCard
+                                issueId={issueId}
+                                viewpointTitle={viewpointTitle}
+                                viewpointTitleRef={viewpointTitleRef}
+                                setViewpointTitle={setViewpointTitle}
+                                phrasedContent={phrasedViewpointContent}
+                                viewpointFactList={viewpointFactList}
+                                saveContextToLocal={saveContextToLocal}
+                                deleteContextFromLocal={deleteContextFromLocal}
+                                publishViewpoint={publishViewpoint}
+                                initialContentEmpty={initialContentEmpty}
+                                pendingPublish={
+                                    postNewViewpoint.status === "pending"
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="hidden md:block md:w-1/3">
+                    <div className="hidden h-full border-l border-neutral-400 md:block" />
+                    <div className="hidden md:block md:w-1/3 md:pb-10 md:pt-8">
                         <FactListCard
                             issueId={issueId}
                             viewpointTitle={
