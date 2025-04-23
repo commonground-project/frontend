@@ -11,12 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 import FactSkeleton from "./FactSkeleton";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 interface AllFactsDisplayProps {
     issueId: string;
 }
 
-export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
+function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookies] = useCookies(["auth_token"]);
 
@@ -106,3 +107,5 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
         </div>
     );
 }
+
+export default withErrorBoundary(AllFactsDisplay);
