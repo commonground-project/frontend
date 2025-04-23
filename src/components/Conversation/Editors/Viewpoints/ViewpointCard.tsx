@@ -179,7 +179,7 @@ export default function ViewpointCard({
     };
 
     return (
-        <div className="flex h-full flex-col gap-2 rounded-lg px-7 py-4">
+        <div className="flex h-full flex-col">
             <div className="flex justify-between md:hidden">
                 <Link
                     href={`/issues/${issueId}`}
@@ -219,8 +219,8 @@ export default function ViewpointCard({
                     input: "font-serif border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
                 }}
             />
-            <div className="max-h-[calc(100vh-32px-36px-16px-16px-56px)] overflow-y-auto">
-                {/* max-h-[calc(100hv-32px(publish button)-36px(Title input)-16px(gap from container)-16px(padding from container)-56px(header))] */}
+            <div className="h-[calc(100vh-32px-36px-16px-16px-56px)] overflow-y-auto pt-3 md:pt-5">
+                {/* max-h-[calc(100hv-32px(publish button)-36px(Title input)-16px(gap from container)-16px(padding from container)-56px(header)] */}
                 <div
                     id="viewpoint-input"
                     contentEditable

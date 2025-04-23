@@ -138,7 +138,7 @@ export default function FactListCard({
     };
 
     return (
-        <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
+        <div className="h-full px-7 py-4">
             <h1 className="mb-1 text-lg font-semibold text-neutral-700">
                 事實
             </h1>
