@@ -7,6 +7,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 
+import Link from "next/link";
+
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import { getFact } from "@/lib/requests/facts/getFact";
 
@@ -186,8 +188,15 @@ export default function AuthorViewpoint() {
                     factHintTooltip="從右側選取引註事實"
                     historyRecord={phrasedViewpointContent.current}
                 >
-                    <div className="flex w-full justify-center md:w-2/3 md:pb-10 md:pt-8">
-                        <div className="w-full max-w-[700px]">
+                    <div className="flex w-full md:w-2/3 md:px-4 md:pb-10 md:pt-8">
+                        <Link href="/">
+                            <img
+                                src="/assets/LogoGreen.svg"
+                                alt=""
+                                className="size-9"
+                            />
+                        </Link>
+                        <div className="mx-auto w-full max-w-[700px]">
                             <ViewpointCard
                                 issueId={issueId}
                                 viewpointTitle={viewpointTitle}
