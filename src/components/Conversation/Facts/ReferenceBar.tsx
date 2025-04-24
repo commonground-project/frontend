@@ -8,12 +8,14 @@ type FactBarProps = {
     reference: FactReference;
     showSrcTitle?: boolean;
     isLoading?: boolean;
+    withBackground?: boolean;
 };
 
 export default function ReferenceBar({
     reference,
     showSrcTitle,
     isLoading,
+    withBackground = true,
 }: FactBarProps) {
     const pageURL = new URL(safeDecodeURI(reference.url) ?? "example.com");
 
@@ -23,7 +25,7 @@ export default function ReferenceBar({
             href={reference.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-w-0 max-w-full flex-shrink-0 items-center gap-2 rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200"
+            className={`inline-flex min-w-0 max-w-full flex-shrink-0 items-center gap-2 ${withBackground ? "rounded-full bg-neutral-200 px-3 py-1 hover:bg-gray-200" : ""} `}
         >
             {isLoading ? (
                 <Loader size="xs" />

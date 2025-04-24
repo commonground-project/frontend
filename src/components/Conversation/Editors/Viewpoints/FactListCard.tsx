@@ -143,7 +143,7 @@ function FactListCard({
             </h1>
             <FactImportModal
                 importId={creationId}
-                setIportId={setCreationId}
+                setImportId={setCreationId}
                 factImportCallback={false}
                 viewpointFactList={viewpointFactList}
                 addFact={addFact}
