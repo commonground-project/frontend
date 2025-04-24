@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 import { generateRequestHeaders } from "../generateRequestHeaders";
 

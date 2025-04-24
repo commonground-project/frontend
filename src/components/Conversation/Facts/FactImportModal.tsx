@@ -1,7 +1,6 @@
 import { Modal } from "@mantine/core";
 import type { Fact } from "@/types/conversations.types";
 import FactImportingBox from "./FactImportingBox";
-import { set } from "lodash";
 
 type FactImportModalProps = {
     importId: string | null;

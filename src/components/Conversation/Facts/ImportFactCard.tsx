@@ -2,7 +2,6 @@ import { PlusCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { ActionIcon } from "@mantine/core";
 import type { Fact } from "@/types/conversations.types";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
-import { set } from "lodash";
 
 type ImportFactCardProps = {
     fact: Fact;
