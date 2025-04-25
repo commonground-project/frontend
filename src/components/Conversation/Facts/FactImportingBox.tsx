@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { useState, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
@@ -27,7 +26,6 @@ export default function FactImportingBox({
 }: FactImportingBoxProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
-    const [creationId, setCreationId] = useState<string | null>(null); // eslint-disable-line
     const [addFactBuffer, setAddFactBuffer] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
