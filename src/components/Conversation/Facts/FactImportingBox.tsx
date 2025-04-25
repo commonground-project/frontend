@@ -21,10 +21,10 @@ export default function FactImportingBox({
     addFact,
     addFactCallback,
 }: FactImportingBoxProps) {
-    const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
-    const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
+    const [searchData, setSearchData] = useState<Fact[]>([]);
+    const [searchValue, setSearchValue] = useState<string>("");
     const [creationId, setCreationId] = useState<string | null>(null); // eslint-disable-line
-    const [addFactBuffer, setAddFactBuffer] = useState<Fact[]>([]); // eslint-disable-line
+    const [addFactBuffer, setAddFactBuffer] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
 
@@ -45,7 +45,7 @@ export default function FactImportingBox({
             debounce((value: string) => {
                 search(value);
             }, 500),
-        [],
+        [search],
     );
 
     return (
@@ -68,22 +68,30 @@ export default function FactImportingBox({
                 placeholder="透過搜尋加入想引註的事實"
             />
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto">
-                {searchData.map((fact) => (
-                    <ImportFactCard
-                        key={fact.id}
-                        fact={fact}
-                        isSelected={addFactBuffer.includes(fact)}
-                        setIsSelected={(isSelected) => {
-                            if (isSelected) {
-                                setAddFactBuffer((prev) => [...prev, fact]);
-                            } else {
-                                setAddFactBuffer((prev) =>
-                                    prev.filter((id) => id !== fact),
-                                );
-                            }
-                        }}
-                    />
-                ))}
+                {searchData.map(
+                    (fact) =>
+                        !viewpointFactList.some(
+                            (item) => item.id === fact.id,
+                        ) && (
+                            <ImportFactCard
+                                key={fact.id}
+                                fact={fact}
+                                isSelected={addFactBuffer.includes(fact)}
+                                setIsSelected={(isSelected) => {
+                                    if (isSelected) {
+                                        setAddFactBuffer((prev) => [
+                                            ...prev,
+                                            fact,
+                                        ]);
+                                    } else {
+                                        setAddFactBuffer((prev) =>
+                                            prev.filter((id) => id !== fact),
+                                        );
+                                    }
+                                }}
+                            />
+                        ),
+                )}
             </div>
             {searchData.length === 0 && searchValue.length !== 0 && (
                 <Button

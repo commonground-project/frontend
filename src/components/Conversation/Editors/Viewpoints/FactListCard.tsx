@@ -4,7 +4,6 @@ import { useState, useEffect, useContext, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { debounce } from "lodash";
-import { useCookies } from "react-cookie";
 import { Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
@@ -28,7 +27,7 @@ type FactListCardProps = {
 };
 
 function FactListCard({
-    issueId,
+    issueId: __issueId,
     viewpointTitle,
     viewpointFactList,
     setViewpointFactList,
@@ -44,7 +43,6 @@ function FactListCard({
     } = useContext(ReferenceMarkerContext);
 
     const [creationId, setCreationId] = useState<string | null>(null);
-    const [cookie] = useCookies(["auth_token"]);
 
     const autoSave = useMemo(
         () =>
