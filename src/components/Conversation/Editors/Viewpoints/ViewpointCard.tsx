@@ -1,5 +1,10 @@
 "use client";
-import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+    TrashIcon,
+    PlusIcon,
+    XMarkIcon,
+    LinkIcon,
+} from "@heroicons/react/24/outline";
 import { Button, TextInput, Popover } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useEffect, useContext, useRef, useMemo, useState } from "react";
@@ -42,7 +47,7 @@ function ViewpointCard({
     initialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
-    const { inputRef, getInputFieldContent } = useContext(
+    const { inputRef, getInputFieldContent, inSelectionMode } = useContext(
         ReferenceMarkerContext,
     );
     const router = useRouter();
@@ -263,6 +268,14 @@ function ViewpointCard({
                     }}
                 />
             </div>
+            {inSelectionMode && (
+                <div className="fixed bottom-[88px] left-[calc(50vw-61px)] flex h-9 w-[122px] items-center justify-center gap-1 rounded-md border border-emerald-600 bg-white shadow-xl md:hidden">
+                    <LinkIcon className="size-5 text-emerald-600" />
+                    <div className="text-sm font-medium text-emerald-600">
+                        引註資料
+                    </div>
+                </div>
+            )}
             <div className="hidden md:flex md:justify-end md:gap-3">
                 <Popover
                     opened={isConfirmDeleteOpen}

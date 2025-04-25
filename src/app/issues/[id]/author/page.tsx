@@ -189,7 +189,7 @@ export default function AuthorViewpoint() {
                     historyRecord={phrasedViewpointContent.current}
                 >
                     <div className="flex w-full md:w-2/3 md:px-4 md:pb-10 md:pt-8">
-                        <Link href="/">
+                        <Link href="/" className="hidden md:block">
                             <img
                                 src="/assets/LogoGreen.svg"
                                 alt=""
