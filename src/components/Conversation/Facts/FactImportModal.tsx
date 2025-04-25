@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Modal } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactImportingBox from "./FactImportingBox";
 import FactCreationBox from "./FactCreationBox";
@@ -8,8 +8,8 @@ import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
 type FactImportModalProps = {
     issueId: string;
-    importId: string | null;
-    setImportId: (id: string | null) => void;
+    modalId: string | null;
+    setModalId: (id: string | null) => void;
     factImportCallback?: () => void;
     viewpointFactList: Fact[];
     addFact: (newFact: Fact) => void;
@@ -17,19 +17,24 @@ type FactImportModalProps = {
 
 export default function FactImportModal({
     issueId,
-    importId,
-    setImportId,
+    modalId,
+    setModalId,
     factImportCallback,
     viewpointFactList,
     addFact,
 }: FactImportModalProps) {
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
 
+    // reset the current screen to 1 when the modal opens
+    useEffect(() => {
+        setCurrentScreen(1);
+    }, [modalId]);
+
     return (
         <Modal
-            opened={importId !== null}
+            opened={modalId !== null}
             onClose={() => {
-                setImportId(null);
+                setModalId(null);
                 setCurrentScreen(1);
                 if (factImportCallback) {
                     factImportCallback();
@@ -44,6 +49,7 @@ export default function FactImportModal({
         >
             <ErrorBoundary>
                 <motion.div
+                    initial={{ translateX: "0vw" }}
                     animate={{
                         translateX: `${(currentScreen - 1) * -100}vw`,
                         transition: {
@@ -57,11 +63,12 @@ export default function FactImportModal({
                     <FactImportingBox
                         viewpointFactList={viewpointFactList}
                         addFact={addFact}
-                        addFactCallback={() => setImportId(null)}
+                        addFactCallback={() => setModalId(null)}
                         createFactCallback={() => setCurrentScreen(2)}
                     />
                 </motion.div>
                 <motion.div
+                    initial={{ translateX: "100vw" }}
                     animate={{
                         translateX: `${(currentScreen - 2) * -100}vw`,
                         transition: {
@@ -74,7 +81,13 @@ export default function FactImportModal({
                 >
                     <FactCreationBox
                         issueId={issueId}
-                        creationID={importId}
+                        creationID={modalId}
+                        factCreationCallback={(createdFacts) => {
+                            createdFacts.forEach((fact) => {
+                                addFact(fact);
+                            });
+                            setModalId(null);
+                        }}
                         goBackButton={true}
                         goBackButtonCallback={() => setCurrentScreen(1)}
                     />

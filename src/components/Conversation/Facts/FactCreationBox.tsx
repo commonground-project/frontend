@@ -37,9 +37,9 @@ type FactCreationBoxProps = {
 export default function FactCreationBox({
     issueId,
     creationID,
-    factCreationCallback,
-    goBackButton,
-    goBackButtonCallback,
+    factCreationCallback, // call when click the create fact button
+    goBackButton, // whether to show the go back button
+    goBackButtonCallback, // call when click the go back button
 }: FactCreationBoxProps) {
     const [title, setTitle] = useState("");
     const [url, setUrl] = useState("");
@@ -193,6 +193,7 @@ export default function FactCreationBox({
                     pages: PaginatedIssueFactsByIdResponse[];
                     pageParams: number[];
                 }) => {
+                    if (!queryData) return;
                     const newQueryData = queryData.pages;
                     newQueryData[0].content = [
                         ...data.facts,

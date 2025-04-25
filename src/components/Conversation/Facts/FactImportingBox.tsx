@@ -23,8 +23,8 @@ type FactImportingBoxProps = {
 export default function FactImportingBox({
     viewpointFactList,
     addFact,
-    addFactCallback,
-    createFactCallback,
+    addFactCallback, // call when click the add button
+    createFactCallback, // call when click the create fact button
 }: FactImportingBoxProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
@@ -32,7 +32,7 @@ export default function FactImportingBox({
 
     const [cookie] = useCookies(["auth_token"]);
 
-    const { mutate: search } = useMutation({
+    const { mutate: search, status: searchStatus } = useMutation({
         mutationKey: ["searchFacts"],
         mutationFn: (value: string) =>
             searchFacts({
@@ -104,17 +104,19 @@ export default function FactImportingBox({
                 </div>
             )}
             <div className="flex w-full justify-end">
-                {(searchData.length === 0 && searchValue.length !== 0 && (
-                    <Button
-                        onClick={() => {
-                            createFactCallback?.();
-                        }}
-                        variant="filled"
-                    >
-                        <PlusIcon className="mr-2 size-4 text-white" />
-                        引入新的事實
-                    </Button>
-                )) || (
+                {(searchData.length === 0 &&
+                    searchValue.length !== 0 &&
+                    searchStatus !== "pending" && (
+                        <Button
+                            onClick={() => {
+                                createFactCallback?.();
+                            }}
+                            variant="filled"
+                        >
+                            <PlusIcon className="mr-2 size-4 text-white" />
+                            引入新的事實
+                        </Button>
+                    )) || (
                     <Button
                         onClick={() => {
                             addFactBuffer.forEach((factId) => {

@@ -9,7 +9,7 @@ type FactModelProps = {
     issueId: string;
     creationID: string | null;
     setCreationID: (newId: string | null) => void;
-    factCreationCallback?: (createdFacts: Fact[]) => void;
+    factCreationCallback?: (createdFact: Fact[]) => void;
 };
 
 export default function FactCreationModal({

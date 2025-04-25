@@ -109,8 +109,8 @@ function FactListCard({
             </h1>
             <FactImportModal
                 issueId={issueId}
-                importId={creationId}
-                setImportId={setCreationId}
+                modalId={creationId}
+                setModalId={setCreationId}
                 viewpointFactList={viewpointFactList}
                 addFact={addFact}
             />
