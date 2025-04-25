@@ -1,8 +1,13 @@
+import { motion } from "motion/react";
 import { Modal } from "@mantine/core";
+import { useState } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactImportingBox from "./FactImportingBox";
+import FactCreationBox from "./FactCreationBox";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
 type FactImportModalProps = {
+    issueId: string;
     importId: string | null;
     setImportId: (id: string | null) => void;
     factImportCallback?: () => void;
@@ -11,17 +16,21 @@ type FactImportModalProps = {
 };
 
 export default function FactImportModal({
+    issueId,
     importId,
     setImportId,
     factImportCallback,
     viewpointFactList,
     addFact,
 }: FactImportModalProps) {
+    const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
+
     return (
         <Modal
             opened={importId !== null}
             onClose={() => {
                 setImportId(null);
+                setCurrentScreen(1);
                 if (factImportCallback) {
                     factImportCallback();
                 }
@@ -31,13 +40,46 @@ export default function FactImportModal({
                 title: "font-bold text-black",
             }}
             size="lg"
-            title="搜尋 CommonGround"
+            title={["搜尋 CommonGround", "引入新的事實"][currentScreen - 1]}
         >
-            <FactImportingBox
-                viewpointFactList={viewpointFactList}
-                addFact={addFact}
-                addFactCallback={() => setImportId(null)}
-            />
+            <ErrorBoundary>
+                <motion.div
+                    animate={{
+                        translateX: `${(currentScreen - 1) * -100}vw`,
+                        transition: {
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.5,
+                        },
+                    }}
+                    className={`${currentScreen === 1 ? "block" : "hidden"}`}
+                >
+                    <FactImportingBox
+                        viewpointFactList={viewpointFactList}
+                        addFact={addFact}
+                        addFactCallback={() => setImportId(null)}
+                        createFactCallback={() => setCurrentScreen(2)}
+                    />
+                </motion.div>
+                <motion.div
+                    animate={{
+                        translateX: `${(currentScreen - 2) * -100}vw`,
+                        transition: {
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.5,
+                        },
+                    }}
+                    className={`${currentScreen === 2 ? "block" : "hidden"}`}
+                >
+                    <FactCreationBox
+                        issueId={issueId}
+                        creationID={importId}
+                        goBackButton={true}
+                        goBackButtonCallback={() => setCurrentScreen(1)}
+                    />
+                </motion.div>
+            </ErrorBoundary>
         </Modal>
     );
 }

@@ -27,7 +27,7 @@ type FactListCardProps = {
 };
 
 function FactListCard({
-    issueId: __issueId,
+    issueId,
     viewpointTitle,
     viewpointFactList,
     setViewpointFactList,
@@ -108,6 +108,7 @@ function FactListCard({
                 相關事實
             </h1>
             <FactImportModal
+                issueId={issueId}
                 importId={creationId}
                 setImportId={setCreationId}
                 viewpointFactList={viewpointFactList}

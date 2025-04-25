@@ -17,12 +17,14 @@ type FactImportingBoxProps = {
     viewpointFactList: Fact[];
     addFact: (factId: Fact) => void;
     addFactCallback?: () => void;
+    createFactCallback?: () => void;
 };
 
 export default function FactImportingBox({
     viewpointFactList,
     addFact,
     addFactCallback,
+    createFactCallback,
 }: FactImportingBoxProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
@@ -103,7 +105,12 @@ export default function FactImportingBox({
             )}
             <div className="flex w-full justify-end">
                 {(searchData.length === 0 && searchValue.length !== 0 && (
-                    <Button onClick={() => {}} variant="filled">
+                    <Button
+                        onClick={() => {
+                            createFactCallback?.();
+                        }}
+                        variant="filled"
+                    >
                         <PlusIcon className="mr-2 size-4 text-white" />
                         引入新的事實
                     </Button>
