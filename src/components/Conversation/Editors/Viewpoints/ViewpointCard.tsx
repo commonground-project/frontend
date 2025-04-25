@@ -14,8 +14,8 @@ import {
     useRef,
     useMemo,
     useState,
-    Dispatch,
-    SetStateAction,
+    type Dispatch,
+    type SetStateAction,
 } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
@@ -60,12 +60,9 @@ function ViewpointCard({
     initialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
-    const {
-        inputRef,
-        getInputFieldContent,
-        inSelectionMode,
-        getCurSelectedFacts,
-    } = useContext(ReferenceMarkerContext);
+    const { inputRef, getInputFieldContent, inSelectionMode } = useContext(
+        ReferenceMarkerContext,
+    );
     const router = useRouter();
 
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =

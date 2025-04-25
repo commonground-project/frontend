@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useMemo, useContext, Dispatch, SetStateAction } from "react";
+import {
+    useState,
+    useMemo,
+    useContext,
+    type Dispatch,
+    type SetStateAction,
+} from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { debounce } from "lodash";
@@ -31,12 +37,12 @@ export default function FactListBox({
         removeFactFromAllReferenceMarker,
     } = useContext(ReferenceMarkerContext);
 
-    const [searchData, setSearchData] = useState<Fact[]>([]);
+    const [__searchData, setSearchData] = useState<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     const [cookie] = useCookies(["auth_token"]);
 
-    const { mutate: search, status: searchStatus } = useMutation({
+    const { mutate: search, status: __searchStatus } = useMutation({
         mutationKey: ["searchFacts"],
         mutationFn: (value: string) =>
             searchFacts({

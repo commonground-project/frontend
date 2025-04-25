@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { Drawer } from "@mantine/core";
 
 import FactListBox from "@/components/Conversation/Facts/CitationDrawer/FactListBox";
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 
 type FactImportModalProps = {
     issueId: string;
@@ -16,13 +16,13 @@ type FactImportModalProps = {
 };
 
 export default function CitationDrawer({
-    issueId,
+    issueId: __issueId,
     drawerId,
     setDrawerId,
     factImportCallback,
     viewpointFactList,
     setViewpointFactList,
-    addFact,
+    addFact: __addFact,
 }: FactImportModalProps) {
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
 
