@@ -204,6 +204,7 @@ export default function AuthorViewpoint() {
                                 setViewpointTitle={setViewpointTitle}
                                 phrasedContent={phrasedViewpointContent}
                                 viewpointFactList={viewpointFactList}
+                                setViewpointFactList={setViewpointFactList}
                                 saveContextToLocal={saveContextToLocal}
                                 deleteContextFromLocal={deleteContextFromLocal}
                                 publishViewpoint={publishViewpoint}

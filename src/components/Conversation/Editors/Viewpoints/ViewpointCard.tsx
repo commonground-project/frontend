@@ -1,4 +1,5 @@
 "use client";
+import { v4 as uuidv4 } from "uuid";
 import {
     TrashIcon,
     PlusIcon,
@@ -7,14 +8,25 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button, TextInput, Popover } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import { useEffect, useContext, useRef, useMemo, useState } from "react";
+import {
+    useEffect,
+    useContext,
+    useRef,
+    useMemo,
+    useState,
+    Dispatch,
+    SetStateAction,
+} from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
+import Link from "next/link";
+
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
-import Link from "next/link";
+import CitationDrawer from "../../Facts/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
+import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -23,6 +35,7 @@ type ViewpointCardProps = {
     viewpointTitleRef: RefObject<HTMLInputElement | null>;
     phrasedContent: RefObject<string>;
     viewpointFactList: Fact[];
+    setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
     saveContextToLocal: (
         title: string,
         content: string,
@@ -41,6 +54,7 @@ function ViewpointCard({
     viewpointTitleRef,
     phrasedContent,
     viewpointFactList,
+    setViewpointFactList,
     saveContextToLocal,
     deleteContextFromLocal,
     publishViewpoint,
@@ -56,6 +70,7 @@ function ViewpointCard({
         useState<boolean>(false); // is the confirm delete popover open
 
     const contentEmpty = useRef<boolean>(initialContentEmpty);
+    const [drawerId, setDrawerId] = useState<string | null>(null); // for the citation drawer
 
     useMemo(() => {
         contentEmpty.current = initialContentEmpty;
@@ -269,13 +284,31 @@ function ViewpointCard({
                 />
             </div>
             {inSelectionMode && (
-                <div className="fixed bottom-[88px] left-[calc(50vw-61px)] flex h-9 w-[122px] items-center justify-center gap-1 rounded-md border border-emerald-600 bg-white shadow-xl md:hidden">
+                <button
+                    className="fixed bottom-[88px] left-[calc(50vw-61px)] flex h-9 w-[122px] items-center justify-center gap-1 rounded-md border border-emerald-600 bg-white shadow-xl md:hidden"
+                    onClick={() => setDrawerId(uuidv4())}
+                >
                     <LinkIcon className="size-5 text-emerald-600" />
                     <div className="text-sm font-medium text-emerald-600">
                         引註資料
                     </div>
-                </div>
+                </button>
             )}
+            <CitationDrawer
+                issueId={issueId}
+                drawerId={drawerId}
+                setDrawerId={setDrawerId}
+                viewpointFactList={viewpointFactList}
+                addFact={(newFact) => {
+                    setDrawerId(null);
+                    setViewpointFactList((prev) => [...prev, newFact]);
+                    autoSave(
+                        viewpointTitleRef.current?.value ?? viewpointTitle,
+                        viewpointFactList.map((fact) => fact.id),
+                    );
+                }}
+            />
+
             <div className="hidden md:flex md:justify-end md:gap-3">
                 <Popover
                     opened={isConfirmDeleteOpen}
