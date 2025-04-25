@@ -1,27 +1,52 @@
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { debounce } from "lodash";
 import { Button, Input } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+
+import { searchFacts } from "@/lib/requests/facts/searchFacts";
 import ImportFactCard from "./ImportFactCard";
 import type { Fact } from "@/types/conversations.types";
 
 type FactImportingBoxProps = {
     viewpointFactList: Fact[];
-    addFact: (factId: string) => void;
+    addFact: (factId: Fact) => void;
     addFactCallback?: () => void;
-    data: Fact[];
 };
 
 export default function FactImportingBox({
     viewpointFactList,
     addFact,
     addFactCallback,
-    data,
 }: FactImportingBoxProps) {
     const [searchData, setSearchData] = useState<Fact[]>([]); // eslint-disable-line
     const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
     const [creationId, setCreationId] = useState<string | null>(null); // eslint-disable-line
-    const [addFactBuffer, setAddFactBuffer] = useState<string[]>([]); // eslint-disable-line
+    const [addFactBuffer, setAddFactBuffer] = useState<Fact[]>([]); // eslint-disable-line
+
+    const [cookie] = useCookies(["auth_token"]);
+
+    const { mutate: search } = useMutation({
+        mutationKey: ["searchFacts"],
+        mutationFn: (value: string) =>
+            searchFacts({
+                auth_token: cookie.auth_token,
+                searchValue: value,
+            }),
+        onSuccess(data) {
+            setSearchData(data);
+        },
+    });
+
+    const debouncedSearch = useMemo(
+        () =>
+            debounce((value: string) => {
+                search(value);
+            }, 500),
+        [],
+    );
 
     return (
         <div className="flex w-full flex-col gap-4">
@@ -32,7 +57,10 @@ export default function FactImportingBox({
                 }
                 value={searchValue}
                 width={"100%"}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    debouncedSearch(e.target.value);
+                }}
                 radius={0}
                 classNames={{
                     input: "bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
@@ -40,24 +68,24 @@ export default function FactImportingBox({
                 placeholder="透過搜尋加入想引註的事實"
             />
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto">
-                {data.map((fact) => (
+                {searchData.map((fact) => (
                     <ImportFactCard
                         key={fact.id}
                         fact={fact}
-                        isSelected={addFactBuffer.includes(fact.id)}
+                        isSelected={addFactBuffer.includes(fact)}
                         setIsSelected={(isSelected) => {
                             if (isSelected) {
-                                setAddFactBuffer((prev) => [...prev, fact.id]);
+                                setAddFactBuffer((prev) => [...prev, fact]);
                             } else {
                                 setAddFactBuffer((prev) =>
-                                    prev.filter((id) => id !== fact.id),
+                                    prev.filter((id) => id !== fact),
                                 );
                             }
                         }}
                     />
                 ))}
             </div>
-            {data.length === 0 && searchValue.length !== 0 && (
+            {searchData.length === 0 && searchValue.length !== 0 && (
                 <Button
                     onClick={() => setCreationId(uuidv4())}
                     variant="transparent"
@@ -79,6 +107,7 @@ export default function FactImportingBox({
                         addFactCallback?.();
                     }}
                     variant="filled"
+                    disabled={addFactBuffer.length === 0}
                 >
                     <PlusIcon className="mr-2 size-4 text-white" />
                     加入

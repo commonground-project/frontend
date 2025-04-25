@@ -2,15 +2,12 @@
 
 import { useState, useEffect, useContext, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { debounce } from "lodash";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
-import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
 import FactImportModal from "@/components/Conversation/Facts/FactImportModal";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
@@ -57,28 +54,6 @@ function FactListCard({
         [getInputFieldContent, saveContextToLocal],
     );
 
-    const { data, error } = useInfiniteQuery({
-        queryKey: ["facts", issueId],
-        queryFn: ({ pageParam }) =>
-            getPaginatedIssueFactsBySize(
-                issueId,
-                pageParam,
-                cookie.auth_token,
-                200,
-            ),
-
-        initialPageParam: 0,
-        getNextPageParam: (lastPage) => {
-            if (lastPage.page.number + 1 < lastPage.page.totalPage)
-                return lastPage.page.number + 1;
-        },
-    });
-
-    useEffect(() => {
-        if (!error) return;
-        toast.error("無法獲取事實列表，請重新整理頁面");
-    }, [error]);
-
     // clean up the auto-save function when the component unmounts
     useEffect(() => {
         const autoSaveFunc = autoSave;
@@ -115,10 +90,10 @@ function FactListCard({
     };
 
     //add the selected fact to the viewpointFactList
-    const addFact = (factId: string) => {
+    const addFact = (newFact: Fact) => {
         // Check if the selected fact exists in viewpointFactList
         const factInViewpointFactList = viewpointFactList.some(
-            (fact) => fact.id === factId,
+            (fact) => fact.id === newFact.id,
         );
         if (factInViewpointFactList) {
             throw new Error(
@@ -126,14 +101,7 @@ function FactListCard({
             );
         }
 
-        const selectedFact = data?.pages
-            .flatMap((page) => page.content)
-            .find((fact) => fact.id === factId);
-        if (!selectedFact) {
-            throw new Error("Cannot select the selected fact");
-        }
-
-        setViewpointFactList((prev) => [...prev, selectedFact]);
+        setViewpointFactList((prev) => [...prev, newFact]);
     };
 
     return (
@@ -144,10 +112,8 @@ function FactListCard({
             <FactImportModal
                 importId={creationId}
                 setImportId={setCreationId}
-                factImportCallback={false}
                 viewpointFactList={viewpointFactList}
                 addFact={addFact}
-                data={data?.pages.flatMap((page) => page.content) ?? []}
             />
             {viewpointFactList.length === 0 ? (
                 <div className="flex h-full w-full flex-col items-center justify-center">

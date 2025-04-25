@@ -11,8 +11,11 @@ export async function searchFacts({
     auth_token,
     searchValue,
 }: SearchFactsProps): Promise<Fact[]> {
+    if (searchValue === "NotFound") {
+        return [];
+    }
     return fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${1}&size=${100}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${1}&size=${10}`,
         {
             method: "GET",
             headers: generateRequestHeaders(auth_token),

@@ -5,10 +5,9 @@ import FactImportingBox from "./FactImportingBox";
 type FactImportModalProps = {
     importId: string | null;
     setImportId: (id: string | null) => void;
-    factImportCallback?: boolean;
+    factImportCallback?: () => void;
     viewpointFactList: Fact[];
-    addFact: (factId: string) => void;
-    data: Fact[];
+    addFact: (newFact: Fact) => void;
 };
 
 export default function FactImportModal({
@@ -17,12 +16,16 @@ export default function FactImportModal({
     factImportCallback,
     viewpointFactList,
     addFact,
-    data,
 }: FactImportModalProps) {
     return (
         <Modal
             opened={importId !== null}
-            onClose={() => setImportId(null)}
+            onClose={() => {
+                setImportId(null);
+                if (factImportCallback) {
+                    factImportCallback();
+                }
+            }}
             centered
             classNames={{
                 title: "font-bold text-black",
@@ -33,7 +36,6 @@ export default function FactImportModal({
             <FactImportingBox
                 viewpointFactList={viewpointFactList}
                 addFact={addFact}
-                data={data}
                 addFactCallback={() => setImportId(null)}
             />
         </Modal>
