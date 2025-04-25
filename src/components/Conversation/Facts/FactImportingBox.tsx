@@ -4,7 +4,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { debounce } from "lodash";
 import { Button, Input } from "@mantine/core";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+    MagnifyingGlassIcon,
+    PlusIcon,
+    DocumentMinusIcon,
+} from "@heroicons/react/24/outline";
 
 import { searchFacts } from "@/lib/requests/facts/searchFacts";
 import ImportFactCard from "./ImportFactCard";
@@ -94,32 +98,33 @@ export default function FactImportingBox({
                 )}
             </div>
             {searchData.length === 0 && searchValue.length !== 0 && (
-                <Button
-                    onClick={() => setCreationId(uuidv4())}
-                    variant="transparent"
-                    classNames={{
-                        root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
-                        label: "whitespace-normal text-left",
-                    }}
-                >
-                    找不到想引註的事實嗎？將其引入 CommonGround 吧!
-                </Button>
+                <div className="flex flex-col items-center justify-center gap-3">
+                    <DocumentMinusIcon className="size-[72px] text-neutral-500" />
+                    <div className="text-neutral-500">找不到相關事實</div>
+                </div>
             )}
             <div className="flex w-full justify-end">
-                <Button
-                    onClick={() => {
-                        addFactBuffer.forEach((factId) => {
-                            addFact(factId);
-                        });
-                        setAddFactBuffer([]);
-                        addFactCallback?.();
-                    }}
-                    variant="filled"
-                    disabled={addFactBuffer.length === 0}
-                >
-                    <PlusIcon className="mr-2 size-4 text-white" />
-                    加入
-                </Button>
+                {(searchData.length === 0 && searchValue.length !== 0 && (
+                    <Button onClick={() => {}} variant="filled">
+                        <PlusIcon className="mr-2 size-4 text-white" />
+                        引入新的事實
+                    </Button>
+                )) || (
+                    <Button
+                        onClick={() => {
+                            addFactBuffer.forEach((factId) => {
+                                addFact(factId);
+                            });
+                            setAddFactBuffer([]);
+                            addFactCallback?.();
+                        }}
+                        variant="filled"
+                        disabled={addFactBuffer.length === 0}
+                    >
+                        <PlusIcon className="mr-2 size-4 text-white" />
+                        加入
+                    </Button>
+                )}
             </div>
         </div>
     );
