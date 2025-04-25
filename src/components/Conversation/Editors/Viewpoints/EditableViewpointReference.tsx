@@ -1,6 +1,6 @@
 import type { Fact } from "@/types/conversations.types";
 import { ActionIcon, Checkbox } from "@mantine/core";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
 
 type FactCardProps = {
@@ -10,6 +10,9 @@ type FactCardProps = {
     inSelectionMode: boolean;
     isSelected: boolean;
     setIsSelected: (isSelected: boolean) => void;
+    withBorder?: boolean;
+    linkBarWithBG?: boolean;
+    showDeleteIcon?: boolean;
 };
 
 export default function EditableViewpointReference({
@@ -19,9 +22,14 @@ export default function EditableViewpointReference({
     inSelectionMode,
     isSelected,
     setIsSelected,
+    withBorder = true,
+    linkBarWithBG = true,
+    showDeleteIcon = false,
 }: FactCardProps) {
     return (
-        <div className="flex w-full gap-2.5 rounded-lg border border-neutral-400 p-4 hover:bg-[#f0f0f0]">
+        <div
+            className={`flex w-full gap-2.5 rounded-lg ${withBorder ? "border border-neutral-400 p-4" : ""} hover:bg-[#f0f0f0]`}
+        >
             {inSelectionMode ? (
                 <div className="flex-shrink-0 pt-1">
                     <Checkbox
@@ -45,11 +53,13 @@ export default function EditableViewpointReference({
                     <ActionIcon
                         variant="transparent"
                         classNames={{
-                            root: "opacity-0 transition-opacity group-hover:opacity-100",
+                            root: showDeleteIcon
+                                ? ""
+                                : "opacity-0 transition-opacity group-hover:opacity-100",
                         }}
                         onClick={() => removeFact(String(fact.id))}
                     >
-                        <XMarkIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <MinusCircleIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-600" />
                     </ActionIcon>
                 </div>
                 {fact.references.map((reference) => (
@@ -58,6 +68,7 @@ export default function EditableViewpointReference({
                             key={reference.id}
                             reference={reference}
                             showSrcTitle={true}
+                            withBackground={linkBarWithBG}
                         />
                     </div>
                 ))}

@@ -24,9 +24,8 @@ import Link from "next/link";
 
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
-import CitationDrawer from "../../Facts/CitationDrawer";
+import CitationDrawer from "../../Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
-import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -61,9 +60,12 @@ function ViewpointCard({
     initialContentEmpty,
     pendingPublish,
 }: ViewpointCardProps) {
-    const { inputRef, getInputFieldContent, inSelectionMode } = useContext(
-        ReferenceMarkerContext,
-    );
+    const {
+        inputRef,
+        getInputFieldContent,
+        inSelectionMode,
+        getCurSelectedFacts,
+    } = useContext(ReferenceMarkerContext);
     const router = useRouter();
 
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
@@ -299,6 +301,7 @@ function ViewpointCard({
                 drawerId={drawerId}
                 setDrawerId={setDrawerId}
                 viewpointFactList={viewpointFactList}
+                setViewpointFactList={setViewpointFactList}
                 addFact={(newFact) => {
                     setDrawerId(null);
                     setViewpointFactList((prev) => [...prev, newFact]);
