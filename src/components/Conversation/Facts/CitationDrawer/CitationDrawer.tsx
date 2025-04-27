@@ -1,8 +1,16 @@
 "use client";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { motion } from "motion/react";
+import {
+    useEffect,
+    useState,
+    useRef,
+    type Dispatch,
+    type SetStateAction,
+} from "react";
 import { Drawer } from "@mantine/core";
 
 import FactListBox from "@/components/Conversation/Facts/CitationDrawer/FactListBox";
+import FactImportingBox from "@/components/Conversation/Facts/CitationDrawer/FactImportingBox";
 import type { Fact } from "@/types/conversations.types";
 
 type FactImportModalProps = {
@@ -22,9 +30,11 @@ export default function CitationDrawer({
     factImportCallback,
     viewpointFactList,
     setViewpointFactList,
-    addFact: __addFact,
+    addFact: addFact,
 }: FactImportModalProps) {
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
+    const searchData = useRef<Fact[]>([]);
+    const searchValue = useRef<string>("");
 
     useEffect(() => {
         setCurrentScreen(1);
@@ -50,10 +60,50 @@ export default function CitationDrawer({
             withCloseButton={false}
             title={["搜尋 CommonGround", "引入新的事實"][currentScreen - 1]}
         >
-            <FactListBox
-                factList={viewpointFactList}
-                setFactList={setViewpointFactList}
-            />
+            <motion.div
+                initial={{ translateX: "0vw" }}
+                animate={{
+                    translateX: `${(currentScreen - 1) * -100}vw`,
+                    transition: {
+                        type: "spring",
+                        bounce: 0,
+                        duration: 0.5,
+                    },
+                }}
+                className={`${currentScreen === 1 ? "block" : "hidden"}`}
+            >
+                <FactListBox
+                    factList={viewpointFactList}
+                    setFactList={setViewpointFactList}
+                    searchCallback={(value: string, data: Fact[]) => {
+                        searchValue.current = value;
+                        searchData.current = data;
+                        setCurrentScreen(2);
+                    }}
+                />
+            </motion.div>
+            <motion.div
+                initial={{ translateX: "100vw" }}
+                animate={{
+                    translateX: `${(currentScreen - 2) * -100}vw`,
+                    transition: {
+                        type: "spring",
+                        bounce: 0,
+                        duration: 0.5,
+                    },
+                }}
+                className={`${currentScreen === 2 ? "block" : "hidden"}`}
+            >
+                <FactImportingBox
+                    searchValue={searchValue.current}
+                    searchData={searchData.current}
+                    viewpointFactList={viewpointFactList}
+                    addFact={addFact}
+                    goBackCallBack={() => {
+                        setCurrentScreen(1);
+                    }}
+                />
+            </motion.div>
         </Drawer>
     );
 }

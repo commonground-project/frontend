@@ -300,7 +300,6 @@ function ViewpointCard({
                 viewpointFactList={viewpointFactList}
                 setViewpointFactList={setViewpointFactList}
                 addFact={(newFact) => {
-                    setDrawerId(null);
                     setViewpointFactList((prev) => [...prev, newFact]);
                     autoSave(
                         viewpointTitleRef.current?.value ?? viewpointTitle,

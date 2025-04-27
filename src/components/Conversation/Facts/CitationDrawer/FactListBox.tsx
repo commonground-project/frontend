@@ -23,7 +23,7 @@ import type { Fact } from "@/types/conversations.types";
 type FactListBoxProps = {
     factList: Fact[];
     setFactList: Dispatch<SetStateAction<Fact[]>>;
-    searchCallback?: (facts: Fact[]) => void;
+    searchCallback?: (value: string, data: Fact[]) => void;
 };
 
 export default function FactListBox({
@@ -38,7 +38,6 @@ export default function FactListBox({
         removeFactFromAllReferenceMarker,
     } = useContext(ReferenceMarkerContext);
 
-    const searchData = useRef<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     const [cookie] = useCookies(["auth_token"]);
@@ -51,18 +50,9 @@ export default function FactListBox({
                 searchValue: value,
             }),
         onSuccess(data) {
-            searchData.current = data;
+            searchCallback?.(searchValue, data);
         },
     });
-
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (searchValue.trim() === "") {
-            return;
-        }
-        search(searchValue);
-        searchCallback?.(searchData.current);
-    };
 
     const removeFact = (factId: string) => {
         // Find the array index of the fact to be removed
@@ -85,7 +75,12 @@ export default function FactListBox({
     return (
         <>
             <div className="flex w-full justify-center rounded-lg bg-neutral-200">
-                <form onSubmit={handleSearch}>
+                <form
+                    onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                        e.preventDefault();
+                        search(searchValue);
+                    }}
+                >
                     <Input
                         variant="unstyled"
                         rightSection={
