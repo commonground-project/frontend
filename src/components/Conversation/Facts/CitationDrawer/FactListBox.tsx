@@ -2,14 +2,13 @@
 
 import {
     useState,
-    useMemo,
+    useRef,
     useContext,
     type Dispatch,
     type SetStateAction,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import { debounce } from "lodash";
 import { Input } from "@mantine/core";
 import {
     MagnifyingGlassIcon,
@@ -24,11 +23,13 @@ import type { Fact } from "@/types/conversations.types";
 type FactListBoxProps = {
     factList: Fact[];
     setFactList: Dispatch<SetStateAction<Fact[]>>;
+    searchCallback?: (facts: Fact[]) => void;
 };
 
 export default function FactListBox({
     factList,
     setFactList,
+    searchCallback,
 }: FactListBoxProps) {
     const {
         getCurSelectedFacts,
@@ -37,7 +38,7 @@ export default function FactListBox({
         removeFactFromAllReferenceMarker,
     } = useContext(ReferenceMarkerContext);
 
-    const [__searchData, setSearchData] = useState<Fact[]>([]);
+    const searchData = useRef<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     const [cookie] = useCookies(["auth_token"]);
@@ -50,17 +51,18 @@ export default function FactListBox({
                 searchValue: value,
             }),
         onSuccess(data) {
-            setSearchData(data);
+            searchData.current = data;
         },
     });
 
-    const debouncedSearch = useMemo(
-        () =>
-            debounce((value: string) => {
-                search(value);
-            }, 500),
-        [search],
-    );
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (searchValue.trim() === "") {
+            return;
+        }
+        search(searchValue);
+        searchCallback?.(searchData.current);
+    };
 
     const removeFact = (factId: string) => {
         // Find the array index of the fact to be removed
@@ -83,22 +85,23 @@ export default function FactListBox({
     return (
         <>
             <div className="flex w-full justify-center rounded-lg bg-neutral-200">
-                <Input
-                    variant="unstyled"
-                    rightSection={
-                        <MagnifyingGlassIcon className="inline-block size-5 stroke-neutral-500" />
-                    }
-                    value={searchValue}
-                    onChange={(e) => {
-                        setSearchValue(e.target.value);
-                        debouncedSearch(e.target.value);
-                    }}
-                    radius={0}
-                    classNames={{
-                        input: "bg-transparent text-lg font-medium text-neutral-500 focus-within:outline-none",
-                    }}
-                    placeholder="搜尋 CommonGround"
-                />
+                <form onSubmit={handleSearch}>
+                    <Input
+                        variant="unstyled"
+                        rightSection={
+                            <MagnifyingGlassIcon className="inline-block size-5 stroke-neutral-500" />
+                        }
+                        value={searchValue}
+                        onChange={(e) => {
+                            setSearchValue(e.target.value);
+                        }}
+                        radius={0}
+                        classNames={{
+                            input: "bg-transparent text-lg font-medium text-neutral-500 focus-within:outline-none",
+                        }}
+                        placeholder="搜尋 CommonGround"
+                    />
+                </form>
             </div>
 
             {factList.length === 0 ? (
