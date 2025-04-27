@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import ImportFactCard from "../ImportFactCard";
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 
 type FactImportingBoxProps = {
     searchValue: string;
