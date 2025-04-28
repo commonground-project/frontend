@@ -6,6 +6,7 @@ import {
     useRef,
     type Dispatch,
     type SetStateAction,
+    useContext,
 } from "react";
 import { Drawer } from "@mantine/core";
 
@@ -13,6 +14,7 @@ import FactListBox from "@/components/Conversation/Facts/CitationDrawer/FactList
 import FactImportingBox from "@/components/Conversation/Facts/CitationDrawer/FactImportingBox";
 import FactCreationBox from "@/components/Conversation/Facts/CitationDrawer/FactCreationBox";
 import type { Fact } from "@/types/conversations.types";
+import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
 type FactImportModalProps = {
     issueId: string;
@@ -33,13 +35,16 @@ export default function CitationDrawer({
     setViewpointFactList,
     addFact: addFact,
 }: FactImportModalProps) {
+    const { getSelectedText } = useContext(ReferenceMarkerContext);
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
     const searchData = useRef<Fact[]>([]);
     const searchValue = useRef<string>("");
+    const selectedText = useRef<string>("");
 
     useEffect(() => {
+        selectedText.current = getSelectedText();
         setCurrentScreen(1);
-    }, [drawerId]);
+    }, [drawerId, getSelectedText]);
 
     return (
         <Drawer
@@ -60,9 +65,11 @@ export default function CitationDrawer({
             size="lg"
             withCloseButton={false}
             title={
-                ["選取引註資料", "搜尋 CommonGround 事實", "引入新的事實"][
-                    currentScreen - 1
-                ]
+                [
+                    `選擇「${selectedText.current}」的引註資料`,
+                    "搜尋 CommonGround 事實",
+                    "引入新的事實",
+                ][currentScreen - 1]
             }
         >
             <motion.div

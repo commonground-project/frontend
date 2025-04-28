@@ -6,6 +6,7 @@ import {
     generateReferenceCounter,
     encapsuleReferenceMarker,
     updateReferenceCounter,
+    getReferenceMarkerText,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
@@ -317,7 +318,6 @@ function ReferenceMarkerProvider({
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
         lastSelectionRange.current = range;
-        lastSelectionRange.current = range;
 
         // Create tooltip element
         const rangeRect = range.getBoundingClientRect();
@@ -391,9 +391,6 @@ function ReferenceMarkerProvider({
             }
 
             // Update the selected area with the new reference marker
-            // const selection = window.getSelection();
-            // if (!selection) return;
-            // const range = selection.getRangeAt(0);
             if (lastSelectionRange.current === null) return;
             const range = lastSelectionRange.current;
             encapsuleReferenceMarker({
@@ -508,6 +505,18 @@ function ReferenceMarkerProvider({
         return treeWalker_referenceText(inputRef.current, true);
     }, [inputRef]);
 
+    const getSelectedText = useCallback(() => {
+        if (lastSelectionRange.current === null) return "";
+        if (curReferenceMarkerId !== null) {
+            console.log(
+                "have ID getSelectedText ",
+                getReferenceMarkerText(String(curReferenceMarkerId)),
+            );
+            return getReferenceMarkerText(String(curReferenceMarkerId));
+        }
+        return lastSelectionRange.current.toString();
+    }, [curReferenceMarkerId, lastSelectionRange]);
+
     return (
         <ReferenceMarkerContext.Provider
             value={{
@@ -519,6 +528,7 @@ function ReferenceMarkerProvider({
                 removeFactFromAllReferenceMarker,
                 getCurSelectedFacts,
                 getInputFieldContent,
+                getSelectedText,
             }}
         >
             {children}
