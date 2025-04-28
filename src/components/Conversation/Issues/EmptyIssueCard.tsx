@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useMutation } from "@tanstack/react-query";
 import { followIssue } from "@/lib/requests/issues/followIssue";

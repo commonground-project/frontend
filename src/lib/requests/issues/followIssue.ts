@@ -1,4 +1,4 @@
-import { parseJsonWhileHandlingErrors } from "../transformers";
+import { parseJsonWhileHandlingErrors as __ } from "../transformers";
 
 type FollowIssueParams = {
     issueId: string;
@@ -11,8 +11,8 @@ type FollowIssueResponse = {
 };
 
 export async function followIssue({
-    issueId,
-    auth_token,
+    issueId: __issueId,
+    auth_token: __auth_token,
 }: FollowIssueParams): Promise<FollowIssueResponse> {
     // return await fetch(
     //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/follow/me`,
