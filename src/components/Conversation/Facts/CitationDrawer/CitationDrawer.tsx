@@ -11,6 +11,7 @@ import { Drawer } from "@mantine/core";
 
 import FactListBox from "@/components/Conversation/Facts/CitationDrawer/FactListBox";
 import FactImportingBox from "@/components/Conversation/Facts/CitationDrawer/FactImportingBox";
+import FactCreationBox from "@/components/Conversation/Facts/CitationDrawer/FactCreationBox";
 import type { Fact } from "@/types/conversations.types";
 
 type FactImportModalProps = {
@@ -24,7 +25,7 @@ type FactImportModalProps = {
 };
 
 export default function CitationDrawer({
-    issueId: __issueId,
+    issueId,
     drawerId,
     setDrawerId,
     factImportCallback,
@@ -58,7 +59,11 @@ export default function CitationDrawer({
             radius={12}
             size="lg"
             withCloseButton={false}
-            title={["搜尋 CommonGround", "引入新的事實"][currentScreen - 1]}
+            title={
+                ["選取引註資料", "搜尋 CommonGround 事實", "引入新的事實"][
+                    currentScreen - 1
+                ]
+            }
         >
             <motion.div
                 initial={{ translateX: "0vw" }}
@@ -101,6 +106,33 @@ export default function CitationDrawer({
                     addFact={addFact}
                     goBackCallBack={() => {
                         setCurrentScreen(1);
+                    }}
+                    createFactCallback={() => {
+                        setCurrentScreen(3);
+                    }}
+                />
+            </motion.div>
+            <motion.div
+                initial={{ translateX: "100vw" }}
+                animate={{
+                    translateX: `${(currentScreen - 3) * -100}vw`,
+                    transition: {
+                        type: "spring",
+                        bounce: 0,
+                        duration: 0.5,
+                    },
+                }}
+                className={`${currentScreen === 3 ? "block" : "hidden"}`}
+            >
+                <FactCreationBox
+                    issueId={issueId}
+                    creationID={drawerId}
+                    factCreationCallback={() => {
+                        setDrawerId(null);
+                    }}
+                    goBackButton={true}
+                    goBackButtonCallback={() => {
+                        setCurrentScreen(2);
                     }}
                 />
             </motion.div>
