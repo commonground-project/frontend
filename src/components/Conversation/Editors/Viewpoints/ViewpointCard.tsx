@@ -26,6 +26,7 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import CitationDrawer from "../../Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
+import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -68,11 +69,14 @@ function ViewpointCard({
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
         useState<boolean>(false); // is the confirm delete popover open
 
-    const contentEmpty = useRef<boolean>(initialContentEmpty);
+    // const contentEmpty = useRef<boolean>(initialContentEmpty);
+    const [contentEmpty, setContentEmpty] =
+        useState<boolean>(initialContentEmpty); // is the content empty
     const [drawerId, setDrawerId] = useState<string | null>(null); // for the citation drawer
 
     useMemo(() => {
-        contentEmpty.current = initialContentEmpty;
+        // contentEmpty.current = initialContentEmpty;
+        setContentEmpty(initialContentEmpty);
     }, [initialContentEmpty]);
 
     // auto-save the viewpoint content
@@ -186,7 +190,12 @@ function ViewpointCard({
     ]);
 
     const onPublish = () => {
-        if (viewpointTitle == "" || contentEmpty.current) {
+        // if (viewpointTitle == "" || contentEmpty.current) {
+        //     toast.error("標題和內容不得為空");
+
+        //     return;
+        // }
+        if (viewpointTitle == "" || contentEmpty) {
             toast.error("標題和內容不得為空");
 
             return;
@@ -210,7 +219,8 @@ function ViewpointCard({
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    disabled={viewpointTitle == "" || contentEmpty.current}
+                    // disabled={viewpointTitle == "" || contentEmpty.current}
+                    disabled={viewpointTitle == "" || contentEmpty}
                     classNames={{
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
                         section: "mr-1",
@@ -253,7 +263,8 @@ function ViewpointCard({
                         });
                     }}
                     onFocus={() => {
-                        if (!contentEmpty.current || !inputRef?.current) return;
+                        // if (!contentEmpty.current || !inputRef?.current) return;
+                        if (!inputRef?.current || !contentEmpty) return;
                         inputRef.current.innerHTML = "";
                     }}
                     onBlur={() => {
@@ -267,7 +278,8 @@ function ViewpointCard({
                                 (node.nodeType === Node.TEXT_NODE &&
                                     node.textContent?.trim() === ""),
                         );
-                        contentEmpty.current = isEmpty;
+                        // contentEmpty.current = isEmpty;
+                        setContentEmpty(isEmpty);
                         if (isEmpty) {
                             inputRef.current.innerHTML = "";
                             const placeholderElement =
@@ -358,7 +370,8 @@ function ViewpointCard({
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    disabled={viewpointTitle == "" || contentEmpty.current}
+                    // disabled={viewpointTitle == "" || contentEmpty.current}
+                    disabled={viewpointTitle == "" || contentEmpty}
                     classNames={{
                         root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
                         section: "mr-1",
