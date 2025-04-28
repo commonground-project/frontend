@@ -80,7 +80,7 @@ export default function Providers({ children }: ProviderProps) {
                         <MantineProvider theme={CommonGroundMantineTheme}>
                             <ProgressProvider
                                 height="4px"
-                                color="#00bc7d"
+                                color="#009966"
                                 options={{ showSpinner: false }}
                                 shallowRouting
                             >
