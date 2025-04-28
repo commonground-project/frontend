@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import {
     useEffect,
     useContext,
-    useRef,
     useMemo,
     useState,
     type Dispatch,
@@ -26,7 +25,6 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import CitationDrawer from "../../Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
-import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
