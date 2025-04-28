@@ -3,7 +3,10 @@ import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 import AuthorProfile from "../Shared/AuthorProfile";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import {
+    ArrowRightIcon,
+    ChatBubbleOvalLeftIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 type ViewpointCardProps = {
@@ -31,7 +34,7 @@ export default function ViewpointCard({
                     facts={viewpoint.facts}
                 />
             </div>
-            <div className="flex justify-between align-bottom">
+            <div className="flex justify-start align-bottom md:justify-between">
                 <TernaryReactions
                     parentTitle={viewpoint.title}
                     parentId={viewpoint.id}
@@ -49,7 +52,10 @@ export default function ViewpointCard({
                         })
                     }
                 />
-                <div className="flex flex-shrink-0 items-center gap-1 text-emerald-600">
+                <div>
+                    <ChatBubbleOvalLeftIcon className="size-6 text-neutral-600 md:hidden" />
+                </div>
+                <div className="hidden flex-shrink-0 items-center gap-1 text-emerald-600 md:flex">
                     <p>查看完整觀點</p>
                     <ArrowRightIcon className="w-4" />
                 </div>
