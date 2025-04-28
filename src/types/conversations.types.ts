@@ -5,6 +5,10 @@ export interface Issue {
     title: string;
     description: string;
     insight: string;
+    userFollow: {
+        follow: boolean;
+    };
+    viewpointCount: number;
     authorId: string;
     authorName: string;
     authorAvatar: string;
