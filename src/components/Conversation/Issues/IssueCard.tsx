@@ -45,7 +45,7 @@ function IssueCard({ issue }: IssueCardProps) {
     return (
         <div className="rounded-md bg-neutral-100 p-5 text-black">
             <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
-            {issue.description !== "" ? (
+            {/* {issue.description !== "" ? (
                 <div className="mt-3">
                     <div className="mb-1 flex items-center">
                         <h1 className="inline text-lg font-semibold">
@@ -93,9 +93,13 @@ function IssueCard({ issue }: IssueCardProps) {
                         </button>
                     </div>
                 </div>
-            ) : (
-                <EmptyIssueCard issueId={issue.id} />
-            )}
+            ) : ( */}
+            <EmptyIssueCard
+                isFollowing={isFollowing}
+                setIsFollowing={setIsFollowing}
+                issueId={issue.id}
+            />
+            {/* )} */}
         </div>
     );
 }

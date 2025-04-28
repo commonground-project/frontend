@@ -61,9 +61,9 @@ function ViewPointList({ issueId, viewpointCount }: ViewPointListProps) {
             <h1 className="mb-2 block text-xl font-medium md:hidden">
                 {`查看 ${viewpointCount} 則觀點`}
             </h1>
-            {data?.pages[0].content.length === 0 ? (
-                <EmptyViewpointCard id={issueId} />
-            ) : (
+            {/* {data?.pages[0].content.length === 0 ? ( */}
+            <EmptyViewpointCard id={issueId} />
+            {/* ) : (
                 <div className="flex-col">
                     {data?.pages
                         .flatMap((page) => page.content)
@@ -83,7 +83,7 @@ function ViewPointList({ issueId, viewpointCount }: ViewPointListProps) {
                         ))}
                     {status === "pending" && <ViewpointSkeleton />}
                 </div>
-            )}
+            )} */}
         </div>
     );
 }
