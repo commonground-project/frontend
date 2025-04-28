@@ -52,8 +52,11 @@ export default function ViewpointCard({
                         })
                     }
                 />
-                <div>
+                <div className="flex gap-1">
                     <ChatBubbleOvalLeftIcon className="size-6 text-neutral-600 md:hidden" />
+                    <div className="text-neutral-600">
+                        {viewpoint.replyCount}
+                    </div>
                 </div>
                 <div className="hidden flex-shrink-0 items-center gap-1 text-emerald-600 md:flex">
                     <p>查看完整觀點</p>

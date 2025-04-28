@@ -56,6 +56,7 @@ export interface ViewPoint {
     likeCount: number;
     reasonableCount: number;
     dislikeCount: number;
+    replyCount: number;
     facts: Fact[];
 }
 
