@@ -1,16 +1,19 @@
 "use client";
 
 import {
-    RectangleStackIcon,
     InformationCircleIcon,
-    FilmIcon,
+    NewspaperIcon,
+    BookmarkIcon as BookMarkOutline,
 } from "@heroicons/react/24/outline";
+import { BookmarkIcon as BookMarkSolid } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import type { Issue } from "@/types/conversations.types";
-import { Tooltip, Button } from "@mantine/core";
-import { useState } from "react";
-import TimelineModal from "@/components/Conversation/Issues/TimelineModal";
+import { Tooltip } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { followIssue } from "@/lib/requests/issues/followIssue";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type IssueCardProps = {
@@ -18,7 +21,26 @@ type IssueCardProps = {
 };
 
 function IssueCard({ issue }: IssueCardProps) {
-    const [isTimelimeModalOpen, setIsTimelimeModalOpen] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [cookies] = useCookies(["auth_token"]);
+
+    useEffect(() => {
+        setIsFollowing(issue.userFollow.follow);
+    }, []);
+
+    const { mutate: follow } = useMutation({
+        mutationKey: ["followIssue", issue.id],
+        mutationFn: () => {
+            console.log("followIssue");
+            return followIssue({
+                issueId: issue.id,
+                auth_token: cookies.auth_token,
+            });
+        },
+        onSuccess: (data) => {
+            setIsFollowing(data.follow);
+        },
+    });
 
     return (
         <div className="rounded-md bg-neutral-100 p-5 text-black">
@@ -41,34 +63,35 @@ function IssueCard({ issue }: IssueCardProps) {
                     <p className="whitespace-pre-wrap text-lg font-normal">
                         {issue.description}
                     </p>
-                    <div className="mt-3">
+                    <div className="mt-3 flex items-center gap-1">
                         <Link
                             href={`/issues/${issue.id}/facts`}
-                            className="mt-3 text-lg font-semibold transition-colors duration-300 hover:text-emerald-500"
+                            className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
                         >
-                            查看所有事實
-                            <RectangleStackIcon className="ml-1 inline-block h-6 w-6" />
+                            <NewspaperIcon className="ml-1 inline-block h-6 w-6" />
+                            <div className="block md:hidden">查看所有事實</div>
                         </Link>
-                    </div>
-                    <div className="mt-2">
-                        <Button
-                            variant="transparent"
-                            className="p-0 text-lg font-semibold text-black transition-colors duration-300 hover:text-emerald-500"
-                            onClick={() => {
-                                setIsTimelimeModalOpen(true);
-                                console.log("查看事件演進");
-                            }}
+                        <button
+                            className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
+                            onClick={() => follow()}
                         >
-                            查看事件演進
-                            <FilmIcon className="ml-1 inline-block h-6 w-6" />
-                        </Button>
+                            {isFollowing ? (
+                                <>
+                                    <BookMarkSolid className="ml-1 inline-block h-6 w-6" />
+                                    <div className="block md:hidden">
+                                        取消關注
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <BookMarkOutline className="ml-1 inline-block h-6 w-6" />
+                                    <div className="block md:hidden">
+                                        關注議題
+                                    </div>
+                                </>
+                            )}
+                        </button>
                     </div>
-                    <TimelineModal
-                        isOpen={isTimelimeModalOpen}
-                        setIsOpen={setIsTimelimeModalOpen}
-                        issueId={issue.id}
-                        issueTitle={issue.title}
-                    />
                 </div>
             ) : (
                 <EmptyIssueCard issueId={issue.id} />
