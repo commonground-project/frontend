@@ -26,7 +26,7 @@ function IssueCard({ issue }: IssueCardProps) {
 
     useEffect(() => {
         setIsFollowing(issue.userFollow.follow);
-    }, []);
+    }, [issue.userFollow.follow]);
 
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issue.id],
