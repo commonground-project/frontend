@@ -6,7 +6,7 @@ import {
     XMarkIcon,
     LinkIcon,
 } from "@heroicons/react/24/outline";
-import { Button, TextInput, Popover, Modal } from "@mantine/core";
+import { Button, TextInput, Modal, ActionIcon } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import {
     useEffect,
@@ -19,7 +19,6 @@ import {
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
-import Link from "next/link";
 
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
@@ -211,6 +210,36 @@ function ViewpointCard({
     return (
         <div className="flex h-full flex-col">
             <Modal
+                opened={isConfirmDeleteOpen}
+                onClose={() => setIsConfirmDeleteOpen(false)}
+                title="確認刪除觀點"
+            >
+                <div className="text-neutral-800">{`你確定要刪除觀點《${viewpointTitle}》嗎？此動作無法復原。`}</div>
+                <div className="flex justify-end gap-4 pt-3">
+                    <Button
+                        variant="outline"
+                        color="gray"
+                        onClick={() => {
+                            setIsConfirmDeleteOpen(false);
+                        }}
+                    >
+                        <XMarkIcon className="mr-2 size-5" />
+                        取消
+                    </Button>
+                    <Button
+                        variant="filled"
+                        color="red"
+                        onClick={() => {
+                            deleteContextFromLocal();
+                            router.push(`/issues/${issueId}`);
+                        }}
+                    >
+                        <TrashIcon className="mr-2 size-5" />
+                        刪除
+                    </Button>
+                </div>
+            </Modal>
+            <Modal
                 opened={contentLengthWarning}
                 onClose={() => setContentLengthWarning(false)}
                 title="內容長度不足"
@@ -238,12 +267,13 @@ function ViewpointCard({
                 </div>
             </Modal>
             <div className="flex justify-between md:hidden">
-                <Link
-                    href={`/issues/${issueId}`}
+                <ActionIcon
+                    variant="transparent"
                     className="text-neutral-500 duration-300 hover:text-emerald-500"
+                    onClick={() => setIsConfirmDeleteOpen(true)}
                 >
                     <XMarkIcon className="inline-block h-6 w-6 text-neutral-500" />
-                </Link>
+                </ActionIcon>
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
@@ -290,15 +320,6 @@ function ViewpointCard({
                         });
 
                         if (inputRef?.current === null) return;
-                        // const isEmpty = Array.from(
-                        //     inputRef.current.childNodes,
-                        // ).every(
-                        //     (node) =>
-                        //         (node.nodeType === Node.ELEMENT_NODE &&
-                        //             (node as HTMLElement).tagName === "BR") ||
-                        //         (node.nodeType === Node.TEXT_NODE &&
-                        //             node.textContent?.trim() === ""),
-                        // );
                         const length = getInputFieldContent().length;
                         setIsContentEmpty(length === 0);
                         setIsContentTooShort(length < 200);
@@ -309,15 +330,6 @@ function ViewpointCard({
                     }}
                     onBlur={() => {
                         if (inputRef?.current === null) return;
-                        // const isEmpty = Array.from(
-                        //     inputRef.current.childNodes,
-                        // ).every(
-                        //     (node) =>
-                        //         (node.nodeType === Node.ELEMENT_NODE &&
-                        //             (node as HTMLElement).tagName === "BR") ||
-                        //         (node.nodeType === Node.TEXT_NODE &&
-                        //             node.textContent?.trim() === ""),
-                        // );
                         const isEmpty = getInputFieldContent().length === 0;
                         setIsContentEmpty(isEmpty);
                         if (isEmpty) {
@@ -361,52 +373,18 @@ function ViewpointCard({
             />
 
             <div className="hidden md:flex md:justify-end md:gap-3">
-                <Popover
-                    opened={isConfirmDeleteOpen}
-                    onChange={setIsConfirmDeleteOpen}
-                    radius={7}
+                <Button
+                    variant="outline"
+                    color="#525252"
+                    leftSection={<TrashIcon className="h-5 w-5" />}
+                    classNames={{
+                        root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
+                        section: "mr-1",
+                    }}
+                    onClick={() => setIsConfirmDeleteOpen(true)}
                 >
-                    <Popover.Target>
-                        <Button
-                            variant="outline"
-                            color="#525252"
-                            leftSection={<TrashIcon className="h-5 w-5" />}
-                            classNames={{
-                                root: "px-0 h-8 w-[76px] text-sm font-normal text-neutral-600",
-                                section: "mr-1",
-                            }}
-                            onClick={() => setIsConfirmDeleteOpen(true)}
-                        >
-                            刪除
-                        </Button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                        <div className="text-lg font-semibold text-neutral-700">
-                            確定要刪除此觀點嗎？
-                        </div>
-                        <div className="flex justify-evenly gap-3 pt-3">
-                            <Button
-                                variant="light"
-                                color="red"
-                                onClick={() => {
-                                    deleteContextFromLocal();
-                                    router.push(`/issues/${issueId}`);
-                                }}
-                            >
-                                刪除
-                            </Button>
-                            <Button
-                                variant="light"
-                                color="green"
-                                onClick={() => {
-                                    setIsConfirmDeleteOpen(false);
-                                }}
-                            >
-                                取消
-                            </Button>
-                        </div>
-                    </Popover.Dropdown>
-                </Popover>
+                    刪除
+                </Button>
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
