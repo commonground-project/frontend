@@ -119,6 +119,7 @@ export const mockViewPoint: ViewPoint = {
     likeCount: 10,
     reasonableCount: 5,
     dislikeCount: 2,
+    replyCount: 3,
     facts: [mockFact],
 };
 
