@@ -13,6 +13,7 @@ import { Drawer } from "@mantine/core";
 import FactListBox from "@/components/Conversation/Facts/CitationDrawer/FactListBox";
 import FactImportingBox from "@/components/Conversation/Facts/CitationDrawer/FactImportingBox";
 import FactCreationBox from "@/components/Conversation/Facts/CitationDrawer/FactCreationBox";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 import type { Fact } from "@/types/conversations.types";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 
@@ -72,77 +73,79 @@ export default function CitationDrawer({
                 ][currentScreen - 1]
             }
         >
-            <motion.div
-                initial={{ translateX: "0vw" }}
-                animate={{
-                    translateX: `${(currentScreen - 1) * -100}vw`,
-                    transition: {
-                        type: "spring",
-                        bounce: 0,
-                        duration: 0.5,
-                    },
-                }}
-                className={`h-full ${currentScreen === 1 ? "block" : "hidden"}`}
-            >
-                <FactListBox
-                    factList={viewpointFactList}
-                    setFactList={setViewpointFactList}
-                    searchCallback={(value: string, data: Fact[]) => {
-                        searchValue.current = value;
-                        searchData.current = data;
-                        setCurrentScreen(2);
+            <ErrorBoundary>
+                <motion.div
+                    initial={{ translateX: "0vw" }}
+                    animate={{
+                        translateX: `${(currentScreen - 1) * -100}vw`,
+                        transition: {
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.5,
+                        },
                     }}
-                />
-            </motion.div>
-            <motion.div
-                initial={{ translateX: "100vw" }}
-                animate={{
-                    translateX: `${(currentScreen - 2) * -100}vw`,
-                    transition: {
-                        type: "spring",
-                        bounce: 0,
-                        duration: 0.5,
-                    },
-                }}
-                className={`h-full ${currentScreen === 2 ? "block" : "hidden"}`}
-            >
-                <FactImportingBox
-                    searchValue={searchValue.current}
-                    searchData={searchData.current}
-                    viewpointFactList={viewpointFactList}
-                    addFact={addFact}
-                    goBackCallBack={() => {
-                        setCurrentScreen(1);
+                    className={`h-full ${currentScreen === 1 ? "block" : "hidden"}`}
+                >
+                    <FactListBox
+                        factList={viewpointFactList}
+                        setFactList={setViewpointFactList}
+                        searchCallback={(value: string, data: Fact[]) => {
+                            searchValue.current = value;
+                            searchData.current = data;
+                            setCurrentScreen(2);
+                        }}
+                    />
+                </motion.div>
+                <motion.div
+                    initial={{ translateX: "100vw" }}
+                    animate={{
+                        translateX: `${(currentScreen - 2) * -100}vw`,
+                        transition: {
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.5,
+                        },
                     }}
-                    createFactCallback={() => {
-                        setCurrentScreen(3);
+                    className={`h-full ${currentScreen === 2 ? "block" : "hidden"}`}
+                >
+                    <FactImportingBox
+                        searchValue={searchValue.current}
+                        searchData={searchData.current}
+                        viewpointFactList={viewpointFactList}
+                        addFact={addFact}
+                        goBackCallBack={() => {
+                            setCurrentScreen(1);
+                        }}
+                        createFactCallback={() => {
+                            setCurrentScreen(3);
+                        }}
+                    />
+                </motion.div>
+                <motion.div
+                    initial={{ translateX: "100vw" }}
+                    animate={{
+                        translateX: `${(currentScreen - 3) * -100}vw`,
+                        transition: {
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.5,
+                        },
                     }}
-                />
-            </motion.div>
-            <motion.div
-                initial={{ translateX: "100vw" }}
-                animate={{
-                    translateX: `${(currentScreen - 3) * -100}vw`,
-                    transition: {
-                        type: "spring",
-                        bounce: 0,
-                        duration: 0.5,
-                    },
-                }}
-                className={`h-full ${currentScreen === 3 ? "block" : "hidden"}`}
-            >
-                <FactCreationBox
-                    issueId={issueId}
-                    creationID={drawerId}
-                    factCreationCallback={() => {
-                        setDrawerId(null);
-                    }}
-                    goBackButton={true}
-                    goBackButtonCallback={() => {
-                        setCurrentScreen(2);
-                    }}
-                />
-            </motion.div>
+                    className={`h-full ${currentScreen === 3 ? "block" : "hidden"}`}
+                >
+                    <FactCreationBox
+                        issueId={issueId}
+                        creationID={drawerId}
+                        factCreationCallback={() => {
+                            setDrawerId(null);
+                        }}
+                        goBackButton={true}
+                        goBackButtonCallback={() => {
+                            setCurrentScreen(2);
+                        }}
+                    />
+                </motion.div>
+            </ErrorBoundary>
         </Drawer>
     );
 }
