@@ -82,7 +82,7 @@ export default function CitationDrawer({
                         duration: 0.5,
                     },
                 }}
-                className={`${currentScreen === 1 ? "block" : "hidden"}`}
+                className={`h-full ${currentScreen === 1 ? "block" : "hidden"}`}
             >
                 <FactListBox
                     factList={viewpointFactList}
@@ -104,7 +104,7 @@ export default function CitationDrawer({
                         duration: 0.5,
                     },
                 }}
-                className={`${currentScreen === 2 ? "block" : "hidden"}`}
+                className={`h-full ${currentScreen === 2 ? "block" : "hidden"}`}
             >
                 <FactImportingBox
                     searchValue={searchValue.current}
@@ -129,7 +129,7 @@ export default function CitationDrawer({
                         duration: 0.5,
                     },
                 }}
-                className={`${currentScreen === 3 ? "block" : "hidden"}`}
+                className={`h-full ${currentScreen === 3 ? "block" : "hidden"}`}
             >
                 <FactCreationBox
                     issueId={issueId}

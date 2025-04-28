@@ -26,25 +26,31 @@ export default function FactImportingBox({
     goBackCallBack,
 }: FactImportingBoxProps) {
     return (
-        <div className="flex w-full flex-col gap-4">
+        <div className="flex h-full w-full flex-col">
             <button
-                className="mt-[14px] flex items-center justify-start gap-3"
+                className="flex items-center justify-start gap-3"
                 onClick={goBackCallBack}
             >
                 <ArrowLeftIcon className="size-6 text-black" />
                 <div className="text-lg">{searchValue}</div>
             </button>
             {searchData.length === 0 ? (
-                <div className="flex h-full flex-col items-center justify-center">
-                    <DocumentMinusIcon className="size-24 text-neutral-500" />
-                    <div className="text-neutral-500">找不到相關事實</div>
-                    <Button onClick={createFactCallback}>
+                <>
+                    <div className="flex h-full flex-col items-center justify-center">
+                        <DocumentMinusIcon className="size-24 text-neutral-500" />
+                        <div className="text-neutral-500">找不到相關事實</div>
+                    </div>
+                    <Button
+                        onClick={createFactCallback}
+                        radius={8}
+                        className="h-10"
+                    >
                         <PlusIcon className="size-5 text-neutral-50" />
-                        <span className="text-sm text-neutral-50">
+                        <div className="text-sm text-neutral-50">
                             引入一則事實
-                        </span>
+                        </div>
                     </Button>
-                </div>
+                </>
             ) : (
                 <div className="flex w-full flex-col gap-3">
                     {searchData.map(

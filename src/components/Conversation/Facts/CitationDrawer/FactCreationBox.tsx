@@ -218,8 +218,8 @@ export default function FactCreationBox({
         },
     });
     return (
-        <div className="flex min-h-[250px] flex-col">
-            4{/* fact title */}
+        <div className="h-full">
+            {/* fact title */}
             <TextInput
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
@@ -231,6 +231,7 @@ export default function FactCreationBox({
                 className="pb-2"
             />
             {/* fact URL input */}
+            <h2 className="mb-2 text-sm font-bold">引註資料</h2>
             <div className="flex w-full items-center py-0.5">
                 <LinkIcon className="mr-2 size-5 text-neutral-500" />
                 <input
@@ -238,7 +239,7 @@ export default function FactCreationBox({
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     className="flex-1 border-none bg-transparent outline-none placeholder:text-neutral-500"
-                    placeholder="新增引註資料"
+                    placeholder="引註資料網址"
                 />
                 <Button
                     variant="transparent"
@@ -257,9 +258,8 @@ export default function FactCreationBox({
                 </Button>
             </div>
             {/* reference display */}
-            <div>
-                <h2 className="mb-2 text-sm font-bold">引註資料</h2>
-                <div className="max-h-[530px] space-y-3 overflow-y-auto pr-2">
+            <div className="h-[calc(100%-156px)] overflow-y-auto">
+                <div className="flex flex-col gap-3">
                     {references.map((reference) => (
                         <div
                             key={reference.id}
