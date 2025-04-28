@@ -52,29 +52,31 @@ export default function FactImportingBox({
                     </Button>
                 </>
             ) : (
-                <div className="flex w-full flex-col gap-3">
-                    {searchData.map(
-                        (fact) =>
-                            !viewpointFactList.some(
-                                (item) => item.id === fact.id,
-                            ) && (
-                                <ImportFactCard
-                                    key={fact.id}
-                                    fact={fact}
-                                    isSelected={viewpointFactList.some(
-                                        (item) => item.id === fact.id,
-                                    )}
-                                    setIsSelected={(isSelected) => {
-                                        if (isSelected) {
-                                            addFact(fact);
-                                            toast.success(
-                                                `已加入 ${fact.title} 到你的事實列表`,
-                                            );
-                                        }
-                                    }}
-                                />
-                            ),
-                    )}
+                <div className="h-[calc(100%-28px)] overflow-y-auto">
+                    <div className="flex w-full flex-col gap-3">
+                        {searchData.map(
+                            (fact) =>
+                                !viewpointFactList.some(
+                                    (item) => item.id === fact.id,
+                                ) && (
+                                    <ImportFactCard
+                                        key={fact.id}
+                                        fact={fact}
+                                        isSelected={viewpointFactList.some(
+                                            (item) => item.id === fact.id,
+                                        )}
+                                        setIsSelected={(isSelected) => {
+                                            if (isSelected) {
+                                                addFact(fact);
+                                                toast.success(
+                                                    `已加入 ${fact.title} 到你的事實列表`,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                ),
+                        )}
+                    </div>
                 </div>
             )}
         </div>

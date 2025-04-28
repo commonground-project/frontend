@@ -72,7 +72,7 @@ export default function FactListBox({
     };
 
     return (
-        <>
+        <div className="h-full">
             <div className="flex w-full justify-center rounded-lg bg-neutral-200">
                 <form
                     onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
@@ -106,29 +106,33 @@ export default function FactListBox({
                     </div>
                 </div>
             ) : (
-                <div className="mt-2 flex w-full flex-col gap-2">
-                    {factList.map((fact, index) => (
-                        <EditableViewpointReference
-                            key={fact.id}
-                            index={index + 1}
-                            fact={fact}
-                            removeFact={removeFact}
-                            inSelectionMode={true}
-                            isSelected={getCurSelectedFacts().includes(index)}
-                            setIsSelected={(isSelected) => {
-                                if (isSelected) {
-                                    addFactToReferenceMarker(index);
-                                } else {
-                                    removeFactFromReferenceMarker(index);
-                                }
-                            }}
-                            linkBarWithBG={false}
-                            withBorder={false}
-                            showDeleteIcon={true}
-                        />
-                    ))}
+                <div className="h-[calc(100%-36px)] overflow-y-auto">
+                    <div className="mt-2 flex w-full flex-col gap-2">
+                        {factList.map((fact, index) => (
+                            <EditableViewpointReference
+                                key={fact.id}
+                                index={index + 1}
+                                fact={fact}
+                                removeFact={removeFact}
+                                inSelectionMode={true}
+                                isSelected={getCurSelectedFacts().includes(
+                                    index,
+                                )}
+                                setIsSelected={(isSelected) => {
+                                    if (isSelected) {
+                                        addFactToReferenceMarker(index);
+                                    } else {
+                                        removeFactFromReferenceMarker(index);
+                                    }
+                                }}
+                                linkBarWithBG={false}
+                                withBorder={false}
+                                showDeleteIcon={true}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
