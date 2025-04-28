@@ -6,7 +6,7 @@ import {
     XMarkIcon,
     LinkIcon,
 } from "@heroicons/react/24/outline";
-import { Button, TextInput, Popover } from "@mantine/core";
+import { Button, TextInput, Popover, Modal } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import {
     useEffect,
@@ -15,6 +15,7 @@ import {
     useState,
     type Dispatch,
     type SetStateAction,
+    use,
 } from "react";
 import type { RefObject } from "react";
 import debounce from "lodash/debounce";
@@ -67,14 +68,15 @@ function ViewpointCard({
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
         useState<boolean>(false); // is the confirm delete popover open
 
-    // const contentEmpty = useRef<boolean>(initialContentEmpty);
-    const [contentEmpty, setContentEmpty] =
+    const [isContentEmpty, setIsContentEmpty] =
         useState<boolean>(initialContentEmpty); // is the content empty
+    const [isContentTooShort, setIsContentTooShort] = useState<boolean>(true); // is the content length <= 200
     const [drawerId, setDrawerId] = useState<string | null>(null); // for the citation drawer
+    const [contentLengthWarning, setContentLengthWarning] =
+        useState<boolean>(false); // Content length warning modal open
 
     useMemo(() => {
-        // contentEmpty.current = initialContentEmpty;
-        setContentEmpty(initialContentEmpty);
+        setIsContentEmpty(initialContentEmpty);
     }, [initialContentEmpty]);
 
     // auto-save the viewpoint content
@@ -103,7 +105,6 @@ function ViewpointCard({
                     content,
                     viewpointFactList.map((fact) => fact.id),
                 );
-                // console.log("saved");
                 toast.success("儲存成功");
             }
         };
@@ -187,13 +188,9 @@ function ViewpointCard({
         viewpointTitleRef,
     ]);
 
-    const onPublish = () => {
-        // if (viewpointTitle == "" || contentEmpty.current) {
-        //     toast.error("標題和內容不得為空");
-
-        //     return;
-        // }
-        if (viewpointTitle == "" || contentEmpty) {
+    const onPublish = ({ bypass = false }: { bypass?: boolean }) => {
+        console.log("onPublish");
+        if (viewpointTitle == "" || isContentEmpty) {
             toast.error("標題和內容不得為空");
 
             return;
@@ -201,12 +198,46 @@ function ViewpointCard({
 
         if (inputRef.current === null) return;
         phrasedContent.current = getInputFieldContent();
+        if (!bypass) {
+            console.log("check");
+            if (phrasedContent.current.length < 200) {
+                setContentLengthWarning(true);
+                return;
+            }
+        }
 
         publishViewpoint();
     };
 
     return (
         <div className="flex h-full flex-col">
+            <Modal
+                opened={contentLengthWarning}
+                onClose={() => setContentLengthWarning(false)}
+                title="內容長度不足"
+            >
+                CommonGround 建議您將觀點延長至 200 字以上來更清楚的表達您的想法
+                <div className="mt-2 flex justify-end gap-3">
+                    <Button
+                        variant="light"
+                        onClick={() => {
+                            setContentLengthWarning(false);
+                        }}
+                    >
+                        延長
+                    </Button>
+                    <Button
+                        variant="light"
+                        color="yellow"
+                        onClick={() => {
+                            setContentLengthWarning(false);
+                            onPublish({ bypass: true });
+                        }}
+                    >
+                        仍要發表
+                    </Button>
+                </div>
+            </Modal>
             <div className="flex justify-between md:hidden">
                 <Link
                     href={`/issues/${issueId}`}
@@ -217,13 +248,12 @@ function ViewpointCard({
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    // disabled={viewpointTitle == "" || contentEmpty.current}
-                    disabled={viewpointTitle == "" || contentEmpty}
+                    disabled={viewpointTitle == "" || isContentEmpty}
                     classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
+                        root: `px-0 h-8 w-[76px] text-sm font-normal text-white ${isContentTooShort ? "opacity-50" : ""}`,
                         section: "mr-1",
                     }}
-                    onClick={onPublish}
+                    onClick={() => onPublish({})}
                     loading={pendingPublish}
                 >
                     發表
@@ -259,25 +289,38 @@ function ViewpointCard({
                             if (node.className.includes("pt-1.5")) return;
                             node.classList.add("pt-1.5");
                         });
+
+                        if (inputRef?.current === null) return;
+                        // const isEmpty = Array.from(
+                        //     inputRef.current.childNodes,
+                        // ).every(
+                        //     (node) =>
+                        //         (node.nodeType === Node.ELEMENT_NODE &&
+                        //             (node as HTMLElement).tagName === "BR") ||
+                        //         (node.nodeType === Node.TEXT_NODE &&
+                        //             node.textContent?.trim() === ""),
+                        // );
+                        const length = getInputFieldContent().length;
+                        setIsContentEmpty(length === 0);
+                        setIsContentTooShort(length < 200);
                     }}
                     onFocus={() => {
-                        // if (!contentEmpty.current || !inputRef?.current) return;
-                        if (!inputRef?.current || !contentEmpty) return;
+                        if (!inputRef?.current || !isContentEmpty) return;
                         inputRef.current.innerHTML = "";
                     }}
                     onBlur={() => {
                         if (inputRef?.current === null) return;
-                        const isEmpty = Array.from(
-                            inputRef.current.childNodes,
-                        ).every(
-                            (node) =>
-                                (node.nodeType === Node.ELEMENT_NODE &&
-                                    (node as HTMLElement).tagName === "BR") ||
-                                (node.nodeType === Node.TEXT_NODE &&
-                                    node.textContent?.trim() === ""),
-                        );
-                        // contentEmpty.current = isEmpty;
-                        setContentEmpty(isEmpty);
+                        // const isEmpty = Array.from(
+                        //     inputRef.current.childNodes,
+                        // ).every(
+                        //     (node) =>
+                        //         (node.nodeType === Node.ELEMENT_NODE &&
+                        //             (node as HTMLElement).tagName === "BR") ||
+                        //         (node.nodeType === Node.TEXT_NODE &&
+                        //             node.textContent?.trim() === ""),
+                        // );
+                        const isEmpty = getInputFieldContent().length === 0;
+                        setIsContentEmpty(isEmpty);
                         if (isEmpty) {
                             inputRef.current.innerHTML = "";
                             const placeholderElement =
@@ -368,13 +411,12 @@ function ViewpointCard({
                 <Button
                     variant="filled"
                     leftSection={<PlusIcon className="h-5 w-5" />}
-                    // disabled={viewpointTitle == "" || contentEmpty.current}
-                    disabled={viewpointTitle == "" || contentEmpty}
+                    disabled={viewpointTitle == "" || isContentEmpty}
                     classNames={{
-                        root: "px-0 h-8 w-[76px] text-sm font-normal text-white",
+                        root: `px-0 h-8 w-[76px] text-sm font-normal text-white ${isContentTooShort ? "opacity-50" : ""}`,
                         section: "mr-1",
                     }}
-                    onClick={onPublish}
+                    onClick={() => onPublish({})}
                     loading={pendingPublish}
                 >
                     發表
