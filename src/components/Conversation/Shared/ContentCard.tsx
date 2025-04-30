@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { type Fact } from "@/types/conversations.types";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { HoverCard } from "@mantine/core";
-import Link from "next/link";
 import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 
 type ContentCardProps = {
