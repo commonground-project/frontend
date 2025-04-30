@@ -12,12 +12,14 @@ import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 type ContentCardProps = {
     facts: Fact[];
     content: string;
+    contentType?: "觀點" | "回覆";
     truncate?: boolean;
 };
 
 export default function ContentCard({
     facts,
     content,
+    contentType,
     truncate = false,
 }: ContentCardProps) {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -139,40 +141,36 @@ export default function ContentCard({
                     onClick: (e) => e.stopPropagation(), // Prevent triggering onClick on the parent element
                     onPointerDown: (e) => e.stopPropagation(),
                 }}
-                title="Reference"
+                title={`${contentType ?? ""}引註資料`}
                 padding="xl"
-                size="lg"
+                radius="lg"
+                withCloseButton={false}
                 position="bottom"
                 className="block md:hidden"
                 onClick={(e) => e.stopPropagation()} // Prevent triggering onClick on the parent element
                 onPointerDown={(e) => e.stopPropagation()}
                 onPointerUp={(e) => e.stopPropagation()}
             >
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-4">
                     {referencedContent.map((part, index) => {
-                        if (part.type === "Reference") {
-                            return (
-                                <div
-                                    key={index}
-                                    className="flex flex-col gap-1"
-                                >
-                                    <div className="text-base font-medium text-emerald-700">
-                                        {part.text}
-                                    </div>
-                                    {part.references?.map((factidx) => {
-                                        const fact = facts[factidx];
-                                        if (!fact) return null;
-                                        return (
-                                            <FactCard
-                                                fact={fact}
-                                                factIndex={factidx}
-                                                key={fact.id}
-                                            />
-                                        );
-                                    })}
+                        return (
+                            <div key={index} className="flex flex-col gap-2">
+                                <div className="text-base font-medium text-emerald-700">
+                                    {part.text}
                                 </div>
-                            );
-                        }
+                                {part.references?.map((factidx) => {
+                                    const fact = facts[factidx];
+                                    if (!fact) return null;
+                                    return (
+                                        <FactCard
+                                            fact={fact}
+                                            factIndex={factidx}
+                                            key={fact.id}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        );
                     })}
                 </div>
             </Drawer>
