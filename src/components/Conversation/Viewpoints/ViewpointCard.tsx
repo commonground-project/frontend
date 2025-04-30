@@ -30,6 +30,7 @@ export default function ViewpointCard({
             </h1>
             <div className="mb-2 mt-1 flex flex-col gap-3">
                 <ContentCard
+                    contentType="觀點"
                     content={viewpoint.content}
                     facts={viewpoint.facts}
                     truncate={true}

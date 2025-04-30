@@ -142,11 +142,13 @@ export default function ContentCard({
                     onPointerDown: (e) => e.stopPropagation(),
                 }}
                 title={`${contentType ?? ""}引註資料`}
-                padding="xl"
-                radius="lg"
+                padding="lg"
                 withCloseButton={false}
                 position="bottom"
                 className="block md:hidden"
+                classNames={{
+                    content: " rounded-t-xl",
+                }}
                 onClick={(e) => e.stopPropagation()} // Prevent triggering onClick on the parent element
                 onPointerDown={(e) => e.stopPropagation()}
                 onPointerUp={(e) => e.stopPropagation()}
