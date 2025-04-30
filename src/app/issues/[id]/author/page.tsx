@@ -11,6 +11,7 @@ import Link from "next/link";
 
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import { getFact } from "@/lib/requests/facts/getFact";
+import { followIssue } from "@/lib/requests/issues/followIssue";
 
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
@@ -100,6 +101,21 @@ export default function AuthorViewpoint() {
         },
     });
 
+    const followIssueMutation = useMutation({
+        mutationKey: ["followIssue"],
+        mutationFn: () =>
+            followIssue({
+                issueId: issueId,
+                auth_token: cookie.auth_token,
+            }),
+        onSuccess() {
+            toast.success("已關注議題");
+        },
+        onError() {
+            toast.error("關注議題失敗");
+        },
+    });
+
     const getFactById = useMutation({
         mutationKey: ["getFactById"],
         mutationFn: (factId: string) =>
@@ -178,6 +194,7 @@ export default function AuthorViewpoint() {
             content: phrasedViewpointContent.current,
             facts: viewpointFactList.map((fact) => fact.id),
         });
+        followIssueMutation.mutate();
     };
 
     return (
