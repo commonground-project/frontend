@@ -60,9 +60,9 @@ export default function CitationDrawer({
             position="bottom"
             classNames={{
                 title: "font-bold text-black",
+                content: "rounded-t-xl",
                 body: "h-[calc(100%-80px)]",
             }}
-            radius={12}
             size="lg"
             withCloseButton={false}
             title={
