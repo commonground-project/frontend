@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { type Fact } from "@/types/conversations.types";
-import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
-import { HoverCard } from "@mantine/core";
+import {
+    preprocessReferenceContent,
+    type TypedContentFragment,
+} from "@/lib/utils/preprocessReferenceContent";
+import { HoverCard, Drawer } from "@mantine/core";
 import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 
 type ContentCardProps = {
@@ -17,13 +20,35 @@ export default function ContentCard({
     content,
     truncate = false,
 }: ContentCardProps) {
-    const viewpointContent = useMemo(() => {
-        return preprocessReferenceContent({ content });
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const [parsedContent, referencedContent] = useMemo(() => {
+        const parsedContent = preprocessReferenceContent({ content });
+
+        const referencedContent: TypedContentFragment[] = [];
+        let text = "";
+        parsedContent.map((paragraph) => {
+            paragraph.map((part) => {
+                if (part.type === "Reference") {
+                    text += part.text;
+                }
+                if (part.type === "ReferenceCounter") {
+                    text += part.text;
+                    referencedContent.push({
+                        type: "Reference",
+                        text: text,
+                        references: part.references,
+                    });
+                    text = "";
+                }
+            });
+        });
+        return [parsedContent, referencedContent];
     }, [content]);
 
     return (
         <>
-            {viewpointContent.map(
+            {parsedContent.map(
                 (paragraph, index) =>
                     (truncate && index > 0) || (
                         <p key={index}>
@@ -40,7 +65,23 @@ export default function ContentCard({
                                             middlewares={{ inline: true }}
                                         >
                                             <HoverCard.Target>
-                                                <span className="break-all text-green-700">
+                                                <span
+                                                    className="break-all text-green-700"
+                                                    onPointerDown={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    onPointerUp={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    onClick={(e) => {
+                                                        console.log(
+                                                            "highlight on click",
+                                                        );
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setIsDrawerOpen(true);
+                                                    }}
+                                                >
                                                     {part.text}
                                                     {/* put the reference counter together */}
                                                     {paragraph[index + 1]
@@ -91,6 +132,50 @@ export default function ContentCard({
                         </p>
                     ),
             )}
+            <Drawer
+                opened={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                overlayProps={{
+                    onClick: (e) => e.stopPropagation(), // Prevent triggering onClick on the parent element
+                    onPointerDown: (e) => e.stopPropagation(),
+                }}
+                title="Reference"
+                padding="xl"
+                size="lg"
+                position="bottom"
+                className="block md:hidden"
+                onClick={(e) => e.stopPropagation()} // Prevent triggering onClick on the parent element
+                onPointerDown={(e) => e.stopPropagation()}
+                onPointerUp={(e) => e.stopPropagation()}
+            >
+                <div className="flex flex-col gap-1">
+                    {referencedContent.map((part, index) => {
+                        if (part.type === "Reference") {
+                            return (
+                                <div
+                                    key={index}
+                                    className="flex flex-col gap-1"
+                                >
+                                    <div className="text-base font-medium text-emerald-700">
+                                        {part.text}
+                                    </div>
+                                    {part.references?.map((factidx) => {
+                                        const fact = facts[factidx];
+                                        if (!fact) return null;
+                                        return (
+                                            <FactCard
+                                                fact={fact}
+                                                factIndex={factidx}
+                                                key={fact.id}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            );
+                        }
+                    })}
+                </div>
+            </Drawer>
         </>
     );
 }
