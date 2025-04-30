@@ -32,6 +32,7 @@ export default function ViewpointCard({
                 <ContentCard
                     content={viewpoint.content}
                     facts={viewpoint.facts}
+                    truncate={true}
                 />
             </div>
             <div className="flex justify-start align-bottom md:justify-between">
