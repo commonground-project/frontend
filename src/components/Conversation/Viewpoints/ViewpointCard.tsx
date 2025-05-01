@@ -3,10 +3,7 @@ import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 import AuthorProfile from "../Shared/AuthorProfile";
-import {
-    ArrowRightIcon,
-    ChatBubbleOvalLeftIcon,
-} from "@heroicons/react/24/outline";
+import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 type ViewpointCardProps = {
