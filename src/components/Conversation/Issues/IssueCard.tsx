@@ -30,15 +30,20 @@ function IssueCard({ issue }: IssueCardProps) {
 
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issue.id],
-        mutationFn: () => {
+        mutationFn: (follow: boolean) => {
             console.log("followIssue");
             return followIssue({
                 issueId: issue.id,
                 auth_token: cookies.auth_token,
+                follow: follow,
             });
         },
         onSuccess: (data) => {
+            console.log("following: ", data.follow);
             setIsFollowing(data.follow);
+        },
+        onError: (e) => {
+            console.log("request error: ", e);
         },
     });
 
@@ -73,7 +78,7 @@ function IssueCard({ issue }: IssueCardProps) {
                         </Link>
                         <button
                             className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
-                            onClick={() => follow()}
+                            onClick={() => follow(!isFollowing)}
                         >
                             {isFollowing ? (
                                 <>

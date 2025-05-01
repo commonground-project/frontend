@@ -33,11 +33,12 @@ export default function EmptyIssueCard({
 
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issueId],
-        mutationFn: () => {
+        mutationFn: (follow: boolean) => {
             console.log("followIssue");
             return followIssue({
                 issueId: issueId,
                 auth_token: cookies.auth_token,
+                follow,
             });
         },
         onSuccess: (data) => {
@@ -67,7 +68,7 @@ export default function EmptyIssueCard({
                 </Button>
                 <button
                     className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:hidden"
-                    onClick={() => follow()}
+                    onClick={() => follow(!isFollowing)}
                 >
                     <PlusIcon className="ml-1 inline-block h-6 w-6" />
                     <div className="text-base font-medium text-neutral-800">
@@ -76,7 +77,7 @@ export default function EmptyIssueCard({
                 </button>
                 <button
                     className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:hidden"
-                    onClick={() => follow()}
+                    onClick={() => follow(!isFollowing)}
                 >
                     {isFollowing ? (
                         <>
