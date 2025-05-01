@@ -33,28 +33,30 @@ export default function ViewpointCard({
                     truncate={true}
                 />
             </div>
-            <div className="flex justify-start align-bottom md:justify-between">
-                <TernaryReactions
-                    parentTitle={viewpoint.title}
-                    parentId={viewpoint.id}
-                    initialReaction={viewpoint.userReaction.reaction}
-                    initialCounts={{
-                        like: viewpoint.likeCount,
-                        reasonable: viewpoint.reasonableCount,
-                        dislike: viewpoint.dislikeCount,
-                    }}
-                    mutationFn={(reaction: Reaction, auth_token: string) =>
-                        postViewpointReaction({
-                            viewpointId: viewpoint.id,
-                            reaction,
-                            auth_token,
-                        })
-                    }
-                />
+            <div className="flex align-bottom md:justify-between">
+                <div className="w-3/4 md:w-auto">
+                    <TernaryReactions
+                        parentTitle={viewpoint.title}
+                        parentId={viewpoint.id}
+                        initialReaction={viewpoint.userReaction.reaction}
+                        initialCounts={{
+                            like: viewpoint.likeCount,
+                            reasonable: viewpoint.reasonableCount,
+                            dislike: viewpoint.dislikeCount,
+                        }}
+                        mutationFn={(reaction: Reaction, auth_token: string) =>
+                            postViewpointReaction({
+                                viewpointId: viewpoint.id,
+                                reaction,
+                                auth_token,
+                            })
+                        }
+                    />
+                </div>
                 <div className="flex w-1/4 gap-1 md:hidden">
                     <ChatBubbleOvalLeftIcon className="size-6 text-neutral-600" />
                     <div className="text-neutral-600">
-                        {viewpoint.replyCount}
+                        {/* {viewpoint.replyCount} */}0
                     </div>
                 </div>
             </div>

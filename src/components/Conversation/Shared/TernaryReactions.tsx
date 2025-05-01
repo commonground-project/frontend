@@ -104,64 +104,70 @@ export default function TernaryReactions({
     };
 
     return (
-        <div className="flex justify-evenly md:justify-start">
+        <div className="flex justify-between md:justify-start">
             {/* like */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.LIKE);
-                }}
-            >
-                <HandThumbUpIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.LIKE);
                     }}
-                    className={`fill-none ${currentReaction === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {baseReactionCount.like +
-                    (currentReaction === Reaction.LIKE ? 1 : 0)}
-            </h1>
+                >
+                    <HandThumbUpIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {baseReactionCount.like +
+                        (currentReaction === Reaction.LIKE ? 1 : 0)}
+                </h1>
+            </div>
             {/* reasonable */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.REASONABLE);
-                }}
-            >
-                <ArrowUpCircleIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.REASONABLE);
                     }}
-                    className={`fill-none ${currentReaction === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {baseReactionCount.reasonable +
-                    (currentReaction === Reaction.REASONABLE ? 1 : 0)}
-            </h1>
+                >
+                    <ArrowUpCircleIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {baseReactionCount.reasonable +
+                        (currentReaction === Reaction.REASONABLE ? 1 : 0)}
+                </h1>
+            </div>
             {/* dislike */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.DISLIKE);
-                }}
-            >
-                <HandThumbDownIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.DISLIKE);
                     }}
-                    className={`fill-none ${currentReaction === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {baseReactionCount.dislike +
-                    (currentReaction === Reaction.DISLIKE ? 1 : 0)}
-            </h1>
+                >
+                    <HandThumbDownIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-11 px-1 text-neutral-600">
+                    {baseReactionCount.dislike +
+                        (currentReaction === Reaction.DISLIKE ? 1 : 0)}
+                </h1>
+            </div>
         </div>
     );
 }
