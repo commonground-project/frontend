@@ -104,7 +104,7 @@ export default function TernaryReactions({
     };
 
     return (
-        <div className="flex">
+        <div className="flex justify-evenly md:justify-start">
             {/* like */}
             <button
                 onClick={(e) => {
