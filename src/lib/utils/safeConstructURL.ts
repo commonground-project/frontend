@@ -1,12 +1,14 @@
-export function safeDecodeURI(uri: string): string | null {
+export function safeConstructURL(url: string): URL {
+    let pageURL: URL;
     try {
-        return decodeURI(uri);
+        pageURL = new URL(decodeURI(url));
     } catch (e) {
         if (e instanceof URIError) {
             console.error("Invalid URI:", e.message);
         } else {
             console.error("Unexpected error:", e);
         }
-        return null; // Return null to indicate failure
+        pageURL = new URL("https://example.com");
     }
+    return pageURL;
 }
