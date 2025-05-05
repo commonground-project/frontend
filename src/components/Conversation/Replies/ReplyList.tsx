@@ -1,7 +1,8 @@
 "use client";
 
+import { motion } from "motion/react";
 import ReplyCard from "./ReplyCard";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getViewpointReplies } from "@/lib/requests/replies/getViewpointReplies";
 import { useCookies } from "react-cookie";
@@ -18,6 +19,7 @@ type ReplyListProps = {
 
 function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
+    const [rotate, setRotate] = useState(0);
 
     const { data, error, isFetching, fetchNextPage, hasNextPage } =
         useInfiniteQuery({
@@ -82,7 +84,30 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     variant="white"
                     className="mt-4 h-10 w-full"
                     radius="md"
-                ></Button>
+                    onClick={() => {
+                        setRotate((prev) => prev + 180);
+                    }}
+                >
+                    <div className="grid size-6 grid-cols-2 grid-rows-2 gap-[1px] p-[2px]">
+                        <img src="/assets/LogoLeftTop.svg" alt="" />
+                        <img
+                            src="/assets/LogoLeftTop.svg"
+                            alt=""
+                            className="-scale-x-100"
+                        />
+                        <img
+                            src="/assets/LogoLeftTop.svg"
+                            alt=""
+                            className="-scale-y-100"
+                        />
+                        <motion.div
+                            animate={{ rotate }}
+                            transition={{ type: "spring", bounce: 0 }}
+                        >
+                            <img src="/assets/LogoLeftTop.svg" alt="" />
+                        </motion.div>
+                    </div>
+                </Button>
             )}
         </>
     );
