@@ -3,11 +3,13 @@
 import { motion } from "motion/react";
 import ReplyCard from "./ReplyCard";
 import { Fragment, useEffect, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { getViewpointReplies } from "@/lib/requests/replies/getViewpointReplies";
+import { followViewpoint } from "@/lib/requests/viewpoints/followViewpoint";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
-import { Button } from "@mantine/core";
+import { Button, Drawer } from "@mantine/core";
+import { BellAlertIcon } from "@heroicons/react/16/solid";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
 import ReplySkeleton from "./ReplySkeleton";
@@ -20,6 +22,7 @@ type ReplyListProps = {
 function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
     const [rotate, setRotate] = useState(0);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const { data, error, isFetching, fetchNextPage, hasNextPage } =
         useInfiniteQuery({
@@ -35,6 +38,18 @@ function ReplyList({ viewpointId }: ReplyListProps) {
 
     const { ref, inView } = useInView({
         threshold: 0.5,
+    });
+
+    const followViewpointMutation = useMutation({
+        mutationKey: ["followViewpoint"],
+        mutationFn: async () => {
+            if (!cookies.auth_token) return;
+            const res = await followViewpoint({
+                viewpointId,
+                auth_token: cookies.auth_token,
+            });
+            return res;
+        },
     });
 
     useEffect(() => {
@@ -86,6 +101,7 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     radius="md"
                     onClick={() => {
                         setRotate((prev) => prev + 180);
+                        setIsDrawerOpen((prev) => !prev);
                     }}
                 >
                     <div className="grid size-6 grid-cols-2 grid-rows-2 gap-[1px] p-[2px]">
@@ -116,6 +132,43 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     </div>
                 </Button>
             )}
+            <Drawer
+                opened={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                padding="xl"
+                size="sm"
+                position="bottom"
+                withCloseButton={false}
+            >
+                <div className="flex w-full flex-col items-center gap-7">
+                    <div className="flex size-16 items-center justify-center rounded-full bg-emerald-500 p-2">
+                        <BellAlertIcon className="size-9 fill-white" />
+                    </div>
+                    <div className="text-2xl font-semibold text-black">
+                        持續關注此議題嗎？
+                    </div>
+                    <div className="flex w-full gap-3">
+                        <Button
+                            color="#E5E5E5"
+                            className="h-12 w-1/2 text-lg font-normal text-black"
+                            // TODO: check if the user have already follow the viewpoint
+                            onClick={() => setIsDrawerOpen(false)}
+                        >
+                            持續關注
+                        </Button>
+                        <Button
+                            className="h-12 w-1/2 text-lg font-normal text-white"
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                // TODO: check if the user have already follow the viewpoint
+                                followViewpointMutation.mutate();
+                            }}
+                        >
+                            取消關注
+                        </Button>
+                    </div>
+                </div>
+            </Drawer>
         </>
     );
 }
