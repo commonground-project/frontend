@@ -6,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import { followIssue } from "@/lib/requests/issues/followIssue";
 import {
     PlusIcon,
-    NewspaperIcon,
     BookmarkIcon as BookMarkOutline,
 } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookMarkSolid } from "@heroicons/react/24/solid";
@@ -48,7 +47,11 @@ export default function EmptyIssueCard({
 
     return (
         <div>
-            <NewspaperIcon className="mx-auto h-40 w-40 stroke-neutral-500 stroke-1" />
+            <img
+                src="/assets/NoteIcon.svg"
+                alt=""
+                className="mx-auto w-32 pb-5 pt-9"
+            />
             <h1 className="text-center text-lg font-semibold text-neutral-500">
                 目前還沒有人新增事實
             </h1>
