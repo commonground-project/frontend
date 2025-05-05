@@ -1,9 +1,12 @@
 import type { UserRoles } from "@/types/users.types";
 import { parseJsonWhileHandlingErrors } from "../transformers";
 
-export type SetupUserRequestedFields = {
+export type SetupUserParams = {
     username: string;
     nickname: string;
+    occupation: string;
+    gender: string;
+    birthYear: number;
 };
 
 export type SetupUserResponse = {
@@ -11,10 +14,13 @@ export type SetupUserResponse = {
     nickname: string;
     email: string;
     role: UserRoles;
+    occupation: string;
+    gender: string;
+    birthdate: number;
 };
 
 export const setupUserRequest = async (
-    payload: SetupUserRequestedFields,
+    payload: SetupUserParams,
     auth_token: string,
 ): Promise<SetupUserResponse> => {
     return await fetch(
