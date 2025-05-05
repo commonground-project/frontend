@@ -32,7 +32,10 @@ const HomePageCard = forwardRef<HTMLAnchorElement, HomePageCardProps>(
                             {issue.viewpointCount}
                         </p>
                     </div>
-                    <ActionIcon variant="transparent">
+                    <ActionIcon
+                        variant="transparent"
+                        onClick={(e) => e.preventDefault()}
+                    >
                         {issue.userFollow && issue.userFollow.follow ? (
                             <BookmarkIcon className="size-6 text-neutral-700" />
                         ) : (
