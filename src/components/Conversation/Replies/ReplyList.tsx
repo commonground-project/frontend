@@ -102,10 +102,17 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                         />
                         <motion.div
                             animate={{ rotate }}
-                            transition={{ type: "spring", bounce: 0 }}
+                            transition={{
+                                type: "spring",
+                                bounce: 0,
+                                duration: 1,
+                            }}
                         >
                             <img src="/assets/LogoLeftTop.svg" alt="" />
                         </motion.div>
+                    </div>
+                    <div className="ml-2 text-sm font-medium text-black">
+                        找到了 CommonGround
                     </div>
                 </Button>
             )}
