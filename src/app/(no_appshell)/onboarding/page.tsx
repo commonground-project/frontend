@@ -1,8 +1,11 @@
 "use client";
 
-import { useMemo, useState, type JSX } from "react";
+import { useContext, useMemo, useState, type JSX } from "react";
 
+import { toast } from "sonner";
 import { useCookies } from "react-cookie";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import { Button, Progress } from "@mantine/core";
 import { motion } from "motion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
@@ -16,6 +19,10 @@ import {
 } from "@/lib/onboarding/forms";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 
+import { AuthContext } from "@/lib/auth/authContext";
+import { type SetupUserParams } from "@/lib/requests/users/setupUser";
+import { type PostViewpointPreferenceParams } from "@/lib/requests/viewpoints/postViewpointPreference";
+
 import GatherInfo from "@/components/Onboarding/GatherInfo";
 import IntroducePlatform from "@/components/Onboarding/IntroducePlatform";
 import PreferenceChoice from "@/components/Onboarding/PreferenceChoice";
@@ -27,6 +34,9 @@ export default function OnboardingPage() {
     const [currentScreen, setCurrentScreen] = useState<number>(0);
     const [isNextStepEnabled, setIsNextStepEnabled] = useState<boolean>(false);
     const [nextStepLoading, setNextStepLoading] = useState<boolean>(false);
+
+    const { login } = useContext(AuthContext);
+    const router = useRouter();
 
     const infoForm = useForm<OnboardingUserInfo>({
         initialValues: {
@@ -56,6 +66,42 @@ export default function OnboardingPage() {
         },
     });
 
+    const saveUserInfoMutation = useMutation({
+        mutationFn: async (userInfo: SetupUserParams) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        },
+        onError() {
+            toast.error("發生未知的錯誤，請再試一次");
+        },
+    });
+
+    const saveUserPreferenceMutation = useMutation({
+        mutationFn: async (userPreference: PostViewpointPreferenceParams) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        },
+        onError() {
+            toast.error("發生未知的錯誤，請再試一次");
+        },
+    });
+
+    const completeOnboardingMutation = useMutation({
+        mutationFn: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return {
+                accessToken: "123",
+                refreshToken: "123",
+                expirationTime: 123,
+            };
+        },
+        onSuccess(data) {
+            login(data.accessToken, data.refreshToken, data.expirationTime);
+            router.push("/");
+        },
+        onError() {
+            toast.error("發生未知的錯誤，請再試一次");
+        },
+    });
+
     const onboardingScreens = useMemo<
         {
             title: string | JSX.Element;
@@ -70,7 +116,21 @@ export default function OnboardingPage() {
                 element: GatherInfo,
                 form: infoForm,
                 completeCallback: async () => {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    if (
+                        !infoForm.values.birthYear ||
+                        !infoForm.values.gender ||
+                        !infoForm.values.occupation
+                    ) {
+                        toast.error("請填寫所有必填欄位");
+                        return;
+                    }
+                    await saveUserInfoMutation.mutateAsync({
+                        username: infoForm.values.username,
+                        nickname: infoForm.values.nickname,
+                        birthYear: infoForm.values.birthYear,
+                        gender: infoForm.values.gender,
+                        occupation: infoForm.values.occupation,
+                    });
                 },
             },
             {
@@ -87,6 +147,25 @@ export default function OnboardingPage() {
                 title: "讓我們知道你對什麼感興趣",
                 element: PreferenceChoice,
                 form: interestsForm,
+                completeCallback: async () => {
+                    if (
+                        Object.values(interestsForm.values).some(
+                            (value) => value === null,
+                        )
+                    ) {
+                        toast.error("請填寫所有必填欄位");
+                        return;
+                    }
+                    await saveUserPreferenceMutation.mutateAsync({
+                        payload: Object.keys(interestsForm.values).map(
+                            (key) => ({
+                                id: key,
+                                preference: interestsForm.values[key] as string,
+                            }),
+                        ),
+                        auth_token: cookies.auth_token,
+                    });
+                },
             },
             {
                 title: "通知設定",
@@ -106,9 +185,20 @@ export default function OnboardingPage() {
             {
                 title: "歡迎使用 COMMONGROUND",
                 element: BeforeWeStart,
+                completeCallback: async () => {
+                    await completeOnboardingMutation.mutateAsync();
+                },
             },
         ],
-        [infoForm, interestsForm, notificationForm, cookies.auth_token],
+        [
+            infoForm,
+            interestsForm,
+            notificationForm,
+            cookies.auth_token,
+            saveUserInfoMutation,
+            saveUserPreferenceMutation,
+            completeOnboardingMutation,
+        ],
     );
 
     const handleNextStep = () => {
