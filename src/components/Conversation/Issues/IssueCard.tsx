@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import {
     InformationCircleIcon,
     NewspaperIcon,
@@ -11,7 +12,7 @@ import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import type { Issue } from "@/types/conversations.types";
 import { Tooltip } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { followIssue } from "@/lib/requests/issues/followIssue";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
@@ -22,6 +23,7 @@ type IssueCardProps = {
 
 function IssueCard({ issue }: IssueCardProps) {
     const [isFollowing, setIsFollowing] = useState(false);
+    const pendingFollow = useRef<boolean | null>(null);
     const [cookies] = useCookies(["auth_token"]);
 
     useEffect(() => {
@@ -38,12 +40,30 @@ function IssueCard({ issue }: IssueCardProps) {
                 follow: follow,
             });
         },
-        onSuccess: (data) => {
-            console.log("following: ", data.follow);
-            setIsFollowing(data.follow);
+        onMutate: (follow) => {
+            pendingFollow.current = follow;
+            const previousState = isFollowing;
+            setIsFollowing(follow);
+            return previousState;
         },
-        onError: (e) => {
-            console.log("request error: ", e);
+        onSuccess: (data) => {
+            if (pendingFollow.current === data.follow) {
+                setIsFollowing(data.follow);
+                pendingFollow.current = null;
+            }
+        },
+        onError: (__err, __variables, context) => {
+            if (context !== undefined) {
+                setIsFollowing(context);
+            }
+            pendingFollow.current = null;
+
+            // Toast error message
+            const truncatedTitle =
+                issue.title.length > 10
+                    ? `${issue.title.slice(0, 10)}...`
+                    : issue.title;
+            toast.error(`關注觀點「${truncatedTitle}」時發生錯誤，請再試一次`);
         },
     });
 
