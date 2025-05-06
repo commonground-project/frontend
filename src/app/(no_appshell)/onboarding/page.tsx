@@ -31,6 +31,7 @@ import BeforeWeStart from "@/components/Onboarding/BeforeWeStart";
 
 export default function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
+    const [inOnboardingProc, setInOnboardingProc] = useState<boolean>(false);
     const [currentScreen, setCurrentScreen] = useState<number>(0);
     const [isNextStepEnabled, setIsNextStepEnabled] = useState<boolean>(false);
     const [nextStepLoading, setNextStepLoading] = useState<boolean>(false);
@@ -223,12 +224,69 @@ export default function OnboardingPage() {
     };
 
     return (
-        <main className="relative flex h-screen w-screen items-center justify-center bg-neutral-50">
-            <div className="hidden h-full items-center justify-end md:flex md:w-[50vw]">
-                <img src="/assets/CGGradient.jpeg" className="h-full" alt="" />
+        <main className="relative h-screen w-screen bg-neutral-50">
+            <div
+                className="absolute left-0 top-0 h-full items-center justify-end transition-[translate] duration-1000 md:hidden"
+                style={{
+                    translate: inOnboardingProc ? "-100%" : "0",
+                }}
+            >
+                <img
+                    src="/assets/CGGradient.jpeg"
+                    className="h-full w-screen object-cover"
+                    alt=""
+                />
             </div>
-            <div className="flex h-full w-full justify-center overflow-hidden pb-12 pt-20 md:w-[50vw] md:items-center md:pt-0">
-                <div className="mx-8 flex h-full w-full flex-col justify-around md:mx-20 md:max-h-[67vh]">
+            <div
+                className={`absolute left-0 top-0 hidden h-full items-center justify-end transition-[width] duration-1000 md:flex ${
+                    inOnboardingProc ? "md:w-[50vw]" : "md:w-screen"
+                }`}
+            >
+                <img
+                    src="/assets/CGGradient.jpeg"
+                    className="h-full w-screen object-cover"
+                    alt=""
+                />
+            </div>
+            <div
+                className={`absolute right-0 top-0 h-full w-full transition-[translate] duration-1000 md:w-[50vw] ${
+                    inOnboardingProc ? "md:hidden md:translate-x-0" : ""
+                }`}
+                style={{
+                    translate: inOnboardingProc ? "-100%" : "0",
+                }}
+            >
+                <div className="absolute bottom-28 left-7 md:bottom-32 md:left-16">
+                    <h1 className="text-3xl font-bold text-white md:text-6xl md:leading-[80px]">
+                        <p className="block">歡迎加入</p>
+                        <p className="block">尋求共識的夥伴們</p>
+                    </h1>
+                    <Button
+                        className="mt-6 h-10 border-white text-white hover:text-neutral-50 md:h-16 md:w-32 md:rounded-lg md:text-xl"
+                        variant="outline"
+                        rightSection={
+                            <img
+                                src="/assets/logo-white.svg"
+                                className="h-5 w-5 md:h-8 md:w-8"
+                                alt=""
+                            />
+                        }
+                        color="gray"
+                        onClick={() => {
+                            setInOnboardingProc(true);
+                        }}
+                    >
+                        開始
+                    </Button>
+                </div>
+            </div>
+            <div
+                className="absolute right-0 top-0 flex h-full w-screen justify-center overflow-hidden overflow-x-hidden pb-12 pt-20 transition-[translate] duration-1000 md:w-[50vw] md:items-center md:pt-0"
+                style={{
+                    translate: inOnboardingProc ? "0" : "100%",
+                }}
+            >
+                <div className="mx-8 flex h-full w-full flex-shrink-0 flex-col justify-around px-8 md:mx-20 md:max-h-[67vh] md:w-[calc(50vw-160px)]">
                     <div className="relative h-full w-full">
                         {onboardingScreens.map((screen, i) => (
                             <motion.div
