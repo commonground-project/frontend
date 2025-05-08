@@ -11,13 +11,12 @@ import Link from "next/link";
 import EmptyIssueCard from "@/components/Conversation/Issues/EmptyIssueCard";
 import MarkdownWithStyle from "@/components/Conversation/Shared/MarkdownWithStyle";
 import type { Issue } from "@/types/conversations.types";
-import { Mark, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { followIssue } from "@/lib/requests/issues/followIssue";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
-import Markdown from "react-markdown";
 
 type IssueCardProps = {
     issue: Issue;
