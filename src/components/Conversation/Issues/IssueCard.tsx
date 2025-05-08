@@ -70,7 +70,9 @@ function IssueCard({ issue }: IssueCardProps) {
 
     return (
         <div className="rounded-md bg-neutral-100 p-5 text-black">
-            <h1 className="py-1 font-sans text-2xl font-bold">{issue.title}</h1>
+            <h1 className="py-1 font-serif text-2xl font-bold">
+                {issue.title}
+            </h1>
             {issue.description !== "" ? (
                 <div className="mt-3">
                     <div className="mb-1 flex items-center">
