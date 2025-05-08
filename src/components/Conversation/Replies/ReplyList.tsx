@@ -8,7 +8,7 @@ import { getViewpointReplies } from "@/lib/requests/replies/getViewpointReplies"
 import { followViewpoint } from "@/lib/requests/viewpoints/followViewpoint";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
-import { Button, Drawer } from "@mantine/core";
+import { Button, Drawer, Modal } from "@mantine/core";
 import { BellAlertIcon } from "@heroicons/react/16/solid";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
@@ -135,6 +135,7 @@ function ReplyList({ viewpointId }: ReplyListProps) {
             <Drawer
                 opened={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
+                className="block md:hidden"
                 padding="xl"
                 size="sm"
                 position="bottom"
@@ -169,6 +170,44 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     </div>
                 </div>
             </Drawer>
+            <Modal
+                opened={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                className="hidden md:block"
+                classNames={{
+                    title: "text-lg",
+                }}
+                padding="xl"
+                size="md"
+                centered
+                title="持續關注討論"
+            >
+                <div className="h-full">
+                    <div className="text-base">
+                        在找到共識後，會想持續收到關於此討論的通知嗎？
+                    </div>
+                    <div className="mt-6 flex w-full justify-end gap-3">
+                        <Button
+                            variant="outline"
+                            className="h-8 font-normal text-black"
+                            // TODO: check if the user have already follow the viewpoint
+                            onClick={() => setIsDrawerOpen(false)}
+                        >
+                            持續關注
+                        </Button>
+                        <Button
+                            className="h-8 font-normal text-white"
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                // TODO: check if the user have already follow the viewpoint
+                                followViewpointMutation.mutate();
+                            }}
+                        >
+                            取消關注
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }
