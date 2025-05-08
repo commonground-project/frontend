@@ -16,6 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { followIssue } from "@/lib/requests/issues/followIssue";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
+import ReactMarkdown from "react-markdown";
 
 type IssueCardProps = {
     issue: Issue;
@@ -85,9 +86,39 @@ function IssueCard({ issue }: IssueCardProps) {
                             <InformationCircleIcon className="ml-1 inline-block h-5 w-5" />
                         </Tooltip>
                     </div>
-                    <p className="whitespace-pre-wrap text-lg font-normal">
+                    {/* <p className="whitespace-pre-wrap text-lg font-normal">
                         {issue.description}
-                    </p>
+                    </p> */}
+                    <ReactMarkdown
+                        components={{
+                            h1: ({ node: __node, ...props }) => (
+                                <h1 className="text-2xl font-bold" {...props} />
+                            ),
+                            h2: ({ node: __node, ...props }) => (
+                                <h2
+                                    className="text-xl font-semibold"
+                                    {...props}
+                                />
+                            ),
+                            p: ({ node: __node, ...props }) => (
+                                <p className="mb-2 text-lg" {...props} />
+                            ),
+                            ul: ({ node: __node, ...props }) => (
+                                <ul
+                                    className="mb-2 list-disc pl-5 text-lg"
+                                    {...props}
+                                />
+                            ),
+                            li: ({ node: __node, ...props }) => (
+                                <li className="mb-1 text-lg" {...props} />
+                            ),
+                            strong: ({ node: __node, ...props }) => (
+                                <strong className="text-lg" {...props} />
+                            ),
+                        }}
+                    >
+                        {issue.description}
+                    </ReactMarkdown>
                     <div className="mt-3 flex items-center gap-1">
                         <Link
                             href={`/issues/${issue.id}/facts`}
