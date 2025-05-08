@@ -23,9 +23,6 @@ const HomePageCard = forwardRef<HTMLAnchorElement, HomePageCardProps>(
                 <h1 className="font-serif text-2xl font-semibold duration-300 group-hover:text-emerald-500">
                     {issue.title}
                 </h1>
-                {/* <p className="whitespace-pre-wrap text-base font-normal">
-                    {issue.description.slice(0, 100) + "..."}
-                </p> */}
                 <MarkdownWithStyle
                     content={issue.description.slice(0, 100) + "..."}
                     h1Size="lg"

@@ -86,9 +86,6 @@ function IssueCard({ issue }: IssueCardProps) {
                             <InformationCircleIcon className="ml-1 inline-block h-5 w-5" />
                         </Tooltip>
                     </div>
-                    {/* <p className="whitespace-pre-wrap text-lg font-normal">
-                        {issue.description}
-                    </p> */}
                     <MarkdownWithStyle content={issue.description} />
                     <div className="mt-3 flex items-center gap-1">
                         <Link
