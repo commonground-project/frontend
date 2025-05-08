@@ -86,7 +86,18 @@ function IssueCard({ issue }: IssueCardProps) {
                             <InformationCircleIcon className="ml-1 inline-block h-5 w-5" />
                         </Tooltip>
                     </div>
-                    <MarkdownWithStyle content={issue.description} />
+                    <div className="hidden md:block">
+                        <MarkdownWithStyle content={issue.description} />
+                    </div>
+                    <div className="block md:hidden">
+                        <MarkdownWithStyle
+                            content={issue.description}
+                            h1Size="lg"
+                            h2Size="lg"
+                            textSize="base"
+                        />
+                    </div>
+
                     <div className="mt-3 flex items-center gap-1">
                         <Link
                             href={`/issues/${issue.id}/facts`}
