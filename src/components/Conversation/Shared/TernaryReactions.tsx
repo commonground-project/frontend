@@ -103,6 +103,11 @@ export default function TernaryReactions({
         );
     };
 
+    const countFormatter = new Intl.NumberFormat("en", {
+        notation: "compact",
+        compactDisplay: "short",
+    });
+
     return (
         <div className="flex justify-between md:justify-start">
             {/* like */}
@@ -121,9 +126,11 @@ export default function TernaryReactions({
                         className={`fill-none ${currentReaction === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {baseReactionCount.like +
-                        (currentReaction === Reaction.LIKE ? 1 : 0)}
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.like +
+                            (currentReaction === Reaction.LIKE ? 1 : 0),
+                    )}
                 </h1>
             </div>
             {/* reasonable */}
@@ -142,9 +149,11 @@ export default function TernaryReactions({
                         className={`fill-none ${currentReaction === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {baseReactionCount.reasonable +
-                        (currentReaction === Reaction.REASONABLE ? 1 : 0)}
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.reasonable +
+                            (currentReaction === Reaction.REASONABLE ? 1 : 0),
+                    )}
                 </h1>
             </div>
             {/* dislike */}
@@ -163,9 +172,11 @@ export default function TernaryReactions({
                         className={`fill-none ${currentReaction === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
                     />
                 </button>
-                <h1 className="w-11 px-1 text-neutral-600">
-                    {baseReactionCount.dislike +
-                        (currentReaction === Reaction.DISLIKE ? 1 : 0)}
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.dislike +
+                            (currentReaction === Reaction.DISLIKE ? 1 : 0),
+                    )}
                 </h1>
             </div>
         </div>
