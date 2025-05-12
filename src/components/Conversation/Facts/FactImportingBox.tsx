@@ -69,7 +69,7 @@ export default function FactImportingBox({
             debounce((value: string) => {
                 setDebouncedSearchValue(value);
             }, 500),
-        [debouncedSearchValue],
+        [],
     );
 
     return (
