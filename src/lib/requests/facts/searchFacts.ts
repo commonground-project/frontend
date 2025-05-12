@@ -3,24 +3,45 @@ import { parseJsonWhileHandlingErrors } from "../transformers";
 import { generateRequestHeaders } from "../generateRequestHeaders";
 
 type SearchFactsProps = {
-    auth_token: string;
     searchValue: string;
+    pageParam: number;
+    size: number;
+    auth_token: string;
+};
+
+type PaginatedFactsResponse = {
+    content: Fact[];
+    page: {
+        size: number;
+        totalElement: number;
+        totalPage: number;
+        number: number;
+    };
 };
 
 export async function searchFacts({
-    auth_token,
     searchValue,
-}: SearchFactsProps): Promise<Fact[]> {
+    pageParam,
+    size,
+    auth_token,
+}: SearchFactsProps): Promise<PaginatedFactsResponse> {
     if (searchValue === "NotFound") {
-        return [];
+        const emptyResponse: PaginatedFactsResponse = {
+            content: [],
+            page: {
+                size: 0,
+                totalElement: 0,
+                totalPage: 0,
+                number: 0,
+            },
+        };
+        return emptyResponse;
     }
     return fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${1}&size=${10}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${pageParam}&size=${size}`,
         {
             method: "GET",
             headers: generateRequestHeaders(auth_token),
         },
-    )
-        .then(parseJsonWhileHandlingErrors)
-        .then((data) => data.content);
+    ).then(parseJsonWhileHandlingErrors);
 }

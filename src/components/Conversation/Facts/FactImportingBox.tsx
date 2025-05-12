@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useMemo, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
+import { useInView } from "react-intersection-observer";
 import { debounce } from "lodash";
 import { Button, Input } from "@mantine/core";
 import {
@@ -26,30 +27,49 @@ export default function FactImportingBox({
     addFactCallback, // call when click the add button
     createFactCallback, // call when click the create fact button
 }: FactImportingBoxProps) {
-    const [searchData, setSearchData] = useState<Fact[]>([]);
+    // const [searchData, setSearchData] = useState<Fact[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
+    const [debouncedSearchValue, setDebouncedSearchValue] =
+        useState<string>("");
     const [addFactBuffer, setAddFactBuffer] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
 
-    const { mutate: search, status: searchStatus } = useMutation({
-        mutationKey: ["searchFacts"],
-        mutationFn: (value: string) =>
-            searchFacts({
-                auth_token: cookie.auth_token,
-                searchValue: value,
-            }),
-        onSuccess(data) {
-            setSearchData(data);
-        },
+    const { ref, inView } = useInView({
+        threshold: 0.5,
     });
+
+    const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+        useInfiniteQuery({
+            queryKey: ["searchFacts", debouncedSearchValue],
+            queryFn: ({ pageParam }) =>
+                searchFacts({
+                    auth_token: cookie.auth_token,
+                    searchValue: searchValue,
+                    pageParam,
+                    size: 10,
+                }),
+            initialPageParam: 0,
+            getNextPageParam(lastPage) {
+                if (lastPage.page.number + 1 < lastPage.page.totalPage)
+                    return lastPage.page.number + 1;
+            },
+            enabled: !!debouncedSearchValue,
+        });
+
+    useEffect(() => {
+        if (!inView || isFetching) return;
+        if (hasNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, isFetching, fetchNextPage, hasNextPage]);
 
     const debouncedSearch = useMemo(
         () =>
             debounce((value: string) => {
-                search(value);
+                setDebouncedSearchValue(value);
             }, 500),
-        [search],
+        [debouncedSearchValue],
     );
 
     return (
@@ -72,41 +92,63 @@ export default function FactImportingBox({
                 placeholder="透過搜尋加入想引註的事實"
             />
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto">
-                {searchData.map(
-                    (fact) =>
-                        !viewpointFactList.some(
-                            (item) => item.id === fact.id,
-                        ) && (
-                            <ImportFactCard
-                                key={fact.id}
-                                fact={fact}
-                                isSelected={addFactBuffer.includes(fact)}
-                                setIsSelected={(isSelected) => {
-                                    if (isSelected) {
-                                        setAddFactBuffer((prev) => [
-                                            ...prev,
-                                            fact,
-                                        ]);
-                                    } else {
-                                        setAddFactBuffer((prev) =>
-                                            prev.filter((id) => id !== fact),
-                                        );
+                {data?.pages.map((page, pageIndex, pages) =>
+                    page.content.map(
+                        (fact, factIndex, facts) =>
+                            !viewpointFactList.some(
+                                (item) => item.id === fact.id,
+                            ) && (
+                                <div
+                                    key={fact.id}
+                                    ref={
+                                        pageIndex === pages.length - 1 &&
+                                        factIndex === facts.length - 2
+                                            ? ref
+                                            : undefined
                                     }
-                                }}
-                            />
-                        ),
+                                >
+                                    <ImportFactCard
+                                        fact={fact}
+                                        isSelected={addFactBuffer.includes(
+                                            fact,
+                                        )}
+                                        setIsSelected={(isSelected) => {
+                                            if (isSelected) {
+                                                setAddFactBuffer((prev) => [
+                                                    ...prev,
+                                                    fact,
+                                                ]);
+                                            } else {
+                                                setAddFactBuffer((prev) =>
+                                                    prev.filter(
+                                                        (id) => id !== fact,
+                                                    ),
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            ),
+                    ),
                 )}
             </div>
-            {searchData.length === 0 && searchValue.length !== 0 && (
-                <div className="flex flex-col items-center justify-center gap-3">
-                    <DocumentMinusIcon className="size-[72px] text-neutral-500" />
-                    <div className="text-neutral-500">找不到相關事實</div>
-                </div>
-            )}
+            {(data === undefined ||
+                data.pages.length === 0 ||
+                data.pages[0].content.length === 0) &&
+                searchValue.length !== 0 && (
+                    <div className="flex flex-col items-center justify-center gap-3">
+                        <DocumentMinusIcon className="size-[72px] text-neutral-500" />
+                        <div className="text-neutral-500">找不到相關事實</div>
+                    </div>
+                )}
             <div className="flex w-full justify-end">
-                {(searchData.length === 0 &&
+                {/* search result is empty and is not fetching */}
+                {((data === undefined ||
+                    data.pages.length === 0 ||
+                    data.pages[0].content.length === 0) &&
                     searchValue.length !== 0 &&
-                    searchStatus !== "pending" && (
+                    !isFetching &&
+                    !isFetchingNextPage && (
                         <Button
                             onClick={() => {
                                 createFactCallback?.();
@@ -117,6 +159,7 @@ export default function FactImportingBox({
                             引入新的事實
                         </Button>
                     )) || (
+                    // search result is not empty
                     <Button
                         onClick={() => {
                             addFactBuffer.forEach((factId) => {

@@ -47,9 +47,11 @@ export default function FactListBox({
             searchFacts({
                 auth_token: cookie.auth_token,
                 searchValue: value,
+                pageParam: 0,
+                size: 10,
             }),
         onSuccess(data) {
-            searchCallback?.(searchValue, data);
+            searchCallback?.(searchValue, data.content);
         },
     });
 
