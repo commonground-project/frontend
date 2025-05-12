@@ -26,15 +26,17 @@ export default function Header() {
                     className="h-3 md:h-4"
                 />
             </Link>
-            {user ? (
-                <UserMenu user={user} logout={logout} />
-            ) : headerStore.hideLoginButton ? (
-                <div />
-            ) : (
-                <Link href="/login">
-                    <Button>登入</Button>
-                </Link>
-            )}
+            <div className="hidden md:block">
+                {user ? (
+                    <UserMenu user={user} logout={logout} />
+                ) : headerStore.hideLoginButton ? (
+                    <div />
+                ) : (
+                    <Link href="/login">
+                        <Button>登入</Button>
+                    </Link>
+                )}
+            </div>
         </div>
     );
 }
