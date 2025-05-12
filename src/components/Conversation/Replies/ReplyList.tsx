@@ -21,8 +21,9 @@ type ReplyListProps = {
 
 function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
-    const [rotate, setRotate] = useState(0);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(true);
+    const [rotate, setRotate] = useState(isFollowing ? 0 : 180);
+    const [isFollowConfirmOpen, setIsFollowConfirmOpen] = useState(false);
 
     const { data, error, isFetching, fetchNextPage, hasNextPage } =
         useInfiniteQuery({
@@ -49,6 +50,16 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                 auth_token: cookies.auth_token,
             });
             return res;
+        },
+        onSuccess: (data) => {
+            if (!data) return;
+            setIsFollowing(data.follow);
+
+            if (data.follow) {
+                setRotate(0);
+            } else {
+                setRotate(180);
+            }
         },
     });
 
@@ -101,7 +112,12 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     radius="md"
                     onClick={() => {
                         setRotate((prev) => prev + 180);
-                        setIsDrawerOpen((prev) => !prev);
+                        if (isFollowing) {
+                            setTimeout(
+                                () => setIsFollowConfirmOpen((prev) => !prev),
+                                550,
+                            );
+                        }
                     }}
                 >
                     <div className="grid size-6 grid-cols-2 grid-rows-2 gap-[1px] p-[2px]">
@@ -133,8 +149,8 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                 </Button>
             )}
             <Drawer
-                opened={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
+                opened={isFollowConfirmOpen}
+                onClose={() => setIsFollowConfirmOpen(false)}
                 className="block md:hidden"
                 padding="xl"
                 size="sm"
@@ -153,14 +169,14 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                             color="#E5E5E5"
                             className="h-12 w-1/2 text-lg font-normal text-black"
                             // TODO: check if the user have already follow the viewpoint
-                            onClick={() => setIsDrawerOpen(false)}
+                            onClick={() => setIsFollowConfirmOpen(false)}
                         >
                             持續關注
                         </Button>
                         <Button
                             className="h-12 w-1/2 text-lg font-normal text-white"
                             onClick={() => {
-                                setIsDrawerOpen(false);
+                                setIsFollowConfirmOpen(false);
                                 // TODO: check if the user have already follow the viewpoint
                                 followViewpointMutation.mutate();
                             }}
@@ -171,8 +187,8 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                 </div>
             </Drawer>
             <Modal
-                opened={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
+                opened={isFollowConfirmOpen}
+                onClose={() => setIsFollowConfirmOpen(false)}
                 className="hidden md:block"
                 classNames={{
                     title: "text-lg",
@@ -191,14 +207,16 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                             variant="outline"
                             className="h-8 font-normal text-black"
                             // TODO: check if the user have already follow the viewpoint
-                            onClick={() => setIsDrawerOpen(false)}
+                            onClick={() => {
+                                setIsFollowConfirmOpen(false);
+                            }}
                         >
                             持續關注
                         </Button>
                         <Button
                             className="h-8 font-normal text-white"
                             onClick={() => {
-                                setIsDrawerOpen(false);
+                                setIsFollowConfirmOpen(false);
                                 // TODO: check if the user have already follow the viewpoint
                                 followViewpointMutation.mutate();
                             }}
