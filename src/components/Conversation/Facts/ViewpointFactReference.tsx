@@ -31,7 +31,7 @@ export default function ViewpointFactReference({
                 <img
                     className="inline-block h-3 w-3 rounded-full"
                     src={reference.icon}
-                    alt="favicon"
+                    alt=""
                 />
             ) : (
                 <GlobeAltIcon className="inline-block h-3 w-3 rounded-full" />
