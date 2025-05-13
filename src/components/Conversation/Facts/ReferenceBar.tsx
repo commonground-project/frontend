@@ -31,7 +31,7 @@ export default function ReferenceBar({
                 <img
                     className="h-4 w-4 rounded-full"
                     src={reference.icon}
-                    alt="favicon"
+                    alt=""
                 />
             ) : (
                 <GlobeAltIcon className="h-4 w-4 text-gray-600" />
