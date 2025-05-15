@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Checkbox, Button, Modal } from "@mantine/core";
