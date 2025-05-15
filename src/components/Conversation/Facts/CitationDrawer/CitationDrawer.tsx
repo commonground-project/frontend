@@ -34,14 +34,15 @@ export default function CitationDrawer({
     factImportCallback,
     viewpointFactList,
     setViewpointFactList,
-    addFact: addFact,
+    addFact,
 }: FactImportModalProps) {
     const { getSelectedText } = useContext(ReferenceMarkerContext);
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
-    const selectedText = useRef<string>("");
+    const [selectedText, setSelectedFacts] = useState<string>("");
 
     useEffect(() => {
-        selectedText.current = getSelectedText();
+        setSelectedFacts(getSelectedText());
+        console.log("in drawer selectedText", selectedText);
         setCurrentScreen(1);
     }, [drawerId, getSelectedText]);
 
@@ -65,7 +66,7 @@ export default function CitationDrawer({
             withCloseButton={false}
             title={
                 [
-                    `選擇「${selectedText.current}」的引註資料`,
+                    `選擇「${selectedText}」的引註資料`,
                     "搜尋 CommonGround 事實",
                     "引入新的事實",
                 ][currentScreen - 1]
