@@ -38,8 +38,6 @@ export default function CitationDrawer({
 }: FactImportModalProps) {
     const { getSelectedText } = useContext(ReferenceMarkerContext);
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
-    const searchData = useRef<Fact[]>([]);
-    const searchValue = useRef<string>("");
     const selectedText = useRef<string>("");
 
     useEffect(() => {

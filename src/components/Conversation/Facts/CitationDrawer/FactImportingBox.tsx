@@ -18,7 +18,6 @@ type FactImportingBoxProps = {
     viewpointFactList: Fact[];
     addFact: (factId: Fact) => void;
     goBackCallback?: () => void;
-    addFactCallback?: () => void;
     createFactCallback?: () => void;
 };
 
@@ -26,7 +25,6 @@ export default function FactImportingBox({
     viewpointFactList,
     addFact,
     goBackCallback, // call when click the go back button
-    addFactCallback, // call when click the add button
     createFactCallback, // call when click the create fact button
 }: FactImportingBoxProps) {
     // const [searchData, setSearchData] = useState<Fact[]>([]);
