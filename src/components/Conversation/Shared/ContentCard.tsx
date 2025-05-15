@@ -76,9 +76,6 @@ export default function ContentCard({
                                                         e.stopPropagation();
                                                     }}
                                                     onClick={(e) => {
-                                                        console.log(
-                                                            "highlight on click",
-                                                        );
                                                         e.preventDefault();
                                                         e.stopPropagation();
                                                         setIsDrawerOpen(true);

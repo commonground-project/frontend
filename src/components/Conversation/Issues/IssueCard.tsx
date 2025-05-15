@@ -23,6 +23,7 @@ type IssueCardProps = {
 };
 
 function IssueCard({ issue }: IssueCardProps) {
+    console.log("IssueCard", issue);
     const [isFollowing, setIsFollowing] = useState(false);
     const pendingFollow = useRef<boolean | null>(null);
     const [cookies] = useCookies(["auth_token"]);
@@ -73,7 +74,7 @@ function IssueCard({ issue }: IssueCardProps) {
             <h1 className="py-1 font-serif text-2xl font-bold">
                 {issue.title}
             </h1>
-            {issue.description !== "" ? (
+            {issue.insight !== "" ? (
                 <div className="mt-3">
                     <div className="mb-1 flex items-center">
                         <h1 className="inline text-lg font-semibold">
@@ -89,11 +90,15 @@ function IssueCard({ issue }: IssueCardProps) {
                         </Tooltip>
                     </div>
                     <div className="hidden md:block">
-                        <MarkdownWithStyle content={issue.description} />
+                        <MarkdownWithStyle
+                            content={issue.insight}
+                            referenceList={issue.facts}
+                        />
                     </div>
                     <div className="block md:hidden">
                         <MarkdownWithStyle
-                            content={issue.description}
+                            content={issue.insight}
+                            referenceList={issue.facts}
                             h1Size="lg"
                             h2Size="lg"
                             textSize="base"
