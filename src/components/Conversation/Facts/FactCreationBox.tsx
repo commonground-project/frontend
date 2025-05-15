@@ -88,7 +88,6 @@ export default function FactCreationBox({
     const checkUrlValidity = useMemo(
         () =>
             debounce((url: string) => {
-                console.log("checking url: ", url);
                 websiteCheckMutation(url);
             }, 500),
         [websiteCheckMutation],
