@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import {
     useEffect,
     useState,
-    useRef,
     type Dispatch,
     type SetStateAction,
     useContext,
@@ -44,7 +43,7 @@ export default function CitationDrawer({
         setSelectedFacts(getSelectedText());
         console.log("in drawer selectedText", selectedText);
         setCurrentScreen(1);
-    }, [drawerId, getSelectedText]);
+    }, [drawerId, getSelectedText, setSelectedFacts]);
 
     return (
         <Drawer
