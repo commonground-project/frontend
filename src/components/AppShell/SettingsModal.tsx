@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Checkbox, Button, Modal } from "@mantine/core";
@@ -31,13 +31,21 @@ export default function SettingsModal({
     });
 
     const [newReplyInMyViewpoint, setNewReplyInMyViewpoint] = useState(false);
-    const [newReferenceToMyReply, setNewReferenceToMyReply] = useState(false);
+    const [newEventInFollowedIssue, setNewEventInFollowedIssue] =
+        useState(false);
+    const [newReplyInFollowedViewpoint, setNewReplyInFollowedViewpoint] =
+        useState(false);
 
     useEffect(() => {
         if (data) {
             console.log("user settings: ", data);
             setNewReplyInMyViewpoint(data.notification.newReplyInMyViewpoint);
-            setNewReferenceToMyReply(data.notification.newReferenceToMyReply);
+            setNewEventInFollowedIssue(
+                data.notification.newEventInFollowedIssue,
+            );
+            setNewReplyInFollowedViewpoint(
+                data.notification.newReplyInFollowedViewpoint,
+            );
         }
     }, [data]);
 
@@ -48,7 +56,10 @@ export default function SettingsModal({
                 settings: {
                     notification: {
                         newReplyInMyViewpoint,
-                        newReferenceToMyReply,
+                        newReferenceToMyReply: false,
+                        newNodeOfTimelineToFollowedIssue: false,
+                        newEventInFollowedIssue,
+                        newReplyInFollowedViewpoint,
                     },
                 },
                 auth_token: cookie.auth_token,
@@ -81,12 +92,22 @@ export default function SettingsModal({
                     label="在我的觀點下有新的回覆時通知我"
                 />
                 <Checkbox
-                    checked={newReferenceToMyReply}
+                    checked={newEventInFollowedIssue}
                     onChange={(event) =>
-                        setNewReferenceToMyReply(event.currentTarget.checked)
+                        setNewEventInFollowedIssue(event.currentTarget.checked)
                     }
                     className="mt-2"
-                    label="在我的回覆被節錄時通知我"
+                    label="在我關注的觀點下有新的活動時通知我"
+                />
+                <Checkbox
+                    checked={newReplyInFollowedViewpoint}
+                    onChange={(event) =>
+                        setNewReplyInFollowedViewpoint(
+                            event.currentTarget.checked,
+                        )
+                    }
+                    className="mt-2"
+                    label="在我關注的觀點下有新的回覆時通知我"
                 />
                 <div className="flex justify-end">
                     <Button
