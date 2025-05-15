@@ -16,23 +16,23 @@ import { AuthContext } from "@/lib/auth/authContext";
 import UserMenu from "@/components/AppShell/UserMenu";
 
 type FooterProps = {
-    HomeIconVariant?: "solid" | "outline" | "none";
-    PencilIconVariant?: "solid" | "outline" | "none";
+    homeIconVariant?: "solid" | "outline" | "none";
+    pencilIconVariant?: "solid" | "outline" | "none";
 };
 
 export default function Footer({
-    HomeIconVariant = "outline",
-    PencilIconVariant = "outline",
+    homeIconVariant = "outline",
+    pencilIconVariant = "outline",
 }: FooterProps) {
     const { user, logout } = useContext(AuthContext);
     const headerStore = useHeaderStore();
 
     return (
         <div className="flex h-16 w-full justify-evenly bg-white pb-6 pt-2">
-            {HomeIconVariant !== "none" && (
+            {homeIconVariant !== "none" && (
                 <ActionIcon variant="transparent" className="size-8">
                     <Link href="/">
-                        {HomeIconVariant === "solid" ? (
+                        {homeIconVariant === "solid" ? (
                             <HomeIconSolid className="size-8 text-black" />
                         ) : (
                             <HomeIconOutline className="size-8 text-black" />
@@ -41,9 +41,9 @@ export default function Footer({
                 </ActionIcon>
             )}
 
-            {PencilIconVariant !== "none" && (
+            {pencilIconVariant !== "none" && (
                 <ActionIcon variant="transparent" className="size-8">
-                    {PencilIconVariant === "solid" ? (
+                    {pencilIconVariant === "solid" ? (
                         <PencilSquareIconSolid className="size-8 text-black" />
                     ) : (
                         <PencilSquareIconOutline className="size-8 text-black" />
