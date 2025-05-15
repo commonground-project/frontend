@@ -186,8 +186,7 @@ function ViewpointCard({
         viewpointTitleRef,
     ]);
 
-    const onPublish = ({ bypass = false }: { bypass?: boolean }) => {
-        console.log("onPublish");
+    const onPublish = (bypass = false) => {
         if (viewpointTitle == "" || isContentEmpty) {
             toast.error("標題和內容不得為空");
 
@@ -197,7 +196,6 @@ function ViewpointCard({
         if (inputRef.current === null) return;
         phrasedContent.current = getInputFieldContent();
         if (!bypass) {
-            console.log("check");
             if (phrasedContent.current.length < 200) {
                 setContentLengthWarning(true);
                 return;
@@ -259,7 +257,7 @@ function ViewpointCard({
                         color="yellow"
                         onClick={() => {
                             setContentLengthWarning(false);
-                            onPublish({ bypass: true });
+                            onPublish(true);
                         }}
                     >
                         仍要發表
@@ -282,7 +280,7 @@ function ViewpointCard({
                         root: `px-0 h-8 w-[76px] text-sm font-normal text-white ${isContentTooShort ? "opacity-50" : ""}`,
                         section: "mr-1",
                     }}
-                    onClick={() => onPublish({})}
+                    onClick={() => onPublish()}
                     loading={pendingPublish}
                 >
                     發表
@@ -393,7 +391,7 @@ function ViewpointCard({
                         root: `px-0 h-8 w-[76px] text-sm font-normal text-white ${isContentTooShort ? "opacity-50" : ""}`,
                         section: "mr-1",
                     }}
-                    onClick={() => onPublish({})}
+                    onClick={() => onPublish()}
                     loading={pendingPublish}
                 >
                     發表
