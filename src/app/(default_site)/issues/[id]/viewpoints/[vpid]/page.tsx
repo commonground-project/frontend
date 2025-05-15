@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getIssueByID } from "@/lib/requests/issues/getIssueById";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
+import AuthorReplyDrawer from "@/components/Conversation/Editors/Replies/AuthorReplyDrawer";
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
 import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
@@ -64,9 +65,17 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
             <ReferenceMarkerProvider factHintTooltip="點選連結圖示以引註資料">
-                <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
+                <div className="fixed bottom-0 left-0 right-0 hidden justify-center pb-3 md:flex">
                     <div className="w-full max-w-3xl">
                         <AuthorReplyBar
+                            issueId={pageParams.id}
+                            viewpointId={viewpoint.id}
+                        />
+                    </div>
+                </div>
+                <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3 md:hidden">
+                    <div className="w-full max-w-3xl">
+                        <AuthorReplyDrawer
                             issueId={pageParams.id}
                             viewpointId={viewpoint.id}
                         />

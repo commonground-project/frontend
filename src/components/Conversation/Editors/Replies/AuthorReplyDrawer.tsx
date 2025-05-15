@@ -10,29 +10,20 @@ import {
 } from "@/lib/requests/replies/postReply";
 import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
-import { Drawer } from "@mantine/core";
+import { Button, Drawer } from "@mantine/core";
 import AuthorReplyBox from "@/components/Conversation/Editors/Replies/AuthorReplyBox";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
+import { set } from "lodash";
 
 type AuthorReplyDrawerProps = {
-    isOpen: boolean;
-    onClose: () => void;
     issueId: string;
     viewpointId: string;
 };
 
-function AuthorReplyDrawer({
-    isOpen,
-    onClose,
-    issueId,
-    viewpointId,
-}: AuthorReplyDrawerProps) {
-    const [inFocus, setInFocus] = useState(false);
-    const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
-    const [isReferenceModalOpen, setIsReferenceModalOpen] = useState(false);
-    const [animationSeq, setAnimationSeq] = useState<number | null>(null);
+function AuthorReplyDrawer({ issueId, viewpointId }: AuthorReplyDrawerProps) {
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
@@ -94,12 +85,17 @@ function AuthorReplyDrawer({
             queryClient.invalidateQueries({
                 queryKey: ["replies", viewpointId],
             });
+            closeDrawer();
         },
         onError(error) {
             console.error(error);
             toast.error("發送回覆時發生未知的錯誤，請再試一次");
         },
     });
+
+    const closeDrawer = () => {
+        setIsDrawerOpen(false);
+    };
 
     const postReplyFn = (content: string) => {
         postReplyMutation.mutate({
@@ -110,9 +106,32 @@ function AuthorReplyDrawer({
     };
 
     return (
-        <Drawer opened={isOpen} onClose={() => onClose()}>
-            <AuthorReplyBox postReplyFn={postReplyFn} />
-        </Drawer>
+        <>
+            <Button
+                variant="outline"
+                onClick={() => {
+                    setIsDrawerOpen(true);
+                }}
+            >
+                Open Drawer
+            </Button>
+            <Drawer
+                opened={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                position="bottom"
+                classNames={{
+                    title: "hidden",
+                    content: "rounded-t-xl",
+                }}
+                withCloseButton={false}
+            >
+                <AuthorReplyBox
+                    postReplyFn={postReplyFn}
+                    closeDrawer={closeDrawer}
+                    publishOnProcess={postReplyMutation.status === "pending"}
+                />
+            </Drawer>
+        </>
     );
 }
 
