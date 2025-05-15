@@ -17,10 +17,6 @@ export default function ReferenceBar({
 }: FactBarProps) {
     const pageURL = safeConstructURL(reference.url);
 
-    if (!pageURL) {
-        return null;
-    }
-
     return (
         <Link
             key={reference.id}
@@ -42,7 +38,7 @@ export default function ReferenceBar({
             )}
 
             <span className="font-sans text-sm font-normal text-neutral-500">
-                {pageURL.hostname.replace("www.", "")}
+                {pageURL ? pageURL.hostname.replace("www.", "") : reference.url}
             </span>
             {showSrcTitle && (
                 <span className="truncate text-sm text-gray-600">

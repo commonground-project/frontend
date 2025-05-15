@@ -11,13 +11,10 @@ export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
     const pageURL = safeConstructURL(reference.url);
-    if (!pageURL) {
-        return null;
-    }
 
     return (
         <Link
-            href={pageURL.href}
+            href={reference.url}
             passHref
             target="_blank"
             rel="noopener noreferrer"
@@ -41,7 +38,7 @@ export default function ViewpointFactReference({
             )}
 
             <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
-                {pageURL.hostname.replace("www.", "")}
+                {pageURL ? pageURL.hostname.replace("www.", "") : reference.url}
             </h1>
         </Link>
     );
