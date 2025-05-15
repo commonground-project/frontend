@@ -1,4 +1,4 @@
-import { Fact } from "@/types/conversations.types";
+import type { Fact } from "@/types/conversations.types";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { HoverCard } from "@mantine/core";
@@ -26,7 +26,6 @@ export default function MarkdownWithCitation({
                     <h1 className={`text-${h1Size} font-bold`} {...props} />
                 ),
                 h2: ({ node: __node, ...props }) => {
-                    console.log(props);
                     return (
                         <h2
                             className={`text-${h2Size} font-semibold`}
@@ -38,7 +37,6 @@ export default function MarkdownWithCitation({
                     <h3 className={`text-${h3Size} font-semibold`} {...props} />
                 ),
                 p: ({ node, ...props }) => {
-                    console.log("node", node);
                     return <p className={`mb-2 text-${textSize}`} {...props} />;
                 },
                 ul: ({ node: __node, ...props }) => (
@@ -53,8 +51,7 @@ export default function MarkdownWithCitation({
                 strong: ({ node: __node, ...props }) => (
                     <strong className={`text-${textSize}`} {...props} />
                 ),
-                a: ({ node, ...props }) => {
-                    console.log("node", node);
+                a: ({ node }) => {
                     const factIdxes = node?.properties?.href
                         ?.toString()
                         .split(",");
