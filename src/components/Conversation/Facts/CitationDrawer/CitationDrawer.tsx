@@ -37,13 +37,13 @@ export default function CitationDrawer({
 }: FactImportModalProps) {
     const { getSelectedText } = useContext(ReferenceMarkerContext);
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create
-    const [selectedText, setSelectedFacts] = useState<string>("");
+    const [selectedText, setSelectedTexts] = useState<string>("");
 
     useEffect(() => {
-        setSelectedFacts(getSelectedText());
+        setSelectedTexts(getSelectedText());
         console.log("in drawer selectedText", selectedText);
         setCurrentScreen(1);
-    }, [drawerId, getSelectedText, setSelectedFacts]);
+    }, [drawerId, getSelectedText, setSelectedTexts, selectedText]);
 
     return (
         <Drawer
