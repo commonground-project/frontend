@@ -199,8 +199,8 @@ export default function AuthorViewpoint() {
 
     return (
         <main className="h-full w-full bg-neutral-50 px-6 pt-3 md:px-0 md:pt-0">
-            <div className="flex h-full w-full">
-                {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
+            <div className="flex h-[calc(100%-64px)] w-full">
+                {/* 64px = footer height */}
                 <ReferenceMarkerProvider
                     historyRecord={phrasedViewpointContent.current}
                 >

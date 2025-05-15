@@ -13,6 +13,7 @@ import {
     useContext,
     useMemo,
     useState,
+    useRef,
     type Dispatch,
     type SetStateAction,
 } from "react";
@@ -24,6 +25,7 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import CitationDrawer from "@/components/Conversation/Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
+import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
@@ -186,6 +188,42 @@ function ViewpointCard({
         viewpointTitleRef,
     ]);
 
+    useEffect(() => {
+        const repositionToolbar = () => {
+            console.log("reposition toolbar");
+            const toolbar = document.getElementById("citation-toolbar");
+
+            if (!toolbar || !window.visualViewport) return;
+            const viewportHeight = window.visualViewport.height;
+            const layoutViewportHeight = window.innerHeight;
+
+            console.log("hello");
+            // if the viewport height is equal to the layout viewport height, it means the keyboard is not open, consider the footer height
+            if (viewportHeight === layoutViewportHeight)
+                toolbar.style.bottom = "88px";
+            // if the viewport height is less than the layout viewport height, it means the keyboard is open, consider only the gap between the keyboard and the toolbar
+            else
+                toolbar.style.bottom = `${layoutViewportHeight - viewportHeight + 12}px`;
+        };
+
+        // initial reposition
+        repositionToolbar();
+
+        window.visualViewport?.addEventListener("resize", repositionToolbar);
+        window.visualViewport?.addEventListener("scroll", repositionToolbar);
+
+        return () => {
+            window.visualViewport?.removeEventListener(
+                "resize",
+                repositionToolbar,
+            );
+            window.visualViewport?.removeEventListener(
+                "scroll",
+                repositionToolbar,
+            );
+        };
+    });
+
     const onPublish = (bypass = false) => {
         if (viewpointTitle == "" || isContentEmpty) {
             toast.error("標題和內容不得為空");
@@ -344,9 +382,11 @@ function ViewpointCard({
                     }}
                 />
             </div>
+            {/* citation tool bar */}
             {inSelectionMode && (
                 <button
-                    className="fixed bottom-[88px] left-[calc(50vw-61px)] flex h-9 w-[122px] items-center justify-center gap-1 rounded-md border border-emerald-600 bg-white shadow-xl md:hidden"
+                    id="citation-toolbar"
+                    className="fixed left-[calc(50%-61px)] flex h-9 w-[122px] items-center justify-center gap-1 rounded-md border border-emerald-600 bg-white shadow-xl md:hidden"
                     onClick={() => setDrawerId(uuidv4())}
                 >
                     <LinkIcon className="size-5 text-emerald-600" />
