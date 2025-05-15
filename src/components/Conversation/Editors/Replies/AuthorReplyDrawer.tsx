@@ -15,7 +15,6 @@ import AuthorReplyBox from "@/components/Conversation/Editors/Replies/AuthorRepl
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
-import { set } from "lodash";
 
 type AuthorReplyDrawerProps = {
     issueId: string;
