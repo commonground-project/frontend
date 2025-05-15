@@ -5,6 +5,7 @@ import { useContext } from "react";
 import {
     PencilSquareIcon as PencilSquareIconOutline,
     HomeIcon as HomeIconOutline,
+    UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import {
     PencilSquareIcon as PencilSquareIconSolid,
@@ -28,7 +29,7 @@ export default function Footer({
     const headerStore = useHeaderStore();
 
     return (
-        <div className="flex h-16 w-full justify-evenly bg-white pb-6 pt-2">
+        <div className="flex h-16 w-full justify-around bg-white px-5 pb-6 pt-2">
             {homeIconVariant !== "none" && (
                 <ActionIcon variant="transparent" className="size-8">
                     <Link href="/">
@@ -56,7 +57,7 @@ export default function Footer({
                 <div />
             ) : (
                 <Link href="/login">
-                    <Button>登入</Button>
+                    <UserCircleIcon className="size-8 text-black" />
                 </Link>
             )}
         </div>
