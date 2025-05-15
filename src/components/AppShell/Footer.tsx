@@ -11,7 +11,7 @@ import {
     PencilSquareIcon as PencilSquareIconSolid,
     HomeIcon as HomeIconSolid,
 } from "@heroicons/react/24/solid";
-import { ActionIcon, Button } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import Link from "next/link";
 import { AuthContext } from "@/lib/auth/authContext";
 import UserMenu from "@/components/AppShell/UserMenu";
