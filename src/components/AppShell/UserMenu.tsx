@@ -55,7 +55,6 @@ export default function UserMenu({ user, logout }: UserMenuProps) {
             <SettingsModal
                 opened={isSettingsModalOpened}
                 setOpened={setIsSettingsModalOpened}
-                settingModalCallback={() => console.log("Modal closed")}
             />
         </>
     );
