@@ -36,7 +36,7 @@ export default function MarkdownWithCitation({
                 h3: ({ node: __node, ...props }) => (
                     <h3 className={`text-${h3Size} font-semibold`} {...props} />
                 ),
-                p: ({ node, ...props }) => {
+                p: ({ node: __node, ...props }) => {
                     return <p className={`mb-2 text-${textSize}`} {...props} />;
                 },
                 ul: ({ node: __node, ...props }) => (
