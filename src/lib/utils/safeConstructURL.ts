@@ -1,5 +1,5 @@
-export function safeConstructURL(url: string): URL {
-    let pageURL: URL;
+export function safeConstructURL(url: string): URL | null {
+    let pageURL: URL | null;
     try {
         pageURL = new URL(decodeURI(url));
     } catch (e) {
@@ -8,7 +8,7 @@ export function safeConstructURL(url: string): URL {
         } else {
             console.error("Unexpected error:", e);
         }
-        pageURL = new URL("https://example.com");
+        pageURL = null;
     }
     return pageURL;
 }

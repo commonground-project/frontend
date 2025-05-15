@@ -10,7 +10,10 @@ type ViewpointFactReferenceProps = {
 export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
-    const pageURL = new URL(safeConstructURL(reference.url) ?? "example.com");
+    const pageURL = safeConstructURL(reference.url);
+    if (!pageURL) {
+        return null;
+    }
 
     return (
         <Link

@@ -17,6 +17,10 @@ export default function ReferenceBar({
 }: FactBarProps) {
     const pageURL = safeConstructURL(reference.url);
 
+    if (!pageURL) {
+        return null;
+    }
+
     return (
         <Link
             key={reference.id}
