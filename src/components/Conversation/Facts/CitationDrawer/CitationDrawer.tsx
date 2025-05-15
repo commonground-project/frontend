@@ -89,11 +89,7 @@ export default function CitationDrawer({
                     <FactListBox
                         factList={viewpointFactList}
                         setFactList={setViewpointFactList}
-                        searchCallback={(value: string, data: Fact[]) => {
-                            searchValue.current = value;
-                            searchData.current = data;
-                            setCurrentScreen(2);
-                        }}
+                        searchCallback={() => setCurrentScreen(2)}
                     />
                 </motion.div>
                 <motion.div

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import { Input } from "@mantine/core";
+import { Button } from "@mantine/core";
 import {
     MagnifyingGlassIcon,
     DocumentMagnifyingGlassIcon,
@@ -22,7 +22,7 @@ import type { Fact } from "@/types/conversations.types";
 type FactListBoxProps = {
     factList: Fact[];
     setFactList: Dispatch<SetStateAction<Fact[]>>;
-    searchCallback?: (value: string, data: Fact[]) => void;
+    searchCallback?: () => void;
 };
 
 export default function FactListBox({
@@ -36,24 +36,6 @@ export default function FactListBox({
         removeFactFromReferenceMarker,
         removeFactFromAllReferenceMarker,
     } = useContext(ReferenceMarkerContext);
-
-    const [searchValue, setSearchValue] = useState<string>("");
-
-    const [cookie] = useCookies(["auth_token"]);
-
-    const { mutate: search, status: __searchStatus } = useMutation({
-        mutationKey: ["searchFacts"],
-        mutationFn: (value: string) =>
-            searchFacts({
-                auth_token: cookie.auth_token,
-                searchValue: value,
-                pageParam: 0,
-                size: 10,
-            }),
-        onSuccess(data) {
-            searchCallback?.(searchValue, data.content);
-        },
-    });
 
     const removeFact = (factId: string) => {
         // Find the array index of the fact to be removed
@@ -75,30 +57,18 @@ export default function FactListBox({
 
     return (
         <div className="h-full">
-            <div className="flex w-full justify-center rounded-lg bg-neutral-200">
-                <form
-                    onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                        e.preventDefault();
-                        search(searchValue);
-                    }}
-                >
-                    <Input
-                        variant="unstyled"
-                        rightSection={
-                            <MagnifyingGlassIcon className="inline-block size-5 stroke-neutral-500" />
-                        }
-                        value={searchValue}
-                        onChange={(e) => {
-                            setSearchValue(e.target.value);
-                        }}
-                        radius={0}
-                        classNames={{
-                            input: "bg-transparent text-lg font-medium text-neutral-500 focus-within:outline-none",
-                        }}
-                        placeholder="搜尋 CommonGround"
-                    />
-                </form>
-            </div>
+            <Button
+                variant="filled"
+                color="#e5e5e5"
+                radius={8}
+                className="flex w-full justify-center"
+                onClick={() => searchCallback?.()}
+            >
+                <div className="text-base font-medium text-neutral-800">
+                    搜尋 CommonGround
+                </div>
+                <MagnifyingGlassIcon className="ml-2 size-5 text-neutral-800" />
+            </Button>
 
             {factList.length === 0 ? (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-2">
