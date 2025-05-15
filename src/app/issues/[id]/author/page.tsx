@@ -202,7 +202,6 @@ export default function AuthorViewpoint() {
             <div className="flex h-full w-full">
                 {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
                 <ReferenceMarkerProvider
-                    factHintTooltip="從右側選取引註事實"
                     historyRecord={phrasedViewpointContent.current}
                 >
                     <div className="flex w-full md:w-2/3 md:px-4 md:pb-10 md:pt-8">

@@ -16,11 +16,9 @@ import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 function ReferenceMarkerProvider({
     children,
     historyRecord,
-    factHintTooltip,
 }: {
     children: React.ReactNode;
     historyRecord?: string; // the content with reference in backend format
-    factHintTooltip: string; // the hint to tell user where to select fact from. Will show when user select text
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
         new Map(),
@@ -318,33 +316,7 @@ function ReferenceMarkerProvider({
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
         lastSelectionRange.current = range;
-
-        // Create tooltip element
-        const rangeRect = range.getBoundingClientRect();
-        const tooltip = document.createElement("div");
-        tooltip.className =
-            "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
-        tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = factHintTooltip;
-        document.body.appendChild(tooltip);
-
-        // Calculate the middlepoint of the selection
-        const mid =
-            Math.min(rangeRect.left, rangeRect.right) +
-            Math.abs(rangeRect.left - rangeRect.right) / 2;
-        // Ensure the tooltip is within the viewport
-        const leftX = Math.max(
-            0,
-            Math.min(
-                mid - tooltip.offsetWidth / 2,
-                window.innerWidth - tooltip.offsetWidth,
-            ),
-        );
-
-        tooltip.style.top = `${rangeRect.top - 30}px`;
-        tooltip.style.left = `${leftX}px`;
-        tooltip.classList.remove("opacity-0");
-    }, [setInSelectionMode, getSelectedReferenceMarker, factHintTooltip]);
+    }, [setInSelectionMode, getSelectedReferenceMarker]);
 
     // Add event listeners for selection change and window resize
     useEffect(() => {
