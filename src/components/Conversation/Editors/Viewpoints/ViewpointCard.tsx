@@ -13,7 +13,6 @@ import {
     useContext,
     useMemo,
     useState,
-    useRef,
     type Dispatch,
     type SetStateAction,
 } from "react";
@@ -25,7 +24,6 @@ import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerCon
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import CitationDrawer from "@/components/Conversation/Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
-import { set } from "lodash";
 
 type ViewpointCardProps = {
     issueId: string;
