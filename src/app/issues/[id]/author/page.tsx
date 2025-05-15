@@ -231,8 +231,7 @@ export default function AuthorViewpoint() {
                             />
                         </div>
                     </div>
-                    <div className="hidden h-full border-l border-neutral-400 md:block" />
-                    <div className="hidden w-1/3 px-6 pb-10 pt-8 md:block">
+                    <div className="hidden w-1/3 border-neutral-400 px-6 pb-10 pt-8 md:block md:border-l">
                         <FactListCard
                             issueId={issueId}
                             viewpointTitle={
