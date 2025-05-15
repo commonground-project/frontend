@@ -245,7 +245,7 @@ export default function AuthorViewpoint() {
                 </ReferenceMarkerProvider>
             </div>
             <div className="fixed bottom-0 left-0 right-0 z-10 md:hidden">
-                <Footer />
+                <Footer pencilIconVariant="solid" />
             </div>
         </main>
     );
