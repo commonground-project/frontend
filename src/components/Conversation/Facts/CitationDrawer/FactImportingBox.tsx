@@ -72,7 +72,7 @@ export default function FactImportingBox({
     );
 
     return (
-        <div className="h-full gap-4">
+        <div className="h-full w-full gap-4">
             <div className="flex w-full items-center gap-3">
                 <ActionIcon
                     variant="transparent"
@@ -90,7 +90,8 @@ export default function FactImportingBox({
                     }}
                     radius={0}
                     classNames={{
-                        input: "bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
+                        wrapper: "w-full",
+                        input: "bg-transparent text-lg font-normal text-neutral-500  focus-within:outline-none",
                     }}
                     placeholder="透過搜尋加入想引註的事實"
                 />
