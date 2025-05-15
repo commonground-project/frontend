@@ -22,7 +22,7 @@ import { toast } from "sonner";
 
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
-import CitationDrawer from "../../Facts/CitationDrawer/CitationDrawer";
+import CitationDrawer from "@/components/Conversation/Facts/CitationDrawer/CitationDrawer";
 import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {
