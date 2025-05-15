@@ -105,11 +105,9 @@ export default function CitationDrawer({
                     className={`h-full ${currentScreen === 2 ? "block" : "hidden"}`}
                 >
                     <FactImportingBox
-                        searchValue={searchValue.current}
-                        searchData={searchData.current}
                         viewpointFactList={viewpointFactList}
                         addFact={addFact}
-                        goBackCallBack={() => {
+                        goBackCallback={() => {
                             setCurrentScreen(1);
                         }}
                         createFactCallback={() => {
