@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Checkbox, Button, Modal } from "@mantine/core";
+import { toast } from "sonner";
 
 import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
 import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
@@ -30,18 +31,19 @@ export default function SettingsModal({
                 : null,
     });
 
-    const [newReplyInMyViewpoint, setNewReplyInMyViewpoint] = useState(false);
-    const [newEventInFollowedIssue, setNewEventInFollowedIssue] =
-        useState(false);
+    const [newReplyInMyViewpoint, setNewReplyInMyViewpoint] =
+        useState<boolean>(false);
+    const [newViewpointInFollowedIssue, setNewViewpointInFollowedIssue] =
+        useState<boolean>(false);
     const [newReplyInFollowedViewpoint, setNewReplyInFollowedViewpoint] =
-        useState(false);
+        useState<boolean>(false);
 
     useEffect(() => {
         if (data) {
             console.log("user settings: ", data);
             setNewReplyInMyViewpoint(data.notification.newReplyInMyViewpoint);
-            setNewEventInFollowedIssue(
-                data.notification.newEventInFollowedIssue,
+            setNewViewpointInFollowedIssue(
+                data.notification.newViewpointInFollowedIssue,
             );
             setNewReplyInFollowedViewpoint(
                 data.notification.newReplyInFollowedViewpoint,
@@ -58,17 +60,17 @@ export default function SettingsModal({
                         newReplyInMyViewpoint,
                         newReferenceToMyReply: false,
                         newNodeOfTimelineToFollowedIssue: false,
-                        newEventInFollowedIssue,
+                        newViewpointInFollowedIssue,
                         newReplyInFollowedViewpoint,
                     },
                 },
                 auth_token: cookie.auth_token,
             }),
-        onSuccess() {
-            console.log("Successfully updated user settings");
+        onSettled() {
+            setOpened(false);
         },
         onError() {
-            console.error("Failed to update user settings");
+            toast.error("儲存失敗，請稍後再試");
         },
     });
 
@@ -85,6 +87,7 @@ export default function SettingsModal({
                 <h2 className="text-base font-medium">通知</h2>
                 <Checkbox
                     checked={newReplyInMyViewpoint}
+                    readOnly
                     onChange={(event) =>
                         setNewReplyInMyViewpoint(event.currentTarget.checked)
                     }
@@ -92,15 +95,19 @@ export default function SettingsModal({
                     label="在我的觀點下有新的回覆時通知我"
                 />
                 <Checkbox
-                    checked={newEventInFollowedIssue}
+                    checked={newViewpointInFollowedIssue}
+                    readOnly
                     onChange={(event) =>
-                        setNewEventInFollowedIssue(event.currentTarget.checked)
+                        setNewViewpointInFollowedIssue(
+                            event.currentTarget.checked,
+                        )
                     }
                     className="mt-2"
                     label="在我關注的觀點下有新的活動時通知我"
                 />
                 <Checkbox
                     checked={newReplyInFollowedViewpoint}
+                    readOnly
                     onChange={(event) =>
                         setNewReplyInFollowedViewpoint(
                             event.currentTarget.checked,
