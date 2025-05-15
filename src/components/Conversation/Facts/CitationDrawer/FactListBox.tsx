@@ -1,20 +1,12 @@
 "use client";
 
-import {
-    useState,
-    useContext,
-    type Dispatch,
-    type SetStateAction,
-} from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
+import { useContext, type Dispatch, type SetStateAction } from "react";
 import { Button } from "@mantine/core";
 import {
     MagnifyingGlassIcon,
     DocumentMagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-import { searchFacts } from "@/lib/requests/facts/searchFacts";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import EditableViewpointReference from "../../Editors/Viewpoints/EditableViewpointReference";
 import type { Fact } from "@/types/conversations.types";
