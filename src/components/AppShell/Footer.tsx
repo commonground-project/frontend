@@ -41,7 +41,6 @@ export default function Footer({
                     </Link>
                 </ActionIcon>
             )}
-
             {pencilIconVariant !== "none" && (
                 <ActionIcon variant="transparent" className="size-8">
                     {pencilIconVariant === "solid" ? (

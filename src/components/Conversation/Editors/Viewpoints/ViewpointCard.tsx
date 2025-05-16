@@ -186,16 +186,15 @@ function ViewpointCard({
         viewpointTitleRef,
     ]);
 
+    // reposition the toolbar when the keyboard is open
     useEffect(() => {
         const repositionToolbar = () => {
-            console.log("reposition toolbar");
             const toolbar = document.getElementById("citation-toolbar");
 
             if (!toolbar || !window.visualViewport) return;
             const viewportHeight = window.visualViewport.height;
             const layoutViewportHeight = window.innerHeight;
 
-            console.log("hello");
             // if the viewport height is equal to the layout viewport height, it means the keyboard is not open, consider the footer height
             if (viewportHeight === layoutViewportHeight)
                 toolbar.style.bottom = "88px";
@@ -221,6 +220,41 @@ function ViewpointCard({
             );
         };
     });
+
+    // adust the input field height when the keyboard is open to keep the content visible.
+    useEffect(() => {
+        const adjustInputFieldHeight = () => {
+            const inputFieledContainer = document.getElementById(
+                "input-field-container",
+            );
+
+            if (!inputFieledContainer || !window.visualViewport) return;
+
+            const viewportHeight = window.visualViewport.height;
+            const layoutViewportHeight = window.innerHeight;
+
+            if (viewportHeight === layoutViewportHeight) {
+                // h = 100hv-32px(publish button)-36px(Title input)-16px(gap from container)-16px(padding from container)-56px(header)
+                inputFieledContainer.style.height = `${layoutViewportHeight - 32 - 36 - 16 - 16 - 56}px`;
+            } else {
+                inputFieledContainer.style.height = `${viewportHeight - 32 - 36 - 16}px`;
+            }
+        };
+
+        // initial adjust
+        adjustInputFieldHeight();
+        window.visualViewport?.addEventListener(
+            "resize",
+            adjustInputFieldHeight,
+        );
+
+        return () => {
+            window.visualViewport?.removeEventListener(
+                "resize",
+                adjustInputFieldHeight,
+            );
+        };
+    }, []);
 
     const onPublish = (bypass = false) => {
         if (viewpointTitle == "" || isContentEmpty) {
@@ -340,8 +374,10 @@ function ViewpointCard({
                     input: "font-serif border-none bg-transparent text-2xl font-semibold text-neutral-700 placeholder:text-neutral-500 focus:outline-none",
                 }}
             />
-            <div className="h-[calc(100vh-32px-36px-16px-16px-56px)] overflow-y-auto pt-3 md:pt-5">
-                {/* max-h-[calc(100hv-32px(publish button)-36px(Title input)-16px(gap from container)-16px(padding from container)-56px(header)] */}
+            <div
+                id="input-field-container"
+                className="overflow-y-auto pt-3 md:pt-5"
+            >
                 <div
                     id="viewpoint-input"
                     contentEditable
