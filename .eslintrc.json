@@ -18,14 +18,12 @@
     ],
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-explicit-any": "off",
-    "no-restricted-imports": [
-      "warn",
+    "no-console": [
+      "error",
       {
-        "paths": [
-          {
-            "name": "@/hooks/auth/useAuth",
-            "message": "useAuth is deprecated, migrate to using AuthContext instead"
-          }
+        "allow": [
+          "warn",
+          "error"
         ]
       }
     ]

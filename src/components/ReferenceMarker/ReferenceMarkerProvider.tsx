@@ -478,17 +478,10 @@ function ReferenceMarkerProvider({
     }, [inputRef]);
 
     const getSelectedText = useCallback(() => {
-        console.log("getSelectedText called");
         if (lastSelectionRange.current === null) return "";
-        console.log("getSelectedText lastSelectionRange");
         if (curReferenceMarkerId !== null) {
-            console.log(
-                "have ID getSelectedText ",
-                getReferenceMarkerText(String(curReferenceMarkerId)),
-            );
             return getReferenceMarkerText(String(curReferenceMarkerId));
         }
-        console.log("text is", lastSelectionRange.current.toString());
         return lastSelectionRange.current.toString();
     }, [curReferenceMarkerId, lastSelectionRange]);
 

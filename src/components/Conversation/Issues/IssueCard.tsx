@@ -56,7 +56,6 @@ function IssueCard({ issue }: IssueCardProps) {
                             className="p-0 text-lg font-semibold text-black transition-colors duration-300 hover:text-emerald-500"
                             onClick={() => {
                                 setIsTimelimeModalOpen(true);
-                                console.log("查看事件演進");
                             }}
                         >
                             查看事件演進
