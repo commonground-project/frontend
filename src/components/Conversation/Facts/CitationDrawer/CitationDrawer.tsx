@@ -45,6 +45,19 @@ export default function CitationDrawer({
         setCurrentScreen(1);
     }, [drawerId, getSelectedText, setSelectedTexts, selectedText]);
 
+    useEffect(() => {
+        if (drawerId) {
+            window.getSelection()?.removeAllRanges();
+            document.body.style.userSelect = "none";
+        } else {
+            document.body.style.userSelect = "auto";
+        }
+
+        return () => {
+            document.body.style.userSelect = "auto";
+        };
+    }, [drawerId]);
+
     return (
         <Drawer
             opened={drawerId !== null}
