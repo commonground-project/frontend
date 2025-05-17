@@ -25,8 +25,7 @@ export default function NotificationPermissions({
     return (
         <div className="flex h-full flex-col justify-between">
             <p className="text-base md:text-lg">
-                Eiusmod reprehenderit nisi dolor consequat exercitation amet
-                deserunt proident Lorem magna laborum.
+                錯過時事的通知？就像錯過貓咪影片一樣可惜，你忍心嗎？
             </p>
 
             <div className="flex h-16 items-center justify-between gap-10 rounded-xl border border-neutral-400 bg-neutral-100 px-5">

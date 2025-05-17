@@ -27,7 +27,8 @@ export default function BeforeWeStart({
     return (
         <Stack gap="lg">
             <p className="text-base md:text-lg">
-                在開始使用 COMMONGROUND 之前，請確認以下事項：
+                在
+                CommonGround，我們期待能營造一個讓彼此能舒適的討論的社群。為了確保彼此都能暢所欲言，請同意以下行為守則：
             </p>
             {BeforeWeStartItems.map((message, index) => (
                 <Checkbox

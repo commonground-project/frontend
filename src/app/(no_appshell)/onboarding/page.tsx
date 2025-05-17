@@ -16,7 +16,6 @@ import {
     type OnboardingUserInfo,
     type OnboardingInterests,
     type OnboardingNotificationPreferences,
-    type OnboardingUserInfoComplete,
 } from "@/lib/onboarding/forms";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 
@@ -313,7 +312,7 @@ export default function OnboardingPage() {
                     <div className="relative h-full w-full">
                         {onboardingScreens.map((screen, i) => (
                             <motion.div
-                                className="absolute top-0 h-full w-full"
+                                className="absolute top-0 flex h-full w-full flex-col overflow-y-hidden"
                                 key={i}
                                 initial={{
                                     translateX: `100vw`,
@@ -330,7 +329,7 @@ export default function OnboardingPage() {
                                 <h1 className="text-2xl font-semibold md:text-4xl">
                                     {screen.title}
                                 </h1>
-                                <div className="my-9 h-[calc(100%-112px)] overflow-y-auto">
+                                <div className="my-9 h-full overflow-y-auto">
                                     {/* 112px = 48px (title) + 36 * 2px (margins) */}
                                     <screen.element
                                         form={screen.form ?? undefined}

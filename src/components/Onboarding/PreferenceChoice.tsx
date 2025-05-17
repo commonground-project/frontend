@@ -34,9 +34,9 @@ export default function PreferenceChoice({
                             </p>
                         </div>
                         <p className="mt-1 leading-7">{interest.content}</p>
-                        <div className="mt-1 flex items-center gap-2">
+                        <div className="mt-1 flex items-center gap-2 md:justify-end">
                             <Button
-                                className="w-1/2"
+                                className="w-1/2 md:w-36"
                                 size="md"
                                 variant={
                                     form.values[interest.id] === "DISINTEREST"
@@ -55,7 +55,7 @@ export default function PreferenceChoice({
                                 沒有興趣
                             </Button>
                             <Button
-                                className="w-1/2"
+                                className="w-1/2 md:w-36"
                                 size="md"
                                 variant={
                                     form.values[interest.id] === "INTEREST"

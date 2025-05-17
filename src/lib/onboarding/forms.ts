@@ -211,7 +211,9 @@ export const beforeWeStartSchema = z.array(
 export type BeforeWeStartForm = z.infer<typeof beforeWeStartSchema>;
 
 export const BeforeWeStartItems = [
-    "我已閱讀並同意使用條款",
-    "我已閱讀並同意隱私政策",
-    "我已閱讀並同意社群守則",
+    "避免使用帶有侮辱、歧視、或具有潛在騷擾意涵的文字",
+    "聚焦於觀點、論據和邏輯，而非針對發言者的個人特質、動機或背景進行討論",
+    "在表達個人感受或情緒的同時，清晰地闡述這些情緒背後的具體原因",
+    "提出論點或主張時，盡可能提供可查證的事實、數據、或引用可靠的資訊來源作為支撐",
+    "承認個人知識的局限性，並對自己觀點中可能存在的錯誤或偏見抱持開放和反思的態度",
 ];

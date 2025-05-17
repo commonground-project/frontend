@@ -28,11 +28,11 @@ export default function IntroducePlatform({
                         議題
                     </h2>
                 </div>
+
                 <p className="mt-3 text-lg md:text-xl">
-                    Lorem ipsum dolor sit amet consectetur. At vel rhoncus lorem
-                    id urna turpis sed. Habitasse nisl aenean mattis augue
-                    lacus. Dolor sollicitudin orci ullamcorper id massa risus
-                    ante.
+                    CommonGround
+                    的討論由議題組成，議題下會匯聚所有相關的討論，並提供 AI
+                    生成的議題縱覽。
                 </p>
             </div>
             <div>
@@ -45,10 +45,8 @@ export default function IntroducePlatform({
                     </h2>
                 </div>
                 <p className="mt-3 text-lg md:text-xl">
-                    Lorem ipsum dolor sit amet consectetur. At vel rhoncus lorem
-                    id urna turpis sed. Habitasse nisl aenean mattis augue
-                    lacus. Dolor sollicitudin orci ullamcorper id massa risus
-                    ante.
+                    事實是 CommonGround
+                    討論的基石。在論述想法時，引註事實可以讓觀點更加明確清晰。
                 </p>
             </div>
             <div>
@@ -61,10 +59,7 @@ export default function IntroducePlatform({
                     </h2>
                 </div>
                 <p className="mt-3 text-lg md:text-xl">
-                    Lorem ipsum dolor sit amet consectetur. At vel rhoncus lorem
-                    id urna turpis sed. Habitasse nisl aenean mattis augue
-                    lacus. Dolor sollicitudin orci ullamcorper id massa risus
-                    ante.
+                    觀點是議題的某個討論面向，同時作為定義議題的切入點，與讓作者發表想法用。觀點下的回覆將以觀點提及的面向出發，進行多方思辨與討論。
                 </p>
             </div>
         </div>
