@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import type { Issue } from "@/types/conversations.types";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import { forwardRef } from "react";
 import { ActionIcon } from "@mantine/core";
 
 import { getIssueRead } from "@/lib/requests/issues/getIssueRead";
+import { readIssue } from "@/lib/requests/issues/readIssue";
 
 type HomePageCardProps = {
     issue: Issue;
@@ -31,8 +32,22 @@ const HomePageCard = forwardRef<HTMLAnchorElement, HomePageCardProps>(
                 }),
         });
 
+        const readIssueMutation = useMutation({
+            mutationKey: ["readIssue"],
+            mutationFn: () =>
+                readIssue({
+                    issueId: issue.id,
+                    auth_token: cookies.auth_token,
+                }),
+        });
+
         return (
-            <Link href={`/issues/${issue.id}`} ref={ref} className="space-y-2">
+            <Link
+                href={`/issues/${issue.id}`}
+                ref={ref}
+                className="space-y-2"
+                onClick={() => readIssueMutation.mutate()}
+            >
                 <h1 className="font-serif text-2xl font-semibold duration-300 group-hover:text-emerald-500">
                     {issue.title}
                 </h1>
