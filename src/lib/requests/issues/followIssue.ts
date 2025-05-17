@@ -26,7 +26,7 @@ export async function followIssue({
             },
             body: JSON.stringify({
                 follow: follow,
-                updated_at: "2025-05-01T14:11:18.211Z",
+                updated_at: new Date().toISOString(),
             }),
         },
     )

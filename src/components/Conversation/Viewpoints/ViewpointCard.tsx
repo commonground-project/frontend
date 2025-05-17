@@ -6,7 +6,7 @@ import type { Reaction, ViewPoint } from "@/types/conversations.types";
 import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
-import { readViewpoint } from "@/lib/requests/viewpoints/readViewpoints";
+import { readViewpoint } from "@/lib/requests/viewpoints/readViewpoint";
 import AuthorProfile from "../Shared/AuthorProfile";
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";

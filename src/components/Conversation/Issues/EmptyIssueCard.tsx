@@ -75,7 +75,7 @@ export default function EmptyIssueCard({
                 >
                     <PlusIcon className="ml-1 inline-block h-6 w-6" />
                     <div className="text-base font-medium text-neutral-800">
-                        引入一則事實
+                        引入事實
                     </div>
                 </button>
                 <button

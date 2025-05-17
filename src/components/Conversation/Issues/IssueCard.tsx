@@ -110,7 +110,7 @@ function IssueCard({ issue }: IssueCardProps) {
                             className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
                         >
                             <NewspaperIcon className="ml-1 inline-block h-6 w-6" />
-                            <div className="block md:hidden">查看所有事實</div>
+                            <div className="block md:hidden">所有事實</div>
                         </Link>
                         <button
                             className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
