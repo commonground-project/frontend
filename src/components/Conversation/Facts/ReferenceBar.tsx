@@ -2,7 +2,7 @@ import type { FactReference } from "@/types/conversations.types";
 import { GlobeAltIcon } from "@heroicons/react/16/solid";
 import { Loader } from "@mantine/core";
 import Link from "next/link";
-import { safeDecodeURI } from "@/lib/utils/safeDecodeURI";
+import { safeConstructURL } from "@/lib/utils/safeConstructURL";
 
 type FactBarProps = {
     reference: FactReference;
@@ -15,7 +15,7 @@ export default function ReferenceBar({
     showSrcTitle,
     isLoading,
 }: FactBarProps) {
-    const pageURL = new URL(safeDecodeURI(reference.url) ?? "example.com");
+    const pageURL = safeConstructURL(reference.url);
 
     return (
         <Link
@@ -38,7 +38,7 @@ export default function ReferenceBar({
             )}
 
             <span className="font-sans text-sm font-normal text-neutral-500">
-                {pageURL.hostname.replace("www.", "")}
+                {pageURL ? pageURL.hostname.replace("www.", "") : reference.url}
             </span>
             {showSrcTitle && (
                 <span className="truncate text-sm text-gray-600">
