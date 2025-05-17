@@ -37,5 +37,8 @@ export interface UserSettings {
     notification: {
         newReplyInMyViewpoint: boolean;
         newReferenceToMyReply: boolean;
+        newNodeOfTimelineToFollowedIssue: boolean;
+        newViewpointInFollowedIssue: boolean;
+        newReplyInFollowedViewpoint: boolean;
     };
 }
