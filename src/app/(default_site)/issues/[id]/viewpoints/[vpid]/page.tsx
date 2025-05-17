@@ -64,10 +64,14 @@ export default async function ViewpointPage({ params }: ViewpointPageProps) {
                 <ReplyList viewpointId={viewpoint.id} />
             </main>
             <ReferenceMarkerProvider factHintTooltip="點選連結圖示以引註資料">
-                <AuthorReplyBar
-                    issueId={pageParams.id}
-                    viewpointId={viewpoint.id}
-                />
+                <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
+                    <div className="w-full max-w-3xl">
+                        <AuthorReplyBar
+                            issueId={pageParams.id}
+                            viewpointId={viewpoint.id}
+                        />
+                    </div>
+                </div>
             </ReferenceMarkerProvider>
         </div>
     );

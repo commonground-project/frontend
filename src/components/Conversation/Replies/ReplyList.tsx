@@ -9,12 +9,13 @@ import { toast } from "sonner";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
 import ReplySkeleton from "./ReplySkeleton";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ReplyListProps = {
     viewpointId: string;
 };
 
-export default function ReplyList({ viewpointId }: ReplyListProps) {
+function ReplyList({ viewpointId }: ReplyListProps) {
     const [cookies] = useCookies(["auth_token"]);
 
     const { data, error, isFetching, fetchNextPage, hasNextPage } =
@@ -76,3 +77,5 @@ export default function ReplyList({ viewpointId }: ReplyListProps) {
         </div>
     );
 }
+
+export default withErrorBoundary(ReplyList);

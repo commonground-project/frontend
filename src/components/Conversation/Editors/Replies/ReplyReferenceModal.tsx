@@ -15,6 +15,7 @@ import EditableReplyReference from "@/components/Conversation/Editors/Replies/Ed
 import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
 
 import type { Fact } from "@/types/conversations.types";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
 type ReplyReferenceModalProps = {
     issueId: string;
@@ -107,77 +108,79 @@ export default function ReplyReferenceModal({
             title="引註事實"
             size="lg"
         >
-            <Select
-                variant="unstyled"
-                searchable
-                clearable
-                searchValue={searchValue}
-                onSearchChange={setSearchValue}
-                onDropdownClose={() => setSearchValue("")}
-                checkIconPosition="right"
-                radius={0}
-                classNames={{
-                    root: "w-full",
-                    input: "ml-1 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
-                }}
-                placeholder="搜尋 CommonGround"
-                leftSection={
-                    <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
-                }
-                leftSectionWidth={20}
-                onChange={(selectedFactId) => {
-                    if (!selectedFactId) return;
-                    addFact(selectedFactId);
-                }}
-                data={data?.pages
-                    .flatMap((page) => page.content)
-                    .filter(
-                        (fact) =>
-                            !replyFactList.some(
-                                (replyFact) => replyFact.id === fact.id,
-                            ),
-                    )
-                    .map((fact) => ({
-                        value: fact.id,
-                        label: fact.title,
-                    }))}
-                nothingFoundMessage={
-                    <Button
-                        onClick={() => setCreationId(uuidv4())}
-                        variant="transparent"
-                        classNames={{
-                            root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
-                            inner: "flex justify-start",
-                            label: "whitespace-normal text-left",
-                        }}
-                    >
-                        找不到想引註的事實嗎？將其引入 CommonGround 吧!
-                    </Button>
-                }
-            />
-            <FactCreationModal
-                issueId={issueId}
-                creationID={creationId}
-                setCreationID={setCreationId}
-                factCreationCallback={(facts) =>
-                    facts.forEach((fact) => addFact(fact.id))
-                }
-            />
-            <div className="flex flex-col gap-2">
-                {replyFactList.map((fact, index) => (
-                    <EditableReplyReference
-                        key={fact.id}
-                        fact={fact}
-                        removeFact={removeFact}
-                        inSelectionMode={true}
-                        isSelected={getCurSelectedFacts().includes(index)}
-                        setIsSelected={(isSelected) => {
-                            if (isSelected) addFactToReferenceMarker(index);
-                            else removeFactFromReferenceMarker(index);
-                        }}
-                    />
-                ))}
-            </div>
+            <ErrorBoundary>
+                <Select
+                    variant="unstyled"
+                    searchable
+                    clearable
+                    searchValue={searchValue}
+                    onSearchChange={setSearchValue}
+                    onDropdownClose={() => setSearchValue("")}
+                    checkIconPosition="right"
+                    radius={0}
+                    classNames={{
+                        root: "w-full",
+                        input: "ml-1 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
+                    }}
+                    placeholder="搜尋 CommonGround"
+                    leftSection={
+                        <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
+                    }
+                    leftSectionWidth={20}
+                    onChange={(selectedFactId) => {
+                        if (!selectedFactId) return;
+                        addFact(selectedFactId);
+                    }}
+                    data={data?.pages
+                        .flatMap((page) => page.content)
+                        .filter(
+                            (fact) =>
+                                !replyFactList.some(
+                                    (replyFact) => replyFact.id === fact.id,
+                                ),
+                        )
+                        .map((fact) => ({
+                            value: fact.id,
+                            label: fact.title,
+                        }))}
+                    nothingFoundMessage={
+                        <Button
+                            onClick={() => setCreationId(uuidv4())}
+                            variant="transparent"
+                            classNames={{
+                                root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
+                                inner: "flex justify-start",
+                                label: "whitespace-normal text-left",
+                            }}
+                        >
+                            找不到想引註的事實嗎？將其引入 CommonGround 吧!
+                        </Button>
+                    }
+                />
+                <FactCreationModal
+                    issueId={issueId}
+                    creationID={creationId}
+                    setCreationID={setCreationId}
+                    factCreationCallback={(facts) =>
+                        facts.forEach((fact) => addFact(fact.id))
+                    }
+                />
+                <div className="flex flex-col gap-2">
+                    {replyFactList.map((fact, index) => (
+                        <EditableReplyReference
+                            key={fact.id}
+                            fact={fact}
+                            removeFact={removeFact}
+                            inSelectionMode={true}
+                            isSelected={getCurSelectedFacts().includes(index)}
+                            setIsSelected={(isSelected) => {
+                                if (isSelected) addFactToReferenceMarker(index);
+                                else removeFactFromReferenceMarker(index);
+                            }}
+                        />
+                    ))}
+                </div>
+            </ErrorBoundary>
         </Modal>
     );
 }

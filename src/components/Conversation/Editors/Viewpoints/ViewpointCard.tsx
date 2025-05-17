@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import debounce from "lodash/debounce";
 import { toast } from "sonner";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 import type { Fact } from "@/types/conversations.types";
 
 type ViewpointCardProps = {
@@ -27,7 +28,7 @@ type ViewpointCardProps = {
     pendingPublish: boolean;
 };
 
-export default function ViewpointCard({
+function ViewpointCard({
     issueId,
     viewpointTitle,
     setViewpointTitle,
@@ -304,3 +305,5 @@ export default function ViewpointCard({
         </div>
     );
 }
+
+export default withErrorBoundary(ViewpointCard);

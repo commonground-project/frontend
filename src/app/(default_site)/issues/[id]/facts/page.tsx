@@ -46,7 +46,6 @@ export default async function FactsPage({ params }: FactsPageProps) {
                 <h1 className="py-1 font-sans text-2xl font-bold">
                     {issue.title}
                 </h1>
-
                 <AllFactsDisplay issueId={pageId} />
             </div>
         </main>

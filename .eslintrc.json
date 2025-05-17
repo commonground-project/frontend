@@ -12,7 +12,8 @@
         "vars": "all",
         "args": "after-used",
         "ignoreRestSiblings": false,
-        "varsIgnorePattern": "^__"
+        "varsIgnorePattern": "^__",
+        "argsIgnorePattern": "^__"
       }
     ],
     "@typescript-eslint/consistent-type-imports": "warn",

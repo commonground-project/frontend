@@ -10,8 +10,9 @@ import {
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
-export default function ReferenceMarkerProvider({
+function ReferenceMarkerProvider({
     children,
     historyRecord,
     factHintTooltip,
@@ -524,3 +525,5 @@ export default function ReferenceMarkerProvider({
         </ReferenceMarkerContext.Provider>
     );
 }
+
+export default withErrorBoundary(ReferenceMarkerProvider);

@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { Modal, Button, Checkbox } from "@mantine/core";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Checkbox, Button, Modal } from "@mantine/core";
+
 import { getUserSettings } from "@/lib/requests/settings/getUserSettings";
 import { putUserSettings } from "@/lib/requests/settings/putUserSettings";
+import ErrorBoundary from "@/components/AppShell/ErrorBoundary";
 
 type SettingModalProps = {
     opened: boolean;
@@ -68,35 +70,37 @@ export default function SettingsModal({
                 title: "text-xl font-bold",
             }}
         >
-            <h2 className="text-base font-medium">通知</h2>
-            <Checkbox
-                checked={newReplyInMyViewpoint}
-                onChange={(event) =>
-                    setNewReplyInMyViewpoint(event.currentTarget.checked)
-                }
-                className="mt-2"
-                label="在我的觀點下有新的回覆時通知我"
-            />
-            <Checkbox
-                checked={newReferenceToMyReply}
-                onChange={(event) =>
-                    setNewReferenceToMyReply(event.currentTarget.checked)
-                }
-                className="mt-2"
-                label="在我的回覆被節錄時通知我"
-            />
-            <div className="flex justify-end">
-                <Button
-                    onClick={() => {
-                        if (settingModalCallback) settingModalCallback();
-                        updateUserSettingsMutation.mutate();
-                        setOpened(false);
-                    }}
-                    loading={updateUserSettingsMutation.isPending}
-                >
-                    儲存
-                </Button>
-            </div>
+            <ErrorBoundary>
+                <h2 className="text-base font-medium">通知</h2>
+                <Checkbox
+                    checked={newReplyInMyViewpoint}
+                    onChange={(event) =>
+                        setNewReplyInMyViewpoint(event.currentTarget.checked)
+                    }
+                    className="mt-2"
+                    label="在我的觀點下有新的回覆時通知我"
+                />
+                <Checkbox
+                    checked={newReferenceToMyReply}
+                    onChange={(event) =>
+                        setNewReferenceToMyReply(event.currentTarget.checked)
+                    }
+                    className="mt-2"
+                    label="在我的回覆被節錄時通知我"
+                />
+                <div className="flex justify-end">
+                    <Button
+                        onClick={() => {
+                            if (settingModalCallback) settingModalCallback();
+                            updateUserSettingsMutation.mutate();
+                            setOpened(false);
+                        }}
+                        loading={updateUserSettingsMutation.isPending}
+                    >
+                        儲存
+                    </Button>
+                </div>
+            </ErrorBoundary>
         </Modal>
     );
 }

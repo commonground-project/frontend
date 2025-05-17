@@ -6,6 +6,7 @@ import AuthorProfile from "../Shared/AuthorProfile";
 import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type PageDisplayCardProps = {
     issueId: string;
@@ -13,7 +14,7 @@ type PageDisplayCardProps = {
     viewpoint: ViewPoint;
 };
 
-export default function PageDisplayCard({
+function PageDisplayCard({
     issueId,
     issueTitle,
     viewpoint,
@@ -57,3 +58,5 @@ export default function PageDisplayCard({
         </div>
     );
 }
+
+export default withErrorBoundary(PageDisplayCard);
