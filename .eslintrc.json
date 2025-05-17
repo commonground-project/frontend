@@ -17,6 +17,17 @@
       }
     ],
     "@typescript-eslint/consistent-type-imports": "warn",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [
+          {
+            "name": "@/hooks/auth/useAuth",
+            "message": "useAuth is deprecated, migrate to using AuthContext instead"
+          }
+        ]
+      }
+    ]
   }
 }
