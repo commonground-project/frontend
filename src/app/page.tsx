@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { decodeUserFromString } from "@/lib/auth/staticDecode";
 import HomePageContent from "@/components/HomePage/HomePageContent";
 import Header from "@/components/AppShell/Header";
-import Footer from "@/components/AppShell/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
