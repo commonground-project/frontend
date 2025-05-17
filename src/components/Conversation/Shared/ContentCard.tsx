@@ -9,7 +9,6 @@ import {
 import { HoverCard, Drawer } from "@mantine/core";
 import FactCard from "@/components/Conversation/Viewpoints/FactCard";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
-import ImportFactCard from "../Facts/ImportFactCard";
 
 type ContentCardProps = {
     facts: Fact[];
