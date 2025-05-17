@@ -84,7 +84,7 @@ export default function ViewpointCard({
                 <div className="flex w-1/4 gap-1 md:hidden">
                     <ChatBubbleOvalLeftIcon className="size-6 text-neutral-600" />
                     <div className="text-neutral-600">
-                        {/* {viewpoint.replyCount} */}0
+                        {viewpoint.replyCount}
                     </div>
                 </div>
             </div>
