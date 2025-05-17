@@ -34,7 +34,6 @@ function IssueCard({ issue }: IssueCardProps) {
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issue.id],
         mutationFn: (follow: boolean) => {
-            console.log("followIssue");
             return followIssue({
                 issueId: issue.id,
                 auth_token: cookies.auth_token,
@@ -112,15 +111,9 @@ function IssueCard({ issue }: IssueCardProps) {
                             <NewspaperIcon className="ml-1 inline-block h-6 w-6" />
                             <div className="block md:hidden">所有事實</div>
                         </Link>
-
-                    </div>
-                    <div className="mt-2">
-                        <Button
-                            variant="transparent"
-                            className="p-0 text-lg font-semibold text-black transition-colors duration-300 hover:text-emerald-500"
-                            onClick={() => {
-                                setIsTimelimeModalOpen(true);
-                            }}
+                        <button
+                            className="flex h-10 w-1/2 items-center justify-center gap-1 rounded-lg bg-neutral-200 py-2 text-lg font-semibold text-neutral-800 md:w-auto md:bg-transparent"
+                            onClick={() => follow(!isFollowing)}
                         >
                             {isFollowing ? (
                                 <>

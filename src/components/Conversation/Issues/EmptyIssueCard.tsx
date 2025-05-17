@@ -33,7 +33,6 @@ export default function EmptyIssueCard({
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issueId],
         mutationFn: (follow: boolean) => {
-            console.log("followIssue");
             return followIssue({
                 issueId: issueId,
                 auth_token: cookies.auth_token,
