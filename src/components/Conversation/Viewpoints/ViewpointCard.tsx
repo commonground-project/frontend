@@ -31,6 +31,11 @@ export default function ViewpointCard({
             }),
     });
 
+    const countFormatter = new Intl.NumberFormat("en", {
+        notation: "compact",
+        compactDisplay: "short",
+    });
+
     return (
         <Link
             href={`/issues/${issueId}/viewpoints/${viewpoint.id}`}
@@ -61,7 +66,7 @@ export default function ViewpointCard({
                     truncate={true}
                 />
             </div>
-            <div className="flex align-bottom md:justify-between">
+            <div className="flex align-bottom md:justify-start">
                 <div className="w-3/4 md:w-auto">
                     <TernaryReactions
                         parentTitle={viewpoint.title}
@@ -81,11 +86,11 @@ export default function ViewpointCard({
                         }
                     />
                 </div>
-                <div className="flex w-1/4 gap-1 md:hidden">
+                <div className="flex w-1/4 gap-1 md:w-auto">
                     <ChatBubbleOvalLeftIcon className="size-6 text-neutral-600" />
                     {viewpoint.replyCount && (
                         <div className="text-neutral-600">
-                            {viewpoint.replyCount}
+                            {countFormatter.format(viewpoint.replyCount)}
                         </div>
                     )}
                 </div>
