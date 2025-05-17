@@ -97,12 +97,22 @@ function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
                 color="black"
                 size="compact-md"
                 classNames={{
-                    root: "px-0 hover:bg-neutral-100",
+                    root: "px-0 hover:bg-neutral-100 hidden md:flex",
                     inner: "justify-start",
                     label: "font-sans font-bold text-md",
                 }}
             >
                 新增事實
+            </Button>
+            <Button
+                onClick={() => {
+                    setCreationId(uuidv4());
+                }}
+                leftSection={<PlusIcon className="size-4 text-neutral-50" />}
+                radius={8}
+                className="block h-10 w-full md:hidden"
+            >
+                <div className="text-base text-neutral-50">引入一則事實</div>
             </Button>
         </div>
     );

@@ -107,6 +107,7 @@ export default function AuthorViewpoint() {
             followIssue({
                 issueId: issueId,
                 auth_token: cookie.auth_token,
+                follow: true,
             }),
         onSuccess() {
             toast.success("已關注議題");

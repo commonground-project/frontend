@@ -1,8 +1,9 @@
-import { parseJsonWhileHandlingErrors as __ } from "../transformers";
+import { parseJsonWhileHandlingErrors } from "../transformers";
 
 type FollowIssueParams = {
     issueId: string;
     auth_token: string;
+    follow: boolean;
 };
 
 type FollowIssueResponse = {
@@ -11,32 +12,29 @@ type FollowIssueResponse = {
 };
 
 export async function followIssue({
-    issueId: __issueId,
-    auth_token: __auth_token,
+    issueId,
+    auth_token,
+    follow,
 }: FollowIssueParams): Promise<FollowIssueResponse> {
-    // return await fetch(
-    //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/follow/me`,
-    //     {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: `Bearer ${auth_token}`,
-    //         },
-    //     },
-    // )
-    //     .then(parseJsonWhileHandlingErrors)
-    //     .then((res: FollowIssueResponse) => {
-    //         return {
-    //             ...res,
-    //             updatedAt: new Date(res.updatedAt),
-    //         };
-    //     });
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                follow: true,
-                updatedAt: new Date(),
-            });
-        }, 1000);
-    });
+    return await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}/follow/me`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${auth_token}`,
+            },
+            body: JSON.stringify({
+                follow: follow,
+                updated_at: new Date().toISOString(),
+            }),
+        },
+    )
+        .then(parseJsonWhileHandlingErrors)
+        .then((res: FollowIssueResponse) => {
+            return {
+                ...res,
+                updatedAt: new Date(res.updatedAt),
+            };
+        });
 }
