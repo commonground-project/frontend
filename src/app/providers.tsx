@@ -1,6 +1,7 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
+import { ProgressProvider } from "@bprogress/next/app";
 import type { ReactNode } from "react";
 import {
     isServer,
@@ -77,7 +78,14 @@ export default function Providers({ children }: ProviderProps) {
                 <AuthProvider>
                     <PostHogProvider client={posthog}>
                         <MantineProvider theme={CommonGroundMantineTheme}>
-                            {children}
+                            <ProgressProvider
+                                height="4px"
+                                color="#009966"
+                                options={{ showSpinner: false }}
+                                shallowRouting
+                            >
+                                {children}
+                            </ProgressProvider>
                         </MantineProvider>
                         <Toaster richColors />
                     </PostHogProvider>
