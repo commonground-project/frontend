@@ -39,8 +39,7 @@ export default function PreferenceChoice({
                                 className="w-1/2"
                                 size="md"
                                 variant={
-                                    form.values[interest.id] ===
-                                    "non_interested"
+                                    form.values[interest.id] === "DISINTEREST"
                                         ? "filled"
                                         : "outline"
                                 }
@@ -48,7 +47,7 @@ export default function PreferenceChoice({
                                     setLatestSelected(index);
                                     form.setFieldValue(
                                         interest.id,
-                                        "non_interested",
+                                        "DISINTEREST",
                                     );
                                 }}
                                 disabled={latestSelected < index - 1}
@@ -59,16 +58,13 @@ export default function PreferenceChoice({
                                 className="w-1/2"
                                 size="md"
                                 variant={
-                                    form.values[interest.id] === "interested"
+                                    form.values[interest.id] === "INTEREST"
                                         ? "filled"
                                         : "outline"
                                 }
                                 onClick={() => {
                                     setLatestSelected(index);
-                                    form.setFieldValue(
-                                        interest.id,
-                                        "interested",
-                                    );
+                                    form.setFieldValue(interest.id, "INTEREST");
                                 }}
                                 disabled={latestSelected < index - 1}
                             >

@@ -16,22 +16,30 @@ import {
     type OnboardingUserInfo,
     type OnboardingInterests,
     type OnboardingNotificationPreferences,
+    type OnboardingUserInfoComplete,
 } from "@/lib/onboarding/forms";
 import { subscribeWebPush } from "@/lib/requests/settings/postSubscribe";
 
 import { AuthContext } from "@/lib/auth/authContext";
-import { type SetupUserParams } from "@/lib/requests/users/setupUser";
-import { type PostViewpointPreferenceParams } from "@/lib/requests/viewpoints/postViewpointPreference";
+import { setupUserRequest } from "@/lib/requests/users/setupUser";
+import {
+    postViewpointPreference,
+    type PostViewpointPreferenceParams,
+} from "@/lib/requests/viewpoints/postViewpointPreference";
 
 import GatherInfo from "@/components/Onboarding/GatherInfo";
 import IntroducePlatform from "@/components/Onboarding/IntroducePlatform";
 import PreferenceChoice from "@/components/Onboarding/PreferenceChoice";
 import NotificationPermissions from "@/components/Onboarding/NotificationPermissions";
 import BeforeWeStart from "@/components/Onboarding/BeforeWeStart";
+import { completeOnboardingRequest } from "@/lib/requests/users/completeOnboarding";
+import { refreshJwtRequest } from "@/lib/requests/auth/refreshJwt";
 
 export default function OnboardingPage() {
     const [cookies] = useCookies(["auth_token", "auth_refresh_token"]);
     const [inOnboardingProc, setInOnboardingProc] = useState<boolean>(false);
+    const [enableWidthAnimation, setEnableWidthAnimation] =
+        useState<boolean>(true);
     const [currentScreen, setCurrentScreen] = useState<number>(0);
     const [isNextStepEnabled, setIsNextStepEnabled] = useState<boolean>(false);
     const [nextStepLoading, setNextStepLoading] = useState<boolean>(false);
@@ -68,18 +76,34 @@ export default function OnboardingPage() {
     });
 
     const saveUserInfoMutation = useMutation({
-        mutationFn: async (userInfo: SetupUserParams) => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        },
-        onError() {
+        mutationFn: (userInfo: OnboardingUserInfo) =>
+            setupUserRequest(
+                {
+                    username: userInfo.username,
+                    nickname: userInfo.nickname,
+                    birthDate: `${userInfo.birthYear}-01-01`,
+                    gender: userInfo.gender as string,
+                    occupation: userInfo.occupation as string,
+                },
+                cookies.auth_token,
+            ),
+        onError(error: Error | Record<string, string>) {
+            if (error instanceof Error)
+                return toast.error("發生未知的錯誤，請再試一次");
+
+            if (error.detail == "Username already exists")
+                return infoForm.setFieldError(
+                    "username",
+                    "此使用者名稱已被使用",
+                );
+
             toast.error("發生未知的錯誤，請再試一次");
         },
     });
 
     const saveUserPreferenceMutation = useMutation({
-        mutationFn: async (userPreference: PostViewpointPreferenceParams) => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        },
+        mutationFn: (userPreference: PostViewpointPreferenceParams) =>
+            postViewpointPreference(userPreference).catch(() => null),
         onError() {
             toast.error("發生未知的錯誤，請再試一次");
         },
@@ -87,12 +111,8 @@ export default function OnboardingPage() {
 
     const completeOnboardingMutation = useMutation({
         mutationFn: async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            return {
-                accessToken: "123",
-                refreshToken: "123",
-                expirationTime: 123,
-            };
+            await completeOnboardingRequest(cookies.auth_token);
+            return await refreshJwtRequest(cookies.auth_refresh_token);
         },
         onSuccess(data) {
             login(data.accessToken, data.refreshToken, data.expirationTime);
@@ -238,9 +258,9 @@ export default function OnboardingPage() {
                 />
             </div>
             <div
-                className={`absolute left-0 top-0 hidden h-full items-center justify-end transition-[width] duration-1000 md:flex ${
+                className={`absolute left-0 top-0 hidden h-full items-center justify-end md:flex ${
                     inOnboardingProc ? "md:w-[50vw]" : "md:w-screen"
-                }`}
+                } ${enableWidthAnimation ? "transition-[width] duration-1000" : ""}`}
             >
                 <img
                     src="/assets/CGGradient.jpeg"
@@ -274,6 +294,9 @@ export default function OnboardingPage() {
                         color="gray"
                         onClick={() => {
                             setInOnboardingProc(true);
+                            setTimeout(() => {
+                                setEnableWidthAnimation(false);
+                            }, 1100);
                         }}
                     >
                         開始
@@ -281,7 +304,7 @@ export default function OnboardingPage() {
                 </div>
             </div>
             <div
-                className="absolute right-0 top-0 flex h-full w-screen justify-center overflow-hidden overflow-x-hidden pb-12 pt-20 transition-[translate] duration-1000 md:w-[50vw] md:items-center md:pt-0"
+                className="absolute right-0 top-0 flex h-dvh w-screen justify-center overflow-hidden overflow-x-hidden pb-12 pt-20 transition-[translate] duration-1000 md:w-[50vw] md:items-center md:pt-0"
                 style={{
                     translate: inOnboardingProc ? "0" : "100%",
                 }}

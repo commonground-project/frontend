@@ -4,15 +4,9 @@ export type CompleteOnboardingParams = {
     auth_token: string;
 };
 
-export type CompleteOnboardingResponse = {
-    accessToken: string;
-    expirationTime: number;
-    refreshToken: string;
-};
-
 export const completeOnboardingRequest = async (
     auth_token: string,
-): Promise<CompleteOnboardingResponse> => {
+): Promise<void> => {
     return await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/complete-onboarding/me`,
         {

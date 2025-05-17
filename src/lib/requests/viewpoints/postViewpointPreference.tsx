@@ -13,7 +13,7 @@ type PostViewpointPreferenceResponse = {
     preference: string; // INTEREST | DISINTEREST
 }[];
 
-export const postViewpointReaction = async ({
+export const postViewpointPreference = async ({
     payload,
     auth_token,
 }: PostViewpointPreferenceParams): Promise<PostViewpointPreferenceResponse> => {

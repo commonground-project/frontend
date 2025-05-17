@@ -6,7 +6,7 @@ export type SetupUserParams = {
     nickname: string;
     occupation: string;
     gender: string;
-    birthYear: number;
+    birthDate: string;
 };
 
 export type SetupUserResponse = {

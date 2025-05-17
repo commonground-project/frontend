@@ -17,14 +17,16 @@ export default function GatherInfo({
 }: GatherInfoProps) {
     useEffect(() => {
         if (!setAllowNextStep) return;
-        setAllowNextStep(form.isValid());
+        setAllowNextStep(
+            form.isValid() && Object.values(form.errors).length === 0,
+        );
     }, [form, setAllowNextStep]);
 
     return (
         <form className="flex w-full flex-col gap-8">
             <TextInput
                 label="取個令人印象深刻的 ID 吧"
-                description="請使用英文字母、數字或半形句點、底線與減號"
+                description="請使用英文字母、數字或底線"
                 placeholder="獨一無二的使用者名稱"
                 error={form.errors.username}
                 {...form.getInputProps("username")}
@@ -49,10 +51,10 @@ export default function GatherInfo({
                 placeholder="請選擇您的性別"
                 error={form.errors.gender}
                 data={[
-                    { value: "male", label: "男性" },
-                    { value: "female", label: "女性" },
-                    { value: "other", label: "其他" },
-                    { value: "preferNotToSay", label: "不願意透露" },
+                    { value: "MALE", label: "男性" },
+                    { value: "FEMALE", label: "女性" },
+                    { value: "OTHER", label: "其他" },
+                    { value: "PREFER_NOT_TO_SAY", label: "不願意透露" },
                 ]}
                 {...form.getInputProps("gender")}
             />
