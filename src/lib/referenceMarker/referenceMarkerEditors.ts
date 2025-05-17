@@ -158,7 +158,6 @@ export function updateReferenceCounter({
     referenceMarkerId,
     referencedIndexes,
 }: updateReferenceMarkerParams) {
-    console.log("updateReferenceCounter", referenceMarkerId);
     // No fact is referencing this marker, remove the reference marker
     if (referencedIndexes.length === 0) {
         decapsuleReferenceMarker({ referenceMarkerId });
@@ -201,8 +200,6 @@ type decapsuleReferenceMarkerParams = {
 export function decapsuleReferenceMarker({
     referenceMarkerId,
 }: decapsuleReferenceMarkerParams) {
-    console.log("decapsuleReferenceMarker", referenceMarkerId);
-
     // Find every reference marker
     const referenceMarkers = document.querySelectorAll(
         `[data-marker-id="${referenceMarkerId}"].reference-marker`,

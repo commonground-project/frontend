@@ -34,7 +34,6 @@ function IssueCard({ issue }: IssueCardProps) {
     const { mutate: follow } = useMutation({
         mutationKey: ["followIssue", issue.id],
         mutationFn: (follow: boolean) => {
-            console.log("followIssue");
             return followIssue({
                 issueId: issue.id,
                 auth_token: cookies.auth_token,

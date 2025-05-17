@@ -142,6 +142,7 @@ export const mockReply: Reply = {
     dislikeCount: 1,
     facts: [],
     quotes: [],
+    readStatus: false,
     title: "Example Reply",
 };
 

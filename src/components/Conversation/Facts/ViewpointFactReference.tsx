@@ -22,7 +22,6 @@ export default function ViewpointFactReference({
             className="flex items-center"
             // Prevents the click trigger the blur event of the parent before open the link
             onMouseDown={(e) => {
-                console.log("click link");
                 e.preventDefault();
             }}
             onClick={(e) => e.stopPropagation()}

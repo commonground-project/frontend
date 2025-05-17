@@ -70,14 +70,12 @@ export default function FactCreationBox({
                 resetWebsitecheck();
             },
             onSuccess() {
-                console.log("Website check success");
                 setIsUrlValid((prev) => {
                     if (prev) return prev;
                     return true;
                 });
             },
             onError() {
-                console.log("Website check error");
                 setIsUrlValid((prev) => {
                     if (!prev) return prev;
                     return false;
@@ -134,7 +132,6 @@ export default function FactCreationBox({
                 references.find((ref) => ref.id === data.reference.id) !==
                 undefined
             ) {
-                console.log("references", references);
                 toast.info("引註資料已存在");
                 // Remove the preadded reference if it already exists
                 setReferences((prev) =>
@@ -161,7 +158,6 @@ export default function FactCreationBox({
                 description:
                     "建立引註資料時發生錯誤，請再試一次或是檢查引註資料連結",
             });
-            console.log("error creating reference: ", err);
         },
     });
 

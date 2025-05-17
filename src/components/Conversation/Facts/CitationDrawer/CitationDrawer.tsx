@@ -41,7 +41,6 @@ export default function CitationDrawer({
 
     useEffect(() => {
         setSelectedTexts(getSelectedText());
-        console.log("in drawer selectedText", selectedText);
         setCurrentScreen(1);
     }, [drawerId, getSelectedText, setSelectedTexts, selectedText]);
 

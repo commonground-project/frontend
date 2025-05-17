@@ -144,7 +144,6 @@ export default function AuthorViewpoint() {
 
     // restore the context from local storage
     useEffect(() => {
-        console.log("restore context");
         const username = decodeUserFromString(cookie.auth_token)?.username;
         const savedContext = localStorage.getItem(
             window.location.pathname + `/${username}`,

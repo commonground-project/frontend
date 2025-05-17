@@ -86,6 +86,7 @@ export interface Reply {
     likeCount: number;
     reasonableCount: number;
     dislikeCount: number;
+    readStatus: boolean;
     quotes: Quote[];
     facts: Fact[];
 }
