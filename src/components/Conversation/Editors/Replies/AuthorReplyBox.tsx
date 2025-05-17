@@ -14,12 +14,9 @@ export default function AuthorReplyBox({
     closeDrawer,
     publishOnProcess,
 }: AuthorReplyBoxProps) {
-    const {
-        inputRef,
-        inSelectionMode,
-        setIsEditorReady,
-        getInputFieldContent,
-    } = useContext(ReferenceMarkerContext);
+    const { inputRef, getInputFieldContent } = useContext(
+        ReferenceMarkerContext,
+    );
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
 
     useEffect(() => {

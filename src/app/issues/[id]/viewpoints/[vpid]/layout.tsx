@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 

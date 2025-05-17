@@ -19,17 +19,15 @@ import type { Fact } from "@/types/conversations.types";
 type AuthorReplyDrawerProps = {
     isDrawerOpen: boolean;
     setIsDrawerOpen: (isOpen: boolean) => void;
-    issueId: string;
     viewpointId: string;
 };
 
 function AuthorReplyDrawer({
     isDrawerOpen,
     setIsDrawerOpen,
-    issueId,
     viewpointId,
 }: AuthorReplyDrawerProps) {
-    const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
+    const [replyFactList] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
 

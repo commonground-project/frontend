@@ -20,7 +20,7 @@ export default function ViewpointPage() {
     const viewpointId = useParams().vpid as string;
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-    const { data: issue, error } = useQuery({
+    const { data: issue } = useQuery({
         queryKey: ["issue", issueId],
         queryFn: async () => {
             const issue = await getIssueByID(issueId, cookie.auth_token);
@@ -28,7 +28,7 @@ export default function ViewpointPage() {
         },
     });
 
-    const { data: viewpoint, error: viewpointError } = useQuery({
+    const { data: viewpoint } = useQuery({
         queryKey: ["viewpoint", viewpointId],
         queryFn: async () => {
             const viewpoint = await getViewpointByID(
@@ -71,7 +71,6 @@ export default function ViewpointPage() {
                                 <AuthorReplyDrawer
                                     isDrawerOpen={isDrawerOpen}
                                     setIsDrawerOpen={setIsDrawerOpen}
-                                    issueId={issueId}
                                     viewpointId={viewpoint.id}
                                 />
                             )}
