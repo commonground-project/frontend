@@ -10,19 +10,25 @@ import {
 } from "@/lib/requests/replies/postReply";
 import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
-import { Button, Drawer } from "@mantine/core";
+import { Drawer } from "@mantine/core";
 import AuthorReplyBox from "@/components/Conversation/Editors/Replies/AuthorReplyBox";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
 
 type AuthorReplyDrawerProps = {
+    isDrawerOpen: boolean;
+    setIsDrawerOpen: (isOpen: boolean) => void;
     issueId: string;
     viewpointId: string;
 };
 
-function AuthorReplyDrawer({ issueId, viewpointId }: AuthorReplyDrawerProps) {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+function AuthorReplyDrawer({
+    isDrawerOpen,
+    setIsDrawerOpen,
+    issueId,
+    viewpointId,
+}: AuthorReplyDrawerProps) {
     const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
 
     const [cookie] = useCookies(["auth_token"]);
@@ -106,14 +112,6 @@ function AuthorReplyDrawer({ issueId, viewpointId }: AuthorReplyDrawerProps) {
 
     return (
         <>
-            <Button
-                variant="outline"
-                onClick={() => {
-                    setIsDrawerOpen(true);
-                }}
-            >
-                Open Drawer
-            </Button>
             <Drawer
                 opened={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}

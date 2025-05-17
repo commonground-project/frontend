@@ -19,11 +19,13 @@ import UserMenu from "@/components/AppShell/UserMenu";
 type FooterProps = {
     homeIconVariant?: "solid" | "outline" | "none";
     pencilIconVariant?: "solid" | "outline" | "none";
+    pencilIconOnClick?: () => void;
 };
 
 export default function Footer({
     homeIconVariant = "outline",
     pencilIconVariant = "outline",
+    pencilIconOnClick,
 }: FooterProps) {
     const { user, logout } = useContext(AuthContext);
     const headerStore = useHeaderStore();
@@ -42,7 +44,11 @@ export default function Footer({
                 </ActionIcon>
             )}
             {pencilIconVariant !== "none" && (
-                <ActionIcon variant="transparent" className="size-8">
+                <ActionIcon
+                    variant="transparent"
+                    className="size-8"
+                    onClick={() => pencilIconOnClick?.()}
+                >
                     {pencilIconVariant === "solid" ? (
                         <PencilSquareIconSolid className="size-8 text-black" />
                     ) : (

@@ -1,5 +1,9 @@
-import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getIssueByID } from "@/lib/requests/issues/getIssueById";
 import { getViewpointByID } from "@/lib/requests/viewpoints/getViewpointById";
 import AuthorReplyBar from "@/components/Conversation/Editors/Replies/AuthorReplyBar";
@@ -7,81 +11,77 @@ import AuthorReplyDrawer from "@/components/Conversation/Editors/Replies/AuthorR
 import ReplyList from "@/components/Conversation/Replies/ReplyList";
 import PageDisplayCard from "@/components/Conversation/Viewpoints/PageDisplayCard";
 import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
-import type { Issue, ViewPoint } from "@/types/conversations.types";
+import Header from "@/components/AppShell/Header";
+import Footer from "@/components/AppShell/Footer";
 
-type ViewpointPageProps = {
-    params: Promise<{ id: string; vpid: string }>;
-};
+export default function ViewpointPage() {
+    const [cookie] = useCookies(["auth_token"]);
+    const issueId = useParams().id as string;
+    const viewpointId = useParams().vpid as string;
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-export async function generateMetadata({ params }: ViewpointPageProps) {
-    const pageParams = await params;
-    const cookieStore = await cookies();
-    const auth_token = cookieStore.get("auth_token");
+    const { data: issue, error } = useQuery({
+        queryKey: ["issue", issueId],
+        queryFn: async () => {
+            const issue = await getIssueByID(issueId, cookie.auth_token);
+            return issue;
+        },
+    });
 
-    const viewpoint = await getViewpointByID(
-        pageParams.vpid,
-        auth_token?.value ?? "",
-    );
-    return {
-        title: `CommonGround - ${viewpoint.title}`,
-        description: viewpoint.content,
-    };
-}
-
-export default async function ViewpointPage({ params }: ViewpointPageProps) {
-    const cookieStore = await cookies();
-    const auth_token = cookieStore.get("auth_token");
-
-    const pageParams = await params;
-    if (!pageParams.id || !pageParams.vpid) return notFound();
-
-    let issue: Issue | null = null;
-
-    try {
-        issue = await getIssueByID(pageParams.id, auth_token?.value);
-    } catch (error: any) {
-        if (error.status === 404) return notFound();
-        throw error;
-    }
-
-    let viewpoint: ViewPoint | null = null;
-
-    try {
-        viewpoint = await getViewpointByID(pageParams.vpid, auth_token?.value);
-    } catch (error: any) {
-        if (error.status === 404) return notFound();
-        throw error;
-    }
+    const { data: viewpoint, error: viewpointError } = useQuery({
+        queryKey: ["viewpoint", viewpointId],
+        queryFn: async () => {
+            const viewpoint = await getViewpointByID(
+                viewpointId,
+                cookie.auth_token,
+            );
+            return viewpoint;
+        },
+    });
 
     return (
-        <div>
-            <main className="mx-auto w-full max-w-3xl pb-40 pt-8">
-                <PageDisplayCard
-                    issueId={pageParams.id}
-                    issueTitle={issue.title}
-                    viewpoint={viewpoint}
-                />
-                <hr className="h-8" />
-                <ReplyList viewpointId={viewpoint.id} />
-            </main>
-            <ReferenceMarkerProvider>
-                <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3">
-                    <div className="w-full max-w-3xl">
-                        <AuthorReplyBar
-                            issueId={pageParams.id}
-                            viewpointId={viewpoint.id}
+        <>
+            <Header />
+            <div className="scrollbar-gutter-stable-both-edges h-full overflow-y-auto pt-14">
+                <main className="mx-auto w-full max-w-3xl pb-40 pt-8">
+                    {issue && viewpoint && (
+                        <PageDisplayCard
+                            issueId={issueId}
+                            issueTitle={issue?.title}
+                            viewpoint={viewpoint}
                         />
+                    )}
+                    <hr className="h-8" />
+                    {viewpoint && <ReplyList viewpointId={viewpoint.id} />}
+                </main>
+                <ReferenceMarkerProvider>
+                    <div className="fixed bottom-0 left-0 right-0 hidden justify-center pb-3 md:flex">
+                        <div className="w-full max-w-3xl">
+                            {viewpoint && (
+                                <AuthorReplyBar
+                                    issueId={issueId}
+                                    viewpointId={viewpoint.id}
+                                />
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3 md:hidden">
-                    <div className="w-full max-w-3xl">
-                        <AuthorReplyDrawer
-                            issueId={pageParams.id}
-                            viewpointId={viewpoint.id}
-                        />
+                    <div className="fixed bottom-0 left-0 right-0 flex justify-center pb-3 md:hidden">
+                        <div className="w-full max-w-3xl">
+                            {viewpoint && (
+                                <AuthorReplyDrawer
+                                    isDrawerOpen={isDrawerOpen}
+                                    setIsDrawerOpen={setIsDrawerOpen}
+                                    issueId={issueId}
+                                    viewpointId={viewpoint.id}
+                                />
+                            )}
+                        </div>
                     </div>
-                </div>
-            </ReferenceMarkerProvider>
-        </div>
+                </ReferenceMarkerProvider>
+            </div>
+            <div className="fixed bottom-0 w-full md:hidden">
+                <Footer pencilIconOnClick={() => setIsDrawerOpen(true)} />
+            </div>
+        </>
     );
 }
