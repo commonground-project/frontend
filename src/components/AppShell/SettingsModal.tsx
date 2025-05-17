@@ -40,7 +40,6 @@ export default function SettingsModal({
 
     useEffect(() => {
         if (data) {
-            console.log("user settings: ", data);
             setNewReplyInMyViewpoint(data.notification.newReplyInMyViewpoint);
             setNewViewpointInFollowedIssue(
                 data.notification.newViewpointInFollowedIssue,
@@ -87,7 +86,6 @@ export default function SettingsModal({
                 <h2 className="text-base font-medium">通知</h2>
                 <Checkbox
                     checked={newReplyInMyViewpoint}
-                    readOnly
                     onChange={(event) =>
                         setNewReplyInMyViewpoint(event.currentTarget.checked)
                     }
@@ -96,7 +94,6 @@ export default function SettingsModal({
                 />
                 <Checkbox
                     checked={newViewpointInFollowedIssue}
-                    readOnly
                     onChange={(event) =>
                         setNewViewpointInFollowedIssue(
                             event.currentTarget.checked,
@@ -107,7 +104,6 @@ export default function SettingsModal({
                 />
                 <Checkbox
                     checked={newReplyInFollowedViewpoint}
-                    readOnly
                     onChange={(event) =>
                         setNewReplyInFollowedViewpoint(
                             event.currentTarget.checked,
