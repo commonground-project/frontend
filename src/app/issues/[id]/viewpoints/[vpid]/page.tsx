@@ -43,7 +43,7 @@ export default function ViewpointPage() {
         <>
             <Header />
             <div className="scrollbar-gutter-stable-both-edges h-full overflow-y-auto pt-14">
-                <main className="mx-auto w-full max-w-3xl pb-40 pt-8">
+                <main className="mx-auto w-full max-w-3xl px-5 pb-40 pt-8">
                     {issue && viewpoint && (
                         <PageDisplayCard
                             issueId={issueId}
