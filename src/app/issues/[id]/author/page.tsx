@@ -8,14 +8,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 
 import Link from "next/link";
-import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
 
 import { postViewpoint } from "@/lib/requests/issues/postViewpoint";
 import { getFact } from "@/lib/requests/facts/getFact";
+import { followIssue } from "@/lib/requests/issues/followIssue";
 
 import ViewpointCard from "@/components/Conversation/Editors/Viewpoints/ViewpointCard";
 import FactListCard from "@/components/Conversation/Editors/Viewpoints/FactListCard";
 import ReferenceMarkerProvider from "@/components/ReferenceMarker/ReferenceMarkerProvider";
+import Footer from "@/components/AppShell/Footer";
 
 import type { Fact, ViewPoint } from "@/types/conversations.types";
 import { prependPaginatedQueryData } from "@/lib/utils/prependPaginatedQueryData";
@@ -100,6 +101,21 @@ export default function AuthorViewpoint() {
         },
     });
 
+    const followIssueMutation = useMutation({
+        mutationKey: ["followIssue"],
+        mutationFn: () =>
+            followIssue({
+                issueId: issueId,
+                auth_token: cookie.auth_token,
+            }),
+        onSuccess() {
+            toast.success("已關注議題");
+        },
+        onError() {
+            toast.error("關注議題失敗");
+        },
+    });
+
     const getFactById = useMutation({
         mutationKey: ["getFactById"],
         mutationFn: (factId: string) =>
@@ -178,41 +194,44 @@ export default function AuthorViewpoint() {
             content: phrasedViewpointContent.current,
             facts: viewpointFactList.map((fact) => fact.id),
         });
+        followIssueMutation.mutate();
     };
 
     return (
-        <main className="mx-auto my-8 w-full max-w-7xl">
-            <Link
-                href={`/issues/${issueId}`}
-                className="mb-2 ml-7 flex w-[100px] items-center text-lg font-semibold text-neutral-500 duration-300 hover:text-emerald-500"
-            >
-                <ArrowLongLeftIcon className="mr-1 inline-block h-6 w-6" />
-                返回議題
-            </Link>
-            <div className="flex h-[calc(100hv-157px)] w-full items-stretch gap-7">
-                {/* 157px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)*/}
+        <main className="h-full w-full bg-neutral-50 px-6 pt-3 md:px-0 md:pt-0">
+            <div className="flex h-[calc(100%-64px)] w-full">
+                {/* 64px = footer height */}
                 <ReferenceMarkerProvider
-                    factHintTooltip="從右側選取引註事實"
                     historyRecord={phrasedViewpointContent.current}
                 >
-                    <div className="w-2/3">
-                        <ViewpointCard
-                            issueId={issueId}
-                            viewpointTitle={viewpointTitle}
-                            viewpointTitleRef={viewpointTitleRef}
-                            setViewpointTitle={setViewpointTitle}
-                            phrasedContent={phrasedViewpointContent}
-                            viewpointFactList={viewpointFactList}
-                            saveContextToLocal={saveContextToLocal}
-                            deleteContextFromLocal={deleteContextFromLocal}
-                            publishViewpoint={publishViewpoint}
-                            initialContentEmpty={initialContentEmpty}
-                            pendingPublish={
-                                postNewViewpoint.status === "pending"
-                            }
-                        />
+                    <div className="flex w-full md:w-2/3 md:px-4 md:pb-10 md:pt-8">
+                        <Link href="/" className="hidden md:block">
+                            <img
+                                src="/assets/LogoGreen.svg"
+                                alt=""
+                                className="size-9"
+                            />
+                        </Link>
+                        <div className="mx-auto w-full max-w-[700px]">
+                            <ViewpointCard
+                                issueId={issueId}
+                                viewpointTitle={viewpointTitle}
+                                viewpointTitleRef={viewpointTitleRef}
+                                setViewpointTitle={setViewpointTitle}
+                                phrasedContent={phrasedViewpointContent}
+                                viewpointFactList={viewpointFactList}
+                                setViewpointFactList={setViewpointFactList}
+                                saveContextToLocal={saveContextToLocal}
+                                deleteContextFromLocal={deleteContextFromLocal}
+                                publishViewpoint={publishViewpoint}
+                                initialContentEmpty={initialContentEmpty}
+                                pendingPublish={
+                                    postNewViewpoint.status === "pending"
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="w-1/3">
+                    <div className="hidden w-1/3 border-neutral-400 px-6 pb-10 pt-8 md:block md:border-l">
                         <FactListCard
                             issueId={issueId}
                             viewpointTitle={
@@ -224,6 +243,9 @@ export default function AuthorViewpoint() {
                         />
                     </div>
                 </ReferenceMarkerProvider>
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 z-10 md:hidden">
+                <Footer pencilIconVariant="solid" />
             </div>
         </main>
     );

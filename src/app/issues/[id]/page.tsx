@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import type { Issue } from "@/types/conversations.types";
 import { getIssue } from "@/lib/requests/issues/getIssue";
 import AddViewpointBar from "@/components/Conversation/Viewpoints/AddViewpointBar";
+import Header from "@/components/AppShell/Header";
 
 type IssueViewProps = {
     params: Promise<{ id: string }>;
@@ -38,16 +39,19 @@ export default async function IssueView({ params }: IssueViewProps) {
     const issue: Issue = await getIssue({ issueId, auth_token });
 
     return (
-        <div>
-            <main className="flex flex-grow flex-col items-center p-8 pb-16">
-                <div className="mb-6 w-full max-w-3xl">
-                    <IssueCard issue={issue} />
+        <>
+            <Header />
+            <div className="scrollbar-gutter-stable-both-edges h-full overflow-y-auto pt-14">
+                <div className="flex flex-grow flex-col items-center p-8 pb-16">
+                    <div className="mb-6 w-full max-w-3xl">
+                        <IssueCard issue={issue} />
+                    </div>
+                    <div className="w-full max-w-3xl">
+                        <ViewpointList issueId={issueId} />
+                    </div>
                 </div>
-                <div className="w-full max-w-3xl">
-                    <ViewpointList issueId={issueId} />
-                </div>
-            </main>
+            </div>
             <AddViewpointBar id={issueId} />
-        </div>
+        </>
     );
 }
