@@ -97,3 +97,10 @@ export interface TimelineNode {
     description: string;
     date: Date;
 }
+
+export interface ReadObject {
+    userId: number;
+    objectId: string;
+    readStatus: boolean;
+    updatedAt: string;
+}
