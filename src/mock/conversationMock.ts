@@ -77,6 +77,10 @@ export const mockIssue: Issue = {
     title: "Example Issue",
     description: "This is an example issue description.",
     insight: "This is an example insight.",
+    userFollow: {
+        follow: false,
+    },
+    viewpointCount: 5,
     authorId: "00000000-0000-0000-0000-000000000005",
     authorName: "Jane Doe",
     authorAvatar: "https://example.com/avatar.png",
@@ -91,6 +95,10 @@ export const mockEmptyIssue: Issue = {
     updatedAt: new Date(),
     description: "",
     insight: "",
+    userFollow: {
+        follow: false,
+    },
+    viewpointCount: 0,
     authorId: "00000000-0000-0000-0000-000000000001",
     authorName: "",
     authorAvatar: "",
@@ -111,6 +119,8 @@ export const mockViewPoint: ViewPoint = {
     likeCount: 10,
     reasonableCount: 5,
     dislikeCount: 2,
+    replyCount: 3,
+    readStatus: false,
     facts: [mockFact],
 };
 

@@ -5,6 +5,10 @@ export interface Issue {
     title: string;
     description: string;
     insight: string;
+    userFollow: {
+        follow: boolean;
+    };
+    viewpointCount: number;
     authorId: string;
     authorName: string;
     authorAvatar: string;
@@ -52,6 +56,8 @@ export interface ViewPoint {
     likeCount: number;
     reasonableCount: number;
     dislikeCount: number;
+    replyCount: number;
+    readStatus: boolean;
     facts: Fact[];
 }
 

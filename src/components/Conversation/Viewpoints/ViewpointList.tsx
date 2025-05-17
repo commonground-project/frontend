@@ -12,9 +12,10 @@ import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ViewPointListProps = {
     issueId: string;
+    viewpointCount: number;
 };
 
-function ViewPointList({ issueId }: ViewPointListProps) {
+function ViewPointList({ issueId, viewpointCount }: ViewPointListProps) {
     const { ref, inView } = useInView();
 
     const [cookie] = useCookies(["auth_token"]);
@@ -54,7 +55,14 @@ function ViewPointList({ issueId }: ViewPointListProps) {
 
     return (
         <div className="rounded-md bg-neutral-100 p-5 text-black">
-            <h1 className="mb-2 text-xl font-semibold">查看所有觀點</h1>
+            <h1 className="mb-2 hidden text-xl font-semibold md:block">
+                查看所有觀點
+            </h1>
+            <h1 className="mb-2 block text-xl font-medium md:hidden">
+                {viewpointCount
+                    ? `查看 ${viewpointCount} 則觀點`
+                    : "查看所有觀點"}
+            </h1>
             {data?.pages[0].content.length === 0 ? (
                 <EmptyViewpointCard id={issueId} />
             ) : (
