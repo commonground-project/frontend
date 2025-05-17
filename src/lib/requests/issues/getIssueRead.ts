@@ -4,7 +4,7 @@ import { generateRequestHeaders } from "../generateRequestHeaders";
 
 type GetIssueReadParams = {
     issueId: string;
-    auth_token?: string;
+    auth_token: string;
 };
 
 export const getIssueRead = async ({
@@ -12,7 +12,7 @@ export const getIssueRead = async ({
     auth_token,
 }: GetIssueReadParams): Promise<ReadObject> => {
     return await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/issue/${issueId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/read/issue/${issueId}`,
         {
             method: "GET",
             headers: generateRequestHeaders(auth_token),

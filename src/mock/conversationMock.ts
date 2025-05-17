@@ -120,6 +120,7 @@ export const mockViewPoint: ViewPoint = {
     reasonableCount: 5,
     dislikeCount: 2,
     replyCount: 3,
+    readStatus: false,
     facts: [mockFact],
 };
 
