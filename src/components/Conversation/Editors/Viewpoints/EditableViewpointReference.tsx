@@ -13,6 +13,7 @@ type FactCardProps = {
     withBorder?: boolean;
     linkBarWithBG?: boolean;
     showDeleteIcon?: boolean;
+    withHover?: boolean;
 };
 
 export default function EditableViewpointReference({
@@ -25,10 +26,11 @@ export default function EditableViewpointReference({
     withBorder = true,
     linkBarWithBG = true,
     showDeleteIcon = false,
+    withHover = false,
 }: FactCardProps) {
     return (
         <div
-            className={`flex w-full gap-2.5 rounded-lg ${withBorder ? "border border-neutral-400 p-4" : ""} hover:bg-[#f0f0f0]`}
+            className={`flex w-full gap-2.5 rounded-lg ${withBorder ? "border border-neutral-400 p-4" : ""} ${withHover ? "hover:bg-[#f0f0f0]" : ""}`}
         >
             {inSelectionMode ? (
                 <div className="flex-shrink-0 pt-1">
@@ -50,17 +52,19 @@ export default function EditableViewpointReference({
                         {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
                     </h1>
-                    <ActionIcon
-                        variant="transparent"
-                        classNames={{
-                            root: showDeleteIcon
-                                ? ""
-                                : "opacity-0 transition-opacity group-hover:opacity-100",
-                        }}
-                        onClick={() => removeFact(String(fact.id))}
-                    >
-                        <MinusCircleIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-600" />
-                    </ActionIcon>
+                    {showDeleteIcon && (
+                        <ActionIcon
+                            variant="transparent"
+                            classNames={{
+                                root: showDeleteIcon
+                                    ? ""
+                                    : "opacity-0 transition-opacity group-hover:opacity-100",
+                            }}
+                            onClick={() => removeFact(String(fact.id))}
+                        >
+                            <MinusCircleIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-600" />
+                        </ActionIcon>
+                    )}
                 </div>
                 {fact.references.map((reference) => (
                     <div key={reference.id} className="mt-1 flex min-w-0">

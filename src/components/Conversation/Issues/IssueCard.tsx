@@ -23,7 +23,6 @@ type IssueCardProps = {
 };
 
 function IssueCard({ issue }: IssueCardProps) {
-    console.log("IssueCard", issue);
     const [isFollowing, setIsFollowing] = useState(false);
     const pendingFollow = useRef<boolean | null>(null);
     const [cookies] = useCookies(["auth_token"]);

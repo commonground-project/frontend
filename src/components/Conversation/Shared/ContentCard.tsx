@@ -8,6 +8,8 @@ import {
 } from "@/lib/utils/preprocessReferenceContent";
 import { HoverCard, Drawer } from "@mantine/core";
 import FactCard from "@/components/Conversation/Viewpoints/FactCard";
+import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
+import ImportFactCard from "../Facts/ImportFactCard";
 
 type ContentCardProps = {
     facts: Fact[];
@@ -161,10 +163,18 @@ export default function ContentCard({
                                     const fact = facts[factidx];
                                     if (!fact) return null;
                                     return (
-                                        <FactCard
+                                        <EditableViewpointReference
+                                            index={index + 1}
                                             fact={fact}
-                                            factIndex={factidx}
-                                            key={fact.id}
+                                            removeFact={() => {}}
+                                            inSelectionMode={false}
+                                            isSelected={false}
+                                            setIsSelected={() => {}}
+                                            withBorder={false}
+                                            linkBarWithBG={false}
+                                            showDeleteIcon={false}
+                                            withHover={false}
+                                            key={index}
                                         />
                                     );
                                 })}
