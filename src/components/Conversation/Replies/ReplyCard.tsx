@@ -30,7 +30,7 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
         if (inView) {
             readReplyMutation.mutate();
         }
-    }, [inView]);
+    }, [inView, readReplyMutation]);
 
     return (
         <div ref={ref}>
