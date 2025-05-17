@@ -4,6 +4,7 @@ import TernaryReactions from "@/components/Conversation/Shared/TernaryReactions"
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
 import AuthorProfile from "../Shared/AuthorProfile";
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
+import { Chip } from "@mantine/core";
 import Link from "next/link";
 
 type ViewpointCardProps = {
@@ -17,11 +18,14 @@ export default function ViewpointCard({
 }: ViewpointCardProps) {
     return (
         <Link href={`/issues/${issueId}/viewpoints/${viewpoint.id}`}>
-            <AuthorProfile
-                authorName={viewpoint.authorName}
-                authorAvatar={viewpoint.authorAvatar}
-                createdAt={viewpoint.createdAt}
-            />
+            <div className="flex">
+                <AuthorProfile
+                    authorName={viewpoint.authorName}
+                    authorAvatar={viewpoint.authorAvatar}
+                    createdAt={viewpoint.createdAt}
+                />
+                <Chip variant="filled">New</Chip>
+            </div>
             <h1 className="text-lg font-semibold text-neutral-700">
                 {viewpoint.title}
             </h1>
