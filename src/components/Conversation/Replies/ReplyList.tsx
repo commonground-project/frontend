@@ -13,6 +13,7 @@ import { BellAlertIcon } from "@heroicons/react/16/solid";
 import EmptyReplyCard from "../Issues/EmptyReplySection";
 import { useInView } from "react-intersection-observer";
 import ReplySkeleton from "./ReplySkeleton";
+import posthog from "posthog-js";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type ReplyListProps = {
@@ -111,6 +112,7 @@ function ReplyList({ viewpointId }: ReplyListProps) {
                     className="mt-4 h-10 w-full"
                     radius="md"
                     onClick={() => {
+                        posthog.capture("commonground");
                         setRotate((prev) => prev + 180);
                         if (isFollowing) {
                             setTimeout(
