@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
 import { debounce } from "lodash";
-import { Button, Input } from "@mantine/core";
+import { Button, Input, Loader } from "@mantine/core";
 import {
     MagnifyingGlassIcon,
     PlusIcon,
@@ -130,6 +130,11 @@ export default function FactImportingBox({
                                 </div>
                             ),
                     ),
+                )}
+                {!data && isFetching && (
+                    <div className="flex h-full min-h-[150px] w-full items-center justify-center">
+                        <Loader />
+                    </div>
                 )}
             </div>
             {(data === undefined ||
