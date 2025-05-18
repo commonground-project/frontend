@@ -20,15 +20,15 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
     const { ref: inViewRef, inView } = useInView();
     const [cookies] = useCookies(["auth_token"]);
 
-    const readReplyMutation = useMutation({
+    const { mutate: readReplyMutation } = useMutation({
         mutationKey: ["readReply"],
-        mutationFn: async () =>
+        mutationFn: () =>
             readReply({ replyId: reply.id, auth_token: cookies.auth_token }),
     });
 
     useEffect(() => {
         if (inView) {
-            readReplyMutation.mutate();
+            readReplyMutation();
         }
     }, [inView, readReplyMutation]);
 
