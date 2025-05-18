@@ -14,20 +14,21 @@ import {
     postReply,
     type PostReplyParams,
 } from "@/lib/requests/replies/postReply";
+import { v4 as uuid } from "uuid";
 import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
 import { ActionIcon, Loader } from "@mantine/core";
-import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/ReplyReferenceModal";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
+import FactImportModal from "./FactImportModal";
 
 type AuthorReplyBarProps = {
     issueId: string;
     viewpointId: string;
 };
 
-function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
+function AuthorReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     const {
         inputRef,
         inSelectionMode,
@@ -37,7 +38,7 @@ function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
-    const [isReferenceModalOpen, setIsReferenceModalOpen] = useState(false);
+    const [modalId, setModalId] = useState<string | null>(null);
     const [animationSeq, setAnimationSeq] = useState<number | null>(null);
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
     const [replyFactList, setReplyFactList] = useState<Fact[]>([]);
@@ -233,25 +234,20 @@ function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
                                 variant="transparent"
                                 className="group disabled:bg-transparent"
                                 disabled={!inSelectionMode}
-                                onClick={() => setIsReferenceModalOpen(true)}
+                                onClick={() => setModalId(uuid())}
                             >
                                 <LinkIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
                             </ActionIcon>
-                            <ReplyReferenceModal
+                            <FactImportModal
                                 issueId={issueId}
-                                isModalOpen={isReferenceModalOpen}
-                                setIsModalOpen={setIsReferenceModalOpen}
+                                modalId={modalId}
+                                setModalId={setModalId}
                                 replyFactList={replyFactList}
-                                setReplyFactList={setReplyFactList}
+                                setRelpyFactList={setReplyFactList}
+                                addFact={(fact) => {
+                                    setReplyFactList((prev) => [...prev, fact]);
+                                }}
                             />
-                            {/* TODO: Quotes, disabled as feature is not in this sprint */}
-                            <ActionIcon
-                                variant="transparent"
-                                className="group disabled:bg-transparent"
-                                disabled
-                            >
-                                <PlusIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
-                            </ActionIcon>
                         </div>
                         <ActionIcon
                             variant="transparent"
@@ -284,4 +280,4 @@ function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     );
 }
 
-export default withErrorBoundary(AddReplyBar);
+export default withErrorBoundary(AuthorReplyBar);
