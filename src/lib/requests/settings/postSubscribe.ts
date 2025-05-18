@@ -65,7 +65,6 @@ export const generateSubscriptionObject =
             },
         };
 
-        console.log("subscriptionObject: ", subscriptionObject);
         return subscriptionObject;
     };
 

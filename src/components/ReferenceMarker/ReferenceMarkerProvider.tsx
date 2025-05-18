@@ -6,19 +6,19 @@ import {
     generateReferenceCounter,
     encapsuleReferenceMarker,
     updateReferenceCounter,
+    getReferenceMarkerText,
 } from "@/lib/referenceMarker/referenceMarkerEditors";
 import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
 import { preprocessReferenceContent } from "@/lib/utils/preprocessReferenceContent";
 import { treeWalker_referenceText } from "@/lib/referenceMarker/phraseReferencedContent";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
-export default function ReferenceMarkerProvider({
+function ReferenceMarkerProvider({
     children,
     historyRecord,
-    factHintTooltip,
 }: {
     children: React.ReactNode;
     historyRecord?: string; // the content with reference in backend format
-    factHintTooltip: string; // the hint to tell user where to select fact from. Will show when user select text
 }) {
     const [selectedFacts, setSelectedFacts] = useState<Map<number, number[]>>(
         new Map(),
@@ -316,34 +316,7 @@ export default function ReferenceMarkerProvider({
             selectedMarkerId ? Number(selectedMarkerId) : null,
         );
         lastSelectionRange.current = range;
-        lastSelectionRange.current = range;
-
-        // Create tooltip element
-        const rangeRect = range.getBoundingClientRect();
-        const tooltip = document.createElement("div");
-        tooltip.className =
-            "absolute bg-blue-600 z-30 text-white text-xs rounded py-1 px-2 opacity-0";
-        tooltip.id = "fact-hint-tooltip";
-        tooltip.textContent = factHintTooltip;
-        document.body.appendChild(tooltip);
-
-        // Calculate the middlepoint of the selection
-        const mid =
-            Math.min(rangeRect.left, rangeRect.right) +
-            Math.abs(rangeRect.left - rangeRect.right) / 2;
-        // Ensure the tooltip is within the viewport
-        const leftX = Math.max(
-            0,
-            Math.min(
-                mid - tooltip.offsetWidth / 2,
-                window.innerWidth - tooltip.offsetWidth,
-            ),
-        );
-
-        tooltip.style.top = `${rangeRect.top - 30}px`;
-        tooltip.style.left = `${leftX}px`;
-        tooltip.classList.remove("opacity-0");
-    }, [setInSelectionMode, getSelectedReferenceMarker, factHintTooltip]);
+    }, [setInSelectionMode, getSelectedReferenceMarker]);
 
     // Add event listeners for selection change and window resize
     useEffect(() => {
@@ -390,9 +363,6 @@ export default function ReferenceMarkerProvider({
             }
 
             // Update the selected area with the new reference marker
-            // const selection = window.getSelection();
-            // if (!selection) return;
-            // const range = selection.getRangeAt(0);
             if (lastSelectionRange.current === null) return;
             const range = lastSelectionRange.current;
             encapsuleReferenceMarker({
@@ -504,8 +474,16 @@ export default function ReferenceMarkerProvider({
 
     const getInputFieldContent = useCallback(() => {
         if (!inputRef.current) return "";
-        return treeWalker_referenceText(inputRef.current);
+        return treeWalker_referenceText(inputRef.current, true);
     }, [inputRef]);
+
+    const getSelectedText = useCallback(() => {
+        if (lastSelectionRange.current === null) return "";
+        if (curReferenceMarkerId !== null) {
+            return getReferenceMarkerText(String(curReferenceMarkerId));
+        }
+        return lastSelectionRange.current.toString();
+    }, [curReferenceMarkerId, lastSelectionRange]);
 
     return (
         <ReferenceMarkerContext.Provider
@@ -518,9 +496,12 @@ export default function ReferenceMarkerProvider({
                 removeFactFromAllReferenceMarker,
                 getCurSelectedFacts,
                 getInputFieldContent,
+                getSelectedText,
             }}
         >
             {children}
         </ReferenceMarkerContext.Provider>
     );
 }
+
+export default withErrorBoundary(ReferenceMarkerProvider);

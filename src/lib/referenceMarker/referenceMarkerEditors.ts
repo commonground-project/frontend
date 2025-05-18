@@ -158,7 +158,6 @@ export function updateReferenceCounter({
     referenceMarkerId,
     referencedIndexes,
 }: updateReferenceMarkerParams) {
-    console.log("updateReferenceCounter", referenceMarkerId);
     // No fact is referencing this marker, remove the reference marker
     if (referencedIndexes.length === 0) {
         decapsuleReferenceMarker({ referenceMarkerId });
@@ -201,8 +200,6 @@ type decapsuleReferenceMarkerParams = {
 export function decapsuleReferenceMarker({
     referenceMarkerId,
 }: decapsuleReferenceMarkerParams) {
-    console.log("decapsuleReferenceMarker", referenceMarkerId);
-
     // Find every reference marker
     const referenceMarkers = document.querySelectorAll(
         `[data-marker-id="${referenceMarkerId}"].reference-marker`,
@@ -234,4 +231,28 @@ export function decapsuleReferenceMarker({
 
     // Delete every reference marker and reference counter
     referenceCounter.forEach((counter) => counter.remove());
+}
+
+export function getReferenceMarkerText(referenceMarkerId: string): string {
+    const referenceMarkers = document.querySelectorAll(
+        `[data-marker-id="${referenceMarkerId}"].reference-marker`,
+    );
+    if (referenceMarkers.length === 0) {
+        console.error(
+            `start or end reference marker of id ${referenceMarkerId} not found`,
+        );
+        return "";
+    }
+    const referenceCounter = document.querySelectorAll(
+        `[data-marker-id="${referenceMarkerId}"].reference-counter`,
+    );
+    if (referenceCounter.length === 0) {
+        console.error(`reference counter of id ${referenceMarkerId} not found`);
+        return "";
+    }
+
+    const range = new Range();
+    range.setStartAfter(referenceMarkers[0]); // Start after the start marker
+    range.setEndBefore(referenceCounter[0]); // End before the reference counter
+    return range.toString();
 }

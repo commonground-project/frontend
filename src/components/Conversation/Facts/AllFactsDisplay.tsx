@@ -11,12 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 import FactSkeleton from "./FactSkeleton";
 import { useCookies } from "react-cookie";
 import { useInView } from "react-intersection-observer";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 interface AllFactsDisplayProps {
     issueId: string;
 }
 
-export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
+function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
     const [creationId, setCreationId] = useState<string | null>(null);
     const [cookies] = useCookies(["auth_token"]);
 
@@ -96,13 +97,25 @@ export default function AllFactsDisplay({ issueId }: AllFactsDisplayProps) {
                 color="black"
                 size="compact-md"
                 classNames={{
-                    root: "px-0 hover:bg-neutral-100",
+                    root: "px-0 hover:bg-neutral-100 hidden md:flex",
                     inner: "justify-start",
                     label: "font-sans font-bold text-md",
                 }}
             >
                 新增事實
             </Button>
+            <Button
+                onClick={() => {
+                    setCreationId(uuidv4());
+                }}
+                leftSection={<PlusIcon className="size-4 text-neutral-50" />}
+                radius={8}
+                className="block h-10 w-full md:hidden"
+            >
+                <div className="text-base text-neutral-50">引入一則事實</div>
+            </Button>
         </div>
     );
 }
+
+export default withErrorBoundary(AllFactsDisplay);
