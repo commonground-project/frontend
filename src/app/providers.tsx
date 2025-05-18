@@ -1,6 +1,7 @@
 "use client";
 
 import { MantineProvider } from "@mantine/core";
+import { ProgressProvider } from "@bprogress/next/app";
 import type { ReactNode } from "react";
 import {
     isServer,
@@ -11,8 +12,11 @@ import { Toaster } from "sonner";
 import { CommonGroundMantineTheme } from "@/lib/configs/mantine";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { CookiesProvider } from "react-cookie";
 import { decodeToken } from "react-jwt";
+import { Noto_Serif_TC } from "next/font/google";
 import type { DecodedToken } from "@/types/users.types";
+import AuthProvider from "@/components/Auth/AuthProvider";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -56,6 +60,11 @@ if (typeof window !== "undefined") {
     });
 }
 
+const __notoSerifTC = Noto_Serif_TC({
+    subsets: ["latin"], // Use 'chinese-traditional' if available in future
+    display: "swap",
+});
+
 type ProviderProps = {
     children: ReactNode;
 };
@@ -64,13 +73,24 @@ export default function Providers({ children }: ProviderProps) {
     const queryClient = getQueryClient();
 
     return (
-        <PostHogProvider client={posthog}>
-            <QueryClientProvider client={queryClient}>
-                <MantineProvider theme={CommonGroundMantineTheme}>
-                    {children}
-                </MantineProvider>
-                <Toaster richColors />
-            </QueryClientProvider>
-        </PostHogProvider>
+        <QueryClientProvider client={queryClient}>
+            <CookiesProvider>
+                <AuthProvider>
+                    <PostHogProvider client={posthog}>
+                        <MantineProvider theme={CommonGroundMantineTheme}>
+                            <ProgressProvider
+                                height="4px"
+                                color="#009966"
+                                options={{ showSpinner: false }}
+                                shallowRouting
+                            >
+                                {children}
+                            </ProgressProvider>
+                        </MantineProvider>
+                        <Toaster richColors />
+                    </PostHogProvider>
+                </AuthProvider>
+            </CookiesProvider>
+        </QueryClientProvider>
     );
 }

@@ -5,7 +5,7 @@ import { refreshJwtRequest } from "./lib/requests/auth/refreshJwt";
 import { decodeToken } from "react-jwt";
 import type { DecodedToken } from "./types/users.types";
 
-const protectedPaths = ["/", "/onboarding"];
+const protectedPaths = ["/onboarding"];
 
 export async function middleware(request: NextRequest) {
     const userToken = request.cookies.get("auth_token");
@@ -84,7 +84,7 @@ export async function middleware(request: NextRequest) {
         decodedToken?.role !== "ROLE_NOT_SETUP" &&
         requestUrl.pathname === "/onboarding"
     ) {
-        return NextResponse.redirect(new URL("/", request.url));
+        // return NextResponse.redirect(new URL("/", request.url));
     }
 }
 
@@ -98,7 +98,7 @@ export const config = {
          * - favicon.ico, sitemap.xml, robots.txt (metadata files)
          */
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|assets|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             missing: [
                 { type: "header", key: "next-router-prefetch" },
                 { type: "header", key: "purpose", value: "prefetch" },
@@ -106,7 +106,7 @@ export const config = {
         },
 
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|assets|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             has: [
                 { type: "header", key: "next-router-prefetch" },
                 { type: "header", key: "purpose", value: "prefetch" },
@@ -114,7 +114,7 @@ export const config = {
         },
 
         {
-            source: "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            source: "/((?!api|_next/static|_next/image|assets|favicon.ico|sitemap.xml|robots.txt|serviceWorker.js).*)",
             has: [{ type: "header", key: "x-present" }],
             missing: [{ type: "header", key: "x-missing", value: "prefetch" }],
         },

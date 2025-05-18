@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Reaction } from "@/types/conversations.types";
 import { useCookies } from "react-cookie";
 import { useMutation } from "@tanstack/react-query";
@@ -9,12 +9,14 @@ import {
     HandThumbDownIcon,
     ArrowUpCircleIcon,
 } from "@heroicons/react/24/solid";
+import { toast } from "sonner";
 
 type UpdateTernaryActionResponse = {
     reaction: Reaction;
 };
 
 type TernaryReactionsProps = {
+    parentTitle: string;
     parentId: string;
     initialReaction: Reaction;
     initialCounts: {
@@ -30,138 +32,153 @@ type TernaryReactionsProps = {
 };
 
 export default function TernaryReactions({
+    parentTitle,
     parentId,
     initialReaction,
     initialCounts,
     mutationFn,
     size,
 }: TernaryReactionsProps) {
-    const [reactionStatus, setReactionStatus] =
+    const [currentReaction, setCurrentReaction] =
         useState<Reaction>(initialReaction);
-    const [countMap, setCountMap] = useState({
-        [Reaction.LIKE]: initialCounts.like,
-        [Reaction.REASONABLE]: initialCounts.reasonable,
-        [Reaction.DISLIKE]: initialCounts.dislike,
-    });
+    const pendingReaction = useRef<Reaction | null>(null);
 
     const [cookie] = useCookies(["auth_token"]);
+    const baseReactionCount = {
+        like: initialCounts.like - (initialReaction === Reaction.LIKE ? 1 : 0),
+        reasonable:
+            initialCounts.reasonable -
+            (initialReaction === Reaction.REASONABLE ? 1 : 0),
+        dislike:
+            initialCounts.dislike -
+            (initialReaction === Reaction.DISLIKE ? 1 : 0),
+    };
 
     const updateReaction = useMutation({
         mutationKey: ["updateReaction", parentId],
         mutationFn: (reaction: Reaction) =>
             mutationFn(reaction, cookie.auth_token),
-        onMutate(reaction: Reaction) {
-            const prevCount = { ...countMap };
-            const prevReaction = reactionStatus;
+        onMutate: async (newReaction) => {
+            pendingReaction.current = newReaction;
+            const previousReaction = currentReaction;
 
-            //optimistic update
-            setCountMap((countMap) => {
-                const newCount = { ...countMap };
+            // Optimistically update UI
+            setCurrentReaction(newReaction);
 
-                if (
-                    // cancel reaction
-                    reaction === Reaction.NONE &&
-                    prevReaction !== Reaction.NONE
-                ) {
-                    newCount[prevReaction] -= 1;
-                } else if (
-                    // add reaction
-                    reaction !== Reaction.NONE &&
-                    prevReaction === Reaction.NONE
-                ) {
-                    newCount[reaction] += 1;
-                } else if (
-                    // change reaction
-                    reaction !== Reaction.NONE &&
-                    prevReaction !== Reaction.NONE
-                ) {
-                    newCount[prevReaction] -= 1;
-                    newCount[reaction] += 1;
-                }
-
-                return newCount;
-            });
-
-            setReactionStatus((prev) => {
-                return prev === reaction ? Reaction.NONE : reaction;
-            });
-
-            return { prevCount, prevReaction };
+            // Save the previous reaction before making changes
+            return previousReaction;
         },
-        onSuccess(data) {
-            setReactionStatus(data.reaction);
+        onSuccess: (data) => {
+            if (pendingReaction.current === data.reaction) {
+                setCurrentReaction(data.reaction);
+                pendingReaction.current = null;
+            }
         },
-        onError(__error, __variables, context) {
-            if (!context) return;
-            setCountMap(context.prevCount);
-            setReactionStatus(context.prevReaction);
+        onError: (__err, __variables, context) => {
+            // Revert to previous reaction on failure
+            // Rollback to the previous state
+            if (context !== undefined) {
+                setCurrentReaction(context);
+            }
+            pendingReaction.current = null;
+
+            // Toast if request fails
+            const truncatedTitle =
+                parentTitle.length > 10
+                    ? `${parentTitle.slice(0, 10)}...`
+                    : parentTitle;
+            toast.error(`回覆貼文「${truncatedTitle}」時發生錯誤，請再試一次`);
         },
     });
 
     const handleReaction = (
         reaction: Reaction.LIKE | Reaction.REASONABLE | Reaction.DISLIKE,
     ) => {
+        if (cookie.auth_token === undefined) {
+            toast.info("登入以使用回應功能");
+            return;
+        }
         updateReaction.mutate(
-            reaction === reactionStatus ? Reaction.NONE : reaction,
+            reaction === currentReaction ? Reaction.NONE : reaction,
         );
     };
 
+    const countFormatter = new Intl.NumberFormat("en", {
+        notation: "compact",
+        compactDisplay: "short",
+    });
+
     return (
-        <div className="flex">
+        <div className="flex justify-between md:justify-start">
             {/* like */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.LIKE);
-                }}
-            >
-                <HandThumbUpIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.LIKE);
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.LIKE]}
-            </h1>
+                >
+                    <HandThumbUpIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.LIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.like +
+                            (currentReaction === Reaction.LIKE ? 1 : 0),
+                    )}
+                </h1>
+            </div>
             {/* reasonable */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.REASONABLE);
-                }}
-            >
-                <ArrowUpCircleIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.REASONABLE);
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.REASONABLE]}
-            </h1>
+                >
+                    <ArrowUpCircleIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.REASONABLE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.reasonable +
+                            (currentReaction === Reaction.REASONABLE ? 1 : 0),
+                    )}
+                </h1>
+            </div>
             {/* dislike */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleReaction(Reaction.DISLIKE);
-                }}
-            >
-                <HandThumbDownIcon
-                    style={{
-                        width: size ? size * 4 : 24,
-                        height: size ? size * 4 : 24,
+            <div className="flex">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleReaction(Reaction.DISLIKE);
                     }}
-                    className={`fill-none ${reactionStatus === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
-                />
-            </button>
-            <h1 className="w-11 px-1 text-neutral-600">
-                {countMap[Reaction.DISLIKE]}
-            </h1>
+                >
+                    <HandThumbDownIcon
+                        style={{
+                            width: size ? size * 4 : 24,
+                            height: size ? size * 4 : 24,
+                        }}
+                        className={`fill-none ${currentReaction === Reaction.DISLIKE ? "stroke-emerald-500" : "stroke-neutral-600"} stroke-[1.5] hover:stroke-emerald-500`}
+                    />
+                </button>
+                <h1 className="w-12 px-1 text-neutral-600">
+                    {countFormatter.format(
+                        baseReactionCount.dislike +
+                            (currentReaction === Reaction.DISLIKE ? 1 : 0),
+                    )}
+                </h1>
+            </div>
         </div>
     );
 }

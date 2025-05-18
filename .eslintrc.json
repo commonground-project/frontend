@@ -12,10 +12,20 @@
         "vars": "all",
         "args": "after-used",
         "ignoreRestSiblings": false,
-        "varsIgnorePattern": "^__"
+        "varsIgnorePattern": "^__",
+        "argsIgnorePattern": "^__"
       }
     ],
     "@typescript-eslint/consistent-type-imports": "warn",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ]
   }
 }

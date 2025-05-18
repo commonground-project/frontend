@@ -5,6 +5,10 @@ export interface Issue {
     title: string;
     description: string;
     insight: string;
+    userFollow: {
+        follow: boolean;
+    };
+    viewpointCount: number;
     authorId: string;
     authorName: string;
     authorAvatar: string;
@@ -52,6 +56,8 @@ export interface ViewPoint {
     likeCount: number;
     reasonableCount: number;
     dislikeCount: number;
+    replyCount: number;
+    readStatus: boolean;
     facts: Fact[];
 }
 
@@ -80,6 +86,23 @@ export interface Reply {
     likeCount: number;
     reasonableCount: number;
     dislikeCount: number;
+    readStatus: boolean;
     quotes: Quote[];
     facts: Fact[];
+}
+
+export interface TimelineNode {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    description: string;
+    date: Date;
+}
+
+export interface ReadObject {
+    userId: number;
+    objectId: string;
+    readStatus: boolean;
+    updatedAt: string;
 }

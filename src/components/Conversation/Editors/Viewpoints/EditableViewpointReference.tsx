@@ -1,42 +1,78 @@
 import type { Fact } from "@/types/conversations.types";
-import { Button } from "@mantine/core";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ActionIcon, Checkbox } from "@mantine/core";
+import { MinusCircleIcon } from "@heroicons/react/24/outline";
 import ReferenceBar from "@/components/Conversation/Facts/ReferenceBar";
 
 type FactCardProps = {
-    fact: Fact;
     index: number;
+    fact: Fact;
     removeFact: (id: string) => void;
+    inSelectionMode: boolean;
+    isSelected: boolean;
+    setIsSelected: (isSelected: boolean) => void;
+    withBorder?: boolean;
+    linkBarWithBG?: boolean;
+    showDeleteIcon?: boolean;
+    withHover?: boolean;
 };
 
 export default function EditableViewpointReference({
-    fact,
     index,
+    fact,
     removeFact,
+    inSelectionMode,
+    isSelected,
+    setIsSelected,
+    withBorder = true,
+    linkBarWithBG = true,
+    showDeleteIcon = false,
+    withHover = false,
 }: FactCardProps) {
     return (
-        <div className="flex gap-2 overflow-hidden">
-            <p>[{index}]</p>
+        <div
+            className={`flex w-full gap-2.5 rounded-lg ${withBorder ? "border border-neutral-400 p-4" : ""} ${withHover ? "hover:bg-[#f0f0f0]" : ""}`}
+        >
+            {inSelectionMode ? (
+                <div className="flex-shrink-0 pt-1">
+                    <Checkbox
+                        checked={isSelected}
+                        readOnly
+                        onMouseDown={(e) => {
+                            e.preventDefault();
+                            setIsSelected(!isSelected);
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className="font-mono">{`[${index}]`}</div>
+            )}
             <div className="min-w-0 flex-1">
-                <div className="group flex justify-between">
-                    <h1 className="float-left text-lg font-normal text-black">
+                <div className="group flex w-full justify-between">
+                    <h1 className="text-lg font-normal text-black">
+                        {/* max width 100% - 30px, 30px for x mark icon*/}
                         {fact.title}
                     </h1>
-                    <Button
-                        variant="transparent"
-                        classNames={{
-                            root: "float-right pr-1 pl-0 flex invisible group-hover:visible",
-                        }}
-                        onClick={() => removeFact(String(fact.id))}
-                    >
-                        <XMarkIcon className="size-6 stroke-black hover:stroke-red-600" />
-                    </Button>
+                    {showDeleteIcon && (
+                        <ActionIcon
+                            variant="transparent"
+                            classNames={{
+                                root: showDeleteIcon
+                                    ? ""
+                                    : "opacity-0 transition-opacity group-hover:opacity-100",
+                            }}
+                            onClick={() => removeFact(String(fact.id))}
+                        >
+                            <MinusCircleIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-600" />
+                        </ActionIcon>
+                    )}
                 </div>
                 {fact.references.map((reference) => (
-                    <div key={reference.id} className="mt-1">
+                    <div key={reference.id} className="mt-1 flex min-w-0">
                         <ReferenceBar
+                            key={reference.id}
                             reference={reference}
                             showSrcTitle={true}
+                            withBackground={linkBarWithBG}
                         />
                     </div>
                 ))}

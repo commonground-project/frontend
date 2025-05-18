@@ -1,6 +1,7 @@
 import type { FactReference } from "@/types/conversations.types";
 import { GlobeAltIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
+import { safeConstructURL } from "@/lib/utils/safeConstructURL";
 
 type ViewpointFactReferenceProps = {
     reference: FactReference;
@@ -9,30 +10,34 @@ type ViewpointFactReferenceProps = {
 export default function ViewpointFactReference({
     reference,
 }: ViewpointFactReferenceProps) {
-    const pageURL = new URL(decodeURIComponent(reference.url));
-    const iconURL = pageURL.protocol + "//" + pageURL.hostname + reference.icon;
+    const pageURL = safeConstructURL(reference.url);
 
     return (
         <Link
-            href={pageURL.href}
+            href={reference.url}
             passHref
             target="_blank"
             rel="noopener noreferrer"
             key={reference.id}
             className="flex items-center"
+            // Prevents the click trigger the blur event of the parent before open the link
+            onMouseDown={(e) => {
+                e.preventDefault();
+            }}
+            onClick={(e) => e.stopPropagation()}
         >
             {reference.icon.length ? (
                 <img
                     className="inline-block h-3 w-3 rounded-full"
-                    src={iconURL}
-                    alt="favicon"
+                    src={reference.icon}
+                    alt=""
                 />
             ) : (
                 <GlobeAltIcon className="inline-block h-3 w-3 rounded-full" />
             )}
 
             <h1 className="inline-block pl-1 font-sans text-xs font-normal text-neutral-500">
-                {pageURL.hostname.replace("www.", "")}
+                {pageURL ? pageURL.hostname.replace("www.", "") : reference.url}
             </h1>
         </Link>
     );

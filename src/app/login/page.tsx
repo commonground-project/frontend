@@ -34,20 +34,40 @@ export default function LoginPage() {
     }, [setHideLoginButton]);
 
     return (
-        <div className="flex min-h-screen w-full items-center justify-center">
-            <div className="rounded-lg bg-gray-100 px-20 py-10 font-bold text-black shadow-md">
-                <h1 className="mb-4 text-center text-2xl">登入 CommonGround</h1>
-                <div className="flex justify-center">
+        <div className="flex h-full w-full items-center justify-center bg-neutral-50">
+            <div className="hidden h-full w-1/2 bg-[url('/assets/CGGradient.jpeg')] bg-cover bg-no-repeat md:block"></div>
+            <div className="flex justify-center md:w-1/2">
+                <div className="mx-10 flex w-full max-w-md flex-col items-center justify-center md:items-start">
+                    <img
+                        src="/assets/LogoGreen.svg"
+                        alt="Logo"
+                        className="mb-6 size-24 md:hidden"
+                    />
+                    <img
+                        src="/assets/LogoBlack.svg"
+                        alt="Logo"
+                        className="mb-3 hidden size-24 md:block"
+                    />
+                    <img
+                        src="/assets/LogoTextGreen.svg"
+                        alt="Logo"
+                        className="mb-8 h-6 md:hidden"
+                    />
+                    <img
+                        src="/assets/LogoTextBlack.svg"
+                        alt="Logo"
+                        className="mb-11 ml-2 hidden h-7 md:block"
+                    />
                     <button
                         onClick={() =>
                             handleLogin(getSearchParams("r") ?? undefined)
                         }
-                        className="flex items-center space-x-2 rounded-lg bg-white px-4 py-2 text-black transition-colors hover:bg-gray-200"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border-[1px] border-neutral-400 bg-transparent px-1 py-3 text-black transition-colors hover:bg-gray-200"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
-                            className="h-7 w-7"
+                            className="size-6 md:size-[30px]"
                         >
                             <path
                                 fill="#4285F4"
@@ -66,7 +86,9 @@ export default function LoginPage() {
                                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                             />
                         </svg>
-                        <span>Continue with Google</span>
+                        <span className="font-semibold text-neutral-700">
+                            使用 Google 繼續
+                        </span>
                     </button>
                 </div>
             </div>

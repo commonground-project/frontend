@@ -1,69 +1,97 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
-import { Select, Button } from "@mantine/core";
+import { debounce } from "lodash";
+import { Button } from "@mantine/core";
 import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/outline";
 
-import { getPaginatedIssueFactsBySize } from "@/lib/requests/issues/getIssueFacts";
 import EditableViewpointReference from "@/components/Conversation/Editors/Viewpoints/EditableViewpointReference";
-import FactCreationModal from "@/components/Conversation/Facts/FactCreationModal";
+import FactImportModal from "@/components/Conversation/Facts/FactImportModal";
+import { ReferenceMarkerContext } from "@/lib/referenceMarker/referenceMarkerContext";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
 
 type FactListCardProps = {
     issueId: string;
+    viewpointTitle: string;
     viewpointFactList: Fact[];
     setViewpointFactList: Dispatch<SetStateAction<Fact[]>>;
+    saveContextToLocal: (
+        title: string,
+        content: string,
+        facts: string[],
+    ) => void;
 };
 
-export default function FactListCard({
+function FactListCard({
     issueId,
+    viewpointTitle,
     viewpointFactList,
     setViewpointFactList,
+    saveContextToLocal,
 }: FactListCardProps) {
-    const [searchValue, setSearchValue] = useState<string>(""); // eslint-disable-line
+    const {
+        inSelectionMode,
+        addFactToReferenceMarker,
+        removeFactFromReferenceMarker,
+        removeFactFromAllReferenceMarker,
+        getCurSelectedFacts,
+        getInputFieldContent,
+    } = useContext(ReferenceMarkerContext);
+
     const [creationId, setCreationId] = useState<string | null>(null);
-    const [cookie] = useCookies(["auth_token"]);
 
-    const { data, error } = useInfiniteQuery({
-        queryKey: ["facts", issueId],
-        queryFn: ({ pageParam }) =>
-            getPaginatedIssueFactsBySize(
-                issueId,
-                pageParam,
-                cookie.auth_token,
-                200,
-            ),
+    const autoSave = useMemo(
+        () =>
+            debounce((title: string, facts: string[]) => {
+                saveContextToLocal(title, getInputFieldContent(), facts);
+            }, 2000),
+        [getInputFieldContent, saveContextToLocal],
+    );
 
-        initialPageParam: 0,
-        getNextPageParam: (lastPage) => {
-            if (lastPage.page.number + 1 < lastPage.page.totalPage)
-                return lastPage.page.number + 1;
-        },
-    });
-
+    // clean up the auto-save function when the component unmounts
     useEffect(() => {
-        if (!error) return;
-        toast.error("無法獲取事實列表，請重新整理頁面");
-    }, [error]);
+        const autoSaveFunc = autoSave;
+        return () => {
+            autoSaveFunc.cancel();
+        };
+    }, [autoSave]);
 
-    //remove the fact from the viewpointFactList
+    // auto save when the viewpoint factlist changes
+    useEffect(() => {
+        autoSave(
+            viewpointTitle,
+            viewpointFactList.map((fact) => fact.id),
+        );
+    }, [viewpointFactList, viewpointTitle, autoSave]);
+
+    // Remove the fact from the viewpointFactList
     const removeFact = (factId: string) => {
+        // Find the array index of the fact to be removed
+        const factIndex = viewpointFactList.findIndex(
+            (fact) => String(fact.id) === factId,
+        );
+        if (factIndex === -1) {
+            throw new Error("Cannot find the selected fact in the list");
+        }
+
+        // Remove the fact from the FactList array
         setViewpointFactList((prev) =>
             prev.filter((fact) => String(fact.id) !== factId),
         );
+
+        // Update Reference Markers
+        removeFactFromAllReferenceMarker(factIndex);
     };
 
     //add the selected fact to the viewpointFactList
-    const addFact = (factId: string) => {
+    const addFact = (newFact: Fact) => {
         // Check if the selected fact exists in viewpointFactList
         const factInViewpointFactList = viewpointFactList.some(
-            (fact) => fact.id === factId,
+            (fact) => fact.id === newFact.id,
         );
         if (factInViewpointFactList) {
             throw new Error(
@@ -71,100 +99,81 @@ export default function FactListCard({
             );
         }
 
-        const selectedFact = data?.pages
-            .flatMap((page) => page.content)
-            .flat()
-            .find((fact) => fact.id === factId);
-        if (!selectedFact) {
-            throw new Error("Cannot select the selected fact");
-        }
-
-        setViewpointFactList((prev) => [...prev, selectedFact]);
+        setViewpointFactList((prev) => [...prev, newFact]);
     };
 
     return (
-        <div className="h-full rounded-lg bg-neutral-100 px-7 py-4">
-            <h1 className="mb-1 text-lg font-semibold text-neutral-700">
-                事實
+        <div className="h-full">
+            <h1 className="mb-6 text-lg font-semibold text-neutral-700">
+                相關事實
             </h1>
-            <div className="flex w-full items-center py-1 pr-[52px]">
-                <MagnifyingGlassIcon className="inline-block h-5 w-5 stroke-neutral-500" />
-                <Select
-                    variant="unstyled"
-                    searchable
-                    value={searchValue}
-                    onChange={(selectedFactId) => {
-                        if (!selectedFactId) return;
-                        addFact(selectedFactId);
-                    }}
-                    data={data?.pages
-                        .flatMap((page) => page.content)
-                        .filter(
-                            (fact) =>
-                                !viewpointFactList.some(
-                                    (viewpointFact) =>
-                                        viewpointFact.id === fact.id,
-                                ),
-                        )
-                        .map((fact) => ({
-                            value: String(fact.id),
-                            label: fact.title,
-                        }))}
-                    checkIconPosition="right"
-                    radius={0}
-                    classNames={{
-                        input: "ml-2 bg-transparent text-lg font-normal text-neutral-500 focus-within:outline-b-2 focus-within:border-b-emerald-500 focus-within:outline-none",
-                    }}
-                    placeholder="搜尋 CommonGround"
-                    nothingFoundMessage={
-                        <Button
-                            onClick={() => setCreationId(uuidv4())}
-                            variant="transparent"
-                            classNames={{
-                                root: "max-w-full h-auto px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
-                                inner: "flex justify-start",
-                                label: "whitespace-normal text-left",
-                            }}
-                        >
-                            找不到想引著的事實嗎？將其引入 CommonGround 吧!
-                        </Button>
-                    }
-                />
-            </div>
-            <FactCreationModal
+            <FactImportModal
                 issueId={issueId}
-                creationID={creationId}
-                setCreationID={setCreationId}
-                factCreationCallback={(facts) =>
-                    facts.forEach((fact) => addFact(fact.id))
-                }
+                modalId={creationId}
+                setModalId={setCreationId}
+                viewpointFactList={viewpointFactList}
+                addFact={addFact}
             />
-            <div className="h-[calc(100vh-265px)] overflow-auto">
-                {/* 265px = 56px(header) + 69px(margin-top between header and this div) + 32px(padding-bottom of main)
-                + 92px(FactListCard title and search box) + 16px(FactListCard padding-bottom)*/}
-                <div className="flex flex-col justify-start gap-3 pl-7 pr-4">
-                    {viewpointFactList.map((fact, index) => (
-                        <EditableViewpointReference
-                            key={fact.id}
-                            fact={fact}
-                            index={index + 1}
-                            removeFact={removeFact}
-                        />
-                    ))}
+            {viewpointFactList.length === 0 ? (
+                <div className="flex h-full w-full flex-col items-center justify-center">
+                    <MagnifyingGlassIcon className="inline-block size-24 stroke-neutral-500" />
+                    <div className="mb-4 mt-2 text-xl font-normal text-neutral-800">
+                        目前沒有事實被引入
+                    </div>
                     <Button
                         onClick={() => setCreationId(uuidv4())}
-                        variant="transparent"
+                        variant="outline"
+                        color="#a1a1a1"
                         leftSection={<PlusIcon className="h-6 w-6" />}
                         classNames={{
-                            root: "px-0 text-neutral-600 text-base font-normal hover:text-emerald-500 duration-300",
-                            inner: "flex justify-start",
-                            section: "mr-2",
+                            root: "text-neutral-600 text-[18px]",
                         }}
                     >
-                        引入一條事實
+                        引入一則事實
                     </Button>
                 </div>
-            </div>
+            ) : (
+                <div className="h-[calc(100vh-170px)] overflow-y-auto">
+                    {/* 170px = 56px(header) + 74px(margin-top between header and this div) + 40px(padding-bottom)*/}
+                    <div className="flex flex-col justify-start gap-4">
+                        {viewpointFactList.map((fact, index) => (
+                            <EditableViewpointReference
+                                index={index + 1}
+                                key={fact.id}
+                                fact={fact}
+                                removeFact={removeFact}
+                                inSelectionMode={inSelectionMode}
+                                isSelected={getCurSelectedFacts().includes(
+                                    index,
+                                )}
+                                setIsSelected={(isSelected) => {
+                                    if (isSelected) {
+                                        addFactToReferenceMarker(index);
+                                    } else {
+                                        removeFactFromReferenceMarker(index);
+                                    }
+                                }}
+                            />
+                        ))}
+                        <Button
+                            onClick={() => setCreationId(uuidv4())}
+                            radius={"md"}
+                            variant="outline"
+                            color="#a1a1a1"
+                            leftSection={<PlusIcon className="h-6 w-6" />}
+                            classNames={{
+                                root: "text-black text-base font-normal w-full",
+                                inner: "flex justify-start",
+                                section: "mr-2",
+                            }}
+                        >
+                            引入一則事實
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
+export default withErrorBoundary(FactListCard);

@@ -4,6 +4,7 @@ import type {
     ViewPoint,
     FactReference,
     Reply,
+    TimelineNode,
 } from "@/types/conversations.types";
 import { Reaction } from "@/types/conversations.types";
 import type { User } from "@/types/users.types";
@@ -76,6 +77,10 @@ export const mockIssue: Issue = {
     title: "Example Issue",
     description: "This is an example issue description.",
     insight: "This is an example insight.",
+    userFollow: {
+        follow: false,
+    },
+    viewpointCount: 5,
     authorId: "00000000-0000-0000-0000-000000000005",
     authorName: "Jane Doe",
     authorAvatar: "https://example.com/avatar.png",
@@ -90,6 +95,10 @@ export const mockEmptyIssue: Issue = {
     updatedAt: new Date(),
     description: "",
     insight: "",
+    userFollow: {
+        follow: false,
+    },
+    viewpointCount: 0,
     authorId: "00000000-0000-0000-0000-000000000001",
     authorName: "",
     authorAvatar: "",
@@ -110,6 +119,8 @@ export const mockViewPoint: ViewPoint = {
     likeCount: 10,
     reasonableCount: 5,
     dislikeCount: 2,
+    replyCount: 3,
+    readStatus: false,
     facts: [mockFact],
 };
 
@@ -131,5 +142,74 @@ export const mockReply: Reply = {
     dislikeCount: 1,
     facts: [],
     quotes: [],
+    readStatus: false,
     title: "Example Reply",
 };
+
+export const mockTimeline: TimelineNode[] = [
+    {
+        id: "00000000-0000-0000-0000-000000000010",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 1",
+        description: "This is an example timeline node description.",
+        date: new Date(2023, 9, 1, 12, 0, 0),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000011",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 2",
+        description: "This is an example timeline node description.",
+        date: new Date(2020, 0, 1, 12, 0, 0),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000012",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 3",
+        description: "This is an example timeline node description.",
+        date: new Date(2024, 4, 9, 5, 0, 0),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000013",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 4",
+        description:
+            "This is an example timeline node description. A longer description to test the layout. lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        date: new Date(2023, 1, 8, 7, 23, 1),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000014",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 5",
+        description: "This is an example timeline node description.",
+        date: new Date(2025, 0, 20, 4, 30, 0, 0),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000015",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 6",
+        description: "This is an example timeline node description.",
+        date: new Date(2024, 10, 27, 11, 27, 0, 0),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000016",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 7",
+        description: "This is an example timeline node description.",
+        date: new Date(2023, 0, 1, 1, 1, 1, 1),
+    },
+    {
+        id: "00000000-0000-0000-0000-000000000017",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: "Example Timeline Node 8",
+        description: "This is an example timeline node description.",
+        date: new Date(2023, 0, 5, 6, 7, 8, 8),
+    },
+];

@@ -3,9 +3,10 @@
 import { type ViewPoint } from "@/types/conversations.types";
 import Link from "next/link";
 import AuthorProfile from "../Shared/AuthorProfile";
-import ContentCard from "./ContentCard";
+import ContentCard from "../Shared/ContentCard";
 import TernaryReactions from "../Shared/TernaryReactions";
 import { postViewpointReaction } from "@/lib/requests/viewpoints/postViewpointReaction";
+import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 type PageDisplayCardProps = {
     issueId: string;
@@ -13,13 +14,13 @@ type PageDisplayCardProps = {
     viewpoint: ViewPoint;
 };
 
-export default function PageDisplayCard({
+function PageDisplayCard({
     issueId,
     issueTitle,
     viewpoint,
 }: PageDisplayCardProps) {
     return (
-        <div className="rounded-xl bg-white px-7 py-6">
+        <div className="relative rounded-xl bg-neutral-100 px-7 py-6">
             <Link href={`/issues/${issueId}`}>
                 <p className="text-lg text-neutral-600">觀點・{issueTitle}</p>
             </Link>
@@ -32,9 +33,13 @@ export default function PageDisplayCard({
                 />
             </div>
             <div className="my-3 flex flex-col gap-3 text-lg">
-                <ContentCard content={viewpoint.content} />
+                <ContentCard
+                    facts={viewpoint.facts}
+                    content={viewpoint.content}
+                />
             </div>
             <TernaryReactions
+                parentTitle={viewpoint.title}
                 parentId={viewpoint.id}
                 initialReaction={viewpoint.userReaction.reaction}
                 initialCounts={{
@@ -53,3 +58,5 @@ export default function PageDisplayCard({
         </div>
     );
 }
+
+export default withErrorBoundary(PageDisplayCard);

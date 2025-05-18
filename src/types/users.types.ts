@@ -24,3 +24,21 @@ export interface UserProfile {
     nickname: string;
     avatar: string;
 }
+
+export interface WebPushSubscription {
+    endpoint: string;
+    keys: {
+        p256dh: string;
+        auth: string;
+    };
+}
+
+export interface UserSettings {
+    notification: {
+        newReplyInMyViewpoint: boolean;
+        newReferenceToMyReply: boolean;
+        newNodeOfTimelineToFollowedIssue: boolean;
+        newViewpointInFollowedIssue: boolean;
+        newReplyInFollowedViewpoint: boolean;
+    };
+}
