@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Modal } from "@mantine/core";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import type { Fact } from "@/types/conversations.types";
 import FactImportingBox from "@/components/Conversation/Editors/Replies/FactImportingBox";
 import FactCreationBox from "@/components/Conversation/Facts/FactCreationBox";
@@ -13,7 +13,6 @@ type FactImportModalProps = {
     factImportCallback?: () => void;
     replyFactList: Fact[];
     setRelpyFactList: Dispatch<SetStateAction<Fact[]>>;
-    selectedFactIndexes: number[];
     addFact: (newFact: Fact) => void;
 };
 
@@ -24,7 +23,6 @@ export default function FactImportModal({
     factImportCallback,
     replyFactList,
     setRelpyFactList,
-    selectedFactIndexes,
     addFact,
 }: FactImportModalProps) {
     const [currentScreen, setCurrentScreen] = useState<number>(1); // 1: import, 2: create

@@ -18,30 +18,26 @@ import { v4 as uuid } from "uuid";
 import type { Reply } from "@/types/conversations.types";
 import type { PaginatedPage } from "@/types/requests.types";
 import { ActionIcon, Loader } from "@mantine/core";
-import ReplyReferenceModal from "@/components/Conversation/Editors/Replies/ReplyReferenceModal";
 import withErrorBoundary from "@/lib/utils/withErrorBoundary";
 
 import type { Fact } from "@/types/conversations.types";
 import FactImportModal from "./FactImportModal";
-import { get, set } from "lodash";
 
 type AuthorReplyBarProps = {
     issueId: string;
     viewpointId: string;
 };
 
-function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
+function AuthorReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     const {
         inputRef,
         inSelectionMode,
         setIsEditorReady,
         getInputFieldContent,
-        getCurSelectedFacts,
     } = useContext(ReferenceMarkerContext);
 
     const [inFocus, setInFocus] = useState(false);
     const [inFocusQueue, setInFocusQueue] = useState<boolean>(false);
-    const [isReferenceModalOpen, setIsReferenceModalOpen] = useState(false);
     const [modalId, setModalId] = useState<string | null>(null);
     const [animationSeq, setAnimationSeq] = useState<number | null>(null);
     const [contentEmpty, setContentEmpty] = useState<boolean>(true);
@@ -242,20 +238,12 @@ function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
                             >
                                 <LinkIcon className="w-6 text-emerald-600 group-disabled:text-neutral-500" />
                             </ActionIcon>
-                            {/* <ReplyReferenceModal
-                                issueId={issueId}
-                                isModalOpen={isReferenceModalOpen}
-                                setIsModalOpen={setIsReferenceModalOpen}
-                                replyFactList={replyFactList}
-                                setReplyFactList={setReplyFactList}
-                            /> */}
                             <FactImportModal
                                 issueId={issueId}
                                 modalId={modalId}
                                 setModalId={setModalId}
                                 replyFactList={replyFactList}
                                 setRelpyFactList={setReplyFactList}
-                                selectedFactIndexes={getCurSelectedFacts()}
                                 addFact={(fact) => {
                                     setReplyFactList((prev) => [...prev, fact]);
                                 }}
@@ -292,4 +280,4 @@ function AddReplyBar({ issueId, viewpointId }: AuthorReplyBarProps) {
     );
 }
 
-export default withErrorBoundary(AddReplyBar);
+export default withErrorBoundary(AuthorReplyBar);
