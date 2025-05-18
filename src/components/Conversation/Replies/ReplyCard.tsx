@@ -30,7 +30,7 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
         if (inView && cookies.auth_token) {
             readReplyMutation();
         }
-    }, [inView, readReplyMutation]);
+    }, [inView, readReplyMutation, cookies.auth_token]);
 
     return (
         <div ref={ref}>
