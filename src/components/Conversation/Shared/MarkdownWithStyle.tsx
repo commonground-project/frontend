@@ -89,7 +89,7 @@ export default function MarkdownWithCitation({
                                         })}
                                         <span className="text-slate-500">
                                             {factIdxes?.map((factIdx) => {
-                                                return `[${factIdx}]`;
+                                                return `[${Number(factIdx) + 1}]`;
                                             })}
                                         </span>
                                     </span>
