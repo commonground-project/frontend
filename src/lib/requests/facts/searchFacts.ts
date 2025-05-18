@@ -25,20 +25,8 @@ export async function searchFacts({
     size,
     auth_token,
 }: SearchFactsProps): Promise<PaginatedFactsResponse> {
-    if (searchValue === "NotFound") {
-        const emptyResponse: PaginatedFactsResponse = {
-            content: [],
-            page: {
-                size: 0,
-                totalElement: 0,
-                totalPage: 0,
-                number: 0,
-            },
-        };
-        return emptyResponse;
-    }
     return fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/facts?page=${pageParam}&size=${size}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/searchFact?query=${searchValue}&page=${pageParam}&size=${size}`,
         {
             method: "GET",
             headers: generateRequestHeaders(auth_token),
