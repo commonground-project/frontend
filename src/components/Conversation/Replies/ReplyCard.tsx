@@ -27,7 +27,7 @@ export default function ReplyCard({ reply, ref }: ReplyCardProps) {
     });
 
     useEffect(() => {
-        if (inView) {
+        if (inView && cookies.auth_token) {
             readReplyMutation();
         }
     }, [inView, readReplyMutation]);
