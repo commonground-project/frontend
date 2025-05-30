@@ -53,7 +53,7 @@ export default function GatherInfo({
                 data={[
                     { value: "MALE", label: "男性" },
                     { value: "FEMALE", label: "女性" },
-                    { value: "OTHER", label: "其他" },
+                    { value: "NON_BINARY", label: "非二元" },
                     { value: "PREFER_NOT_TO_SAY", label: "不願意透露" },
                 ]}
                 {...form.getInputProps("gender")}

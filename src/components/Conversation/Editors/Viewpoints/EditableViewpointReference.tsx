@@ -13,6 +13,7 @@ type FactCardProps = {
     withBorder?: boolean;
     linkBarWithBG?: boolean;
     showDeleteIcon?: boolean;
+    deleteIconSize?: number;
     withHover?: boolean;
 };
 
@@ -25,7 +26,8 @@ export default function EditableViewpointReference({
     setIsSelected,
     withBorder = true,
     linkBarWithBG = true,
-    showDeleteIcon = false,
+    showDeleteIcon = true,
+    deleteIconSize = 20,
     withHover = false,
 }: FactCardProps) {
     return (
@@ -56,13 +58,13 @@ export default function EditableViewpointReference({
                         <ActionIcon
                             variant="transparent"
                             classNames={{
-                                root: showDeleteIcon
-                                    ? ""
-                                    : "opacity-0 transition-opacity group-hover:opacity-100",
+                                root: "opacity-0 transition-opacity group-hover:opacity-100",
                             }}
                             onClick={() => removeFact(String(fact.id))}
                         >
-                            <MinusCircleIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-600" />
+                            <MinusCircleIcon
+                                className={`size-[${deleteIconSize}px] text-neutral-500 hover:text-neutral-600`}
+                            />
                         </ActionIcon>
                     )}
                 </div>

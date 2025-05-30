@@ -116,6 +116,9 @@ export default function OnboardingPage() {
         onSuccess(data) {
             login(data.accessToken, data.refreshToken, data.expirationTime);
             router.push("/");
+            setTimeout(() => {
+                router.push("/");
+            }, 2000);
         },
         onError() {
             toast.error("發生未知的錯誤，請再試一次");
@@ -238,7 +241,9 @@ export default function OnboardingPage() {
                     setNextStepLoading(false);
                 });
         } else {
-            setCurrentScreen(currentScreen + 1);
+            setCurrentScreen((cur) =>
+                Math.min(cur + 1, onboardingScreens.length - 1),
+            );
         }
     };
 
